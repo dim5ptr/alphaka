@@ -562,7 +562,7 @@
                     </a>
                 </li>
             </ul>
-            <form id="logoutForm" class="logout-Form" method="POST" action="{{ route('logout') }}">
+            <form id="logoutForm" class="logout-Form" method="GET" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="logout-button">ㅤ <i class="fa-solid fa-right-from-bracket"></i>ㅤLogout</button>
                 </form>
@@ -594,19 +594,12 @@
 
                 <div class="data">
                     <p>
-                        <span><strong>Username:</strong> {{ $personalInfo['username'] }}</span></br>
-                        <strong>Email:</strong> {{ $personalInfo['email'] }}</br>
-                        <strong>Phone:</strong> {{ $personalInfo['phone'] ?? 'Not Provided' }}</br>
-                        <strong>Date of Birth:</strong> {{ $personalInfo['birthday'] ?? 'Not Provided' }}</br>
-                        <strong>Gender:</strong>
-                        @if($personalInfo['gender'] == 1)
-                            Male
-                        @elseif($personalInfo['gender'] == 0)
-                            Female
-                        @else
-                            Not Provided
-                        @endif
-                        </span><br>
+                        <p><span class="text-bold">User Name:</span> {{ $personalInfo['username'] }}</p>
+                        <p  class="text-bold"><strong>Nama:</strong> {{ $personalInfo['fullname'] }}</p>
+                        <p class="text-bold"><strong>Birthday:</strong> {{ $personalInfo['dateofbirth'] }}</p>
+                        <p class="text-bold"><strong>Gender:</strong> {{ $personalInfo['gender'] == 0 ? 'Female' : 'Male' }}</p>
+                        <p class="text-bold"><strong>Email:</strong> {{ session('email') }}</p>
+                        <p class="text-bold"><strong>Phone Number:</strong> {{ $personalInfo['phone'] }}</p>
                     </p>
                     <div class="btn-container">
                         <button type="button" class="btn btn-light" onclick="openModal()">
@@ -628,47 +621,33 @@
                 </div>
                 <form action="{{ route('editpersonal') }}" method="POST">
                     @csrf
-                    @method('PATCH')
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" name="username" class="form-control" id="username" value="{{ old('username', $personalInfo['username']) }}">
+                    <!-- Personal information fields -->
+                    <div class="form-group" class="form-label">
+                        <label for="name">Full Name</label>
+                        <input type="text" name="fullname" id="name" class="form-control" placeholder="Enter your Full Name" value="{{ session('full_name') }}">
                     </div>
-                    <div class="mb-3">
-                        <label for="fullname" class="form-label">Full Name</label>
-                        <input type="text" name="fullname" class="form-control" id="fullname" value="{{ old('fullname', $personalInfo['fullname']) }}">
+                    <div class="form-group" class="form-label">
+                        <label for="username">Username</label>
+                        <input type="text" name="username" id="username" class="form-control" placeholder="Enter your Username" value="{{ session('username') }}">
                     </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" id="email" value="{{ old('email', $personalInfo['email']) }}" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Phone</label>
-                        <input type="text" name="phone" class="form-control" id="phone" value="{{ old('phone', $personalInfo['phone']) }}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="birthday" class="form-label">Date of Birth</label>
+                    <div class="form-group" class="form-label">
+                        <label for="dateofbirth">Date of Birth</label>
                         <input type="date" name="dateofbirth" id="dateofbirth" class="form-control" value="{{ session('dateofbirth') }}">
                     </div>
-                    <div class="mb-3">
-                        <label for="gender">Gender</label>
+                    <div class="form-group">
+                        <label for="gender" class="form-label">Gender</label>
                         <select id="gender" name="gender" class="form-control">
                             <option value="1" {{ session('gender') == 1 ? 'selected' : '' }}>Male</option>
                             <option value="0" {{ session('gender') == 0 ? 'selected' : '' }}>Female</option>
                         </select>
                     </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
+
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="text" name="phone" id="phone" placeholder="Enter your Phone Number" class="form-control" value="{{ session('phone') }}">
                     </div>
+
+                    <button type="submit" class="btn btn-primary"">Save</button>
                 </form>
             </div>
         </div>
@@ -680,9 +659,9 @@
                     <h1 class="modal-title" id="updateImageModalLabel">Change Profile Image</h1>
                     <button type="button" class="btn-close" onclick="closeImageModal()">×</button>
                 </div>
-                <form action="{{ route('upload.profile.picture') }}" method="POST" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('upload.profile.picture') }}" enctype="multipart/form-data">
                     @csrf
-                    @method('PATCH')
+                    @method('POST')
                     @if ($errors->any())
                         <div class="alert alert-danger">
                             <ul>
@@ -694,7 +673,7 @@
                     @endif
                     <div class="mb-3">
                         <label for="profile_image" class="form-label">Profile Image</label>
-                        <input type="file" name="profile_picture" class="form-control" id="profile_image">
+                        <input type="file" name="profile_picture" class="form-control" id="profile_picture">
                     </div>
                     <div class="modal-image-footer">
                         <button type="submit" class="btn btn-primary">Save Changes</button>
