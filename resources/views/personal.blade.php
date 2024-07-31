@@ -594,7 +594,7 @@
                     </button>
                 </form>
             @else
-                <form method="GET" action="{{ route('show.upload.profile.picture') }}" enctype="multipart/form-data" class="profile-upload-link">
+            <form method="GET" onclick="openImageModal()" enctype="multipart/form-data" class="profile-upload-link">
                     @csrf
                     <button type="submit" class="btn btn-link">
                         <i class="fas fa-user-circle fa-5x rounded-circle profile-icon"></i>
