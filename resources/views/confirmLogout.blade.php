@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Document</title>
@@ -171,9 +170,9 @@
 
         .note i {
             margin-left: 43%;
-            margin-top: 5%;
+            margin-top: 7%;
             font-size: 100px;
-            color: #365AC2;
+            color: #c23636;
         }
 
         .note h4 {
@@ -243,11 +242,11 @@
     <div id="main-content" class="main-content">
         <div class="note">
             <div class="warning">
-                <i class="fa-solid fa-circle-check"></i> </br>
-            <h4 class="card-text">Hello, <strong>{{ session('username') }}</strong>! Are you sure wanna log out?</p></h4>
-            <form id="logoutForm" class="logoutForm" method="POST" action="{{ route('logout') }}">
+                <i class="fa-solid fa-circle-exclamation"></i></br>
+            <h4 class="card-text"> Hello, <strong>{{ session('username') }}</strong>! Are you sure wanna log out?</p></h4>
+            <form id="logoutForm" class="logoutForm" method="GET" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="logout-button">ㅤㅤLogout</button>
+                <button type="submit" class="logout-button">ㅤㅤ Logout</button>
             </form>
             </div>
         </div>
