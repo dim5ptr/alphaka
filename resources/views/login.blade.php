@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="img/logo_sarastya.jpg">
+    <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <title>Login</title>
 
@@ -254,85 +254,84 @@
     </div>
 </div>
 
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Hide success alert after 5 seconds
-            const successAlert = document.getElementById('alert-success');
-            if (successAlert) {
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Hide success alert after 5 seconds
+        const successAlert = document.getElementById('alert-success');
+        if (successAlert) {
+            setTimeout(function() {
+                successAlert.style.opacity = 0;
                 setTimeout(function() {
-                    successAlert.style.opacity = 0;
-                    setTimeout(function() {
-                        successAlert.style.display = 'none';
-                    }, 500);
-                }, 5000);
-            }
+                    successAlert.style.display = 'none';
+                }, 500);
+            }, 5000);
+        }
 
-            // Hide error alert after 5 seconds
-            const errorAlert = document.getElementById('alert-danger');
-            if (errorAlert) {
+        // Hide error alert after 5 seconds
+        const errorAlert = document.getElementById('alert-danger');
+        if (errorAlert) {
+            setTimeout(function() {
+                errorAlert.style.opacity = 0;
                 setTimeout(function() {
-                    errorAlert.style.opacity = 0;
-                    setTimeout(function() {
-                        errorAlert.style.display = 'none';
-                    }, 500);
-                }, 5000);
-            }
+                    errorAlert.style.display = 'none';
+                }, 500);
+            }, 5000);
+        }
 
-            // Real-time validation
-            const emailInput = document.getElementById('email');
-            const passwordInput = document.getElementById('password');
-            const loginForm = document.getElementById('loginForm');
-            const emailError = document.getElementById('emailError');
-            const passwordError = document.getElementById('passwordError');
+        // Real-time validation
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginForm = document.getElementById('loginForm');
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
 
-            emailInput.addEventListener('input', function() {
-                validateEmail();
-            });
+        emailInput.addEventListener('input', function() {
+            validateEmail();
+        });
 
-            passwordInput.addEventListener('input', function() {
-                validatePassword();
-            });
+        passwordInput.addEventListener('input', function() {
+            validatePassword();
+        });
 
-            loginForm.addEventListener('submit', function(event) {
-                if (!validateEmail() || !validatePassword()) {
-                    event.preventDefault();
-                }
-            });
-
-            function validateEmail() {
-                const email = emailInput.value.trim();
-                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailPattern.test(email)) {
-                    emailError.textContent = 'Please enter a valid email address';
-                    return false;
-                } else {
-                    emailError.textContent = '';
-                    return true;
-                }
-            }
-
-            function validatePassword() {
-                const password = passwordInput.value.trim();
-                if (password.length < 8) {
-                    passwordError.textContent = 'Password must be at least 8 characters long';
-                    return false;
-                } else {
-                    passwordError.textContent = '';
-                    return true;
-                }
+        loginForm.addEventListener('submit', function(event) {
+            if (!validateEmail() || !validatePassword()) {
+                event.preventDefault();
             }
         });
 
-        function closeAlert(alertId) {
-            const alert = document.getElementById(alertId);
-            if (alert) {
-                alert.style.opacity = 0;
-                setTimeout(function() {
-                    alert.style.display = 'none';
-                }, 500);
+        function validateEmail() {
+            const email = emailInput.value.trim();
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                emailError.textContent = 'Please enter a valid email address';
+                return false;
+            } else {
+                emailError.textContent = '';
+                return true;
             }
         }
-    </script>
+
+        function validatePassword() {
+            const password = passwordInput.value.trim();
+            if (password.length < 8) {
+                passwordError.textContent = 'Password must be at least 8 characters long';
+                return false;
+            } else {
+                passwordError.textContent = '';
+                return true;
+            }
+        }
+    });
+
+    function closeAlert(alertId) {
+        const alert = document.getElementById(alertId);
+        if (alert) {
+            alert.style.opacity = 0;
+            setTimeout(function() {
+                alert.style.display = 'none';
+            }, 500);
+        }
+    }
+</script>
 </body>
 </html>
