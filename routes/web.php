@@ -99,8 +99,6 @@ Route::middleware('auth.redirect')->group(function () {
     Route::get('/edituseradm',  [HttpController::class, 'showedituseradm'])->name('showedituseradm');
     Route::post('/edituseradm', [HttpController::class, 'edituseradm'])->name('edituseradm');
 
-    Route::get('/confirmpw', [PagesController::class, 'PesanPw'])->name('confirmpw');
-
 
 });
 
