@@ -228,16 +228,12 @@
                 <div class="input-group">
                     <input type="email" id="email" name="email" placeholder="Email" value="{{ old('email') }}" required>
                     <span class="icon"><i class="fas fa-envelope"></i></span>
-                    @if ($errors->has('email'))
-                        <div id="emailError" class="error-message">{{ $errors->first('email') }}</div>
-                    @endif
+                    <div id="emailError" class="error-message"></div>
                 </div>
                 <div class="input-group">
                     <input type="password" id="password" name="password" placeholder="Password" required>
                     <span class="icon"><i class="fas fa-lock"></i></span>
-                    @if ($errors->has('password'))
-                        <div id="passwordError" class="error-message">{{ $errors->first('password') }}</div>
-                    @endif
+                    <div id="passwordError" class="error-message"></div>
                 </div>
 
                 <div class="forgot-password">
@@ -256,6 +252,38 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+
+        emailInput.addEventListener('input', validateEmail);
+        passwordInput.addEventListener('input', validatePassword);
+
+        function validateEmail() {
+            const emailError = document.getElementById('emailError');
+            const emailValue = emailInput.value.trim();
+            if (!emailValue) {
+                emailError.textContent = 'Email is required.';
+            } else if (!validateEmailFormat(emailValue)) {
+                emailError.textContent = 'Please enter a valid email address.';
+            } else {
+                emailError.textContent = '';
+            }
+        }
+
+        function validatePassword() {
+            const passwordError = document.getElementById('passwordError');
+            const passwordValue = passwordInput.value.trim();
+            if (!passwordValue) {
+                passwordError.textContent = 'Password is required.';
+            } else {
+                passwordError.textContent = '';
+            }
+        }
+
+        function validateEmailFormat(email) {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailPattern.test(email);
+        }
         // Hide success alert after 5 seconds
         const successAlert = document.getElementById('alert-success');
         if (successAlert) {
@@ -276,50 +304,6 @@
                     errorAlert.style.display = 'none';
                 }, 500);
             }, 5000);
-        }
-
-        // Real-time validation
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const loginForm = document.getElementById('loginForm');
-        const emailError = document.getElementById('emailError');
-        const passwordError = document.getElementById('passwordError');
-
-        emailInput.addEventListener('input', function() {
-            validateEmail();
-        });
-
-        passwordInput.addEventListener('input', function() {
-            validatePassword();
-        });
-
-        loginForm.addEventListener('submit', function(event) {
-            if (!validateEmail() || !validatePassword()) {
-                event.preventDefault();
-            }
-        });
-
-        function validateEmail() {
-            const email = emailInput.value.trim();
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailPattern.test(email)) {
-                emailError.textContent = 'Please enter a valid email address';
-                return false;
-            } else {
-                emailError.textContent = '';
-                return true;
-            }
-        }
-
-        function validatePassword() {
-            const password = passwordInput.value.trim();
-            if (password.length < 8) {
-                passwordError.textContent = 'Password must be at least 8 characters long';
-                return false;
-            } else {
-                passwordError.textContent = '';
-                return true;
-            }
         }
     });
 
