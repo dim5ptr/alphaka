@@ -594,7 +594,7 @@
 
                 <div class="data">
                     <p>
-                        <p><span class="text-bold">User Name:</span> {{ $personalInfo['username'] }}</p>
+                        <p><span class="text-bold"><strong>User Name:</strong> {{ $personalInfo['username'] }}</span></p>
                         <p  class="text-bold"><strong>Nama:</strong> {{ $personalInfo['fullname'] }}</p>
                         <p class="text-bold"><strong>Birthday:</strong> {{ $personalInfo['dateofbirth'] }}</p>
                         <p class="text-bold"><strong>Gender:</strong> {{ $personalInfo['gender'] == 0 ? 'Female' : 'Male' }}</p>
@@ -735,80 +735,6 @@
     document.querySelector('form').addEventListener('submit', function() {
         closeModal();
         closeImageModal();
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.querySelector('form');
-        const usernameInput = document.getElementById('username');
-        const fullnameInput = document.getElementById('fullname');
-        const phoneInput = document.getElementById('phone');
-        const birthdayInput = document.getElementById('birthday');
-        const genderSelect = document.getElementById('gender');
-
-        function validateUsername() {
-            const username = usernameInput.value;
-            if (username.length < 3) {
-                showError(usernameInput, 'Username must be at least 3 characters long');
-            } else {
-                clearError(usernameInput);
-            }
-        }
-
-        function validateFullname() {
-            const fullname = fullnameInput.value;
-            if (fullname.length < 3) {
-                showError(fullnameInput, 'Full Name must be at least 3 characters long');
-            } else {
-                clearError(fullnameInput);
-            }
-        }
-
-        function validatePhone() {
-    const phone = phoneInput.value;
-    const phonePattern = /^[0-9]{10,15}$/;
-
-    // Check if the input is not empty and contains only digits with the correct length
-    if (!phonePattern.test(phone)) {
-        showError(phoneInput, 'Phone number must be between 10 and 15 digits and contain only numbers');
-    } else {
-        clearError(phoneInput);
-    }
-}
-
-
-        function validateBirthday() {
-            const birthday = new Date(birthdayInput.value);
-            const today = new Date();
-            if (birthday > today) {
-                showError(birthdayInput, 'Date of Birth cannot be in the future');
-            } else {
-                clearError(birthdayInput);
-            }
-        }
-
-        function showError(input, message) {
-            input.classList.add('is-invalid');
-            let error = input.nextElementSibling;
-            if (!error || !error.classList.contains('invalid-feedback')) {
-                error = document.createElement('div');
-                error.className = 'invalid-feedback';
-                input.parentElement.appendChild(error);
-            }
-            error.textContent = message;
-        }
-
-        function clearError(input) {
-            input.classList.remove('is-invalid');
-            let error = input.nextElementSibling;
-            if (error && error.classList.contains('invalid-feedback')) {
-                error.remove();
-            }
-        }
-
-        usernameInput.addEventListener('input', validateUsername);
-        fullnameInput.addEventListener('input', validateFullname);
-        phoneInput.addEventListener('input', validatePhone);
-        birthdayInput.addEventListener('input', validateBirthday);
     });
     </script>
 </body>
