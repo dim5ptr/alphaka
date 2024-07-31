@@ -445,7 +445,7 @@
     }
 
     .profile-info .data span {
-        font-size: 18px;
+        font-size: 20px;
         color: #000000;
     }
 
@@ -490,7 +490,7 @@
 .profile-upload-link {
             display: block;
             text-align: center;
-            color: #808080;
+            outline: none;
             position: relative;
         }
 
@@ -520,8 +520,8 @@
         }
 
         .profile-picture {
-            width: 100px; /* Tentukan ukuran yang diinginkan untuk foto profil */
-            height: 100px; /* Tentukan ukuran yang diinginkan untuk foto profil */
+            width: 200px; /* Tentukan ukuran yang diinginkan untuk foto profil */
+            height: 200px; /* Tentukan ukuran yang diinginkan untuk foto profil */
         }
 
         /* Mengubah warna ikon menjadi abu-abu */
@@ -585,23 +585,12 @@
             </div>
 
             <div class="profile-info">
-                @if(session('profile_picture'))
-                <form method="GET" onclick="openImageModal()" enctype="multipart/form-data" class="profile-upload-link">
-                    @csrf
-                    <button type="submit" class="btn btn-link">
-                        <img id="profile_picture" src="{{ session('profile_picture') ? asset(session('profile_picture')) : '' }}" alt="Foto Profil" class="img-fluid rounded-circle profile-picture">
-                        <div class="upload-text">Upload New Profile</div>
-                    </button>
-                </form>
+                @if (session('profile_picture') === '' || session('profile_picture') === null)
+                <img id="profile_picture" src="{{ asset('img/user.png') }}"  alt="Foto Profil" class="profile-picture">
             @else
-            <form method="GET" onclick="openImageModal()" enctype="multipart/form-data" class="profile-upload-link">
-                    @csrf
-                    <button type="submit" class="btn btn-link">
-                        <i class="fas fa-user-circle fa-5x rounded-circle profile-icon"></i>
-                        <div class="upload-text"><small>Upload New Profile</small></div>
-                    </button>
-                </form>
+                <img id="profile_picture" src="{{ asset(session('profile_picture')) }}"  alt="Foto Profil" class="profile-picture">
             @endif
+
                 <div class="data">
                     <p>
                         <span><strong>Username:</strong> {{ $personalInfo['username'] }}</span></br>
