@@ -349,8 +349,8 @@
                     </a>
                 </li>
             </ul>
-                <form id="logoutForm" class="logoutForm" method="POST" action="{{ route('logout') }}">
-                @csrf
+
+                <form id="logoutForm" method="GET" class="logoutForm" action="{{ route('logout') }}">
                 <button type="submit" class="logout-button">ㅤ <i class="fa-solid fa-right-from-bracket"></i>ㅤLogout</button>
                 </form>
             </ul>

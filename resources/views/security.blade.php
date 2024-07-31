@@ -380,10 +380,9 @@
                     </a>
                 </li>
             </ul>
-            <form id="logoutForm" class="logoutForm" method="POST" action="{{ route('logout') }}">
-                @csrf
+            <form id="logoutForm" method="GET" class="logoutForm" action="{{ route('logout') }}">
                 <button type="submit" class="logout-button">ㅤ <i class="fa-solid fa-right-from-bracket"></i>ㅤLogout</button>
-                </form>
+            </form>
         </div>
     </div>
 
@@ -397,7 +396,7 @@
                                 <span class="link">Password</span>
                             </a>
                         </li>
-                        <li>
+                        {{-- <li>
                             <a href="#" class="nav-mini">
                                 <span class="link">comingsoon</span>
                             </a>
@@ -406,7 +405,7 @@
                             <a href="#" class="nav-mini">
                                 <span class="link">comingsoon</span>
                             </a>
-                        </li>
+                        </li> --}}
                     </ul>
                 </div>
                 <div class="page">
