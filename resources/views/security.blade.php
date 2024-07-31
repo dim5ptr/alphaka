@@ -283,7 +283,7 @@
             border-radius: 5px;
             margin-right: 20;
             box-shadow: 0 2px 5px 2px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
+            z-index: 800;
         }
 
         .inpage {
