@@ -441,43 +441,44 @@ class HttpController extends Controller
     }
 
     public function uploadProfilePicture(Request $request)
-    {
-        // Validasi file gambar
-        $request->validate([
-            'profile_picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+{
+    // Validasi file gambar
+    $request->validate([
+        'profile_picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        if ($request->hasFile('profile_picture')) {
-            $file = $request->file('profile_picture');
-            $filename = time() . '_' . $file->getClientOriginalName();
+    if ($request->hasFile('profile_picture')) {
+        $file = $request->file('profile_picture');
+        $filename = time() . '_' . $file->getClientOriginalName();
 
-            $requestData = [
-                'profile_picture' => $file,
-            ];
+        $requestData = [
+            'profile_picture' => $file,
+        ];
 
-            $response = Http::withHeaders([
-                'Authorization' => session('access_token'),
-                'x-api-key' => self::API_KEY,
-            ])->attach('profile_picture', $file->getPathname(), $file->getClientOriginalName())
-            ->post(self::API_URL . '/sso/update_profile_picture.json', $requestData);
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->attach('profile_picture', $file->getPathname(), $file->getClientOriginalName())
+        ->post(self::API_URL . '/sso/update_profile_picture.json', $requestData);
 
-            $data = $response->json();
+        $data = $response->json();
 
-            if ($response->successful()) {
-                $file->move(public_path('profile_pictures'), $filename);
-                session(['profile_picture' => 'profile_pictures/' . $filename]);
+        if ($response->successful()) {
+            $file->storeAs('public/profile_pictures', $filename);
+            session(['profile_picture' => 'storage/profile_pictures/' . $filename]);
 
-                echo "<script>localStorage.setItem('profile_picture', 'profile_pictures/$filename');</script>";
+            echo "<script>localStorage.setItem('profile_picture', 'storage/profile_pictures/$filename');</script>";
 
-                return redirect()->route('personal')->with('success', 'Profile picture uploaded successfully.');
-            } else {
-                $errorMessage = $data['message'] ?? 'An error occurred while uploading profile picture.';
-                return redirect()->back()->with('error', $errorMessage);
-            }
+            return redirect()->route('personal')->with('success', 'Profile picture uploaded successfully.');
         } else {
-            return redirect()->back()->with('error', 'No file uploaded.');
+            $errorMessage = $data['message'] ?? 'An error occurred while uploading profile picture.';
+            return redirect()->back()->with('error', $errorMessage);
         }
+    } else {
+        return redirect()->back()->with('error', 'No file uploaded.');
     }
+}
+
 
 
 
