@@ -334,7 +334,7 @@
         <div class="sidebar-isi">
             <ul class="list">
                 <li>
-                    <a href="/dashboard" class="nav-link-act">
+                    <a href="/" class="nav-link-act">
                         <span class="link"><i class="fa-solid fa-house-chimney"></i>ㅤDashboard</span>
                     </a>
                 </li>
@@ -349,15 +349,10 @@
                     </a>
                 </li>
             </ul>
-            {{-- <li class="logout">
-                <a href="" class="out-link" id="logoutButton">
-                    <span class="link"><i class='bx bx-log-out'></i>Logout</span>
-                </a>
-            </li> --}}
-            <form id="logoutForm" class="logoutForm" method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="logout-button">ㅤ <i class="fa-solid fa-right-from-bracket"></i>ㅤLogout</button>
-            </form>
+                <form id="logoutForm" class="logoutForm" method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="logout-button">ㅤ <i class="fa-solid fa-right-from-bracket"></i>ㅤLogout</button>
+                </form>
             </ul>
         </div>
     </div>

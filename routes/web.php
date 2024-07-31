@@ -54,7 +54,7 @@ Route::middleware('auth.redirect')->group(function () {
     Route::get('/moredetails/{organization_name}', [HttpController::class, 'showmoredetails'])->name('showmoredetails');
     Route::post('/moredetails/{organization_name}', [HttpController::class, 'moredetails'])->name('moredetails');
 
-    Route::post('/addorganization', [HttpController::class, 'addorganization'])->name('addorganization'); 
+    Route::post('/addorganization', [HttpController::class, 'addorganization'])->name('addorganization');
     Route::get('/vieworganization/{organization_name}', [HttpController::class, 'showvieworganization'])->name('showvieworganization');
     Route::post('/vieworganization', [HttpController::class, 'vieworganization'])->name('vieworganization');
     Route::get('/editorganization/{organization_name}', [HttpController::class, 'showeditorganization'])->name('showeditorganization');
@@ -74,7 +74,7 @@ Route::middleware('auth.redirect')->group(function () {
 
     Route::get('/dashboardadmin', [HttpController::class, 'showdashboardadm'])->name('showdashboardadm');
     Route::post('/dashboardadmin', [HttpController::class, 'dashboardadm'])->name('dashboardadm');
-    
+
     Route::get('/userdata', [HttpController::class, 'showuserdata'])->name('showuserdata');
     Route::post('/userdata', [HttpController::class, 'userdata'])->name('userdata');
     // web.php
@@ -99,7 +99,7 @@ Route::middleware('auth.redirect')->group(function () {
     Route::get('/edituseradm',  [HttpController::class, 'showedituseradm'])->name('showedituseradm');
     Route::post('/edituseradm', [HttpController::class, 'edituseradm'])->name('edituseradm');
 
-
+    Route::get('/confirmpw', [PagesController::class, 'PesanPw'])->name('confirmpw');
 
 
 });

@@ -365,12 +365,12 @@
         <div class="sidebar-isi">
             <ul class="list">
                 <li>
-                    <a href="/dashboard" class="nav-link">
+                    <a href="/" class="nav-link">
                         <span class="link"><i class="fa-solid fa-house-chimney"></i>ㅤDashboard</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/profil" class="nav-link">
+                    <a href="/personal" class="nav-link">
                         <span class="link"><i class="fa-solid fa-id-card"></i>ㅤProfile</span>
                     </a>
                 </li>
@@ -414,30 +414,30 @@
                         <h3>Manage Your Password</h3>
                         <p>Your new password must be different from your previous used password.</p>
                         @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
+                            <div class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                        @endif
 
-        @if (session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
-        @endif
-        <form id="change-password-form" method="POST" action="{{ route('change-password') }}">
-            @csrf
-            <div>
-                <label for="new-password">New Password:</label><br>
-                <input type="password" id="new-password" name="new_password" required>
-                <span id="new-password-error" class="error-message"></span>
-            </div>
-            <div>
-                <label for="confirm-password">Confirm New Password:</label><br>
-                <input type="password" id="confirm-password" name="confirm_new_password" required>
-                <span id="confirm-password-error" class="error-message"></span>
-            </div>
-            <button type="submit">Change Password</button>
-        </form>
+                        @if (session('error'))
+                            <div class="alert alert-danger">
+                                {{ session('error') }}
+                            </div>
+                        @endif
+                        <form id="change-password-form" method="POST" action="{{ route('editpassword') }}">
+                            @csrf
+                            <div>
+                                <label for="new-password">New Password:</label><br>
+                                <input type="password" id="new-password" name="new_password" required>
+                                <span id="new-password-error" class="error-message"></span>
+                            </div>
+                            <div>
+                                <label for="confirm-password">Confirm New Password:</label><br>
+                                <input type="password" id="confirm-password" name="confirm_new_password" required>
+                                <span id="confirm-password-error" class="error-message"></span>
+                            </div>
+                            <button type="submit">Change Password</button>
+                        </form>
                     </div>
                 </div>
             </div>
