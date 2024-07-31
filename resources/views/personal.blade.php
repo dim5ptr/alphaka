@@ -546,7 +546,7 @@
         <div class="sidebar-isi">
             <ul class="list">
                 <li>
-                    <a href="/dashboard" class="nav-link">
+                    <a href="/" class="nav-link">
                         <span class="link"><i class="fa-solid fa-house-chimney"></i>ㅤDashboard</span>
                     </a>
                 </li>
@@ -556,7 +556,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/change-password" class="nav-link">
+                    <a href="/security" class="nav-link">
                         <span class="link"><i class="fa-solid fa-user-shield"></i>ㅤSecurity</span>
                     </a>
                 </li>

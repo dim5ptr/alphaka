@@ -243,7 +243,7 @@
         <div class="note">
             <div class="warning">
                 <i class="fa-solid fa-circle-check"></i> </br>
-            <h4>Password already update, you must logout</h4>
+            <h4 class="card-text">Hello, <strong>{{ session('username') }}</strong>! Are you sure wanna log out?</p></h4>
             <form id="logoutForm" class="logoutForm" method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="logout-button">ㅤㅤLogout</button>
