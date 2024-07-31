@@ -339,12 +339,12 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/profil" class="nav-link">
+                    <a href="/personal" class="nav-link">
                         <span class="link"><i class="fa-solid fa-id-card"></i>ㅤProfile</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/change-password" class="nav-link">
+                    <a href="/security" class="nav-link">
                         <span class="link"><i class="fa-solid fa-user-shield"></i>ㅤSecurity</span>
                     </a>
                 </li>
