@@ -587,10 +587,10 @@
 
             <div class="profile-info">
                 @if (session('profile_picture') === '' || session('profile_picture') === null)
-                <img id="profile_picture" src="{{ asset('img/user.png') }}"  alt="Foto Profil" class="profile-picture">
-            @else
-                <img id="profile_picture" src="{{ asset(session('profile_picture')) }}"  alt="Foto Profil" class="profile-picture">
-            @endif
+                    <img id="profile_picture" src="{{ asset('img/user.png') }}"  alt="Foto Profil" class="profile-picture">
+                @else
+                    <img id="profile_picture" src="{{ asset(session('profile_picture')) }}"  alt="Foto Profil" class="profile-picture">
+                @endif
 
                 <div class="data">
                     <p>
