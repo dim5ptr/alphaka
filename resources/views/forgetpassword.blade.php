@@ -212,7 +212,7 @@
 <body>
     <div class="container">
 
-        <form method="POST" action="{{ route('password.email') }}">
+        <form method="POST" action="{{ route('forgetpassword') }}">
             @csrf
 
             <div class="reset-password-box">
