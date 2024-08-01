@@ -181,9 +181,14 @@
             margin-left: 23%;
         }
 
+        .logoutForm {
+            display: flex;
+            margin-top: 5%;
+        }
+
         .logout-button {
             width: 20%;
-            margin-left: 40%;
+            margin-left: 5%;
             display: flex;
             text-align : center;
             padding: 8px 9px;
@@ -206,7 +211,30 @@
             font-weight: 700;
         }
 
+        .back-button {
+            width: 20%;
+            margin-left: 27%;
+            display: flex;
+            text-align : center;
+            padding: 8px 9px;
+            margin-bottom: 2%;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            box-sizing: border-box;
+            position: relative;
+            background-color: white;
+            color: #365AC2;
+            border: 2px solid #365AC2;
+            transition: background-color 0.3s, color 0.3s;
+        }
 
+        .back-button:hover {
+            background-color: #263f88;;
+            color: aliceblue;
+            font-weight: 700;
+        }
 
     </style>
 </head>
@@ -246,6 +274,7 @@
             <h4 class="card-text"> Hello, <strong>{{ session('username') }}</strong>! Are you sure wanna log out?</p></h4>
             <form id="logoutForm" class="logoutForm" method="GET" action="{{ route('logout') }}">
                 @csrf
+                <button type="button" class="back-button" onclick="window.history.back()">ㅤㅤBack</button>
                 <button type="submit" class="logout-button">ㅤㅤ Logout</button>
             </form>
             </div>
