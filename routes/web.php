@@ -1,15 +1,12 @@
 <?php
 
 use App\Http\Controllers\HttpController;
-use App\Http\Controllers\YourController; // Import YourController jika belum diimport sebelumnya
 use Illuminate\Support\Facades\Route;
 
 // Rute untuk tampilan register
 
-
 // Rute untuk login
 Route::middleware('auth.redirect')->group(function () {
-
     Route::get('/register', [HttpController::class, 'showRegister'])->name('register');
     Route::post('/register', [HttpController::class, 'register']);
 
@@ -32,16 +29,18 @@ Route::middleware('auth.redirect')->group(function () {
     Route::post('resetpassword', [HttpController::class, 'resetpassword'])->name('resetpassword');
 
     // Show form to request a password reset link
-    Route::get('password/reset', [PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::get('password/reset', [HttpController::class, 'showLinkRequestForm'])->name('password.request');
 
     // Handle sending the password reset link
-    Route::post('password/email', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::post('password/email', [HttpController::class, 'sendResetLinkEmail'])->name('password.email');
 
+    // Rute untuk mengatur ulang kata sandi (reset password)
+    Route::get('password/reset/{token}', [HttpController::class, 'showResetPasswordForm'])->name('password.reset');
+    Route::post('password/reset', [HttpController::class, 'reset'])->name('password.update');
+});
 
-    });
-
-    // Rute-rute yang memerlukan autentikasi
-    Route::middleware(['auth'])->group(function () {
+// Rute-rute yang memerlukan autentikasi
+Route::middleware(['auth'])->group(function () {
     // Rute untuk logout
     Route::get('/logout', [HttpController::class, 'logout'])->name('logout');
     // Rute untuk konfirmasi logout
@@ -70,14 +69,13 @@ Route::middleware('auth.redirect')->group(function () {
     Route::post('/editpassword',  [HttpController::class, 'editpassword'])->name('editpassword');
 
     // Tambahkan rute untuk halaman Settings
-    Route::get('/settings', [YourController::class, 'settings'])->name('settings');
+    Route::get('/settings', [HttpController::class, 'settings'])->name('settings');
 
     Route::get('/dashboardadmin', [HttpController::class, 'showdashboardadm'])->name('showdashboardadm');
     Route::post('/dashboardadmin', [HttpController::class, 'dashboardadm'])->name('dashboardadm');
 
     Route::get('/userdata', [HttpController::class, 'showuserdata'])->name('showuserdata');
     Route::post('/userdata', [HttpController::class, 'userdata'])->name('userdata');
-    // web.php
 
     Route::get('/moredetailsadm', [HttpController::class, 'showmoredetailsadm'])->name('showmoredetailsadm');
     Route::post('/moredetailsadm', [HttpController::class, 'moredetailsadm'])->name('moredetailsadm');
@@ -98,7 +96,4 @@ Route::middleware('auth.redirect')->group(function () {
 
     Route::get('/edituseradm',  [HttpController::class, 'showedituseradm'])->name('showedituseradm');
     Route::post('/edituseradm', [HttpController::class, 'edituseradm'])->name('edituseradm');
-
-
 });
-

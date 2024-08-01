@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Str;
+// use Str;
 use App\Models\User;
 use App\Mail\RegisterMail;
 use App\Mail\ActivationMail;
@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Password;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Str;
 
 
 
@@ -153,7 +156,7 @@ class HttpController extends Controller
 
     public function showResetPasswordForm($token)
     {
-        return view('auth.resetPassword', ['token' => $token]);
+        return view('formforgetpassword', ['token' => $token]);
     }
 
     public function submitResetPasswordForm(Request $request)
@@ -521,9 +524,9 @@ class HttpController extends Controller
         $accessToken = session('access_token');
 
         // Periksa apakah access token ada
-        // if (!$accessToken) {
-        //     return redirect()->route('login')->withErrors(['error' => 'Access token not found. Please login again.']);
-        // }
+        if (!$accessToken) {
+            return redirect()->route('login')->withErrors(['error' => 'Access token not found. Please login again.']);
+        }
 
         // Periksa apakah pengguna sudah login
         if (!auth()->check()) {
