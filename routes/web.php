@@ -36,7 +36,7 @@ Route::middleware('auth.redirect')->group(function () {
 
     // Rute untuk mengatur ulang kata sandi (reset password)
     Route::get('password/reset/{token}', [HttpController::class, 'showResetPasswordForm'])->name('password.reset');
-    Route::post('password/reset', [HttpController::class, 'reset'])->name('password.update');
+    Route::post('password/reset', [HttpController::class, 'submitResetPasswordForm'])->name('password.update');
 });
 
 // Rute-rute yang memerlukan autentikasi
