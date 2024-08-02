@@ -2,7 +2,14 @@
 
 use App\Http\Controllers\HttpController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\NewMessage;
 
+
+Route::get('/test-mail', function (){
+    Notification::route('mail', 'yourMailtrapEmailAddress')->notify(new NewMessage());
+    return 'Sent';
+});
 
 // Rute untuk tampilan register
 
@@ -101,4 +108,4 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-Route::get('/send-email', [HttpController::class, 'sendEmail']);
+// Route::get('/send-email', [HttpController::class, 'sendEmail']);
