@@ -1,4 +1,7 @@
 <x-mail::message>
+{{-- Logo --}}
+<img src="{{ asset('img/logo_sti.png') }}" alt="Logo" style="width: 100px; height: auto;">
+
 {{-- Greeting --}}
 @if (! empty($greeting))
 # {{ $greeting }}
@@ -55,4 +58,11 @@
 ) <span class="break-all">[{{ $displayableActionUrl }}]({{ $actionUrl }})</span>
 </x-slot:subcopy>
 @endisset
+
+{{-- Footer --}}
+<x-slot:footer>
+    <div style="text-align: center; margin-top: 20px;">
+        <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
+    </div>
+</x-slot:footer>
 </x-mail::message>

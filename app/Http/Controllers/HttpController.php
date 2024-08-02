@@ -621,7 +621,25 @@ class HttpController extends Controller
     }
 
 
+    public function sendEmail()
+    {
+        // Define variables
+        $introLines = ['If you request us to reset your account password, here is the link you can use!'];
+        $actionText = 'Reset Password Form';
+        $actionUrl = 'https://127.0.0.1:8000/password/reset?token=abc123';
+        $displayableActionUrl = 'https://127.0.0.1:8000/password/reset?token=abc123';
+        $outroLines = ['This password reset link will expire in 60 minutes. if you did not request a password reset, no further action is required.'];
+        $salutation = 'Sarastya';
 
+        // Send email
+        Mail::send([], [], function ($message) use ($greeting, $introLines, $actionText, $actionUrl, $displayableActionUrl, $outroLines, $salutation) {
+            $message->to('recipient@example.com')
+                    ->subject('Welcome to Our Service')
+                    ->setBody(view('emails.custom', compact('greeting', 'introLines', 'actionText', 'actionUrl', 'displayableActionUrl', 'outroLines', 'salutation'))->render(), 'text/html');
+        });
+
+        return 'Email sent successfully!';
+    }
 
 
     // public function showaccess($role)

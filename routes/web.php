@@ -3,6 +3,7 @@
 use App\Http\Controllers\HttpController;
 use Illuminate\Support\Facades\Route;
 
+
 // Rute untuk tampilan register
 
 // Rute untuk login
@@ -97,3 +98,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/edituseradm',  [HttpController::class, 'showedituseradm'])->name('showedituseradm');
     Route::post('/edituseradm', [HttpController::class, 'edituseradm'])->name('edituseradm');
 });
+
+
+
+Route::get('/send-email', [HttpController::class, 'sendEmail']);
