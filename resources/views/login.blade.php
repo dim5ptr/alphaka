@@ -205,9 +205,9 @@
         </div>
         <div class="right">
             <h2>Login</h2>
-            @if (session('message'))
+            @if (session('success'))
             <div class="alert alert-success" id="alert-success">
-                {{ session('message') }}
+                {{ session('success') }}
                 <span class="close-btn" onclick="closeAlert('alert-success')">&times;</span>
             </div>
             @endif

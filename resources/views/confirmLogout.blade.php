@@ -169,16 +169,17 @@
         }
 
         .note i {
-            margin-left: 43%;
+            margin: 0 40%;
             margin-top: 7%;
             font-size: 100px;
             color: #c23636;
+
         }
 
         .note h4 {
             font-size: 20px;
             margin-top: 3%;
-            margin-left: 23%;
+            text-align: center;
         }
 
         .logoutForm {
@@ -190,7 +191,6 @@
             width: 20%;
             margin-left: 5%;
             display: flex;
-            text-align : center;
             padding: 8px 9px;
             margin-bottom: 2%;
             border-radius: 5px;
@@ -203,6 +203,7 @@
             color: #c23636;
             border: 2px solid #c23636;
             transition: background-color 0.3s, color 0.3s;
+            justify-content: center;
         }
 
         .logout-button:hover {
@@ -215,7 +216,7 @@
             width: 20%;
             margin-left: 27%;
             display: flex;
-            text-align : center;
+            justify-content: center;
             padding: 8px 9px;
             margin-bottom: 2%;
             border-radius: 5px;
@@ -243,7 +244,7 @@
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }} </span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
 
-    <button class="open-btn" onclick="toggleSidebar()">&#9776; Security</button>
+    <button class="open-btn" onclick="toggleSidebar()">&#9776; Info</button>
 
     <div id="sidebar" class="sidebar">
         <div class="sidebar-isi">
@@ -259,7 +260,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/security" class="nav-link-act">
+                    <a href="/security" class="nav-link">
                         <span class="link"><i class="fa-solid fa-user-shield"></i>ㅤSecurity</span>
                     </a>
                 </li>
@@ -274,8 +275,8 @@
             <h4 class="card-text"> Hello, <strong>{{ session('username') }}</strong>! Are you sure wanna log out?</p></h4>
             <form id="logoutForm" class="logoutForm" method="GET" action="{{ route('logout') }}">
                 @csrf
-                <button type="button" class="back-button" onclick="window.history.back()">ㅤㅤBack</button>
-                <button type="submit" class="logout-button">ㅤㅤ Logout</button>
+                <button type="button" class="back-button" onclick="window.history.back()">Back</button>
+                <button type="submit" class="logout-button"> Logout</button>
             </form>
             </div>
         </div>
