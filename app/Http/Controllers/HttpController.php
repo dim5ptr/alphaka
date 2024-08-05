@@ -162,27 +162,33 @@ class HttpController extends Controller
     public function submitResetPasswordForm(Request $request)
     {
         $request->validate([
-
+            'email' => 'required|email|exists:users,email',
             'password' => 'required|string|min:6|confirmed',
             'password_confirmation' => 'required'
         ]);
 
         $updatePassword = DB::table('password_reset_tokens')
-                            ->where([
-                              'email' => $request->email,
-                              'token' => $request->token
-                            ])
-                            ->first();
+            ->where([
+                'email' => $request->email,
+                'token' => $request->token
+            ])
+            ->first();
 
-        if(!$updatePassword){
+        if (!$updatePassword) {
             return back()->withInput()->with('error', 'Invalid token!');
+        }
+
+        // Check if token is expired (e.g., tokens are valid for 60 minutes)
+        $expiresAt = Carbon::parse($updatePassword->created_at)->addMinutes(60);
+        if (Carbon::now()->isAfter($expiresAt)) {
+            return back()->withInput()->with('error', 'This token has expired!');
         }
 
         $user = User::where('email', $request->email)->first();
         $user->password = Hash::make($request->password);
         $user->save();
 
-        DB::table('password_reset_tokens')->where(['email'=> $request->email])->delete();
+        DB::table('password_reset_tokens')->where(['email' => $request->email])->delete();
 
         return redirect('/login')->with('status', 'Your password has been changed!');
     }
