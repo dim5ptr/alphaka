@@ -137,9 +137,12 @@ class HttpController extends Controller
     {
         try {
             // Validasi email
-            $request->validate([
-                'email' => 'required|email|exists:users,email',
-            ]);
+             // Validasi email dengan pesan khusus untuk validasi exists
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ], [
+            'email.exists' => 'Email address does not exist in our records.'
+        ]);
 
             // Buat token baru
             $token = Str::random(64);
