@@ -159,33 +159,45 @@ class HttpController extends Controller
         return view('formforgetpassword', ['token' => $token]);
     }
 
-        public function submitResetPasswordForm(Request $request)
-        {
-            $request->validate([
+    public function submitResetPasswordForm(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|string|min:6|confirmed',
+            'password_confirmation' => 'required',
+            'token' => 'required'
+        ]);
 
-                'password' => 'required|string|min:6|confirmed',
-                'password_confirmation' => 'required'
-            ]);
+        $updatePassword = DB::table('password_reset_tokens')
+            ->where([
+                'email' => $request->email,
+                'token' => $request->token
+            ])
+            ->first();
 
-            $updatePassword = DB::table('password_reset_tokens')
-                                ->where([
-                                'email' => $request->email,
-                                'token' => $request->token
-                                ])
-                                ->first();
+        if (!$updatePassword) {
+            return back()->withInput()->with('error', 'Invalid token!');
+        }
 
-            if(!$updatePassword){
-                return back()->withInput()->with('error', 'Invalid token!');
-            }
+        // Check if token is expired (e.g., tokens are valid for 30 minutes)
+        $expiresAt = Carbon::parse($updatePassword->created_at)->addMinutes(30);
+        if (Carbon::now()->isAfter($expiresAt)) {
+            return back()->withInput()->with('error', 'This token has expired!');
+        }
 
-            $user = User::where('email', $request->email)->first();
+        // Update user password
+        $user = User::where('email', $request->email)->first();
+        if ($user) {
             $user->password = Hash::make($request->password);
             $user->save();
-
-            DB::table('password_reset_tokens')->where(['email'=> $request->email])->delete();
-
-            return redirect('/login')->with('status', 'Your password has been changed!');
         }
+
+        // Delete used token
+        DB::table('password_reset_tokens')->where('token', $request->token)->delete();
+
+        return redirect('/login')->with('status', 'Your password has been changed!');
+    }
+
 
     public function login(Request $request)
     {
