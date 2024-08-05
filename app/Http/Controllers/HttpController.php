@@ -146,7 +146,11 @@ class HttpController extends Controller
             'created_at' => Carbon::now()
         ]);
 
-        Mail::send('emails.forgotPassword', ['token' => $token], function($message) use($request){
+        // Create the reset password URL
+        $url = url('/password/reset/' . $token . '?email=' . urlencode($request->email));
+
+        // Send the email with the URL
+        Mail::send('emails.forgotPassword', ['url' => $url], function($message) use($request) {
             $message->to($request->email);
             $message->subject('Reset Password Notification');
         });
