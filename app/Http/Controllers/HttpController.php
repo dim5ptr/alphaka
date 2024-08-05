@@ -132,26 +132,42 @@ class HttpController extends Controller
 
     }
 
+
     public function showformforgetpassword(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email|exists:users,email',
-        ]);
+        try {
+            // Validasi email
+            $request->validate([
+                'email' => 'required|email|exists:users,email',
+            ]);
 
-        $token = Str::random(64);
+            // Buat token baru
+            $token = Str::random(64);
 
-        DB::table('resetpassword')->insert([
-            'email' => $request->email,
-            'token' => $token,
-            'created_at' => Carbon::now()
-        ]);
+            // Masukkan token ke dalam tabel resetpassword
+            DB::table('resetpassword')->insert([
+                'email' => $request->email,
+                'token' => $token,
+                'created_at' => Carbon::now()
+            ]);
 
-        Mail::send('emails.forgotPassword', ['token' => $token], function($message) use($request){
-            $message->to($request->email);
-            $message->subject('Reset Password Notification');
-        });
+            // Kirim email dengan token reset password
+            Mail::send('emails.forgotPassword', ['token' => $token], function($message) use($request){
+                $message->to($request->email);
+                $message->subject('Reset Password Notification');
+            });
 
-        return back()->with('status', 'We have e-mailed your password reset link!');
+            // Berikan respons sukses
+            return back()->with('status', 'We have e-mailed your password reset link!');
+        } catch (\Exception $e) {
+            // Log error jika terjadi exception
+            Log::error('Exception caught in showformforgetpassword method', ['error' => $e->getMessage()]);
+
+            // Kembalikan ke halaman sebelumnya dengan pesan error
+            return back()->withErrors([
+                'error_message' => 'Something went wrong, please try again!',
+            ])->withInput();
+        }
     }
 
     public function showResetPasswordForm($token)
@@ -160,8 +176,7 @@ class HttpController extends Controller
     }
 
     public function submitResetPasswordForm(Request $request)
-<<<<<<< HEAD
-{
+    {
     // Validasi input
     $request->validate([
         'email' => 'required|email|exists:users,email',
@@ -169,13 +184,13 @@ class HttpController extends Controller
         'password_confirmation' => 'required',
         'token' => 'required'
     ]);
-=======
+
     {
         $request->validate([
             'password' => 'required|string|min:6|confirmed',
             'password_confirmation' => 'required'
         ]);
->>>>>>> c225f3f5ec5e378381b8a7a82ccc4f0179a71b13
+
 
     // Cari token di database
     $resetToken = DB::table('password_reset_tokens')
@@ -206,6 +221,7 @@ class HttpController extends Controller
     DB::table('password_reset_tokens')->where('token', $request->token)->delete();
 
     return redirect('/login')->with('status', 'Your password has been changed!');
+    }
 }
 
 
