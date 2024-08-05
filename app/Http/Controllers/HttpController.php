@@ -132,45 +132,26 @@ class HttpController extends Controller
 
     }
 
-
     public function showformforgetpassword(Request $request)
     {
-        try {
-            // Validasi email
-             // Validasi email dengan pesan khusus untuk validasi exists
         $request->validate([
             'email' => 'required|email|exists:users,email',
-        ], [
-            'email.exists' => 'Email address does not exist in our records.'
         ]);
 
-            // Buat token baru
-            $token = Str::random(64);
+        $token = Str::random(64);
 
-            // Masukkan token ke dalam tabel resetpassword
-            DB::table('resetpassword')->insert([
-                'email' => $request->email,
-                'token' => $token,
-                'created_at' => Carbon::now()
-            ]);
+        DB::table('resetpassword')->insert([
+            'email' => $request->email,
+            'token' => $token,
+            'created_at' => Carbon::now()
+        ]);
 
-            // Kirim email dengan token reset password
-            Mail::send('emails.forgotPassword', ['token' => $token], function($message) use($request){
-                $message->to($request->email);
-                $message->subject('Reset Password Notification');
-            });
+        Mail::send('emails.forgotPassword', ['token' => $token], function($message) use($request){
+            $message->to($request->email);
+            $message->subject('Reset Password Notification');
+        });
 
-            // Berikan respons sukses
-            return back()->with('status', 'We have e-mailed your password reset link!');
-        } catch (\Exception $e) {
-            // Log error jika terjadi exception
-            Log::error('Exception caught in showformforgetpassword method', ['error' => $e->getMessage()]);
-
-            // Kembalikan ke halaman sebelumnya dengan pesan error
-            return back()->withErrors([
-                'error_message' => 'Something went wrong, please try again!',
-            ])->withInput();
-        }
+        return back()->with('status', 'We have e-mailed your password reset link!');
     }
 
     public function showResetPasswordForm($token)
@@ -178,55 +159,33 @@ class HttpController extends Controller
         return view('formforgetpassword', ['token' => $token]);
     }
 
-    public function submitResetPasswordForm(Request $request)
-    {
-    // Validasi input
-    $request->validate([
-        'email' => 'required|email|exists:users,email',
-        'password' => 'required|string|min:6|confirmed',
-        'password_confirmation' => 'required',
-        'token' => 'required'
-    ]);
+        public function submitResetPasswordForm(Request $request)
+        {
+            $request->validate([
 
-    {
-        $request->validate([
-            'password' => 'required|string|min:6|confirmed',
-            'password_confirmation' => 'required'
-        ]);
+                'password' => 'required|string|min:6|confirmed',
+                'password_confirmation' => 'required'
+            ]);
 
+            $updatePassword = DB::table('password_reset_tokens')
+                                ->where([
+                                'email' => $request->email,
+                                'token' => $request->token
+                                ])
+                                ->first();
 
-    // Cari token di database
-    $resetToken = DB::table('password_reset_tokens')
-        ->where([
-            'email' => $request->email,
-            'token' => $request->token
-        ])
-        ->first();
+            if(!$updatePassword){
+                return back()->withInput()->with('error', 'Invalid token!');
+            }
 
-    // Periksa apakah token ada dan belum kedaluwarsa
-    if (!$resetToken) {
-        return back()->withInput()->with('error', 'Invalid token!');
-    }
+            $user = User::where('email', $request->email)->first();
+            $user->password = Hash::make($request->password);
+            $user->save();
 
-    $expiresAt = Carbon::parse($resetToken->created_at)->addMinutes(30);
-    if (Carbon::now()->isAfter($expiresAt)) {
-        return back()->withInput()->with('error', 'This token has expired!');
-    }
+            DB::table('password_reset_tokens')->where(['email'=> $request->email])->delete();
 
-    // Perbarui kata sandi pengguna
-    $user = User::where('email', $request->email)->first();
-    if ($user) {
-        $user->password = Hash::make($request->password);
-        $user->save();
-    }
-
-    // Hapus token yang digunakan
-    DB::table('password_reset_tokens')->where('token', $request->token)->delete();
-
-    return redirect('/login')->with('status', 'Your password has been changed!');
-    }
-}
-
+            return redirect('/login')->with('status', 'Your password has been changed!');
+        }
 
     public function login(Request $request)
     {
