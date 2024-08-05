@@ -160,6 +160,7 @@ class HttpController extends Controller
     }
 
     public function submitResetPasswordForm(Request $request)
+<<<<<<< HEAD
 {
     // Validasi input
     $request->validate([
@@ -168,6 +169,13 @@ class HttpController extends Controller
         'password_confirmation' => 'required',
         'token' => 'required'
     ]);
+=======
+    {
+        $request->validate([
+            'password' => 'required|string|min:6|confirmed',
+            'password_confirmation' => 'required'
+        ]);
+>>>>>>> c225f3f5ec5e378381b8a7a82ccc4f0179a71b13
 
     // Cari token di database
     $resetToken = DB::table('password_reset_tokens')
