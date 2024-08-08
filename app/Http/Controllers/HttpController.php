@@ -142,31 +142,37 @@ class HttpController extends Controller
     }
 
     public function showformforgetpassword(Request $request)
-    {
-          // Validasi input email
-          $request->validate([
-            'email' => 'required|email|exists:users,email',
-        ]);
+{
+    // Validasi input email
+    $request->validate([
+        'email' => 'required|email|exists:users,email',
+    ]);
 
-        // Generate token untuk reset password
-        $token = Str::random(64);
+    // Generate token untuk reset password
+    $token = Str::random(64);
+    $expiresAt = Carbon::now()->addSeconds(60)->toDateTimeString(); // Pastikan format timestamp benar
 
-        // Simpan token di database
-        DB::table('resetpassword')->insert([
-            'email' => $request->email,
-            'token' => $token,
-            'created_at' => Carbon::now()
-        ]);
+    // Logging untuk debug
+    Log::info('Generated Token: ' . $token);
+    Log::info('Expires At: ' . $expiresAt);
 
-        // Kirim email untuk reset password
-        Mail::send('emails.forgotPassword', ['token' => $token], function($message) use ($request) {
-            $message->to($request->email);
-            $message->subject('Reset Password Notification');
-        });
+    // Simpan token di database
+    DB::table('resetpassword')->insert([
+        'email' => $request->email,
+        'token' => $token,
+        'created_at' => Carbon::now()->toDateTimeString(), // Pastikan format timestamp benar
+        'expires_at' => Carbon::now()->addSeconds(60)->toDateTimeString()
+    ]);
 
-        // Kembali ke halaman sebelumnya dengan status
-        return back()->with('status', 'We have e-mailed your password reset link!');
-    }
+    // Kirim email untuk reset password
+    Mail::send('emails.forgotPassword', ['token' => $token], function($message) use ($request) {
+        $message->to($request->email);
+        $message->subject('Reset Password Notification');
+    });
+
+    // Kembali ke halaman sebelumnya dengan status
+    return back()->with('status', 'We have e-mailed your password reset link!');
+}
 
     public function showResetPasswordForm($token)
     {

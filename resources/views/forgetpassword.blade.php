@@ -246,29 +246,36 @@
 
     <script>
        document.addEventListener("DOMContentLoaded", function() {
-            var alertDiv = document.getElementById('alertE');
+    var alertDiv = document.getElementById('alertE');
 
-            // Menampilkan pesan error jika ada
-            @if ($errors->any())
-                var errors = @json($errors->all());
-                if (errors.length > 0) {
-                    alertDiv.innerHTML = '<ul>' + errors.map(function(error) {
-                        return '<li>' + "Alamat email tidak tersedia, soriee" + '</li>';
-                    }).join('') + '</ul>';
-                    alertDiv.classList.add('alert-danger');
-                    alertDiv.style.display = 'block';
-                }
-            @endif
+    // Menampilkan pesan error jika ada
+    @if ($errors->any())
+        var errors = @json($errors->all());
+        if (errors.length > 0) {
+            alertDiv.innerHTML = '<ul>' + errors.map(function(error) {
+                return '<li>' + "Your email address cannot be found! return to" + '<a href="{{ route('register') }}"> register </a>' + "or repair" + '</li>';
+            }).join('') + '</ul>';
+            alertDiv.classList.add('alert-danger');
+            alertDiv.style.display = 'block';
+        }
+    @endif
 
-            @if (session('error'))
-                var sessionError = @json(session('error'));
-                if (sessionError) {
-                    alertDiv.textContent = "Alamat tidak ada, soriee";
-                    alertDiv.classList.add('alert-danger');
-                    alertDiv.style.display = 'block';
-                }
-            @endif
-        });
+    @if (session('error'))
+        var sessionError = @json(session('error'));
+        if (sessionError) {
+            alertDiv.textContent = "Alamat tidak ada, soriee";
+            alertDiv.classList.add('alert-danger');
+            alertDiv.style.display = 'block';
+        }
+    @endif
+
+    // Set a timeout to hide the alert after 10 seconds
+    if (alertDiv.style.display === 'block') {
+        setTimeout(function() {
+            alertDiv.style.display = 'none';
+        }, 10000); // 10,000 milliseconds = 10 seconds
+    }
+});
     </script>
 
 
