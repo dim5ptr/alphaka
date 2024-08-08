@@ -143,23 +143,28 @@ class HttpController extends Controller
 
     public function showformforgetpassword(Request $request)
     {
-        $request->validate([
+          // Validasi input email
+          $request->validate([
             'email' => 'required|email|exists:users,email',
         ]);
 
+        // Generate token untuk reset password
         $token = Str::random(64);
 
+        // Simpan token di database
         DB::table('resetpassword')->insert([
             'email' => $request->email,
             'token' => $token,
             'created_at' => Carbon::now()
         ]);
 
-        Mail::send('emails.forgotPassword', ['token' => $token], function($message) use($request){
+        // Kirim email untuk reset password
+        Mail::send('emails.forgotPassword', ['token' => $token], function($message) use ($request) {
             $message->to($request->email);
             $message->subject('Reset Password Notification');
         });
 
+        // Kembali ke halaman sebelumnya dengan status
         return back()->with('status', 'We have e-mailed your password reset link!');
     }
 
@@ -192,7 +197,7 @@ class HttpController extends Controller
 
     // Validate request with Laravel validation rules
     $validated = $request->validate([
-        'email' => 'required|email|exists:users,email',
+        // 'email' => 'required|email|exists:users,email',
         'token' => 'required|string',
         'password' => 'required|string|min:6|confirmed',
         'password_confirmation' => 'required|string',

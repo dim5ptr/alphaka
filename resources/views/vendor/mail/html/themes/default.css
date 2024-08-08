@@ -80,7 +80,7 @@ img {
     -premailer-cellpadding: 0;
     -premailer-cellspacing: 0;
     -premailer-width: 100%;
-    background-color: #edf2f7;
+    background-color: #AFC3FC;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -123,9 +123,9 @@ img {
     -premailer-cellpadding: 0;
     -premailer-cellspacing: 0;
     -premailer-width: 100%;
-    background-color: #edf2f7;
-    border-bottom: 1px solid #edf2f7;
-    border-top: 1px solid #edf2f7;
+    background-color: #AFC3FC;
+    border-bottom: 1px solid #AFC3FC;
+    border-top: 1px solid #AFC3FC;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -170,7 +170,7 @@ img {
 }
 
 .footer p {
-    color: #b0adc5;
+    color: #100747;
     font-size: 12px;
     text-align: center;
 }
@@ -232,11 +232,11 @@ img {
 
 .button-blue,
 .button-primary {
-    background-color: #2d3748;
-    border-bottom: 8px solid #2d3748;
-    border-left: 18px solid #2d3748;
-    border-right: 18px solid #2d3748;
-    border-top: 8px solid #2d3748;
+    background-color: #365AC2;
+    border-bottom: 8px solid #365AC2;
+    border-left: 18px solid #365AC2;
+    border-right: 18px solid #365AC2;
+    border-top: 8px solid #365AC2;
 }
 
 .button-green,
@@ -260,12 +260,12 @@ img {
 /* Panels */
 
 .panel {
-    border-left: #2d3748 solid 4px;
+    border-left: #365AC2 solid 4px;
     margin: 21px 0;
 }
 
 .panel-content {
-    background-color: #edf2f7;
+    background-color: #AFC3FC;
     color: #718096;
     padding: 16px;
 }

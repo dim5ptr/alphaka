@@ -1,7 +1,5 @@
 <x-mail::message>
 {{-- Logo --}}
-<img src="{{ asset('img/logo_sti.png') }}" alt="Logo" style="width: 100px; height: auto;">
-
 {{-- Greeting --}}
 @if (! empty($greeting))
 # {{ $greeting }}
@@ -9,15 +7,13 @@
 @if ($level === 'error')
 # @lang('Whoops!')
 @else
-# @lang('Hello!')
+# @lang('Hola!!')
 @endif
 @endif
+
 
 {{-- Intro Lines --}}
-@foreach ($introLines as $line)
-{{ $line }}
-
-@endforeach
+<br>Anda menerima email ini karena kami menerima permintaan pengaturan ulang kata sandi untuk akun Anda. Tekan tombol di bawah ini untuk mengatur ulang kata sandi.
 
 {{-- Action Button --}}
 @isset($actionText)
@@ -33,25 +29,22 @@
 @endisset
 
 {{-- Outro Lines --}}
-@foreach ($outroLines as $line)
-{{ $line }}
-
-@endforeach
+Tautan Pengaturan Ulang Reset Kata Sandi ini akan kedaluwarsa dalam waktu 60 menit. Jika Anda tidak meminta pengaturan ulang kata sandi, abaikan saja pesan ini.
+<br><br>
 
 {{-- Salutation --}}
 @if (! empty($salutation))
 {{ $salutation }}
 @else
-@lang('Regards'),<br>
-{{ config('app.name') }}
+Salam,<br>
+Sarastya Technology
 @endif
 
 {{-- Subcopy --}}
 @isset($actionText)
 <x-slot:subcopy>
 @lang(
-    "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\n".
-    'into your web browser:',
+    "Jika Anda kesulitan mengakses tombol \":actionText\", salin dan tempel URL di bawah ini ke browser web Anda:",
     [
         'actionText' => $actionText,
     ]
@@ -62,7 +55,7 @@
 {{-- Footer --}}
 <x-slot:footer>
     <div style="text-align: center; margin-top: 20px;">
-        <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
+        <p>&copy; {{ date('Y') }} Sarastya. All rights reserved.</p>
     </div>
 </x-slot:footer>
 </x-mail::message>
