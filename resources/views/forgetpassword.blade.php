@@ -7,7 +7,7 @@
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        * {
+           * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -222,21 +222,9 @@
                     </div>
                 @endif
 
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
 
-                @if (session('error'))
-                    <div class="alert alert-danger">
-                        {{ session('error') }}
-                    </div>
-                @endif
+                    <div id="alertE" class="alert" style="display: none;"></div>
+
 
                 <h2>Lupa Password</h2>
 
@@ -255,6 +243,35 @@
             </div>
         </form>
     </div>
+
+    <script>
+       document.addEventListener("DOMContentLoaded", function() {
+            var alertDiv = document.getElementById('alertE');
+
+            // Menampilkan pesan error jika ada
+            @if ($errors->any())
+                var errors = @json($errors->all());
+                if (errors.length > 0) {
+                    alertDiv.innerHTML = '<ul>' + errors.map(function(error) {
+                        return '<li>' + "Alamat email tidak tersedia, soriee" + '</li>';
+                    }).join('') + '</ul>';
+                    alertDiv.classList.add('alert-danger');
+                    alertDiv.style.display = 'block';
+                }
+            @endif
+
+            @if (session('error'))
+                var sessionError = @json(session('error'));
+                if (sessionError) {
+                    alertDiv.textContent = "Alamat tidak ada, soriee";
+                    alertDiv.classList.add('alert-danger');
+                    alertDiv.style.display = 'block';
+                }
+            @endif
+        });
+    </script>
+
+
 </body>
 </html>
 

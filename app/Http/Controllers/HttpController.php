@@ -17,6 +17,7 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Password;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;
@@ -107,9 +108,17 @@ class HttpController extends Controller
             $request->only('email')
         );
 
-        return $response == Password::RESET_LINK_SENT
-            ? back()->with('status', Lang::get($response))
-            : back()->withErrors(['email' => Lang::get($response)]);
+        // Check the response and handle accordingly
+        if ($response == Password::RESET_LINK_SENT) {
+            return back()->with('status', Lang::get($response));
+        } else {
+            // Handle specific cases based on the response
+            $errors = ['email' => 'We cant find a user with that e-mail address. sorie'];
+            if (Lang::get($response) !== 'passwords.user') {
+                $errors['email'] = Lang::get($response);
+            }
+            return back()->withErrors($errors);
+        }
     }
 
     protected function validateEmail(Request $request)
@@ -160,42 +169,71 @@ class HttpController extends Controller
     }
 
     public function submitResetPasswordForm(Request $request)
-    {
-        $request->validate([
-            'password' => 'required|string|min:6|confirmed',
-            'password_confirmation' => 'required',
-        ]);
+{
+    $errors = [];
 
-        $updatePassword = DB::table('password_reset_tokens')
-            ->where([
-                'email' => $request->email,
-                'token' => $request->token
-            ])
-            ->first();
+    // Validate the email input manually
+    if (!$request->has('email') || !filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
+        $errors['email'] = 'Alamat email tidak valid.';
+    } elseif (!User::where('email', $request->email)->exists()) {
+        // Log error message
+        Log::error('Password reset attempt failed: Alamat tidak ada, soriee', ['email' => $request->email]);
 
-        if (!$updatePassword) {
-            return back()->withInput()->with('error', 'Invalid token!');
-        }
-
-        // Check if token is expired (e.g., tokens are valid for 30 minutes)
-        $expiresAt = Carbon::parse($updatePassword->created_at)->addMinutes(30);
-        if (Carbon::now()->isAfter($expiresAt)) {
-            return back()->withInput()->with('error', 'This token has expired!');
-        }
-
-        // Update user password
-        $user = User::where('email', $request->email)->first();
-        if ($user) {
-            $user->password = Hash::make($request->password);
-            $user->save();
-        }
-
-        // Delete used token
-        DB::table('password_reset_tokens')->where('token', $request->token)->delete();
-
-        return redirect('/login')->with('status', 'Your password has been changed!');
+        // Return with a custom error message
+        return back()->with('custom_error', 'Alamat tidak ada, soriee')->withInput();
     }
 
+    // If there are validation errors, log them and return
+    if (!empty($errors)) {
+        // Log validation errors
+        Log::error('Validation errors: ', $errors);
+        return back()->withErrors($errors)->withInput();
+    }
+
+    // Validate request with Laravel validation rules
+    $validated = $request->validate([
+        'email' => 'required|email|exists:users,email',
+        'token' => 'required|string',
+        'password' => 'required|string|min:6|confirmed',
+        'password_confirmation' => 'required|string',
+    ]);
+
+    // Check if the token is valid
+    $resetPasswordRecord = DB::table('resetpassword')
+        ->where('email', $request->email)
+        ->where('token', $request->token)
+        ->first();
+
+    if (!$resetPasswordRecord) {
+        Log::error('Invalid password reset token or email.', [
+            'email' => $request->email,
+            'token' => $request->token
+        ]);
+        return back()->with('custom_error', 'Token atau email tidak valid.')->withInput();
+    }
+
+    // Check if the token has expired (assuming tokens expire in 30 minutes)
+    $expiresAt = Carbon::parse($resetPasswordRecord->created_at)->addMinutes(30);
+    if (Carbon::now()->isAfter($expiresAt)) {
+        Log::error('Password reset token expired.', [
+            'email' => $request->email,
+            'token' => $request->token
+        ]);
+        return back()->with('custom_error', 'Token telah kedaluwarsa.')->withInput();
+    }
+
+    // Update the user's password
+    $user = User::where('email', $request->email)->first();
+    if ($user) {
+        $user->password = Hash::make($request->password);
+        $user->save();
+    }
+
+    // Delete the used token
+    DB::table('resetpassword')->where('token', $request->token)->delete();
+
+    return redirect('/login')->with('status', 'Password Anda telah diubah!');
+}
 
     public function login(Request $request)
     {
