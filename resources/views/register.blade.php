@@ -165,7 +165,7 @@
                 <div class="form-group">
                     <div class="input-group">
                         <i class="fa fa-lock"></i>
-                        <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Confirm Password" required>
+                        <input type="password" id="confirmpassword" name="confirmpassword" placeholder="Confirm Password" required>
                     </div>
                     <span id="password-confirmation-error" class="error"></span>
                 </div>

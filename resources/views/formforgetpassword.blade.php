@@ -63,6 +63,7 @@
             @if (session('status'))
                 <div class="alert alert-success">
                     {{ session('status') }}
+                    <br><a href="{{ route('login') }}" class="btn btn-primary mt-3">Go to Login</a>
                 </div>
             @endif
             @if ($errors->any())
@@ -76,7 +77,8 @@
             @endif
             <form action="{{ route('password.update') }}" method="POST">
                 @csrf
-                
+                <input type="hidden" id="email" name="email" class="form-control" value="{{request()->email}}" required>
+                <input type="hidden" id="token" name="token" class="form-control" value="{{request()->token}}" required>
                 <div class="mb-3">
                     <label for="new_password" class="form-label">New Password</label>
                     <input type="password" id="new_password" name="password" class="form-control" required>

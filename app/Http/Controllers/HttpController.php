@@ -203,17 +203,18 @@ class HttpController extends Controller
 
     // Validate request with Laravel validation rules
     $validated = $request->validate([
-        // 'email' => 'required|email|exists:users,email',
+        'email' => 'required|email|exists:users,email',
         'token' => 'required|string',
         'password' => 'required|string|min:6|confirmed',
         'password_confirmation' => 'required|string',
     ]);
 
     // Check if the token is valid
-    $resetPasswordRecord = DB::table('resetpassword')
-        ->where('email', $request->email)
-        ->where('token', $request->token)
-        ->first();
+    $resetPasswordRecord = DB::table('password_reset_tokens')
+    ->where('email', $request->email)
+    ->where('token', hash('sha256', $request->token))
+    ->first();
+
 
     if (!$resetPasswordRecord) {
         Log::error('Invalid password reset token or email.', [
@@ -225,13 +226,14 @@ class HttpController extends Controller
 
     // Check if the token has expired (assuming tokens expire in 30 minutes)
     $expiresAt = Carbon::parse($resetPasswordRecord->created_at)->addMinutes(30);
-    if (Carbon::now()->isAfter($expiresAt)) {
-        Log::error('Password reset token expired.', [
-            'email' => $request->email,
-            'token' => $request->token
-        ]);
-        return back()->with('custom_error', 'Token telah kedaluwarsa.')->withInput();
-    }
+if (Carbon::now()->isAfter($expiresAt)) {
+    Log::error('Password reset token expired.', [
+        'email' => $request->email,
+        'token' => $request->token
+    ]);
+    return back()->with('custom_error', 'Token telah kedaluwarsa.')->withInput();
+}
+
 
     // Update the user's password
     $user = User::where('email', $request->email)->first();
@@ -241,9 +243,11 @@ class HttpController extends Controller
     }
 
     // Delete the used token
-    DB::table('resetpassword')->where('token', $request->token)->delete();
+    DB::table('password_reset_tokens')->where('token', $request->token)->delete();
 
-    return redirect('/login')->with('status', 'Password Anda telah diubah!');
+    Log::info('Redirecting to login after password reset.');
+    return redirect()->route('login')->with('status', 'Password Anda telah diubah!');
+
 }
 
     public function login(Request $request)
