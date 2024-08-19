@@ -48,13 +48,17 @@ class HttpController extends Controller
             'confirmpassword' => 'required|same:password',
         ]);
 
-        // Kirim notifikasi ke pengguna
-        $user->notify(new RegistrationSuccessful());
-
-        // Redirect ke halaman lain atau berikan respons
-        return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan cek email Anda.');
-
         try {
+            // Create a new user instance
+            $user = User::create([
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+    
+            // Notify the user
+            $user->notify(new RegistrationSuccessful());
+    
+            // Attempt to register the user with an external API
             $response = Http::withHeaders([
                 'x-api-key' => self::API_KEY
             ])->post(self::API_URL . '/sso/register.json', [
@@ -63,7 +67,6 @@ class HttpController extends Controller
             ]);
 
             $data = $response->json();
-
 
             if ($response->successful() && isset($data['result'])) {
                 if ($data['result'] === 1) {
