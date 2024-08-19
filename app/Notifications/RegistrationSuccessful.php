@@ -31,7 +31,7 @@ class RegistrationSuccessful extends Notification
         return (new MailMessage)
                     ->subject('Registrasi Berhasil')
                     ->greeting('Selamat!')
-                    ->line('Anda telah berhasil mendaftar di aplikasi kami.')
+                    ->line('Anda telah berhasil mendaftarkan akun.')
                     ->line('Kami sangat senang Anda bergabung dengan kami. Sekarang Anda dapat masuk dan mulai menggunakan aplikasi.')
                     ->action('Login sekarang', $loginUrl)
                     ->line('Terima kasih telah mendaftar!');
