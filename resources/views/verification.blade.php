@@ -12,7 +12,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background: linear-gradient(to right, #6a11cb, #2575fc);
+            background: linear-gradient(to right, #3d38e8, #3498db);
             color: white;
         }
         .container {
@@ -50,7 +50,7 @@
             <p>{{ session('success') }}</p>
         @endif
         <p>Silakan cek email Anda untuk link konfirmasi. Jika Anda tidak menerima email, silakan periksa folder spam atau coba daftarkan ulang.</p>
-        <p>Kembali ke <a href="{{ route('login') }}">halaman login</a>.</p>
+        <p>Kembali ke <a href="{{ route('register') }}">halaman register</a>.</p>
     </div>
 </body>
 </html>
