@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 // use Str;
 use App\Models\User;
 use App\Mail\RegisterMail;
+use App\Notifications\RegistrationSuccessful;
 use App\Mail\ActivationMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -46,6 +47,12 @@ class HttpController extends Controller
             'password' => 'required|min:6',
             'confirmpassword' => 'required|same:password',
         ]);
+
+        // Kirim notifikasi ke pengguna
+        $user->notify(new RegistrationSuccessful());
+
+        // Redirect ke halaman lain atau berikan respons
+        return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan cek email Anda.');
 
         try {
             $response = Http::withHeaders([
@@ -161,34 +168,27 @@ public function sendResetLinkEmail(Request $request)
     }
 
     public function showformforgetpassword(Request $request)
-    {
-        // Validasi input email
-        $request->validate([
-            'email' => 'required|email|exists:users,email',
-        ]);
+{
+    // Validasi input email
+    $request->validate([
+        'email' => 'required|email|exists:users,email',
+    ]);
 
-        try {
-            // Panggil API untuk mendapatkan reset token
-            $response = Http::withHeaders([
-                'x-api-key' => self::API_KEY,
-            ])->post(self::API_URL . '/api/get_reset_token.json', [
-                'email' => $request->email,
-            ]);
+    // Generate token untuk reset password
+    $token = Str::random(64);
+    $expiresAt = Carbon::now()->addSeconds(60)->toDateTimeString(); // Pastikan format timestamp benar
 
-            // Ambil data dari respons API
-            $responseData = $response->json();
+    // Logging untuk debug
+    Log::info('Generated Token: ' . $token);
+    Log::info('Expires At: ' . $expiresAt);
 
-            if ($response->successful() && isset($responseData['token'])) {
-                // Simpan data token ke session
-                session([
-                    'reset_token' => $responseData['token'],
-                    'expired_date' => $responseData['expired_date'],
-                    'email' => $responseData['email'],
-                ]);
-
-                // Logging untuk debug
-                Log::info('Generated Token: ' . session('reset_token'));
-                Log::info('Expires At: ' . session('expired_date'));
+    // Simpan token di database
+    DB::table('resetpassword')->insert([
+        'email' => $request->email,
+        'token' => $token,
+        'created_at' => Carbon::now()->toDateTimeString(), // Pastikan format timestamp benar
+        'expires_at' => Carbon::now()->addSeconds(60)->toDateTimeString()
+    ]);
 
                 // Kirim email untuk reset password
                 Mail::send('emails.forgotPassword', ['token' => session('reset_token')], function($message) use ($request) {
@@ -196,22 +196,9 @@ public function sendResetLinkEmail(Request $request)
                     $message->subject('Reset Password Notification');
                 });
 
-                // Kembali ke halaman sebelumnya dengan status
-                return back()->with('status', 'We have e-mailed your password reset link!');
-            } else {
-                // Tangani kasus jika token tidak berhasil dibuat
-                return back()->withErrors(['email' => 'Failed to generate reset link. Please try again later.']);
-            }
-        } catch (\Exception $e) {
-            // Logging untuk error
-            Log::error('Error during reset token generation: ' . $e->getMessage());
-
-            // Tampilkan pesan error umum
-            return back()->withErrors(['email' => 'An error occurred while processing your request. Please try again later.']);
-        }
-    }
-
-
+    // Kembali ke halaman sebelumnya dengan status
+    return back()->with('status', 'We have e-mailed your password reset link!');
+}
 
     public function showResetPasswordForm($token)
     {
