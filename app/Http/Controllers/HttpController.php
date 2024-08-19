@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 // use Str;
 use App\Models\User;
 use App\Mail\RegisterMail;
+use App\Notifications\RegistrationSuccessful;
 use App\Mail\ActivationMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -46,6 +47,12 @@ class HttpController extends Controller
             'password' => 'required|min:6',
             'confirmpassword' => 'required|same:password',
         ]);
+
+        // Kirim notifikasi ke pengguna
+        $user->notify(new RegistrationSuccessful());
+
+        // Redirect ke halaman lain atau berikan respons
+        return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan cek email Anda.');
 
         try {
             $response = Http::withHeaders([
@@ -147,7 +154,7 @@ class HttpController extends Controller
     $request->validate([
         'email' => 'required|email|exists:users,email',
     ]);
-
+    
     // Generate token untuk reset password
     $token = Str::random(64);
     $expiresAt = Carbon::now()->addSeconds(60)->toDateTimeString(); // Pastikan format timestamp benar
@@ -173,7 +180,7 @@ class HttpController extends Controller
     // Kembali ke halaman sebelumnya dengan status
     return back()->with('status', 'We have e-mailed your password reset link!');
 }
-
+    
     public function showResetPasswordForm($token)
     {
         return view('formforgetpassword', ['token' => $token]);
