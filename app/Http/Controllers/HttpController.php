@@ -65,7 +65,7 @@ class HttpController extends Controller
             if ($data['result'] === 1) {
 
                 // Send custom email
-                Mail::send('emails/verification', ['token' => session('active_token')], function($message) use ($request) {
+                Mail::send('emails/verification', ['veriftoken' => session('active_token')], function($message) use ($request) {
                     $message->to($request->email);
                     $message->subject('User Activation');
                 });
