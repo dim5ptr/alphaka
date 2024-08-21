@@ -92,7 +92,11 @@ class HttpController extends Controller
             ])->withInput();
         }
     }
+<<<<<<< Updated upstream
 
+=======
+}
+>>>>>>> Stashed changes
 
     public function showuserverify()
     {
