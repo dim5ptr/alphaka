@@ -48,7 +48,7 @@ class HttpController extends Controller
     ]);
 
     try {
-        // Mengirim permintaan ke API
+        // Mengirim permintaan ke API untuk registrasi
         $response = Http::withHeaders([
             'x-api-key' => self::API_KEY
         ])->post(self::API_URL . '/sso/register.json', [
@@ -56,7 +56,7 @@ class HttpController extends Controller
             'password' => $request->password,
         ]);
 
-        // Log respons API untuk debugging
+        // Ambil data dari respons API
         $data = $response->json();
         Log::info('API Response:', $data);
 
@@ -65,32 +65,33 @@ class HttpController extends Controller
             if ($data['result'] === 1) {
 
                 // Send custom email
-                Mail::send('emails/verification', ['veriftoken' => session('active_token')], function($message) use ($request) {
+                Mail::send('emails/verification', ['token' => session('active_token')], function($message) use ($request) {
                     $message->to($request->email);
                     $message->subject('User Activation');
                 });
 
-                return redirect('/verify')->with('success_message', 'Please check your email to activate your account.');
+                    return redirect('/verify')->with('success_message', 'Please check your email to activate your account.');
+                } else {
+                    return back()->withErrors([
+                        'error_message' => 'Failed to retrieve verification token. Please try again later.',
+                    ])->withInput();
+                }
             } else {
-                // Menangani kode hasil yang berbeda
                 return back()->withErrors([
                     'error_message' => $data['data'],
                 ])->withInput();
             }
         } else {
-            // Menangani kasus di mana respons API tidak berhasil atau hasil tidak disetel
             return back()->withErrors([
                 'error_message' => 'Unexpected API response.',
             ])->withInput();
         }
     } catch (\Illuminate\Http\Client\RequestException $e) {
-        // Menangani pengecualian permintaan HTTP
         Log::error('HTTP Request failed: ' . $e->getMessage());
         return back()->withErrors([
             'error_message' => 'HTTP Request failed: ' . $e->getMessage(),
         ])->withInput();
     } catch (\Exception $e) {
-        // Menangani pengecualian umum
         Log::error('An error occurred: ' . $e->getMessage());
         return back()->withErrors([
             'error_message' => 'Something went wrong, try again! ' . $e->getMessage(),
