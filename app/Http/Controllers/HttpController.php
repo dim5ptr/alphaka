@@ -81,11 +81,7 @@ class HttpController extends Controller
                     'error_message' => $data['data'],
                 ])->withInput();
             }
-        } else {
-            return back()->withErrors([
-                'error_message' => 'Unexpected API response.',
-            ])->withInput();
-        }
+            
     } catch (\Illuminate\Http\Client\RequestException $e) {
         Log::error('HTTP Request failed: ' . $e->getMessage());
         return back()->withErrors([
