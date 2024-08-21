@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Verification Email</title>
+    <title>Email Verification</title>
 </head>
 <body>
-    <p>Please click the following link to verify your account:</p>
-    <a href="{{ route('activate', ['activation_key' => $activationKey]) }}">Verify Account</a>
+    <h1>Thank you for registering!</h1>
+    <p>Click the link below to activate your account:</p>
+    <a href="{{ $url }}">Activate Account</a>
+    <p>If the link doesn't work, you can copy and paste this URL into your browser:</p>
+    <p>{{ $url }}</p>
+    <br>
+    <p>Thank you!</p>
 </body>
 </html>

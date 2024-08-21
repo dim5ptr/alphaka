@@ -73,13 +73,14 @@
                 <p class="text-center">
                     <a href="{{ env('APP_URL') }}/password/reset/{{ $token }}" class="btn">Reset Password</a>
                 </p>
-                <p>Tautan Pengaturan Ulang Kata Sandi ini akan kedaluwarsa dalam waktu 60 menit.<br>
+                <p>Tautan Pengaturan Ulang Kata Sandi ini akan kedaluwarsa: {{ session('expired_date') }} <br>
                 Jika Anda tidak meminta pengaturan ulang kata sandi, abaikan saja pesan ini.</p>
                 <p>Salam,<br>
                 Sarastya Technology</p>
                 <br>
                 <hr>
                 <p>Jika Anda kesulitan mengakses tombol "Reset Password", salin dan tempel URL di bawah ini ke browser web Anda: <a href="{{ env('APP_URL') }}/password/reset/{{ $token }}">{{ env('APP_URL') }}/password/reset/{{ $token }}</a></p>
+
             </div>
         </div>
         <div class="container text-center footer">
