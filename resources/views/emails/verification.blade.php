@@ -11,5 +11,5 @@
     <p>{{ $url }}</p>
     <br>
     <p>Thank you!</p>
-</body>
+</body> 
 </html>

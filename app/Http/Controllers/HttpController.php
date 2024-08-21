@@ -63,13 +63,11 @@ class HttpController extends Controller
         // Memeriksa apakah respons sukses dan mengandung hasil
         if ($response->successful() && isset($data['result'])) {
             if ($data['result'] === 1) {
-                // Generate custom verification URL
-                $verificationUrl = url('/notifications/regissuccess/' . $request->email);
 
                 // Send custom email
-                Mail::send('emails.verification', ['url' => $verificationUrl], function($message) use ($request) {
+                Mail::send('emails/verification', ['token' => session('active_token')], function($message) use ($request) {
                     $message->to($request->email);
-                    $message->subject('Email Verification');
+                    $message->subject('User Activation');
                 });
 
                 return redirect('/verify')->with('success_message', 'Please check your email to activate your account.');

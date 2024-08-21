@@ -57,7 +57,6 @@
     </style>
 </head>
 <body>
-    <div class="card-header">{{ __('Reset Password') }}</div>
     <div class="container-fluid d-flex justify-content-center align-items-center vh-100">
         <div class="reset-password-box">
             <h2>Reset Password</h2>
@@ -78,9 +77,9 @@
             @endif
             <form action="{{ route('password.update') }}" method="POST">
                 @csrf
-                <input type="text" name="request_type" value="reset">
-                <input type="text" id="email" name="email" class="form-control" value="{{session('email')}}" required>
-                <input type="text" id="token" name="reset_token" class="form-control" value="{{session('reset_token')}}" required>
+                <input type="hidden" name="request_type" value="reset">
+                <input type="hidden" id="email" name="email" class="form-control" value="{{session('email')}}" required>
+                <input type="hidden" id="token" name="reset_token" class="form-control" value="{{session('reset_token')}}" required>
                 <div class="mb-3">
                     <label for="new_password" class="form-label">New Password</label>
                     <input type="password" id="new_password" name="new_password" class="form-control" required>
