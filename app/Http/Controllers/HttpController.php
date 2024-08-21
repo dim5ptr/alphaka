@@ -82,7 +82,7 @@ class HttpController extends Controller
                     Log::info('Generated Token: ' . session('verification_token'));
 
                     // Kirim email untuk verifikasi akun
-                    Mail::send('emails.verification', ['token' => session('verification_token')], function($message) use ($request) {
+                    Mail::send('emails.verification', ['token' => session('activation_key')], function($message) use ($request) {
                         $message->to($request->email);
                         $message->subject('Email Verification');
                     });
