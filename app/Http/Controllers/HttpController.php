@@ -48,7 +48,7 @@ class HttpController extends Controller
     ]);
 
     try {
-        // Mengirim permintaan ke API
+        // Mengirim permintaan ke API untuk registrasi
         $response = Http::withHeaders([
             'x-api-key' => self::API_KEY
         ])->post(self::API_URL . '/sso/register.json', [
@@ -56,41 +56,59 @@ class HttpController extends Controller
             'password' => $request->password,
         ]);
 
-        // Log respons API untuk debugging
+        // Ambil data dari respons API
         $data = $response->json();
         Log::info('API Response:', $data);
 
         // Memeriksa apakah respons sukses dan mengandung hasil
         if ($response->successful() && isset($data['result'])) {
             if ($data['result'] === 1) {
+                // Mendapatkan activation_key dari sso.user_verification
+                $verificationResponse = Http::withHeaders([
+                    'x-api-key' => self::API_KEY
+                ])->get(self::API_URL . '/sso/user_verification.json', [
+                    'email' => $request->email,
+                ]);
 
-                // Send custom email
-                Mail::send('emails/verification', ['token' => session('active_token')], function($message) use ($request) {
-                    $message->to($request->email);
-                    $message->subject('User Activation');
-                });
+                $verificationData = $verificationResponse->json();
+                if ($verificationResponse->successful() && isset($verificationData['activation_key'])) {
+                    // Simpan data token ke session
+                    session([
+                        'verification_token' => $verificationData['activation_key'],
+                        'email' => $request->email,
+                    ]);
 
-                return redirect('/verify')->with('success_message', 'Please check your email to activate your account.');
+                    // Logging untuk debug
+                    Log::info('Generated Token: ' . session('verification_token'));
+
+                    // Kirim email untuk verifikasi akun
+                    Mail::send('emails.verification', ['token' => session('verification_token')], function($message) use ($request) {
+                        $message->to($request->email);
+                        $message->subject('Email Verification');
+                    });
+
+                    return redirect('/verify')->with('success_message', 'Please check your email to activate your account.');
+                } else {
+                    return back()->withErrors([
+                        'error_message' => 'Failed to retrieve verification token. Please try again later.',
+                    ])->withInput();
+                }
             } else {
-                // Menangani kode hasil yang berbeda
                 return back()->withErrors([
                     'error_message' => $data['data'],
                 ])->withInput();
             }
         } else {
-            // Menangani kasus di mana respons API tidak berhasil atau hasil tidak disetel
             return back()->withErrors([
                 'error_message' => 'Unexpected API response.',
             ])->withInput();
         }
     } catch (\Illuminate\Http\Client\RequestException $e) {
-        // Menangani pengecualian permintaan HTTP
         Log::error('HTTP Request failed: ' . $e->getMessage());
         return back()->withErrors([
             'error_message' => 'HTTP Request failed: ' . $e->getMessage(),
         ])->withInput();
     } catch (\Exception $e) {
-        // Menangani pengecualian umum
         Log::error('An error occurred: ' . $e->getMessage());
         return back()->withErrors([
             'error_message' => 'Something went wrong, try again! ' . $e->getMessage(),
