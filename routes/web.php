@@ -13,6 +13,8 @@ Route::get('/test-mail', function (){
 });
 
 // Rute untuk tampilan register
+Route::get('active/{token}', [HttpController::class, 'active'])->name('active');
+
 
 // Rute untuk login
 Route::middleware('auth.redirect')->group(function () {

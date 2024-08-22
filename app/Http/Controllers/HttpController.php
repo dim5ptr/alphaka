@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Str;
 
 class HttpController extends Controller
 {
-    const API_URL = 'http://192.168.1.170:14041/api';
+    const API_URL = 'http://192.168.1.24:14041/api';
     const API_KEY = '5af97cb7eed7a5a4cff3ed91698d2ffb';
     private static $access_token = null;
 
@@ -51,7 +51,7 @@ class HttpController extends Controller
     try {
         // Mengirim permintaan ke API untuk registrasi
         $response = Http::withHeaders([
-            'x-api-key' => self::API_KEY
+            'x-api-key' => self::API_KEY,
         ])->post(self::API_URL . '/sso/register.json', [
             'email' => $request->email,
             'password' => $request->password,
@@ -61,28 +61,41 @@ class HttpController extends Controller
         $data = $response->json();
         Log::info('API Response:', $data);
 
-        // Memeriksa apakah respons sukses dan mengandung hasil
-        if ($response->successful() && isset($data['result'])) {
-            if ($data['result'] === 1) {
+        // Memeriksa apakah respons sukses
+        if ($response->successful() && $data['success']) {
+            // Jika berhasil dan API mengirim respons yang sukses
+            if (isset($data['activation_key'])) {
+                // Simpan data token ke session
+                session([
+                    'verification_token' => $data['activation_key'],
+                    'email' => $request->email,
+                ]);
 
-                // Send custom email
-                Mail::send('emails/verification', ['token' => session('active_token')], function($message) use ($request) {
+                // Logging untuk debug
+                Log::info('Generated Token: ' . session('verification_token'));
+
+                // Kirim email untuk verifikasi akun
+                Log::info('Preparing to send verification email');
+                Mail::send('emails/forgotpassword', ['token' => session('reset_token')], function($message) use ($request) {
                     $message->to($request->email);
-                    $message->subject('User Activation');
+                    $message->subject('Reset Password Notification');
                 });
+                Log::info('Verification email sent');
 
-                    return redirect('/verify')->with('success_message', 'Please check your email to activate your account.');
-                } else {
-                    return back()->withErrors([
-                        'error_message' => 'Failed to retrieve verification token. Please try again later.',
-                    ])->withInput();
-                }
+
+                return redirect('/verify')->with('success_message', 'Please check your email to activate your account.');
             } else {
-                return back()->withErrors([
-                    'error_message' => $data['data'],
-                ])->withInput();
+                // Jika tidak ada activation_key, mungkin API sudah mengirim emailnya sendiri
+                return redirect('/verify')->with('success_message', $data['data']);
             }
-            
+
+        } else {
+            // Jika gagal, tampilkan pesan error dari API
+            return back()->withErrors([
+                'error_message' => $data['data'],
+            ])->withInput();
+        }
+
     } catch (\Illuminate\Http\Client\RequestException $e) {
         Log::error('HTTP Request failed: ' . $e->getMessage());
         return back()->withErrors([
@@ -96,10 +109,69 @@ class HttpController extends Controller
     }
 }
 
-    public function showActivationForm()
-    {
-        return view('activation'); // Mengarahkan ke view activation.blade.php
+public function active($token)
+{
+    try {
+        // Mengirim permintaan ke API untuk memverifikasi token
+        $response = Http::withHeaders([
+            'x-api-key' => self::API_KEY,
+        ])->post(self::API_URL . '/sso/user_verify', [
+            'activation_key' => $token,
+        ]);
+
+        $data = $response->json();
+
+        // Memeriksa apakah respons API sukses
+        if ($response->successful() && $data['success']) {
+            // Jika berhasil, arahkan ke halaman sukses
+            return view('registersuccessful');
+        } else {
+            // Jika tidak berhasil, arahkan ke halaman kesalahan dengan pesan dari API
+            return redirect('/')->withErrors([
+                'error_message' => $data['data'],
+            ]);
+        }
+
+    } catch (\Illuminate\Http\Client\RequestException $e) {
+        return redirect('/')->withErrors([
+            'error_message' => 'HTTP Request failed: ' . $e->getMessage(),
+        ]);
+    } catch (\Exception $e) {
+        return redirect('/')->withErrors([
+            'error_message' => 'Something went wrong, try again! ' . $e->getMessage(),
+        ]);
     }
+}
+
+// public function register(Request $request)
+//     {
+//         // Kirim request ke API dengan header dan body yang sesuai
+//         $response = Http::withHeaders([
+//             'x-api-key' => self::API_KEY,
+//         ])->post(self::API_URL . '/sso/register.json', [
+//             'email' => $request->email,
+//             'password' => $request->password,
+//             'address' => $request->address,
+//         ]);
+
+//         // Ambil respons JSON dari API
+//         $result = $response->json();
+
+//         if (isset($result['success']) && $result['success'] == true) {
+//             // Kirim email verifikasi
+//             Mail::to($request->email)->send(new ActivationMail($result['data']));
+
+//             return response()->json([
+//                 'success' => true,
+//                 'message' => 'Registration successful. Please check your email for verification.',
+//             ], 200);
+//         } else {
+//             return response()->json([
+//                 'success' => false,
+//                 'message' => $result['data'] ?? 'Registration failed.',
+//             ], 400);
+//         }
+//     }
 
  
 
@@ -215,7 +287,7 @@ public function sendResetLinkEmail(Request $request)
             // Kirim email untuk reset password
             Mail::send('emails.forgotPassword', [
                 'token' => session('reset_token'),
-                'expired_date' => session('expires_at'),
+                'expired_date' => session('expired_date'),
                 'status' => session('status'),
             ], function($message) use ($request) {
                 $message->to($request->email);
