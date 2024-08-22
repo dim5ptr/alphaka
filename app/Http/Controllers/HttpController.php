@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Str;
 
 
 
+
 class HttpController extends Controller
 {
     const API_URL = 'http://192.168.1.170:14041/api';
@@ -95,10 +96,12 @@ class HttpController extends Controller
     }
 }
 
+    public function showActivationForm()
+    {
+        return view('activation'); // Mengarahkan ke view activation.blade.php
+    }
 
-
-
-
+ 
 
     public function showuserverify()
     {

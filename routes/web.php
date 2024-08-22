@@ -4,6 +4,7 @@ use App\Http\Controllers\HttpController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\NewMessage;
+use App\Http\Controllers\ActivationController;
 
 
 Route::get('/test-mail', function (){
@@ -42,10 +43,14 @@ Route::middleware('auth.redirect')->group(function () {
     // Handle sending the password reset link
     Route::post('password/email', [HttpController::class, 'sendResetLinkEmail'])->name('password.email');
 
+    // Rute untuk menampilkan form succes
+    Route::post('/activation', [ActivationController::class, 'submit'])->name('activation.submit');
+    Route::get('/activation', [ActivationController::class, 'showForm'])->name('activation.form');
 
-    // Rute untuk mengatur ulang kata sandi (reset password)
-    Route::get('password/reset/{token}', [HttpController::class, 'showResetPasswordForm'])->name('password.reset');
-    Route::post('password/reset', [HttpController::class, 'editpassword'])->name('password.update');
+    // Menampilkan formulir aktivasi
+    Route::get('/activation', [HttpController::class, 'showActivationForm'])->name('activate.form');
+
+
 });
 
 // Rute-rute yang memerlukan autentikasi

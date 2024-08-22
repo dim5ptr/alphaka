@@ -6,6 +6,10 @@
     <title>Verification Status</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        img {
+            width: 130px;
+            height: 130px;
+        }
         body {
             display: flex;
             justify-content: center;
@@ -14,13 +18,12 @@
             margin: 0;
             background: linear-gradient(to right, #3d38e8, #3498db);
             color: #2155CD;
-            font-family: Helvetica, sans-serif;
             font-weight: medium;
             
         }
         .container {
-            background: #E8F9FD;
-            padding: 20px 20px 20px 20px;
+            background: white;
+            padding: 2rem;
             border-radius: 15px;
             text-align: center;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
@@ -64,7 +67,7 @@
   box-sizing: border-box;
   color: #fff;
   cursor: pointer;
-  font-family: -apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif;
+
   font-size: 100%;
   height: 44px;
   line-height: 1.15;
@@ -95,12 +98,13 @@
 </head>
 <body>
     <div class="container">
+    <img src="{{ asset('img/arrow.png') }}" alt="Email img">
         <h1>Konfirmasi Email</h1>
         @if(session('success'))
             <p>{{ session('success') }}</p>
         @endif
-        <p>Silakan cek email Anda untuk link konfirmasi. Jika Anda tidak menerima email, <br>silakan periksa folder spam atau coba daftarkan ulang.</p>
-        <a href="{{ route('register') }}"><button class="button-9" role="button">Kembali ke halaman register.</button></a>
+        <p>Silakan cek email Anda untuk link konfirmasi. Jika Anda tidak menerima email, silakan periksa<br>folder spam atau coba daftarkan ulang.</p>
+        <a href="{{ route('register') }}"><button class="button-9" role="button">Kembali ke halaman register</button></a>
     </div>
 </body>
 </html>
