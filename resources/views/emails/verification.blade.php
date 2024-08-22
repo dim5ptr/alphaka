@@ -70,7 +70,7 @@
                 <h2>Halo!</h2>
                 <p>Anda menerima email ini untuk memverifikasi email Anda.</p>
                 <p class="text-center">
-                <a href="{{ env('APP_URL') }}/activation/{{ $veriftoken }}$request->email" class="btn">Activation</a>
+                <a href="{{ url('active/' . $token) }}" class="btn">Activation</a>
                 </p>
                 <p>Tautan Verifikasi email ini akan kedaluwarsa dalam waktu 60 menit.<br>
                 Jika Anda tidak merasa membutuhkan verifikasi email, abaikan saja pesan ini.</p>
@@ -78,7 +78,7 @@
                 Sarastya Technology</p>
                 <br>
                 <hr>
-                <p>Jika Anda kesulitan mengakses tombol "Verifikasi Email", salin dan tempel URL di bawah ini ke browser web Anda: <a href="{{ env('APP_URL') }}/activation/{{ $veriftoken }}$request->email" class=""></a></p>
+                <p>Jika Anda kesulitan mengakses tombol "Verifikasi Email", salin dan tempel URL di bawah ini ke browser web Anda: <a href="{{ url('active/' . $token) }}" class=""></a></p>
             </div>
         </div>
         <div class="container text-center footer">
