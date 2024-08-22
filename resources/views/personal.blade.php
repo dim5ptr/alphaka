@@ -218,7 +218,7 @@
     }
 
     .btn-primary {
-        background-color: #007bff;
+        background-color: #365AC2;
         color: white;
     }
 
@@ -271,7 +271,7 @@
         justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid #e5e5e5;
-        background-color: #007bff;
+        background-color: #365AC2;
         color: white;
         padding: 10px 20px;
         border-top-left-radius: 10px;
@@ -375,7 +375,7 @@
         justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid #e5e5e5;
-        background-color: #007bff;
+        background-color: #365AC2;
         color: white;
         padding: 10px 20px;
         border-top-left-radius: 10px;
@@ -562,7 +562,7 @@
                     </a>
                 </li>
             </ul>
-            <form id="logoutForm" class="logout-Form" method="GET" action="{{ route('logout') }}">
+            <form id="logoutForm" class="logout-Form" method="GET" action="{{ route('confirm-logout') }}">
                 @csrf
                 <button type="submit" class="logout-button">ㅤ <i class="fa-solid fa-right-from-bracket"></i>ㅤLogout</button>
                 </form>

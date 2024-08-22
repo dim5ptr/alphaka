@@ -350,7 +350,7 @@
                 </li>
             </ul>
 
-                <form id="logoutForm" method="GET" class="logoutForm" action="{{ route('logout') }}">
+                <form id="logoutForm" method="GET" class="logoutForm" action="{{ route('confirm-logout') }}">
                 <button type="submit" class="logout-button">ㅤ <i class="fa-solid fa-right-from-bracket"></i>ㅤLogout</button>
                 </form>
             </ul>

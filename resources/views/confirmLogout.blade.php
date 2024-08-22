@@ -233,7 +233,7 @@
         }
 
         .back-button:hover {
-            background-color: #263f88;;
+            background-color: #294cb4;
             color: aliceblue;
             font-weight: 700;
         }
