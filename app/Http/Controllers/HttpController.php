@@ -76,7 +76,7 @@ class HttpController extends Controller
 
                 // Kirim email untuk verifikasi akun
                 Log::info('Preparing to send verification email');
-                Mail::send('emails/forgotpassword', ['token' => session('reset_token')], function($message) use ($request) {
+                Mail::send('emails/verification', ['token' => session('verification_token')], function($message) use ($request) {
                     $message->to($request->email);
                     $message->subject('Reset Password Notification');
                 });
