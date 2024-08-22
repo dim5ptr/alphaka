@@ -13,7 +13,7 @@ Route::get('/test-mail', function (){
 });
 
 // Rute untuk tampilan register
-Route::get('active/{token}', [HttpController::class, 'active'])->name('active');
+Route::get('active/{token}', [HttpController::class, 'showActivationForm'])->name('active');
 
 
 // Rute untuk login
@@ -45,9 +45,7 @@ Route::middleware('auth.redirect')->group(function () {
     // Handle sending the password reset link
     Route::post('password/email', [HttpController::class, 'sendResetLinkEmail'])->name('password.email');
 
-    // Rute untuk menampilkan form succes
-    Route::post('/activation', [ActivationController::class, 'submit'])->name('activation.submit');
-    Route::get('/activation', [ActivationController::class, 'showForm'])->name('activation.form');
+
 
     // Menampilkan formulir aktivasi
     Route::get('/activation', [HttpController::class, 'showActivationForm'])->name('activate.form');

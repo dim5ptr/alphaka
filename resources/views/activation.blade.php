@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Activation Succes</title>
+    <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         img {
@@ -19,9 +20,10 @@
             background: linear-gradient(to right, #3d38e8, #3498db);
             color: #2155CD;
             font-weight: medium;
-            
+
         }
         .container {
+            width: 50%;
             background: white;
             padding: 2rem;
             border-radius: 15px;
@@ -53,7 +55,7 @@
             font-weight: 800;
         }
         p {
-            
+
             font-size: 20px;
         }
 
@@ -67,7 +69,7 @@
             box-sizing: border-box;
             color: #fff;
             cursor: pointer;
-            
+
             font-size: 100%;
             height: 44px;
             line-height: 1.15;
@@ -103,7 +105,7 @@
         @if(session('success'))
             <p>{{ session('success') }}</p>
         @endif
-        <p>Akun (email) telah aktif, selamat menikmati layanan Sarastya Technology.</p>
+        <p>Akun telah aktif, selamat menikmati layanan Sarastya Technology.</p>
         <a href="{{ route('login') }}"><button class="button-9" role="button">Lanjutkan ke halaman login</button></a>
     </div>
 </body>

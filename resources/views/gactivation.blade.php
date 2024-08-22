@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verification Status</title>
-    <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
+    <title>Activation Succes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <style>
         img {
             width: 130px;
@@ -60,33 +61,33 @@
         }
 
         .button-9 {
-  appearance: button;
-  backface-visibility: hidden;
-  background-color: #405cf5;
-  border-radius: 6px;
-  border-width: 0;
-  box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset,rgba(50, 50, 93, .1) 0 2px 5px 0,rgba(0, 0, 0, .07) 0 1px 1px 0;
-  box-sizing: border-box;
-  color: #fff;
-  cursor: pointer;
+            appearance: button;
+            backface-visibility: hidden;
+            background-color: #405cf5;
+            border-radius: 6px;
+            border-width: 0;
+            box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset,rgba(50, 50, 93, .1) 0 2px 5px 0,rgba(0, 0, 0, .07) 0 1px 1px 0;
+            box-sizing: border-box;
+            color: #fff;
+            cursor: pointer;
 
-  font-size: 100%;
-  height: 44px;
-  line-height: 1.15;
-  margin: 12px 0 0;
-  outline: none;
-  overflow: hidden;
-  padding: 0 25px;
-  position: relative;
-  text-align: center;
-  text-transform: none;
-  transform: translateZ(0);
-  transition: all .2s,box-shadow .08s ease-in;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  width: 100%;
-}
+            font-size: 100%;
+            height: 44px;
+            line-height: 1.15;
+            margin: 12px 0 0;
+            outline: none;
+            overflow: hidden;
+            padding: 0 25px;
+            position: relative;
+            text-align: center;
+            text-transform: none;
+            transform: translateZ(0);
+            transition: all .2s,box-shadow .08s ease-in;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            width: 100%;
+        }
 
 .button-9:disabled {
   cursor: default;
@@ -96,17 +97,23 @@
   background-color: #065dd8;
   transform: translateY(-2px);
 }
+
+i{
+    color: #e20606;
+    font-size: 90px;
+    padding-bottom: 2%;
+}
     </style>
 </head>
 <body>
     <div class="container">
-    <img src="{{ asset('img/arrow.png') }}" alt="Email img">
-        <h1>Konfirmasi Email</h1>
-        @if(session('success'))
-            <p>{{ session('success') }}</p>
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <h1>Akun Gagal Diaktivasi!</h1>
+        @if(session('error'))
+            <p>{{ session('error') }}</p>
         @endif
-        <p>Silakan cek email Anda untuk link konfirmasi. Jika Anda tidak menerima email, silakan periksa<br>folder spam atau coba daftarkan ulang.</p>
-        <a href="{{ route('register') }}"><button class="button-9" role="button">Kembali ke halaman register</button></a>
+        <p>Akun gagal aktif, maaf anda tidak dapat menikmati layanan Sarastya Technology.</p>
+        <a href="{{ route('register') }}"><button class="button-9" role="button">kembali ke halaman register</button></a>
     </div>
 </body>
 </html>

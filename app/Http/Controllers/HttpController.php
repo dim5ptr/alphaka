@@ -78,7 +78,7 @@ class HttpController extends Controller
                 Log::info('Preparing to send verification email');
                 Mail::send('emails/verification', ['token' => session('verification_token')], function($message) use ($request) {
                     $message->to($request->email);
-                    $message->subject('Reset Password Notification');
+                    $message->subject('Email Activation');
                 });
                 Log::info('Verification email sent');
 
@@ -109,37 +109,26 @@ class HttpController extends Controller
     }
 }
 
-public function active($token)
+public function showActivationForm(Request $request)
 {
-    try {
-        // Mengirim permintaan ke API untuk memverifikasi token
-        $response = Http::withHeaders([
-            'x-api-key' => self::API_KEY,
-        ])->post(self::API_URL . '/sso/user_verify', [
-            'activation_key' => $token,
-        ]);
+    // Ambil token dari session
+    $activationKey = session('verification_token');
 
-        $data = $response->json();
+    // Validasi token
+    $response = Http::withHeaders([
+        'x-api-key' => self::API_KEY,
+    ])->post(self::API_URL . '/sso/user_verify.json', [
+        'activation_key' => $activationKey,
+    ]);
 
-        // Memeriksa apakah respons API sukses
-        if ($response->successful() && $data['success']) {
-            // Jika berhasil, arahkan ke halaman sukses
-            return view('registersuccessful');
-        } else {
-            // Jika tidak berhasil, arahkan ke halaman kesalahan dengan pesan dari API
-            return redirect('/')->withErrors([
-                'error_message' => $data['data'],
-            ]);
-        }
+    $data = $response->json();
 
-    } catch (\Illuminate\Http\Client\RequestException $e) {
-        return redirect('/')->withErrors([
-            'error_message' => 'HTTP Request failed: ' . $e->getMessage(),
-        ]);
-    } catch (\Exception $e) {
-        return redirect('/')->withErrors([
-            'error_message' => 'Something went wrong, try again! ' . $e->getMessage(),
-        ]);
+    if ($response->successful() && $data['success']) {
+        // Token berhasil digunakan
+        return view('Activation')->with('success_message', 'Your account has been activated successfully.');
+    } else {
+        // Token tidak valid atau aktivasi gagal
+        return view('gactivation')->with('error_message', 'Failed to activate your account.');
     }
 }
 
@@ -173,7 +162,7 @@ public function active($token)
 //         }
 //     }
 
- 
+
 
     public function showuserverify()
     {

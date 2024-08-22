@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <style>
         /* Custom styles */
         body {
@@ -77,8 +78,6 @@
                 <p>Salam,<br>
                 Sarastya Technology</p>
                 <br>
-                <hr>
-                <p>Jika Anda kesulitan mengakses tombol "Verifikasi Email", salin dan tempel URL di bawah ini ke browser web Anda: <a href="{{ url('active/' . $token) }}" class=""></a></p>
             </div>
         </div>
         <div class="container text-center footer">

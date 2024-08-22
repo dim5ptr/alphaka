@@ -59,6 +59,7 @@
         }
     </style>
     <title>Reset Password</title>
+    <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
 </head>
 <body>
     <div class="bg-blue">
