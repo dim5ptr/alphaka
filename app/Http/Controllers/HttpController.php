@@ -177,7 +177,7 @@ public function showActivationForm(Request $request)
 
     public function showLinkRequestForm()
     {
-        return view('auth.passwords.email');
+        return view('forgetpassword');
     }
 //ganti email please untuk yg dibwah ino ke api
 public function sendResetLinkEmail(Request $request)

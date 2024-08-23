@@ -237,7 +237,7 @@
                 </div>
 
                 <div class="forgot-password">
-                    <a href="{{ route('showforgetpassword') }}">Lupa Password?</a>
+                    <a href="{{ route('password.request') }}">Lupa Password?</a>
                 </div>
                 <input type="submit" value="Login" class="btn-login">
             </form>
