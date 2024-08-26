@@ -30,11 +30,10 @@ Route::middleware('auth.redirect')->group(function () {
     Route::get('/forgetpassword',  [HttpController::class, 'showforgetpassword'])->name('showforgetpassword');
     Route::post('/forgetpassword', [HttpController::class, 'sendResetLinkEmail'])->name('forgetpassword');
 
-    Route::get('/formforgetpassword',  [HttpController::class, 'showResetPasswordForm'])->name('showformforgetpassword');
-    Route::post('/formforgetpassword', [HttpController::class, 'formforgetpassword'])->name('password.update');
+Route::post('/formforgetpassword', [HttpController::class, 'submitResetPasswordForm'])->name('password.update');
 
     // Rute untuk menampilkan halaman reset password
-    Route::get('resetpassword/{token}', [HttpController::class, 'showformforgetpassword'])->name('resetpassword');
+    Route::get('reset/password/{token}', [HttpController::class, 'showResetPasswordForm'])->name('reset.password');
 
     // Rute untuk mengirim form reset password
     Route::post('resetpassword', [HttpController::class, 'resetpassword'])->name('resetpassword');

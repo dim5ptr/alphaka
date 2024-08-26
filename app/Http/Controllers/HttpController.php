@@ -179,7 +179,7 @@ public function showActivationForm(Request $request)
     {
         return view('forgetpassword');
     }
-//ganti email please untuk yg dibwah ino ke api
+
 public function sendResetLinkEmail(Request $request)
 {
     $this->validateEmail($request);
@@ -235,68 +235,63 @@ public function sendResetLinkEmail(Request $request)
         return view('forgetpassword');
     }
 
-    public function editforgetpassword()
-    {
+//     public function showformforgetpassword(Request $request)
+// {
+//     // Validasi input email
+//     $request->validate([
+//         'email' => 'required|email|exists:users,email',
+//     ]);
 
-    }
+//     try {
+//         // Panggil API untuk mendapatkan reset token
+//         $response = Http::withHeaders([
+//             'x-api-key' => self::API_KEY,
+//         ])->post(self::API_URL . '/api/get_reset_token.json', [
+//             'email' => $request->email,
+//         ]);
 
-    public function showformforgetpassword(Request $request)
-{
-    // Validasi input email
-    $request->validate([
-        'email' => 'required|email|exists:users,email',
-    ]);
+//         // Ambil data dari respons API
+//         $responseData = $response->json();
+//         Log::info('Full Response Data: ' . json_encode($responseData));
 
-    try {
-        // Panggil API untuk mendapatkan reset token
-        $response = Http::withHeaders([
-            'x-api-key' => self::API_KEY,
-        ])->post(self::API_URL . '/api/get_reset_token.json', [
-            'email' => $request->email,
-        ]);
+//         if ($response->successful() && isset($responseData['token']) && isset($responseData['expires_date'])) {
+//             // Simpan data token dan expired_date ke session
+//             session([
+//                 'reset_token' => $responseData['token'],
+//                 'expires_at' => $responseData['expires_date'] ?? 'N/A', // Gunakan default jika tidak ada
+//                 'email' => $request->email,
+//                 'status' => $responseData['status'] ?? 'unknown', // Gunakan default jika tidak ada
+//             ]);
 
-        // Ambil data dari respons API
-        $responseData = $response->json();
-        Log::info('Full Response Data: ' . json_encode($responseData));
+//             // Logging untuk debug
+//             Log::info('Generated Token: ' . session('reset_token'));
+//             Log::info('Expires At: ' . session('expired_date'));
+//             Log::info('Status: ' . session('status'));
 
-        if ($response->successful() && isset($responseData['token']) && isset($responseData['expires_date'])) {
-            // Simpan data token dan expired_date ke session
-            session([
-                'reset_token' => $responseData['token'],
-                'expires_at' => $responseData['expires_date'] ?? 'N/A', // Gunakan default jika tidak ada
-                'email' => $request->email,
-                'status' => $responseData['status'] ?? 'unknown', // Gunakan default jika tidak ada
-            ]);
+//             // Kirim email untuk reset password
+//             Mail::send('emails.forgotPassword', [
+//                 'token' => session('reset_token'),
+//                 'expired_date' => session('expired_date'),
+//                 'status' => session('status'),
+//             ], function($message) use ($request) {
+//                 $message->to($request->email);
+//                 $message->subject('Reset Password Notification');
+//             });
 
-            // Logging untuk debug
-            Log::info('Generated Token: ' . session('reset_token'));
-            Log::info('Expires At: ' . session('expired_date'));
-            Log::info('Status: ' . session('status'));
+//             // Kembali ke halaman sebelumnya dengan status
+//             return back()->with('status', 'We have e-mailed your password reset link!');
+//         } else {
+//             // Tangani kasus jika token tidak berhasil dibuat
+//             return back()->withErrors(['email' => 'Failed to generate reset link. Please try again later.']);
+//         }
+//     } catch (\Exception $e) {
+//         // Logging untuk error
+//         Log::error('Error during reset token generation: ' . $e->getMessage());
 
-            // Kirim email untuk reset password
-            Mail::send('emails.forgotPassword', [
-                'token' => session('reset_token'),
-                'expired_date' => session('expired_date'),
-                'status' => session('status'),
-            ], function($message) use ($request) {
-                $message->to($request->email);
-                $message->subject('Reset Password Notification');
-            });
-
-            // Kembali ke halaman sebelumnya dengan status
-            return back()->with('status', 'We have e-mailed your password reset link!');
-        } else {
-            // Tangani kasus jika token tidak berhasil dibuat
-            return back()->withErrors(['email' => 'Failed to generate reset link. Please try again later.']);
-        }
-    } catch (\Exception $e) {
-        // Logging untuk error
-        Log::error('Error during reset token generation: ' . $e->getMessage());
-
-        // Tampilkan pesan error umum
-        return back()->withErrors(['email' => 'An error occurred while processing your request. Please try again later.']);
-    }
-}
+//         // Tampilkan pesan error umum
+//         return back()->withErrors(['email' => 'An error occurred while processing your request. Please try again later.']);
+//     }
+// }
 
 
 
@@ -308,53 +303,75 @@ public function sendResetLinkEmail(Request $request)
          return view('formforgetpassword', ['token' => $token]);
     }
 
+
     public function submitResetPasswordForm(Request $request)
 {
     $request->validate([
         'new_password' => 'required|min:6',
         'confirm_new_password' => 'required|same:new_password',
+        'reset_token' => 'sometimes|required', // Validasi token reset jika ada
+        'change_type' => 'required|in:reset', // Flag untuk menentukan jenis permintaan
     ]);
 
-    $resetToken = $request->token; // Token yang dikirim melalui URL atau inputan
+    // Cek jenis permintaan
+    $isResetRequest = $request->change_type === 'reset';
 
-    // Membuat request untuk memeriksa status token
-    $tokenStatusResponse = Http::withHeaders([
-        'x-api-key' => self::API_KEY,
-        'Authorization' => 'Bearer ' . $resetToken,
-    ])->get(self::API_URL . '/sso/token_status.json');
+    if ($isResetRequest) {
+        // Logika untuk reset password menggunakan token reset
+        $resetToken = session('reset_token'); // Ambil token dari request
 
-    if ($tokenStatusResponse->successful()) {
-        $tokenStatus = $tokenStatusResponse->json();
-
-        if ($tokenStatus['is_use']) {
-            // Token sudah digunakan, kembalikan pesan error
-            return back()->withErrors(['error' => 'Token has already been used. Please request a new one.'])->withInput();
+        if (!$resetToken) {
+            return back()->withErrors(['reset_token' => 'Reset token is required for reset password.'])->withInput();
         }
-    } else {
-        // Tangani kesalahan validasi atau kesalahan lain dari API token status
-        return back()->withErrors(['error' => 'Failed to verify token. Please try again later.'])->withInput();
-    }
 
-    // Membuat request ke API untuk reset password dengan token di header
+        Log::info('Reset Token: ' . $resetToken);
+        Log::info('New Password: ' . $request->new_password);
+
+        // Panggil API untuk reset password
+        $response = Http::withHeaders([
+            'x-api-key' => self::API_KEY,
+            'Authorization' => $resetToken, // Menambahkan token ke header
+        ])->post(self::API_URL . '/sso/change_password.json', [
+            'password' => $request->new_password,
+            'change_type' => 'reset', // Tambahkan change_type di sini
+        ]);
+
+        if ($response->successful()) {
+            // Password berhasil direset, update is_use di database
+            $this->updateIsUse($resetToken); // Panggil function untuk update is_use
+
+            // Password berhasil direset
+            Session::flash('success', 'Password reset successfully.'); // Pesan sukses
+            return redirect()->route('login'); // Redirect ke halaman login
+        } else {
+            // Tangani kesalahan dari API
+            $errorMessages = $response->json();
+            if ($response->status() == 422) {
+                return back()->withErrors($errorMessages)->withInput();
+            } else {
+                return back()->withErrors(['error' => 'Failed to reset password. Please try again later.'])->withInput();
+            }
+        }
+    }
+}
+
+// Function untuk update is_use
+private function updateIsUse($resetToken)
+{
+    // Panggil API untuk update is_use atau lakukan update di database
     $response = Http::withHeaders([
         'x-api-key' => self::API_KEY,
-        'Authorization' => 'Bearer ' . $resetToken, // Mengirim token reset password di header
-    ])->post(self::API_URL . '/sso/change_password.json', [
-        'password' => $request->new_password,
-        'change_type' => 'reset',  // Menyatakan bahwa ini adalah reset password
+        'Authorization' => $resetToken,
+    ])->put(self::API_URL . '/api/change_password.json', [
+        'is_use' => true,
+        'reset_token' => $resetToken,
     ]);
 
-    if ($response->successful()) {
-        // Reset password berhasil
-        return redirect()->route('login')->with('success', 'Password reset successfully. Please log in with your new password.');
+    if (!$response->successful()) {
+        // Log error atau lakukan tindakan jika update gagal
+        Log::error('Failed to update is_use status for reset token: ' . $resetToken);
     } else {
-        // Tangani kesalahan validasi atau kesalahan lain dari API
-        $errorMessages = $response->json();
-        if ($response->status() == 422) {
-            return back()->withErrors($errorMessages)->withInput();
-        } else {
-            return back()->withErrors(['error' => 'Failed to reset password. Please try again later.'])->withInput();
-        }
+        Log::info('Successfully updated is_use status for reset token: ' . $resetToken);
     }
 }
 

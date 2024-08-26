@@ -72,7 +72,7 @@
                 <p>Anda menerima email ini karena kami menerima permintaan pengaturan ulang kata sandi untuk akun Anda.<br>
                 Tekan tombol di bawah ini untuk mengatur ulang kata sandi.</p>
                 <p class="text-center">
-                    <a href="{{ env('APP_URL') }}/password/reset/{{ $token }}" class="btn">Reset Password</a>
+                    <a href="{{ url('password/reset/' . $token) }}" class="btn">Reset Password</a>
                 </p>
                 <p>Tautan Pengaturan Ulang Kata Sandi ini akan kedaluwarsa: {{ session('expired_date') }} <br>
                 Jika Anda tidak meminta pengaturan ulang kata sandi, abaikan saja pesan ini.</p>
@@ -80,7 +80,7 @@
                 Sarastya Technology</p>
                 <br>
                 <hr>
-                <p>Jika Anda kesulitan mengakses tombol "Reset Password", salin dan tempel URL di bawah ini ke browser web Anda: <a href="{{ env('APP_URL') }}/password/reset/{{ $token }}">{{ env('APP_URL') }}/password/reset/{{ $token }}</a></p>
+                <p>Jika Anda kesulitan mengakses tombol "Reset Password", salin dan tempel URL di bawah ini ke browser web Anda: <a href="{{ url('reset/password/' . $token) }}">{{ url('resetpassword/' . $token) }}</a></p>
 
             </div>
         </div>
