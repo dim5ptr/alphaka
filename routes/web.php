@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Notifications\NewMessage;
 use App\Http\Controllers\ActivationController;
 
-
+Route::get ('/cantreset', [HttpController::class, 'showCantreset'])->name('cantreset');
 Route::get('/test-mail', function (){
     Notification::route('mail', 'yourMailtrapEmailAddress')->notify(new NewMessage());
     return 'Sent';

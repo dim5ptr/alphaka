@@ -455,6 +455,10 @@ private function updateIsUse($resetToken)
 
     }
 
+    public function showCantreset()
+    {
+        return view('formcantreset');
+    }
 
     public function organization()
     {
