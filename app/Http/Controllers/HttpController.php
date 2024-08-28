@@ -297,115 +297,55 @@ public function sendResetLinkEmail(Request $request)
 
 
 
- public function showResetPasswordForm($resetToken)
+public function showResetPasswordForm($resetToken)
 {
-    // Token disediakan dari API dan disimpan di session
-    session(['reset_token' => $resetToken ]);
-
-    // Cek status token melalui API
-    $response = Http::withHeaders([
-        'x-api-key' => self::API_KEY,
-    ])->post(self::API_URL . '/sso/reset_token_status.json', [
-        'token' => $resetToken ,
-    ]);
-
-    // Decode JSON response
-    $data = $response->json();
-
-     // Log the response for debugging
-    Log::info('API Response:', ['response_data' => $data]);
-
-    // Check if response is valid and has the expected structure
-    if (is_array($data) && isset($data['data'])) {
-        // Ensure 'is_use' is available in the 'data' array
-        $isUse = $data['data']['is_use'] ?? null;
-
-        // Log the 'is_use' value for debugging
-        Log::info('Token Status (is_use):', ['is_use' => $isUse]);
-
-        if ($response->successful() && $isUse === true) {
-            // Token sudah digunakan atau tidak valid
-            return redirect()->route('cantreset')->withErrors([
-                'error' => 'The reset token has already been used or expired.'
-            ]);
-
-        } else {
-            // Token belum digunakan, lanjut ke halaman reset password
-            return view('formforgetpassword', ['token' => $resetToken ]);
-        }
-    } else {
-        // Handle unexpected response format
-        Log::error('Unexpected response format', [
-            'response_data' => $data,
-        ]);
-        return redirect()->route('cantreset')->withErrors([
-            'error' => 'Unable to process reset token. Please try again later.'
-        ]);
-    }
+    return view('formforgetpassword');
 }
 
 
 
 
 
-public function submitResetPasswordForm(Request $request)
-{
-    $request->validate([
-        'new_password' => 'required|min:6',
-        'confirm_new_password' => 'required|same:new_password',
-        'reset_token' => 'sometimes|required',
-        'change_type' => 'required|in:reset',
-    ]);
+// public function submitResetPasswordForm(Request $request)
+// {
+//     $request->validate([
+//         'new_password' => 'required|min:6',
+//         'confirm_new_password' => 'required|same:new_password',
+//         'reset_token' => 'sometimes|required',
+//         'change_type' => 'required|in:reset',
+//     ]);
 
-    $resetToken = session('reset_token');
+//     $resetToken = session('reset_token');
 
-    if (!$resetToken) {
-        return back()->withErrors(['reset_token' => 'Reset token is required.'])->withInput();
-    }
+//     if (!$resetToken) {
+//         return back()->withErrors(['reset_token' => 'Reset token is required.'])->withInput();
+//     }
 
-    $response = Http::withHeaders([
-        'x-api-key' => self::API_KEY,
-        'Authorization' => $resetToken,
-    ])->post(self::API_URL . '/sso/change_password.json', [
-        'password' => $request->new_password,
-        'change_type' => 'reset',
-    ]);
+//     $response = Http::withHeaders([
+//         'x-api-key' => self::API_KEY,
+//         'Authorization' => $resetToken,
+//     ])->post(self::API_URL . '/sso/change_password.json', [
+//         'password' => $request->new_password,
+//         'change_type' => 'reset',
+//     ]);
 
-    if ($response->successful()) {
-        $tokenStatus = $response->json('data.token_status', false);
+//     if ($response->successful()) {
+//         $tokenStatus = $response->json('data.token_status', false);
 
-        if ($tokenStatus) {
-            return redirect()->route('cantreset')->withErrors([
-                'error' => 'The reset token has already been used.'
-            ]);
-        } else {
-            $this->updateIsUse($resetToken);
+//         if ($tokenStatus) {
+//             return redirect()->route('cantreset')->withErrors([
+//                 'error' => 'The reset token has already been used.'
+//             ]);
+//         } else {
+//             $this->updateIsUse($resetToken);
 
-            Session::flash('success', 'Password reset successfully.');
-            return redirect()->route('login');
-        }
-    } else {
-        return back()->withErrors(['error' => 'Failed to reset password. Please try again later.'])->withInput();
-    }
-}
-
-private function updateIsUse($resetToken)
-{
-    $response = Http::withHeaders([
-        'x-api-key' => self::API_KEY,
-        'Authorization' => $resetToken,
-    ])->put(self::API_URL . '/sso/change_password.json', [
-        'is_use' => true,
-        'reset_token' => $resetToken,
-    ]);
-
-    if (!$response->successful()) {
-        Log::error('Failed to update is_use status for reset token: ' . $resetToken);
-    } else {
-        Log::info('Successfully updated is_use status for reset token: ' . $resetToken);
-    }
-}
-
+//             Session::flash('success', 'Password reset successfully.');
+//             return redirect()->route('login');
+//         }
+//     } else {
+//         return back()->withErrors(['error' => 'Failed to reset password. Please try again later.'])->withInput();
+//     }
+// }
 
 
     public function login(Request $request)
@@ -723,6 +663,7 @@ private function updateIsUse($resetToken)
 
     public function editpassword(Request $request)
     {
+        // Validasi input
         $request->validate([
             'new_password' => 'required|min:6',
             'confirm_new_password' => 'required|same:new_password',
@@ -730,75 +671,51 @@ private function updateIsUse($resetToken)
             'request_type' => 'required|in:change,reset', // Flag untuk menentukan jenis permintaan
         ]);
 
-        // Cek jenis permintaan
+        // Tentukan apakah ini permintaan reset password
         $isResetRequest = $request->request_type === 'reset';
 
-        if ($isResetRequest) {
-            // Logika untuk reset password menggunakan token reset
-            $resetToken = session('reset_token'); // Ambil token dari request
+        // Siapkan token berdasarkan jenis permintaan
+        $token = $isResetRequest ? session('reset_token') : session('access_token');
 
-            if (!$resetToken) {
-                return back()->withErrors(['reset_token' => 'Reset token is required for reset password.'])->withInput();
-            }
+        if (!$token) {
+            $errorMsg = $isResetRequest ? 'Reset token is required for reset password.' : 'Access token not found. Please login again.';
+            return $isResetRequest
+                ? back()->withErrors(['reset_token' => $errorMsg])->withInput()
+                : redirect()->route('login')->withErrors(['error' => $errorMsg]);
+        }
 
-            Log::info('Reset Token: ' . $resetToken);
-            Log::info('New Password: ' . $request->new_password);
+        // Panggil API untuk reset atau change password
+        $response = Http::withHeaders([
+            'x-api-key' => self::API_KEY,
+            'Authorization' => $token,
+        ])->post(self::API_URL . '/sso/change_password.json', [
+            'password' => $request->new_password,
+            'change_type' => $request->request_type, // Gunakan request_type untuk menentukan tipe perubahan
+        ]);
 
-            // Panggil API untuk reset password
-            $response = Http::withHeaders([
-                'x-api-key' => self::API_KEY,
-                'Authorization' => $resetToken, // Menambahkan token ke header
-            ])->post(self::API_URL . '/sso/change_password.json', [
-                'password' => $request->new_password,
-                'change_type' => 'reset', // Tambahkan change_type di sini
-            ]);
-
-            if ($response->successful()) {
-                // Password berhasil direset
-                Session::flash('success', 'Password reset successfully.'); // Pesan sukses
+        // Cek apakah respon API sukses
+        if ($response->successful()) {
+            if ($isResetRequest) {
+                // Jika permintaan adalah reset password, arahkan ke halaman login
+                Session::flash('success', 'Password reset successfully.');
                 return redirect()->route('login'); // Redirect ke halaman login
             } else {
-                // Tangani kesalahan dari API
-                $errorMessages = $response->json();
-                if ($response->status() == 422) {
-                    return back()->withErrors($errorMessages)->withInput();
-                } else {
-                    return back()->withErrors(['error' => 'Failed to reset password. Please try again later.'])->withInput();
-                }
+                // Jika perubahan password biasa, arahkan ke halaman logout view
+                Auth::logout(); // Logout user
+                Session::flash('success', 'Password changed successfully. Please log in again.');
+                return redirect()->route('confirm-logout'); // Redirect ke halaman logout view
             }
         } else {
-            // Logika untuk perubahan password biasa
-            $accessToken = session('access_token');
-
-            if (!$accessToken) {
-                return redirect()->route('login')->withErrors(['error' => 'Access token not found. Please login again.']);
-            }
-
-            // Panggil API untuk mengubah password
-            $response = Http::withHeaders([
-                'Authorization' => $accessToken,
-                'x-api-key' => self::API_KEY,
-            ])->post(self::API_URL . '/sso/change_password.json', [
-                'password' => $request->new_password,
-                'change_type' => 'change', // Tambahkan change_type di sini
-            ]);
-
-            if ($response->successful()) {
-                // Password berhasil diubah
-                Auth::logout(); // Logout pengguna
-                Session::flash('success', 'Password changed successfully. Please log in again.'); // Pesan sukses
-                return redirect()->route('login'); // Redirect ke halaman login
+            // Tangani kesalahan dari API
+            $errorMessages = $response->json();
+            if ($response->status() == 422) {
+                return back()->withErrors($errorMessages)->withInput();
             } else {
-                // Tangani kesalahan dari API
-                $errorMessages = $response->json();
-                if ($response->status() == 422) {
-                    return back()->withErrors($errorMessages)->withInput();
-                } else {
-                    return back()->withErrors(['error' => 'Failed to change password. Please try again later.'])->withInput();
-                }
+                return back()->withErrors(['error' => 'Failed to process password change. Please try again later.'])->withInput();
             }
         }
     }
+
 
 
 
