@@ -330,35 +330,39 @@ public function submitResetPasswordForm(Request $request)
         'change_type' => 'reset',
     ]);
 
-    if ($response->successful()) {
+    $responseData = $response->json();
+
+
+    if ($responseData['success']) {
         // Log respon untuk debug
         \Log::info('Password reset API response:', [
             'status_code' => $response->status(),
             'response_body' => $response->body(),
+            'success' =>  $responseData['success'],
         ]);
 
-        // Cek apakah API mengembalikan status token
-        $varIsUse = $response->json('data.var_is_use', false); // TRUE = token sudah digunakan
 
-        if ($varIsUse === true) {
-            // Jika var_is_use FALSE, maka password berhasil diubah
+
+
+        // if ($varIsUse === true) {
+        //     // Jika var_is_use FALSE, maka password berhasil diubah
             Session::flash('success', 'Password reset successfully.');
             Log::info('Password reset successful for token:', ['token' => $resetToken]);
             return redirect()->route('login');
-        } else {
-            // Jika var_is_use TRUE, redirect ke halaman cantreset
-            Log::warning('Attempt to use a used reset token:', ['token' => $resetToken]);
-            return redirect()->route('cantreset')->withErrors([
-                'error' => 'The reset token has already been used and cannot be reused.'
-            ]);
-        }
+        // } else {
+        //     // Jika var_is_use TRUE, redirect ke halaman cantreset
+            
+        // }
     } else {
         // Penanganan error jika API gagal
         \Log::error('Failed to reset password:', [
             'status_code' => $response->status(),
             'response_body' => $response->body(),
         ]);
-        return back()->withErrors(['error' => 'Failed to reset password. Please try again later.'])->withInput();
+        Log::warning('Attempt to use a used reset token:', ['token' => $resetToken]);
+        return redirect()->route('cantreset')->withErrors([
+            'error' => 'The reset token has already been used and cannot be reused.'
+        ]);
     }
 }
 
