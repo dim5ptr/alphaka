@@ -341,17 +341,16 @@ public function submitResetPasswordForm(Request $request)
             'success' =>  $responseData['success'],
         ]);
 
-
+        Session::flash('success', 'Password reset successfully.');
+        Log::info('Password reset successful for token:', ['token' => $resetToken]);
+        return redirect()->route('login');
 
 
         // if ($varIsUse === true) {
         //     // Jika var_is_use FALSE, maka password berhasil diubah
-            Session::flash('success', 'Password reset successfully.');
-            Log::info('Password reset successful for token:', ['token' => $resetToken]);
-            return redirect()->route('login');
         // } else {
         //     // Jika var_is_use TRUE, redirect ke halaman cantreset
-            
+
         // }
     } else {
         // Penanganan error jika API gagal
