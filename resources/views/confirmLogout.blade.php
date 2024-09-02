@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>Document</title>
+    <title>Logout Confirmation</title>
 
     <style>
         /* CSS Anda disini */
@@ -151,92 +151,100 @@
             width: 80%;
             height: 100vh;
             flex: 1;
-            margin-top: 5%;
+            margin-top: 20vh;
             margin-left: 10%;
             transition: margin-left .3s;
         }
 
         .note {
-            float: right;
-            margin-right: 20%;
-            margin-top: 3%;
-            width: 60%;
-            height: 50vh;
-            margin-left: 4%;
+            float: none; /* Remove float for better responsiveness */
+            margin: 5% auto; /* Center horizontally and add vertical margin */
+            width: 90%; /* Adjust width for better responsiveness */
+            max-width: 600px; /* Optional: Limit maximum width */
+            height: auto; /* Adjust height to content */
             background-color: white;
-            justify-content: center;
             border-radius: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px; /* Add padding inside the note */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .note i {
-            margin: 0 40%;
-            margin-top: 7%;
+            margin-left: 10vw;
             font-size: 100px;
             color: #c23636;
-
+            margin-bottom: 10px; /* Add spacing below the icon */
         }
 
         .note h4 {
-            font-size: 20px;
-            margin-top: 3%;
+            font-size: 1.2rem;
             text-align: center;
+            margin-bottom: 5%; /* Add spacing below the heading */
         }
 
         .logoutForm {
             display: flex;
-            margin-top: 5%;
+            width: 100%;
+            gap: 10px; /* Space between buttons */
+        }
+
+        .logout-button, .back-button {
+            width: 50%; /* Full width of parent */
+            padding: 10px; /* Add padding */
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.987rem;
+            box-sizing: border-box;
+            border: 2px solid;
+            background-color: #ffffff;
+            transition: background-color 0.3s, color 0.3s;
+            margin-bottom: 5%;
         }
 
         .logout-button {
-            width: 20%;
-            margin-left: 5%;
-            display: flex;
-            padding: 8px 9px;
-            margin-bottom: 2%;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 15px;
-            box-sizing: border-box;
-            position: relative;
-            background-color: white;
             color: #c23636;
-            border: 2px solid #c23636;
-            transition: background-color 0.3s, color 0.3s;
-            justify-content: center;
+            border-color: #c23636;
         }
 
         .logout-button:hover {
-            background-color: #c23636;;
-            color: aliceblue;
-            font-weight: 700;
+            background-color: #a12d2d;
+            color: #fff;
         }
 
         .back-button {
-            width: 20%;
-            margin-left: 27%;
-            display: flex;
-            justify-content: center;
-            padding: 8px 9px;
-            margin-bottom: 2%;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 15px;
-            box-sizing: border-box;
-            position: relative;
-            background-color: white;
             color: #365AC2;
-            border: 2px solid #365AC2;
-            transition: background-color 0.3s, color 0.3s;
+            border-color: #365AC2;
         }
 
         .back-button:hover {
             background-color: #294cb4;
-            color: aliceblue;
-            font-weight: 700;
+            color: #fff;
         }
+
+        @media (max-width: 768px) {
+
+            .note{
+                border-radius: 10px;
+            }
+            .note i {
+                margin-left: 20vw;
+                font-size: 5rem;
+            }
+
+            .note h4 {
+            font-size: 0.990rem;
+            }
+
+            .logout-button, .back-button {
+            font-size: 0.887rem;
+            }
+
+        }
+
 
     </style>
 </head>

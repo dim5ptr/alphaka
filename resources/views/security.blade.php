@@ -287,7 +287,7 @@
         }
 
         .inpage {
-            margin-left: 10%;
+            margin-left: 5%;
             font-size: 15px;
         }
 
@@ -300,6 +300,7 @@
         .inpage p {
             margin-bottom: 3%;
         }
+
 
         .inpage input[type="password"] {
             width: 60%;
@@ -334,23 +335,86 @@
         }
 
         /* In your CSS file */
-.alert {
-    padding: 15px;
-    border-radius: 4px;
-    margin-bottom: 20px;
-}
+            .alert {
+                padding: 15px;
+                border-radius: 4px;
+                margin-bottom: 20px;
+            }
 
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border-color: #c3e6cb;
-}
+            .alert-success {
+                background-color: #d4edda;
+                color: #155724;
+                border-color: #c3e6cb;
+            }
 
-.alert-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-    border-color: #f5c6cb;
-}
+            .alert-danger {
+                background-color: #f8d7da;
+                color: #721c24;
+                border-color: #f5c6cb;
+            }
+
+            @media (max-width: 768px) {
+                .menu {
+                    flex-direction: column; /* Stack menu items vertically */
+                    margin-top: 10vh;
+                    margin-right: 0;
+                    width: 48vh;
+                    height: auto; /* Adjust height based on content */
+                }
+
+                .list2 {
+                    display: flex;
+                    width: 100%; /* Full width on mobile */
+                    height: auto; /* Adjust height based on content */
+                    margin: 0 auto; /* Center horizontally */
+                    margin-bottom: 5%;
+                    font-size: 0.876rem;
+                }
+
+                .list2 ul {
+                    width: 100%;
+                }
+
+                .page {
+                    width: 95%; /* Full width on mobile */
+                    margin: 0 auto; /* Center horizontally */
+                    padding: 10px; /* Add padding inside page */
+                }
+
+                .inpage input[type="password"] {
+                    width: 83%; /* Full width on mobile */
+                    padding-bottom: 3%;
+                }
+
+                .inpage button {
+                    float: right;
+                    margin-right: 2%;
+                    font-size: 0.850rem;
+                }
+
+                .inpage h3 {
+                        margin-bottom: 10px;
+                        margin-top: 2%;
+                        font-size: 1.5rem;
+                        color: #333;
+                    }
+
+                    .inpage p {
+                        margin-bottom: 10%;
+                        font-size: 0.837rem
+                    }
+
+                    .inpage label {
+                        font-size: 0.870rem;
+                        font-weight: 500;
+                    }
+
+                    .error-message {
+                    font-size: 12px;
+                    margin-bottom: 15px;
+                    margin-top: 2px;
+                    }
+            }
 
 
     </style>

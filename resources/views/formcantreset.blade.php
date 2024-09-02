@@ -8,54 +8,103 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <style>
-        body {
-            background-color: #ffffff;
-            justify-content: center;
-            width: 100vh;
-        }
+       html, body {
+        height: 100%; /* Full height for body and html */
+        margin: 0; /* Remove default margin */
+        justify-content: center;
+        align-content: center;
+       }
 
-        .container {
+        .wrapper {
             display: flex;
-            margin-top: 15%;
-            margin-left: 50%;
-            max-width: 100%;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            height: 100vh; /* Full viewport height */
         }
 
+
+       /* Style untuk kontainer utama */
+       .container {
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping to new lines */
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Style untuk gambar */
+        .container img {
+            max-width: 25%;
+            height: auto; /* Maintain aspect ratio */
+            flex: 1 1 70%; /* Grow and shrink, take 50% width */
+            margin-right: 20px; /* Spacing between image and text */
+        }
+
+        /* Style untuk teks */
         .text {
-            width: 50%;
-            margin-left: 5%;
+            flex: 1 1 30%; /* Grow and shrink, take 50% width */
+            max-width: 35%;
+            box-sizing: border-box;
+            align-items: center;
         }
 
-        img {
-            width: 50%;
-            height: auto;
-        }
-
-        h1{
+        /* Gaya untuk heading dan paragraf */
+        .text h1 {
+            font-size: 3rem;
+            margin-bottom: 12px;
             font-weight: bold;
             color: #365AC2;
-            font-size: 10vh;
-            margin-top: 25%;
         }
 
-        p, a{
+        .text p, a {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-align: left;
             font-weight: 500;
             color: #030d2a8e;
-            font-size: 2.3vh;
-            padding-top: 8%;
-            transform: 0.3s color;
+            transform: 0.3s ease color;
         }
 
+        /* Link styling */
         a:hover {
             color: #365AC2;
         }
 
+        /* Media Query untuk perangkat mobile */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column; /* Stack items vertically */
+            }
+
+            .container img {
+                max-width: 50%; /* Full width on mobile */
+                margin-right: 0; /* Remove margin on mobile */
+                margin-bottom: 20px; /* Add spacing below image */
+            }
+
+            .text {
+                max-width: 100%;
+                text-align: center;
+            }
+
+            .text h1 {
+                font-size: 1.5rem;
+            }
+
+            .text p, a {
+                font-size: 0.875rem;
+                text-align: center;
+
+            }
+}
 
     </style>
 </head>
 <body>
     <div class="container">
-            <img src="img/H.jpg">
+        <img src="img/H.jpg" alt="Image">
         <div class="text">
             <h1>Oops!</h1>
             @if(session('error'))
