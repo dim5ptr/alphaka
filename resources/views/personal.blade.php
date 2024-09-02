@@ -536,21 +536,7 @@
 
        /* Aturan Umum */
 @media (max-width: 768px) {
-    .sidebar {
-        width: 200px;
-        left: -210px;
-    }
-    
-    .sidebar.open {
-        left: 0;
-    }
-    
-    .main-content {
-        margin-left: 0;
-        width: 100%;
-        margin-top: 20px; /* Tambahkan jarak atas agar tidak terlalu dekat dengan navbar */
-    }
-    
+
     .navbar p {
         font-size: 12px;
     }
@@ -589,21 +575,11 @@
 @media (max-width: 480px) {
     .profile-info .data p {
         margin: 25px;
-        font-size: 15px;
+        font-size: 13px;
     }
-
 
     .navbar p {
         font-size: 10px;
-    }
-    
-    .sidebar {
-        width: 100%;
-        left: -100%;
-    }
-    
-    .sidebar.open {
-        left: 0;
     }
     
     .profile-info img {
@@ -630,23 +606,37 @@
     }
 }
 
-@media (max-width: 405px) {
+@media (max-width: 454px) {
 
     .profile-info .data p {
-        margin: 18px;
-        font-size: 10px;
+        margin: 24px;
+        font-size: 12px;
     }
 }
 
-@media (max-width: 282px) {
+@media (max-width: 427px) {
 
 .profile-info .data p {
-    margin: 18px;
+    margin: 23px;
+    font-size: 11px;
+}
+}
+
+@media (max-width: 402px) {
+
+.profile-info .data p {
+    margin: 22px;
+    font-size: 10px;
+}
+}
+
+@media (max-width: 375px) {
+
+.profile-info .data p {
+    margin: 21px;
     font-size: 9px;
 }
 }
-
-
     </style>
 </head>
 <body>
@@ -665,7 +655,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/profil" class="nav-link-act">
+                    <a href="/personal" class="nav-link-act">
                         <span class="link"><i class="fa-solid fa-id-card"></i>ㅤProfile</span>
                     </a>
                 </li>
