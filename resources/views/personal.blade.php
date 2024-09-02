@@ -424,6 +424,7 @@
     .judul h4 {
         margin: 0;
         font-size: 24px;
+        text-align: center;
     }
 
     .profile-info {
@@ -435,14 +436,13 @@
     .profile-info img {
         border-radius: 50%;
         margin-right: 10px;
-        margin-left: 5%;
+        margin-left: 2%;
 
     }
 
     .profile-info .data {
         flex: 1;
-        margin-left: 30px;
-        margin-top: 20px
+        margin: 10px 10px 5px 10px
     }
 
     .profile-info .data span {
@@ -458,7 +458,7 @@
     .btn-container {
         display: flex;
         justify-content: flex-start;
-        margin-top: 20px;
+        margin-top: 10px;
         margin-bottom: 5%;
     }
 
@@ -533,6 +533,119 @@
         .profile-icon {
             font-size: 280px; /* Mengatur ukuran ikon */
         }
+
+       /* Aturan Umum */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+        left: -210px;
+    }
+    
+    .sidebar.open {
+        left: 0;
+    }
+    
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        margin-top: 20px; /* Tambahkan jarak atas agar tidak terlalu dekat dengan navbar */
+    }
+    
+    .navbar p {
+        font-size: 12px;
+    }
+    
+    .profile-info img {
+        width: 150px;
+        height: 150px;
+        margin-bottom: 15px; /* Tambahkan jarak bawah antara gambar profil dan teks */
+    }
+    
+    .profile-icon {
+        font-size: 200px;
+        margin-bottom: 20px; /* Jarak bawah antara ikon profil dan konten lainnya */
+    }
+    
+    .modal-content, .modal-image-content {
+        width: 90%;
+        max-width: 100%;
+        margin: 20px auto; /* Tambahkan margin agar modal tidak terlalu dekat dengan tepi viewport */
+    }
+    
+    .btn-primary, .btn-light, .btn-danger {
+        margin: 10px 0; /* Tambahkan margin vertikal pada tombol agar tidak berdempetan dengan elemen lain */
+    }
+
+    .container-flex {
+        margin-top: 50px;
+    }
+
+    img {
+        margin-top: 20px;
+    }
+}
+
+/* Untuk layar yang lebih kecil dari 480px */
+@media (max-width: 480px) {
+    .profile-info .data p {
+        margin: 25px;
+        font-size: 15px;
+    }
+
+
+    .navbar p {
+        font-size: 10px;
+    }
+    
+    .sidebar {
+        width: 100%;
+        left: -100%;
+    }
+    
+    .sidebar.open {
+        left: 0;
+    }
+    
+    .profile-info img {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 10px; /* Tambahkan jarak bawah antara gambar profil dan teks */
+    }
+    
+    .profile-icon {
+        font-size: 150px;
+        margin-bottom: 15px; /* Jarak bawah antara ikon profil dan konten lainnya */
+    }
+    
+    .modal-content, .modal-image-content {
+        width: 95%;
+        max-width: 100%;
+        margin: 15px auto; /* Tambahkan margin agar modal tidak terlalu dekat dengan tepi viewport */
+    }
+    
+    .btn-primary, .btn-light, .btn-danger {
+        font-size: 14px;
+        padding: 6px 12px;
+        margin: 8px 0; /* Tambahkan margin vertikal pada tombol agar tidak berdempetan dengan elemen lain */
+    }
+}
+
+@media (max-width: 405px) {
+
+    .profile-info .data p {
+        margin: 18px;
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 282px) {
+
+.profile-info .data p {
+    margin: 18px;
+    font-size: 9px;
+}
+}
+
 
     </style>
 </head>

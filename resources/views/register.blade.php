@@ -125,6 +125,65 @@
         .error {
             color: rgb(255, 255, 255);
         }
+
+         /* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .login-box {
+        flex-direction: grid;
+        margin: 50px;
+    }
+
+
+    .left, .right {
+        padding: 20px;
+    }
+
+    .input-group input {
+        width: 100%;
+    }
+
+    .pict {
+        display: none;
+    }
+    
+    .container{
+        max-width: 100%;
+    }
+
+    .form-container {
+        border-radius: 15px;
+        margin: 10px;
+        width: 500px;
+        padding: 5px;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    .left{
+        display: none;
+    }
+
+    .right h2 {
+        font-size: 2rem;
+    }
+
+    .input-group input {
+        padding: 15px;
+        font-size: 0.9rem;
+    }
+
+    .input-group .icon {
+        font-size: 0.8rem;
+        left: 10px; 
+    }
+
+    .input-group input {
+    padding-left: 30px; /* Menambah jarak antara ikon dan teks input */
+}
+
+}
     </style>
 </head>
 <body>
