@@ -357,63 +357,6 @@
         </div>
     </div>
 
-    <div id="main-content" class="main-content">
-        @if (session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
-       <h2>ㅤㅤㅤ ㅤ ㅤㅤㅤㅤㅤ ㅤ    </br>
-    </h2>
-        <div class="banner">
-            <div class="wlc">
-                <h2>Selamat Datang di <span>Sarastya Technology Integrata</span></h2>
-                <p>Menyediakan layanan IT dengan berbagai macam solusi teknologi untuk kebutuhan bisnis Anda.</p>
-            </div>
-        <div class="pict">
-            <img src="img/C.jpg">
-        </div>
-    </div>
-    </section>
-
-    <section>
-        <div class="grid">
-            <div class="card">
-                <div class="card-content">
-                    <img src="img/il.jpg" alt="Grafis ilustratif" class="card-icon">
-                    <div class="card-text">
-                        <p><span>Grafis ilustratif </span></br>gambarkan ide, menceritakan cerita, atau menjelaskan konsep.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-content">
-                    <img src="img/anm.jpg" alt="Motion graphics" class="card-icon">
-                    <div class="card-text">
-                        <p><span>Motion graphics</span></br>melibatkan pembuatan gerakan dan ilusi dari gambar statis atau objek untuk menciptakan ilusi gerak.</p>
-
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-content">
-                    <img src="img/grp.jpg" alt="Komunikasi visual" class="card-icon">
-                    <div class="card-text">
-                        <p><span>Komunikasi visual </span></br>gunakan elemen-elemen seperti gambar, teks, dan warna untuk menciptakan komunikasi yang efektif.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-content">
-                    <img src="img/vid.jpg" alt="Sinematografi digital" class="card-icon">
-                    <div class="card-text">
-                        <p><span>Sinematografi digital</span></br>konten visual bergerak yang bisa berupa animasi, video klip, atau kombinasi dari keduanya.</br></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-</div>
     <script>
         function toggleSidebar() {
             var sidebar = document.getElementById("sidebar");
