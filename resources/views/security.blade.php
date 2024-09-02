@@ -358,7 +358,8 @@
                     flex-direction: column; /* Stack menu items vertically */
                     margin-top: 10vh;
                     margin-right: 0;
-                    width: 48vh;
+                    margin-left: auto;
+                    width: auto;
                     height: auto; /* Adjust height based on content */
                 }
 
