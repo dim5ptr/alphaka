@@ -38,6 +38,7 @@
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            margin: 50px;
         }
 
         .left, .right {
@@ -195,6 +196,52 @@
             cursor: pointer;
             color: inherit;
         }
+
+        /* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .login-box {
+        flex-direction: grid;
+        margin: 50px;
+    }
+
+
+    .left, .right {
+        padding: 20px;
+    }
+
+    .input-group input {
+        width: 100%;
+    }
+
+    
+
+}
+
+@media (max-width: 480px) {
+
+    .left{
+        display: none;
+    }
+
+    .right h2 {
+        font-size: 2rem;
+    }
+
+    .input-group input {
+        padding: 15px;
+        font-size: 0.9rem;
+    }
+
+    .input-group .icon {
+        font-size: 0.8rem;
+        left: 10px; 
+    }
+
+    .input-group input {
+    padding-left: 30px; /* Menambah jarak antara ikon dan teks input */
+}
+
+}
     </style>
 </head>
 <body>

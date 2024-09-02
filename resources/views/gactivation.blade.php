@@ -21,7 +21,6 @@
             background: linear-gradient(to right, #3d38e8, #3498db);
             color: #2155CD;
             font-weight: medium;
-
         }
         .container {
             width: 50%;
@@ -56,7 +55,6 @@
             font-weight: 800;
         }
         p {
-
             font-size: 20px;
         }
 
@@ -70,7 +68,6 @@
             box-sizing: border-box;
             color: #fff;
             cursor: pointer;
-
             font-size: 100%;
             height: 44px;
             line-height: 1.15;
@@ -89,20 +86,56 @@
             width: 100%;
         }
 
-.button-9:disabled {
-  cursor: default;
-}
+        .button-9:disabled {
+            cursor: default;
+        }
 
-.button-9:hover {
-  background-color: #065dd8;
-  transform: translateY(-2px);
-}
+        .button-9:hover {
+            background-color: #065dd8;
+            transform: translateY(-2px);
+        }
 
-i{
-    color: #e20606;
-    font-size: 90px;
-    padding-bottom: 2%;
-}
+        i {
+            color: #e20606;
+            font-size: 90px;
+            padding-bottom: 2%;
+        }
+
+        /* Responsif untuk tablet dan perangkat kecil */
+        @media (max-width: 768px) {
+            .container {
+                width: 70%;
+                padding: 1.5rem;
+            }
+            img {
+                width: 100px;
+                height: 100px;
+            }
+            p {
+                font-size: 18px;
+            }
+            i {
+                font-size: 70px;
+            }
+        }
+
+        /* Responsif untuk ponsel */
+        @media (max-width: 576px) {
+            .container {
+                width: 90%;
+                padding: 1rem;
+            }
+            img {
+                width: 80px;
+                height: 80px;
+            }
+            p {
+                font-size: 16px;
+            }
+            i {
+                font-size: 50px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -113,7 +146,7 @@ i{
             <p>{{ session('error') }}</p>
         @endif
         <p>Akun gagal aktif, maaf anda tidak dapat menikmati layanan Sarastya Technology.</p>
-        <a href="{{ route('register') }}"><button class="button-9" role="button">kembali ke halaman register</button></a>
+        <a href="{{ route('register') }}"><button class="button-9" role="button">Kembali ke halaman register</button></a>
     </div>
 </body>
 </html>
