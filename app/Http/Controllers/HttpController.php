@@ -122,6 +122,7 @@ public function showActivationForm(Request $request)
     ]);
 
     $data = $response->json();
+    Log::info('Activation API Response:', $data);
 
     if ($response->successful() && $data['success']) {
         // Token berhasil digunakan
