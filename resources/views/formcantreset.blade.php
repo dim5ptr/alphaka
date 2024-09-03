@@ -8,48 +8,43 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <style>
-       html, body {
-        height: 100%; /* Full height for body and html */
-        margin: 0; /* Remove default margin */
-        justify-content: center;
-        align-content: center;
-       }
+        html, body {
+            height: 100%;
+            margin: 0;
+            justify-content: center;
+            align-content: center;
+        }
 
         .wrapper {
             display: flex;
-            justify-content: center; /* Center horizontally */
-            align-items: center; /* Center vertically */
-            height: 100vh; /* Full viewport height */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
-
-       /* Style untuk kontainer utama */
-       .container {
+        .container {
             display: flex;
-            flex-wrap: wrap; /* Allow wrapping to new lines */
+            flex-wrap: wrap;
             align-items: center;
             justify-content: center;
             padding: 20px;
             box-sizing: border-box;
         }
 
-        /* Style untuk gambar */
         .container img {
             max-width: 25%;
-            height: auto; /* Maintain aspect ratio */
-            flex: 1 1 70%; /* Grow and shrink, take 50% width */
-            margin-right: 20px; /* Spacing between image and text */
+            height: auto;
+            flex: 1 1 70%;
+            margin-right: 20px;
         }
 
-        /* Style untuk teks */
         .text {
-            flex: 1 1 30%; /* Grow and shrink, take 50% width */
+            flex: 1 1 30%;
             max-width: 35%;
             box-sizing: border-box;
             align-items: center;
         }
 
-        /* Gaya untuk heading dan paragraf */
         .text h1 {
             font-size: 3rem;
             margin-bottom: 12px;
@@ -67,21 +62,19 @@
             transform: 0.3s ease color;
         }
 
-        /* Link styling */
         a:hover {
             color: #365AC2;
         }
 
-        /* Media Query untuk perangkat mobile */
         @media (max-width: 768px) {
             .container {
-                flex-direction: column; /* Stack items vertically */
+                flex-direction: column;
             }
 
             .container img {
-                max-width: 50%; /* Full width on mobile */
-                margin-right: 0; /* Remove margin on mobile */
-                margin-bottom: 20px; /* Add spacing below image */
+                max-width: 50%;
+                margin-right: 0;
+                margin-bottom: 20px;
             }
 
             .text {
@@ -96,10 +89,8 @@
             .text p, a {
                 font-size: 0.875rem;
                 text-align: center;
-
             }
-}
-
+        }
     </style>
 </head>
 <body>
@@ -110,8 +101,42 @@
             @if(session('error'))
                 <p>{{ session('error') }}</p>
             @endif
-            <p>Token tidak aktif, </br> <a href="{{ route('password.request') }}">kirim ulang email</a> untuk mendapat token baru.</p>
+            <p>Token tidak aktif, </br> 
+                <span id="countdown"></span>
+                <a href="{{ route('password.request') }}" id="resetLink" style="display: none;"><b>kirim ulang email</b></a> untuk mendapatkan token baru.
+            </p>
         </div>
     </div>
+
+    <script>
+        let countdownTime = 60; // 60 seconds countdown
+        let countdownElement = document.getElementById('countdown');
+        let resetLink = document.getElementById('resetLink');
+
+        // Reset the countdown start time whenever the page is loaded
+        let countdownStart = Date.now();
+        localStorage.setItem('countdownStart', countdownStart);
+
+        function updateCountdown() {
+            // Calculate the time difference
+            let elapsed = Math.floor((Date.now() - countdownStart) / 1000);
+            let remainingTime = countdownTime - elapsed;
+
+            if (remainingTime > 0) {
+                countdownElement.innerText = `Coba lagi dalam ${remainingTime} detik.`;
+            } else {
+                clearInterval(countdownInterval);
+                countdownElement.style.display = 'none';
+                resetLink.style.display = 'inline';
+                localStorage.removeItem('countdownStart'); // Remove the countdown start time when done
+            }
+        }
+
+        // Update the countdown every second
+        let countdownInterval = setInterval(updateCountdown, 1000);
+
+        // Run the function initially to set the correct countdown time
+        updateCountdown();
+    </script>
 </body>
 </html>
