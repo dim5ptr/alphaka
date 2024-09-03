@@ -280,16 +280,34 @@
     <div id="main-content" class="main-content">
         <div class="note">
             <div class="warning">
-                <i class="fa-solid fa-circle-exclamation"></i></br>
-            <h4 class="card-text"> Hello, <strong>{{ session('username') }}</strong>! Are you sure wanna log out?</p></h4>
-            <form id="logoutForm" class="logoutForm" method="GET" action="{{ route('logout') }}">
-                @csrf
-                <button type="button" class="back-button" onclick="window.history.back()">Back</button>
-                <button type="submit" class="logout-button"> Logout</button>
-            </form>
+                <i class="fa-solid fa-circle-exclamation"></i><br/>
+                <h4 class="card-text"> Hello, <strong>{{ session('username') }}</strong>! Are you sure wanna log out?</h4>
+                <form id="logoutForm" class="logoutForm" method="GET" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="button" class="back-button" onclick="handleBackButton()">Back</button>
+                    <button type="submit" class="logout-button"> Logout</button>
+                </form>
             </div>
         </div>
     </div>
+
+    <script>
+        function handleBackButton() {
+            const referrer = document.referrer;
+            const profileUrl = "{{ route('personal') }}"; // Ganti dengan rute profile Anda
+            const dashboardUrl = "{{ url('/') }}"; // Ganti dengan rute dashboard Anda
+            const securityUrl = "{{ route('showsecurity') }}"; // Ganti dengan rute security Anda
+
+            if (referrer.includes(profileUrl)) {
+                window.location.href = profileUrl;
+            } else if (referrer.includes(dashboardUrl) || referrer.includes(securityUrl)) {
+                window.location.href = dashboardUrl;
+            } else {
+                window.history.back();
+            }
+        }
+    </script>
+
 
     <script>
         // Function to toggle sidebar visibility
