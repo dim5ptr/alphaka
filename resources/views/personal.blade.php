@@ -474,7 +474,6 @@
 
         .profile-info .data span, .profile-info .data p {
             text-align: center;
-            line-height: 0;
         }
 
     }
@@ -570,72 +569,10 @@
         margin-top: 20px;
     }
 }
-
-/* Untuk layar yang lebih kecil dari 480px */
-@media (max-width: 480px) {
-    .profile-info .data p {
-        margin: 25px;
-        font-size: 13px;
+@media (max-width: 366px) {
+    .data p {
+        
     }
-
-    .navbar p {
-        font-size: 10px;
-    }
-    
-    .profile-info img {
-        width: 120px;
-        height: 120px;
-        margin-bottom: 10px; /* Tambahkan jarak bawah antara gambar profil dan teks */
-    }
-    
-    .profile-icon {
-        font-size: 150px;
-        margin-bottom: 15px; /* Jarak bawah antara ikon profil dan konten lainnya */
-    }
-    
-    .modal-content, .modal-image-content {
-        width: 95%;
-        max-width: 100%;
-        margin: 15px auto; /* Tambahkan margin agar modal tidak terlalu dekat dengan tepi viewport */
-    }
-    
-    .btn-primary, .btn-light, .btn-danger {
-        font-size: 14px;
-        padding: 6px 12px;
-        margin: 8px 0; /* Tambahkan margin vertikal pada tombol agar tidak berdempetan dengan elemen lain */
-    }
-}
-
-@media (max-width: 454px) {
-
-    .profile-info .data p {
-        margin: 24px;
-        font-size: 12px;
-    }
-}
-
-@media (max-width: 427px) {
-
-.profile-info .data p {
-    margin: 23px;
-    font-size: 11px;
-}
-}
-
-@media (max-width: 402px) {
-
-.profile-info .data p {
-    margin: 22px;
-    font-size: 10px;
-}
-}
-
-@media (max-width: 375px) {
-
-.profile-info .data p {
-    margin: 21px;
-    font-size: 9px;
-}
 }
     </style>
 </head>
