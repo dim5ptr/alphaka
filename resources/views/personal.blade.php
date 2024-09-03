@@ -474,7 +474,6 @@
 
         .profile-info .data span, .profile-info .data p {
             text-align: center;
-            line-height: 0;
         }
 
     }
@@ -536,21 +535,7 @@
 
        /* Aturan Umum */
 @media (max-width: 768px) {
-    .sidebar {
-        width: 200px;
-        left: -210px;
-    }
-    
-    .sidebar.open {
-        left: 0;
-    }
-    
-    .main-content {
-        margin-left: 0;
-        width: 100%;
-        margin-top: 20px; /* Tambahkan jarak atas agar tidak terlalu dekat dengan navbar */
-    }
-    
+
     .navbar p {
         font-size: 12px;
     }
@@ -584,69 +569,11 @@
         margin-top: 20px;
     }
 }
-
-/* Untuk layar yang lebih kecil dari 480px */
-@media (max-width: 480px) {
-    .profile-info .data p {
-        margin: 25px;
-        font-size: 15px;
-    }
-
-
-    .navbar p {
-        font-size: 10px;
-    }
-    
-    .sidebar {
-        width: 100%;
-        left: -100%;
-    }
-    
-    .sidebar.open {
-        left: 0;
-    }
-    
-    .profile-info img {
-        width: 120px;
-        height: 120px;
-        margin-bottom: 10px; /* Tambahkan jarak bawah antara gambar profil dan teks */
-    }
-    
-    .profile-icon {
-        font-size: 150px;
-        margin-bottom: 15px; /* Jarak bawah antara ikon profil dan konten lainnya */
-    }
-    
-    .modal-content, .modal-image-content {
-        width: 95%;
-        max-width: 100%;
-        margin: 15px auto; /* Tambahkan margin agar modal tidak terlalu dekat dengan tepi viewport */
-    }
-    
-    .btn-primary, .btn-light, .btn-danger {
-        font-size: 14px;
-        padding: 6px 12px;
-        margin: 8px 0; /* Tambahkan margin vertikal pada tombol agar tidak berdempetan dengan elemen lain */
+@media (max-width: 366px) {
+    .data p {
+        
     }
 }
-
-@media (max-width: 405px) {
-
-    .profile-info .data p {
-        margin: 18px;
-        font-size: 10px;
-    }
-}
-
-@media (max-width: 282px) {
-
-.profile-info .data p {
-    margin: 18px;
-    font-size: 9px;
-}
-}
-
-
     </style>
 </head>
 <body>
@@ -665,7 +592,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/profil" class="nav-link-act">
+                    <a href="/personal" class="nav-link-act">
                         <span class="link"><i class="fa-solid fa-id-card"></i>ㅤProfile</span>
                     </a>
                 </li>
