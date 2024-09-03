@@ -222,6 +222,7 @@
 
         .list2 ul li {
             margin: 2 autopx, 0;
+            margin-bottom: 3%;
         }
 
         .nav-mini {
@@ -229,6 +230,7 @@
             padding: 10px;
             text-decoration: none;
             font-weight: 400;
+            font-size: 0.890rem;
             color: #365AC2;
             position: relative;
             overflow: hidden;
@@ -240,6 +242,7 @@
             padding: 10px;
             text-decoration: none;
             font-weight: 600;
+            font-size: 0.890rem;
             color: #365AC2;
             position: relative;
             overflow: hidden;
@@ -256,24 +259,13 @@
             background-color: #365AC2;
         }
 
-        .nav-mini::before {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background-color: #365AC2;
-            transition: all 0.3s;
-        }
-
         .nav-mini:hover::before {
             left: 0;
             width: 100%;
         }
 
         .nav-mini:hover {
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
         }
 
         .page {
@@ -301,12 +293,15 @@
             margin-bottom: 3%;
         }
 
+        .inpage label {
+            margin-top: 50px;
+        }
 
         .inpage input[type="password"] {
             width: 60%;
             padding: 15px;
             margin: 10px 0;
-            margin-bottom: 2%;
+            margin-bottom: 0;
             border-radius: 5px;
             border: 1px solid #ccc;
         }
@@ -325,13 +320,14 @@
         }
 
         .error-message {
-        color: red;
+        color: #536bc1;
         font-size: 12px;
         margin-top: 5px;
+        margin-bottom: 15px;
         display: block;
         }
         .error {
-            border: 1px solid red;
+            border: 1px solid #536bc1;
         }
 
         /* In your CSS file */
@@ -349,7 +345,7 @@
 
             .alert-danger {
                 background-color: #f8d7da;
-                color: #721c24;
+                color: #5b0d0d;
                 border-color: #f5c6cb;
             }
 
@@ -394,9 +390,9 @@
                 }
 
                 .inpage h3 {
-                        margin-bottom: 10px;
+                        margin-bottom: 5px;
                         margin-top: 2%;
-                        font-size: 1.5rem;
+                        font-size: 1.3rem;
                         color: #333;
                     }
 
@@ -462,16 +458,16 @@
                                 <span class="link">Password</span>
                             </a>
                         </li>
-                        {{-- <li>
+                        <li>
                             <a href="#" class="nav-mini">
-                                <span class="link">comingsoon</span>
+                                <span class="link">Theme</span>
                             </a>
                         </li>
                         <li>
                             <a href="#" class="nav-mini">
-                                <span class="link">comingsoon</span>
+                                <span class="link">Login History</span>
                             </a>
-                        </li> --}}
+                        </li>
                     </ul>
                 </div>
                 <div class="page">

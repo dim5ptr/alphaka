@@ -11,7 +11,7 @@
     <style>
         /* CSS Anda disini */
         html, body {
-            height: 100vh;
+            height: auto;
             margin: 0;
             padding: 0;
             font-family: 'Poppins', sans-serif;
@@ -149,7 +149,7 @@
 
         .main-content {
             width: 80%;
-            height: 100vh;
+            height: auto;
             flex: 1;
             margin-top: 20vh;
             margin-left: 10%;
@@ -172,11 +172,9 @@
             align-items: center;
         }
 
-        .note i {
-            margin-left: 10vw;
-            font-size: 100px;
-            color: #c23636;
-            margin-bottom: 10px; /* Add spacing below the icon */
+        .note img {
+            margin-left: 35% ;
+            width: 30%;
         }
 
         .note h4 {
@@ -192,7 +190,7 @@
         }
 
         .logout-button, .back-button {
-            width: 50%; /* Full width of parent */
+            width: 30%; /* Full width of parent */
             padding: 10px; /* Add padding */
             border-radius: 5px;
             text-decoration: none;
@@ -201,28 +199,25 @@
             box-sizing: border-box;
             border: 2px solid;
             background-color: #ffffff;
-            transition: background-color 0.3s, color 0.3s;
+            transition: transform 0.3s ease-out;
             margin-bottom: 5%;
+            justify-content: center;
         }
 
         .logout-button {
-            color: #c23636;
-            border-color: #c23636;
-        }
-
-        .logout-button:hover {
-            background-color: #a12d2d;
             color: #fff;
+            background-color: #205abe;
+            border-color: #365AC2;
         }
 
         .back-button {
             color: #365AC2;
             border-color: #365AC2;
+            margin-inline-start: 18%;
         }
 
-        .back-button:hover {
-            background-color: #294cb4;
-            color: #fff;
+        .back-button:hover, .logout-button:hover {
+            transform: scale(0.980);
         }
 
         @media (max-width: 768px) {
@@ -243,6 +238,13 @@
             font-size: 0.887rem;
             }
 
+            .logout-button, .back-button {
+            width: 30%; /* Full width of parent */
+            padding: 5px; /* Add padding */
+            border-radius: 2px;
+            box-sizing: border-box;
+            font-size: 0.790rem;
+            margin-top: 5%;
         }
 
 
@@ -280,7 +282,7 @@
     <div id="main-content" class="main-content">
         <div class="note">
             <div class="warning">
-                <i class="fa-solid fa-circle-exclamation"></i><br/>
+                <img src="img/H.jpg"><br/>
                 <h4 class="card-text"> Hello, <strong>{{ session('username') }}</strong>! Are you sure wanna log out?</h4>
                 <form id="logoutForm" class="logoutForm" method="GET" action="{{ route('logout') }}">
                     @csrf
