@@ -318,16 +318,20 @@
 
     .alert {
         padding: 20px;
-        margin-bottom: 15px;
         border: 1px solid transparent;
         border-radius: 4px;
         text-align: left;
+        position: absolute;
+        width: 80%;
+        z-index: 1001;
     }
 
     .alert-success {
-        color: #155724;
-        background-color: #d4edda;
+        color: white;
+        background-color: #1363DF;
         border-color: #c3e6cb;
+        font-weight: bold;
+        border-radius: 10px;
     }
 
     .alert-info {
@@ -440,13 +444,14 @@
         position: relative;
         margin-left: 3%;
         margin-right: 3%;
-        border-radius: 50%;
+        border-radius: 100%;
     }
 
     .foto img {
         widows: 100%;
         display: block;
         margin: auto;
+        border-radius: 100%;
     }
 
     .editfoto{
