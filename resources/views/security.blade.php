@@ -224,7 +224,6 @@
             margin: 2 autopx, 0;
             margin-bottom: 3%;
         }
-
         .nav-mini {
             display: block;
             padding: 10px;
@@ -267,7 +266,6 @@
         .nav-mini:hover {
             box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
         }
-
         .page {
             background-color: white;
             width: 80%;
@@ -454,24 +452,25 @@
                 <div class="list2">
                     <ul>
                         <li>
-                            <a href="/pw" class="nav-mini-act">
+                            <a href="#" class="nav-mini-act" data-target="password">
                                 <span class="link">Password</span>
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="nav-mini">
-                                <span class="link">Theme</span>
+                            <a href="#" class="nav-mini" data-target="sessions">
+                                <span class="link">Account Sessions</span>
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="nav-mini">
-                                <span class="link">Login History</span>
+                            <a href="#" class="nav-mini" data-target="activity">
+                                <span class="link">Login Activity</span>
                             </a>
                         </li>
                     </ul>
                 </div>
                 <div class="page">
                     <div class="inpage">
+                        <div id="password" class="content-section">
                         <h3>Manage Your Password</h3>
                         <p>Your new password must be different from your previous used password.</p>
                         @if (session('success'))
@@ -500,6 +499,7 @@
                             </div>
                             <button type="submit">Change Password</button>
                         </form>
+                        </div>
                     </div>
                 </div>
             </div>
