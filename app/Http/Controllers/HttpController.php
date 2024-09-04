@@ -741,34 +741,52 @@ public function submitResetPasswordForm(Request $request)
     }
 
     public function logout()
-    {
-        // Ambil token akses dari sesi
-        $access_token = session('access_token');
+{
+    // Ambil token akses dari sesi
+    $access_token = session('access_token');
 
-        if ($access_token) {
-            // Kirim permintaan logout ke API menggunakan HTTP client dengan menggunakan access token
-            $response = Http::withHeaders([
-                'Authorization' => $access_token,
-                'x-api-key' => self::API_KEY,
-            ])->post(self::API_URL . '/sso/logout.json');
+    if ($access_token) {
+        // Kirim permintaan logout ke API menggunakan HTTP client dengan menggunakan access token
+        $response = Http::withHeaders([
+            'Authorization' => $access_token,
+            'x-api-key' => self::API_KEY,
+        ])->post(self::API_URL . '/sso/logout.json');
 
-            // Periksa apakah permintaan logout berhasil
-            if ($response->successful() && $response['success']) {
-                // Hapus hanya token akses dari sesi
-                session()->flush();
+        // Log the response status and body
+        Log::info('Logout API Response:', [
+            'status' => $response->status(),
+            'body' => $response->body(),
+            'headers' => $response->headers()
+        ]);
 
-                // Redirect ke halaman login atau halaman lain yang sesuai setelah logout
-                return redirect()->route('login')->with('success', 'Logout successful.');
-            } else {
-                // Jika permintaan logout gagal atau respons tidak mengandung kunci 'success' yang bernilai true, tampilkan pesan kesalahan atau lakukan penanganan yang sesuai
-                // Misalnya:
-                return back()->withError('Failed to logout. Please try again.');
-            }
+        // Periksa apakah permintaan logout berhasil
+        if ($response->successful() && $response['success']) {
+            // Log successful logout
+            Log::info('User logged out successfully.', ['user' => session('username')]);
+
+            // Hapus hanya token akses dari sesi
+            session()->flush();
+
+            // Redirect ke halaman login atau halaman lain yang sesuai setelah logout
+            return redirect()->route('login')->with('success', 'Logout successful.');
         } else {
-            // Jika access token tidak ada, langsung redirect ke halaman login
-            return redirect()->route('login');
+            // Log failed logout attempt
+            Log::warning('Failed to logout.', [
+                'user' => session('username'),
+                'response_body' => $response->body()
+            ]);
+
+            // Jika permintaan logout gagal atau respons tidak mengandung kunci 'success' yang bernilai true, tampilkan pesan kesalahan atau lakukan penanganan yang sesuai
+            return back()->withError('Failed to logout. Please try again.');
         }
+    } else {
+        // Log the case where no access token was found in the session
+        Log::info('No access token found in session during logout attempt.');
+
+        // Jika access token tidak ada, langsung redirect ke halaman login
+        return redirect()->route('login');
     }
+}
 
 
 

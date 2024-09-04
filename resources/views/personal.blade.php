@@ -637,7 +637,7 @@
                         <p><span class="text-bold"><strong>User Name:</strong> {{ $personalInfo['username'] }}</span></p>
                         <p  class="text-bold"><strong>Nama:</strong> {{ $personalInfo['fullname'] }}</p>
                         <p class="text-bold"><strong>Birthday:</strong> {{ $personalInfo['dateofbirth'] }}</p>
-                        <p class="text-bold"><strong>Gender:</strong> {{ $personalInfo['gender'] == 0 ? 'Male' : 'Female' }}</p>
+                        <p class="text-bold"><strong>Gender:</strong> {{ $personalInfo['gender'] == 0 ? 'Female' : 'Male' }}</p>
                         <p class="text-bold"><strong>Email:</strong> {{ session('email') }}</p>
                         <p class="text-bold"><strong>Phone Number:</strong> {{ $personalInfo['phone'] }}</p>
                     </p>
@@ -677,8 +677,8 @@
                     <div class="form-group">
                         <label for="gender" class="form-label">Gender</label>
                         <select id="gender" name="gender" class="form-control">
-                            <option value="0" {{ session('gender') == 0 ? 'selected' : '' }}>Male</option>
-                            <option value="1" {{ session('gender') == 1 ? 'selected' : '' }}>Female</option>
+                            <option value="0" {{ session('gender') == 0 ? 'selected' : '' }}>Female</option>
+                            <option value="1" {{ session('gender') == 1 ? 'selected' : '' }}>Male</option>
                         </select>
                     </div>
 
