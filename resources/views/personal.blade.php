@@ -247,7 +247,7 @@
     .modal {
         display: none;
         position: fixed;
-        z-index: 1000;
+        z-index: 1001;
         left: 0;
         top: 0;
         width: 100%;
@@ -351,7 +351,7 @@
     .modal-image {
         display: none;
         position: fixed;
-        z-index: 1000;
+        z-index: 1001;
         left: 0;
         top: 0;
         width: 100%;
@@ -428,16 +428,61 @@
     }
 
     .profile-info {
-        display: flex;
+        display: inline-flex;
         align-items: center;
         width: 100%;
     }
 
-    .profile-info img {
-        border-radius: 50%;
-        margin-right: 10px;
-        margin-left: 2%;
 
+
+    .foto {
+        height: 30%;
+        position: relative;
+        margin-left: 3%;
+        margin-right: 3%;
+        border-radius: 50%;
+    }
+
+    .foto img {
+        widows: 100%;
+        display: block;
+        margin: auto;
+    }
+
+    .editfoto{
+        margin-left: 2.5%;
+        margin-top: 2%;
+        width: 95%;
+        height: 95%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 50%;
+        background: #00000039;
+        display: flex;
+        justify-content: center;
+        opacity: 0;
+       transition: 0.3ms ease-out;
+    }
+
+    .editfoto button{
+       background: none;
+       border: none;
+       font-size: 2rem;
+       color: white;
+    }
+
+    .editfoto:hover {
+        opacity: 100%;
+    }
+
+    .editfoto > * {
+        transform: translateY(25px);
+        transition: transform 0.3s;
+    }
+
+    .editfoto:hover > * {
+        transform: translateY(0px);
     }
 
     .profile-info .data {
@@ -568,11 +613,20 @@
     img {
         margin-top: 20px;
     }
+
+    .editfoto{
+        margin-left: 2.5%;
+        margin-top: 2%;
+        width: 95%;
+        height: 88%;
+    }
 }
 @media (max-width: 366px) {
     .data p {
 
     }
+
+
 }
     </style>
 </head>
@@ -626,12 +680,18 @@
             </div>
 
             <div class="profile-info">
+                <div class="foto">
                 @if (session('profile_picture') === '' || session('profile_picture') === null)
                     <img id="profile_picture" src="{{ asset('img/user.png') }}"  alt="Foto Profil" class="profile-picture">
                 @else
                     <img id="profile_picture" src="{{ asset(session('profile_picture')) }}"  alt="Foto Profil" class="profile-picture">
                 @endif
-
+                <div class="editfoto">
+                <button type="button" onclick="openImageModal()">
+                    <i class="fas fa-image me-2"></i>
+                </button>
+                </div>
+                </div>
                 <div class="data">
                     <p>
                         <p><span class="text-bold"><strong>User Name:</strong> {{ $personalInfo['username'] }}</span></p>
@@ -644,9 +704,6 @@
                     <div class="btn-container">
                         <button type="button" class="btn btn-light" onclick="openModal()">
                             <i class="fas fa-user-edit me-2"></i> Edit Profile
-                        </button>
-                        <button type="button" class="btn btn-light" onclick="openImageModal()">
-                            <i class="fas fa-image me-2"></i> Change Profile Image
                         </button>
                     </div>
                 </div>
