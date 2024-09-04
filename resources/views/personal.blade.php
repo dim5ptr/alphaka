@@ -689,7 +689,7 @@
                 @if (session('profile_picture') === '' || session('profile_picture') === null)
                     <img id="profile_picture" src="{{ asset('img/user.png') }}"  alt="Foto Profil" class="profile-picture">
                 @else
-                    <img id="profile_picture" src="{{ asset(session('profile_picture')) }}"  alt="Foto Profil" class="profile-picture">
+                <img id="profile_picture" src="{{ session('profile_picture') ? asset(session('profile_picture')) : ''  }}"  alt="Foto Profil" class="img-fluid rounded-circle profile-picture">
                 @endif
                 <div class="editfoto">
                 <button type="button" onclick="openImageModal()">
@@ -764,15 +764,7 @@
                 <form method="POST" action="{{ route('upload.profile.picture') }}" enctype="multipart/form-data">
                     @csrf
                     @method('POST')
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+
                     <div class="mb-3">
                         <label for="profile_image" class="form-label">Profile Image</label>
                         <input type="file" name="profile_picture" class="form-control" id="profile_picture">
@@ -783,6 +775,15 @@
                 </form>
             </div>
         </div>
+        @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     </div>
     <script>
         function toggleSidebar() {
