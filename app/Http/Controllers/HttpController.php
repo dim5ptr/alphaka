@@ -336,7 +336,7 @@ public function submitResetPasswordForm(Request $request)
 
     if ($responseData['success']) {
         // Log respon untuk debug
-        \Log::info('Password reset API response:', [
+        Log::info('Password reset API response:', [
             'status_code' => $response->status(),
             'response_body' => $response->body(),
             'success' =>  $responseData['success'],
@@ -355,7 +355,7 @@ public function submitResetPasswordForm(Request $request)
         // }
     } else {
         // Penanganan error jika API gagal
-        \Log::error('Failed to reset password:', [
+        Log::error('Failed to reset password:', [
             'status_code' => $response->status(),
             'response_body' => $response->body(),
         ]);
@@ -595,36 +595,42 @@ public function submitResetPasswordForm(Request $request)
     }
 
     public function editpersonal(Request $request)
-    {
-        // Mengirim data ke endpoint menggunakan HTTP Client
-        $response = Http::withHeaders([
-            'x-api-key' => self::API_KEY,
-            'Authorization' => session('access_token'),
-        ])->post(self::API_URL . '/sso/update_personal_info.json', [
-            'fullname' => $request->fullname,
+{
+    // Mengirim data ke endpoint menggunakan HTTP Client
+    $response = Http::withHeaders([
+        'x-api-key' => self::API_KEY,
+        'Authorization' => session('access_token'),
+    ])->post(self::API_URL . '/sso/update_personal_info.json', [
+        'fullname' => $request->fullname,
+        'username' => $request->username,
+        'birthday' => $request->dateofbirth,
+        'phone' => $request->phone,
+        'gender' => $request->gender == 0 ? 0 : 1,
+    ]);
+
+    // Log the response status and body
+    Log::info('API Response:', [
+        'status' => $response->status(),
+        'body' => $response->body()
+    ]);
+
+    // Cek respon dari endpoint dan sesuaikan tindakan berikutnya
+    if ($response->successful()) {
+        // Jika response berhasil, perbarui session dengan data yang baru
+        session([
+            'full_name' => $request->fullname,
             'username' => $request->username,
             'birthday' => $request->dateofbirth,
+            'gender' => $request->gender,
             'phone' => $request->phone,
-            'gender' => $request->gender == 'Male' ? 1 : 0,
         ]);
 
-        // Cek respon dari endpoint dan sesuaikan tindakan berikutnya
-        if ($response->successful()) {
-            // Jika response berhasil, perbarui session dengan data yang baru
-           session([
-                'full_name' => $request->fullname,
-                'username' => $request->username,
-                'birthday' => $request->dateofbirth,
-                'gender' => $request->gender,
-                'phone' => $request->phone,
-            ]);
-
-            return redirect('/personal')->with('success', 'Data has been saved!');
-        } else {
-            // Jika gagal, kembalikan pengguna dengan pesan error
-            return redirect()->back()->with('error', 'Failed to save data! Please try again.');
-        }
+        return redirect('/personal')->with('success', 'Data has been saved!');
+    } else {
+        // Jika gagal, kembalikan pengguna dengan pesan error
+        return redirect()->back()->with('error', 'Failed to save data! Please try again.');
     }
+}
 
     public function showuploadProfilePicture()
     {
@@ -765,25 +771,7 @@ public function submitResetPasswordForm(Request $request)
     }
 
 
-    public function sendEmail()
-    {
-        // Define variables
-        $introLines = ['If you request us to reset your account password, here is the link you can use!'];
-        $actionText = 'Reset Password Form';
-        $actionUrl = 'https://127.0.0.1:8000/password/reset?token=abc123';
-        $displayableActionUrl = 'https://127.0.0.1:8000/password/reset?token=abc123';
-        $outroLines = ['This password reset link will expire in 60 minutes. if you did not request a password reset, no further action is required.'];
-        $salutation = 'Sarastya';
 
-        // Send email
-        Mail::send([], [], function ($message) use ($greeting, $introLines, $actionText, $actionUrl, $displayableActionUrl, $outroLines, $salutation) {
-            $message->to('recipient@example.com')
-                    ->subject('Welcome to Our Service')
-                    ->setBody(view('emails.custom', compact('greeting', 'introLines', 'actionText', 'actionUrl', 'displayableActionUrl', 'outroLines', 'salutation'))->render(), 'text/html');
-        });
-
-        return 'Email sent successfully!';
-    }
 
 
     // public function showaccess($role)

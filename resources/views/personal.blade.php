@@ -539,24 +539,24 @@
     .navbar p {
         font-size: 12px;
     }
-    
+
     .profile-info img {
         width: 150px;
         height: 150px;
         margin-bottom: 15px; /* Tambahkan jarak bawah antara gambar profil dan teks */
     }
-    
+
     .profile-icon {
         font-size: 200px;
         margin-bottom: 20px; /* Jarak bawah antara ikon profil dan konten lainnya */
     }
-    
+
     .modal-content, .modal-image-content {
         width: 90%;
         max-width: 100%;
         margin: 20px auto; /* Tambahkan margin agar modal tidak terlalu dekat dengan tepi viewport */
     }
-    
+
     .btn-primary, .btn-light, .btn-danger {
         margin: 10px 0; /* Tambahkan margin vertikal pada tombol agar tidak berdempetan dengan elemen lain */
     }
@@ -571,7 +571,7 @@
 }
 @media (max-width: 366px) {
     .data p {
-        
+
     }
 }
     </style>
@@ -637,7 +637,7 @@
                         <p><span class="text-bold"><strong>User Name:</strong> {{ $personalInfo['username'] }}</span></p>
                         <p  class="text-bold"><strong>Nama:</strong> {{ $personalInfo['fullname'] }}</p>
                         <p class="text-bold"><strong>Birthday:</strong> {{ $personalInfo['dateofbirth'] }}</p>
-                        <p class="text-bold"><strong>Gender:</strong> {{ $personalInfo['gender'] == 0 ? 'Female' : 'Male' }}</p>
+                        <p class="text-bold"><strong>Gender:</strong> {{ $personalInfo['gender'] == 0 ? 'Male' : 'Female' }}</p>
                         <p class="text-bold"><strong>Email:</strong> {{ session('email') }}</p>
                         <p class="text-bold"><strong>Phone Number:</strong> {{ $personalInfo['phone'] }}</p>
                     </p>
@@ -677,8 +677,8 @@
                     <div class="form-group">
                         <label for="gender" class="form-label">Gender</label>
                         <select id="gender" name="gender" class="form-control">
-                            <option value="1" {{ session('gender') == 1 ? 'selected' : '' }}>Male</option>
-                            <option value="0" {{ session('gender') == 0 ? 'selected' : '' }}>Female</option>
+                            <option value="0" {{ session('gender') == 0 ? 'selected' : '' }}>Male</option>
+                            <option value="1" {{ session('gender') == 1 ? 'selected' : '' }}>Female</option>
                         </select>
                     </div>
 
