@@ -318,16 +318,17 @@
 
     .alert {
         padding: 20px;
-        margin-bottom: 15px;
         border: 1px solid transparent;
         border-radius: 4px;
         text-align: left;
     }
 
     .alert-success {
-        color: #155724;
-        background-color: #d4edda;
+        color: white;
+        background-color: #1363DF;
         border-color: #c3e6cb;
+        font-weight: bold;
+        border-radius: 10px;
     }
 
     .alert-info {
