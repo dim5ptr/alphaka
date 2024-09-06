@@ -202,6 +202,7 @@
             transition: transform 0.3s ease-out;
             margin-bottom: 5%;
             justify-content: center;
+            cursor: pointer;
         }
 
         .logout-button {
@@ -255,35 +256,15 @@
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }} </span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
 
-    <button class="open-btn" onclick="toggleSidebar()">&#9776; Info</button>
-
-    <div id="sidebar" class="sidebar">
-        <div class="sidebar-isi">
-            <ul class="list">
-                <li>
-                    <a href="/" class="nav-link">
-                        <span class="link"><i class="fa-solid fa-house-chimney"></i>ㅤDashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/personal" class="nav-link">
-                        <span class="link"><i class="fa-solid fa-id-card"></i>ㅤProfile</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/security" class="nav-link">
-                        <span class="link"><i class="fa-solid fa-user-shield"></i>ㅤSecurity</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
 
     <div id="main-content" class="main-content">
         <div class="note">
             <div class="warning">
                 <img src="img/H.jpg"><br/>
-                <h4 class="card-text"> Hello, <strong>{{ session('username') }}</strong>! Are you sure wanna log out?</h4>
+                <h4 class="card-text"> Hello,
+                    <strong>
+                        {{ session('username') ?? session('full_name') ?? session('email') }}
+                    </strong>! Are you sure wanna log out?</h4>
                 <form id="logoutForm" class="logoutForm" method="GET" action="{{ route('logout') }}">
                     @csrf
                     <button type="button" class="back-button" onclick="handleBackButton()">Back</button>
