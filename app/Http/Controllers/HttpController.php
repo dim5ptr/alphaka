@@ -380,7 +380,11 @@ public function submitResetPasswordForm(Request $request)
                 'username' => $request->email,
                 'password' => $request->password,
             ]);
-
+            Log::info('API request sent.', [
+                'url' => self::API_URL . '/sso/login.json',
+                'response_status' => $response->status(),
+                'response_body' => $response->body()
+            ]);
             $responseData = $response->json();
 
             if ($response->successful() && isset($responseData['data']['access_token'])) {
@@ -397,13 +401,17 @@ public function submitResetPasswordForm(Request $request)
                         'gender' => $personalInfo['gender'],
                         'phone' => $personalInfo['phone'],
                         'username' => $personalInfo['username'],
-                        'email' => $request->email, // Simpan email ke session
+                        'email' => $request->email,
+                        'profile_picture' => $personalInfo['profile_picture'] ?? null,// Simpan email ke session
                     ]);
 
                     // Simpan URL gambar profil ke session jika tersedia
                     if (isset($personalInfo['profile_picture'])) {
                         session(['profile_picture' => $personalInfo['profile_picture']]);
                     }
+                    Log::info('Session data stored successfully.', [
+                        'session_data' => session()->all()
+                    ]);
                 }
 
                 return redirect()->route('dashboard');
@@ -638,43 +646,58 @@ public function submitResetPasswordForm(Request $request)
     }
 
     public function uploadProfilePicture(Request $request)
-{
-    // Validasi file gambar
-    $request->validate([
-        'profile_picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-    ]);
+    {
+        Log::info('Starting profile picture upload process.');
 
-    if ($request->hasFile('profile_picture')) {
-        $file = $request->file('profile_picture');
-        $filename = time() . '_' . $file->getClientOriginalName();
+        // Validasi file gambar
+        $request->validate([
+            'profile_picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-        $requestData = [
-            'profile_picture' => $file,
-        ];
+        if ($request->hasFile('profile_picture')) {
+            $file = $request->file('profile_picture');
+            $filename = time() . '_' . $file->getClientOriginalName();
 
-        $response = Http::withHeaders([
-            'Authorization' => session('access_token'),
-            'x-api-key' => self::API_KEY,
-        ])->attach('profile_picture', $file->getPathname(), $file->getClientOriginalName())
-        ->post(self::API_URL . '/sso/update_profile_picture.json', $requestData);
+            Log::info('File uploaded by user:', ['filename' => $filename]);
 
-        $data = $response->json();
+            $requestData = [
+                'profile_picture' => $file,
+            ];
 
-        if ($response->successful()) {
-            $file->storeAs('public/profile_pictures', $filename);
-            session(['profile_picture' => 'storage/profile_pictures/' . $filename]);
+            try {
+                $response = Http::withHeaders([
+                    'Authorization' => session('access_token'),
+                    'x-api-key' => self::API_KEY,
+                ])->attach('profile_picture', $file->getPathname(), $file->getClientOriginalName())
+                ->post(self::API_URL . '/sso/update_profile_picture.json', $requestData);
 
-            echo "<script>localStorage.setItem('profile_picture', 'storage/profile_pictures/$filename');</script>";
+                $data = $response->json();
 
-            return redirect()->route('personal')->with('success', 'Profile picture uploaded successfully.');
+                Log::info('API response received:', ['status' => $response->status(), 'data' => $data]);
+
+                if ($response->successful()) {
+                    $file->storeAs('public/profile_pictures', $filename);
+                    session(['profile_picture' => 'storage/profile_pictures/' . $filename]);
+
+                    echo "<script>localStorage.setItem('profile_picture', 'storage/profile_pictures/$filename');</script>";
+
+                    Log::info('Profile picture stored successfully.', ['filename' => $filename]);
+
+                    return redirect()->route('personal')->with('success', 'Profile picture uploaded successfully.');
+                } else {
+                    $errorMessage = $data['message'] ?? 'An error occurred while uploading profile picture.';
+                    Log::error('API error:', ['message' => $errorMessage]);
+                    return redirect()->back()->with('error', $errorMessage);
+                }
+            } catch (\Exception $e) {
+                Log::error('Exception occurred during API request:', ['exception' => $e->getMessage()]);
+                return redirect()->back()->with('error', 'An error occurred during the upload process.');
+            }
         } else {
-            $errorMessage = $data['message'] ?? 'An error occurred while uploading profile picture.';
-            return redirect()->back()->with('error', $errorMessage);
+            Log::warning('No file uploaded by user.');
+            return redirect()->back()->with('error', 'No file uploaded.');
         }
-    } else {
-        return redirect()->back()->with('error', 'No file uploaded.');
     }
-}
 
 
 
