@@ -317,12 +317,15 @@
     }
 
     .alert {
-        padding: 20px;
+        padding: 15px;
         border: 1px solid transparent;
-        border-radius: 4px;
         text-align: left;
         position: absolute;
-        width: 80%;
+        width: 40%;
+        height: 3%;
+        margin-left: 20%;
+        font-size: 0.890rem;
+        justify-content: center;
         z-index: 1001;
     }
 
@@ -331,7 +334,7 @@
         background-color: #1363DF;
         border-color: #c3e6cb;
         font-weight: bold;
-        border-radius: 10px;
+        border-radius: 5px;
     }
 
     .alert-info {
@@ -422,18 +425,18 @@
         background-color: #0056b3;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         color: white;
-        left: 2%;
     }
 
     .judul h4 {
         margin: 0;
         font-size: 24px;
-        text-align: center;
+        text-align: left;
     }
 
     .profile-info {
         display: inline-flex;
         align-items: center;
+        margin-left: 5%;
         width: 100%;
     }
 
@@ -513,17 +516,76 @@
     }
 
     @media (max-width: 768px) {
+
+    .profile-info img {
+        /* Tambahkan jarak bawah antara gambar profil dan teks */
+    }
+
+    .profile-icon {
+        font-size: 200px;
+        margin-bottom: 20px; /* Jarak bawah antara ikon profil dan konten lainnya */
+    }
+
+    .modal-content, .modal-image-content {
+        width: 100%;
+        max-width: 80%;
+        margin: 20px auto; /* Tambahkan margin agar modal tidak terlalu dekat dengan tepi viewport */
+    }
+
+    .btn-primary, .btn-light, .btn-danger {
+        margin: 10px 0; /* Tambahkan margin vertikal pada tombol agar tidak berdempetan dengan elemen lain */
+    }
+
+    .main-content{
+        justify-content: center;
+        align-content: center;
+        align-items: center;
+    }
+    .banner {
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        margin-right: 0;
+    }
+
+    .container-flex {
+        margin-top: 50px;
+        width: 100%;
+        }
+
+    .editfoto{
+        margin-left: 1%;
+        margin-top: 15%;
+        width: 98%;
+        height: 80%;
+    }
+
+        .judul{
+            width: 85%;
+            margin-bottom: 5%;
+            margin-top: 4%;
+        }
+
+        .judul h4{
+        margin: 0;
+        font-size: 20px;
+        text-align: left;
+    }
+
         .profile-info {
             flex-direction: column;
             align-items: center;
         }
 
         .profile-info img {
-            margin-bottom: 20px;
+            width: 130px;
+            height: auto;
+            margin-bottom: 10px;
+            margin-top: 20px;
         }
 
         .profile-info .data span, .profile-info .data p {
-            text-align: center;
+            text-align: left;
         }
 
     }
@@ -583,56 +645,6 @@
             font-size: 280px; /* Mengatur ukuran ikon */
         }
 
-       /* Aturan Umum */
-@media (max-width: 768px) {
-
-    .navbar p {
-        font-size: 12px;
-    }
-
-    .profile-info img {
-        width: 150px;
-        height: 150px;
-        margin-bottom: 15px; /* Tambahkan jarak bawah antara gambar profil dan teks */
-    }
-
-    .profile-icon {
-        font-size: 200px;
-        margin-bottom: 20px; /* Jarak bawah antara ikon profil dan konten lainnya */
-    }
-
-    .modal-content, .modal-image-content {
-        width: 90%;
-        max-width: 100%;
-        margin: 20px auto; /* Tambahkan margin agar modal tidak terlalu dekat dengan tepi viewport */
-    }
-
-    .btn-primary, .btn-light, .btn-danger {
-        margin: 10px 0; /* Tambahkan margin vertikal pada tombol agar tidak berdempetan dengan elemen lain */
-    }
-
-    .container-flex {
-        margin-top: 50px;
-    }
-
-    img {
-        margin-top: 20px;
-    }
-
-    .editfoto{
-        margin-left: 2.5%;
-        margin-top: 2%;
-        width: 95%;
-        height: 88%;
-    }
-}
-@media (max-width: 366px) {
-    .data p {
-
-    }
-
-
-}
     </style>
 </head>
 <body>
