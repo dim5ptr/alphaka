@@ -322,8 +322,8 @@
             font-weight: 700;
         }
         img {
-            width: 130px;
-            height: 130px;
+            width: 300px;
+            height: auto;
         }
         .container {
 
@@ -377,7 +377,7 @@
     </div>
 <div id="main-content" class="main-content">
     <div class="container">
-        <img src="{{ asset('img/J.jpg') }}" alt="Fitur dalam perbaikan">
+        <img src="{{ asset('img/J.jpeg') }}" alt="Fitur dalam perbaikan">
         <h1>Fitur Sedang Dalam Perbaikan</h1>
         <p>Fitur ini sedang diperbaiki. Kami mohon maaf atas ketidaknyamanannya.</p>
     </div>
