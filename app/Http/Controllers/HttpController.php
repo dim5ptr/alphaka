@@ -490,95 +490,116 @@ public function submitResetPasswordForm(Request $request)
     }
 
 
-    // public function showcreateorganization()
-    // {
-    //     return view('addorganization');
-    // }
+    public function showcreateorganization()
+    {
+        return view('addorganization');
+    }
+
+    public function addorganization(Request $request)
+    {
+        Log::info('Attempting to add organization with name: ' . $request->organization_name);
+
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => session('access_token'),
+                'x-api-key' => self::API_KEY,
+            ])->post(self::API_URL . '/sso/create_organization', [
+                'organization_name' => $request->organization_name,
+                'description' => $request->description,
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json(); // Mengambil seluruh data dari respons
+                $organizations = $data['data']['organizations'];
+                Log::info('Organization added successfully: ' . $request->organization_name);
+                return view('organization', ['organizations' => $organizations]); // Mengirimkan data ke blade
+            } else {
+                Log::error('Failed to add organization. Response: ' . $response->body());
+                return back()->with('error', 'Failed to get organization list. Please try again.');
+            }
+        } catch (\Exception $e) {
+            Log::error('Exception occurred while adding organization: ' . $e->getMessage());
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function showvieworganization($organization_name)
+    {
+        Log::info('Attempting to view organization with name: ' . $organization_name);
+
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => session('access_token'),
+                'x-api-key' => self::API_KEY,
+            ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
+
+            if ($response->successful()) {
+                $data = $response->json(); // Mengambil seluruh data dari respons
+                $organizations = $data['data']['organizations']; // Mengambil data organisasi dari respons
+
+                // Cari organisasi yang sesuai dengan nama yang diberikan
+                foreach ($organizations as $org) {
+                    if ($org['organization_name'] === $organization_name) {
+                        $organization = [
+                            'organization_name' => $organization_name,
+                            'description' => $org['description']
+                        ];
+                        Log::info('Organization found: ' . $organization_name);
+                        return view('vieworganization', compact('organization'));
+                    }
+                }
+
+                Log::warning('Organization not found: ' . $organization_name);
+                return back()->with('error', 'Organization not found');
+            } else {
+                Log::error('Failed to get organization list. Response: ' . $response->body());
+                return back()->with('error', 'Failed to get organization list. Please try again.');
+            }
+        } catch (\Exception $e) {
+            Log::error('Exception occurred while viewing organization: ' . $e->getMessage());
+            return back()->with('error', $e->getMessage());
+        }
+    }
+    public function showmoredetails($organization_name)
+    {
+        Log::info('Attempting to show more details for organization: ' . $organization_name);
+
+        try {
+            // Memanggil showvieworganization untuk mendapatkan data organisasi
+            $organization = $this->showvieworganization($organization_name)->getData()['organization'];
+
+            // Mengirim data organisasi dan nama organisasi ke tampilan moredetails
+            Log::info('Showing more details for organization: ' . $organization_name);
+            return view('moredetails', compact('organization', 'organization_name'));
+        } catch (\Exception $e) {
+            Log::error('Exception occurred while showing more details: ' . $e->getMessage());
+            return back()->with('error', $e->getMessage());
+        }
+    }
 
 
-    // public function addorganization(Request $request)
-    // {
-    //     try {
-    //         $response = Http::withHeaders([
-    //             'Authorization' => session('access_token'),
-    //             'x-api-key' => self::API_KEY,
-    //         ])->post(self::API_URL . '/sso/create_organization', [
-    //             'organization_name' => $request->organization_name,
-    //             'description' => $request->description,
-    //         ]);
+    public function showeditorganization($organization_name)
+    {
+        Log::info('Attempting to edit organization: ' . $organization_name);
 
-    //         if ($response->successful()) {
-    //             return view('organization', ['organizations' => $organizations]); // Mengirimkan data ke blade
-    //         } else {
-    //             return back()->with('error', 'Failed to get organization list. Please try again.');
-    //         }
-    //     } catch (\Exception $e) {
-    //         return back()->with('error', $e->getMessage());
-    //     }
-    // }
+        try {
+            // Memanggil showvieworganization untuk mendapatkan data organisasi
+            $organization = $this->showvieworganization($organization_name)->getData()['organization'];
 
-    // public function showvieworganization($organization_name)
-    // {
-    //     try {
-    //         $response = Http::withHeaders([
-    //             'Authorization' => session('access_token'),
-    //             'x-api-key' => self::API_KEY,
-    //         ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
-
-    //         if ($response->successful()) {
-    //             $data = $response->json(); // Mengambil seluruh data dari respons
-    //             $organizations = $data['data']['organizations']; // Mengambil data organisasi dari respons
-
-    //             // Cari organisasi yang sesuai dengan nama yang diberikan
-    //             foreach ($organizations as $org) {
-    //                 if ($org['organization_name'] === $organization_name) {
-    //                     $organization = [
-    //                         'organization_name' => $organization_name,
-    //                         'description' => $org['description']
-    //                     ];
-    //                     return view('vieworganization', compact('organization'));
-    //                 }
-    //             }
-
-    //             // Jika organisasi tidak ditemukan
-    //             return back()->with('error', 'Organization not found');
-    //         } else {
-    //             return back()->with('error', 'Failed to get organization list. Please try again.');
-    //         }
-
-    //     } catch (\Exception $e) {
-    //         return back()->with('error', $e->getMessage());
-    //     }
-    // }
-
-    // public function showmoredetails($organization_name)
-    // {
-    //     try {
-    //         // Memanggil showvieworganization untuk mendapatkan data organisasi
-    //         $organization = $this->showvieworganization($organization_name)->getData()['organization'];
-
-    //         // Mengirim data organisasi dan nama organisasi ke tampilan moredetails
-    //         return view('moredetails', compact('organization', 'organization_name'));
-    //     } catch (\Exception $e) {
-    //         return back()->with('error', $e->getMessage());
-    //     }
-    // }
+            // Mengirim data organisasi ke tampilan editorganization
+            Log::info('Showing edit view for organization: ' . $organization_name);
+            return view('editorganization', compact('organization'));
+        } catch (\Exception $e) {
+            Log::error('Exception occurred while showing edit view: ' . $e->getMessage());
+            return back()->with('error', $e->getMessage());
+        }
+    }
 
 
-    // public function showeditorganization($organization_name)
-    // {
-    //     // Memanggil showvieworganization untuk mendapatkan data organisasi
-    //     $organization = $this->showvieworganization($organization_name)->getData()['organization'];
+    public function editorganization(Request $request)
+    {
 
-    //     // Mengirim data organisasi ke tampilan editorganization
-    //     return view('editorganization', compact('organization'));
-    // }
-
-
-    // public function editorganization(Request $request)
-    // {
-
-    // }
+    }
 
 
     public function personal()
@@ -815,99 +836,99 @@ public function submitResetPasswordForm(Request $request)
 
 
 
-    // public function showaccess($role)
-    // {
-    //     return view ('admin.access', ['role' => $role]);
-    // }
+    public function showaccess($role)
+    {
+        return view ('admin.access', ['role' => $role]);
+    }
 
-    // public function showdetailsadm()
-    // {
+    public function showdetailsadm()
+    {
 
-    // }
+    }
 
-    // public function showedituser()
-    // {
-    //     return view ('edituser');
-    // }
+    public function showedituser()
+    {
+        return view ('edituser');
+    }
 
-    // public function personaladm()
-    // {
-    //     return view ('admin.detailsadm');
-    // }
+    public function personaladm()
+    {
+        return view ('admin.detailsadm');
+    }
 
-    // public function showeditpersonaladm()
-    // {
-    //     return view ('admin.editpersonaladm');
-    // }
+    public function showeditpersonaladm()
+    {
+        return view ('admin.editpersonaladm');
+    }
 
-    // public function editpersonaladm()
-    // {
+    public function editpersonaladm()
+    {
 
-    // }
+    }
 
-    // public function showsecurityadm()
-    // {
-    //     return view ('admin.securityadm');
-    // }
+    public function showsecurityadm()
+    {
+        return view ('admin.securityadm');
+    }
 
-    // public function showchangepwadm()
-    // {
-    //     return view ('admin.changepwadm');
-    // }
+    public function showchangepwadm()
+    {
+        return view ('admin.changepwadm');
+    }
 
-    // public function showedituseradm()
-    // {
-    //     return view ('admin.edituseradm');
-    // }
+    public function showedituseradm()
+    {
+        return view ('admin.edituseradm');
+    }
 
-    // public function edituseradm()
-    // {
+    public function edituseradm()
+    {
 
-    // }
+    }
 
 
 
-    // public function redirectToGoogle()
-    // {
-    //     // Redirect pengguna ke halaman autentikasi Google menggunakan Socialite
-    //     return Socialite::driver('google')->redirect();
-    // }
+    public function redirectToGoogle()
+    {
+        // Redirect pengguna ke halaman autentikasi Google menggunakan Socialite
+        return Socialite::driver('google')->redirect();
+    }
 
-    // public function handleGoogleCallback()
-    // {
-    //     try {
-    //         // Ambil informasi pengguna dari Google setelah autentikasi
-    //         $googleUser = Socialite::driver('google')->user();
-    //     } catch (\Exception $e) {
-    //         // Tangkap dan tampilkan pesan kesalahan jika autentikasi gagal
-    //         dd($e->getMessage());
-    //     }
+    public function handleGoogleCallback()
+    {
+        try {
+            // Ambil informasi pengguna dari Google setelah autentikasi
+            $googleUser = Socialite::driver('google')->user();
+        } catch (\Exception $e) {
+            // Tangkap dan tampilkan pesan kesalahan jika autentikasi gagal
+            dd($e->getMessage());
+        }
 
-    //     // Periksa apakah pengguna berhasil diambil dari Google
-    //     if ($googleUser) {
-    //         // Ambil alamat email pengguna dari data yang diterima dari Google
-    //         $email = $googleUser->email;
+        // Periksa apakah pengguna berhasil diambil dari Google
+        if ($googleUser) {
+            // Ambil alamat email pengguna dari data yang diterima dari Google
+            $email = $googleUser->email;
 
-    //         // Kirim permintaan registrasi pengguna ke backend menggunakan HTTP Client
-    //         $response = Http::withHeaders([
-    //             'x-api-key' => self::API_KEY, // Header x-api-key untuk otentikasi pada API backend
-    //         ])->post(self::API_URL . '/sso/register.json', [
-    //             'email' => $email, // Kirim alamat email pengguna untuk registrasi
-    //             'password' => 'password_default', // Tambahkan kata sandi default untuk registrasi
-    //         ]);
+            // Kirim permintaan registrasi pengguna ke backend menggunakan HTTP Client
+            $response = Http::withHeaders([
+                'x-api-key' => self::API_KEY, // Header x-api-key untuk otentikasi pada API backend
+            ])->post(self::API_URL . '/sso/register.json', [
+                'email' => $email, // Kirim alamat email pengguna untuk registrasi
+                'password' => 'password_default', // Tambahkan kata sandi default untuk registrasi
+            ]);
 
-    //         // Periksa apakah permintaan registrasi berhasil
-    //         if ($response->successful()) {
-    //             // Jika berhasil, arahkan pengguna ke halaman dashboard
-    //             return redirect()->route('dashboard');
-    //         } else {
-    //             // Jika gagal, arahkan pengguna kembali ke halaman registrasi dengan pesan kesalahan
-    //             return redirect()->route('register')->with('error', 'Gagal melakukan registrasi. Silakan coba lagi.');
-    //         }
+            // Periksa apakah permintaan registrasi berhasil
+            if ($response->successful()) {
+                // Jika berhasil, arahkan pengguna ke halaman dashboard
+                return redirect()->route('dashboard');
+            } else {
+                // Jika gagal, arahkan pengguna kembali ke halaman registrasi dengan pesan kesalahan
+                return redirect()->route('register')->with('error', 'Gagal melakukan registrasi. Silakan coba lagi.');
+            }
 
-    //     } else {
-    //         // Jika gagal mengambil informasi pengguna dari Google, tampilkan pesan kesalahan
-    //         dd('Failed to retrieve user information from Google.');
-    //     }
-    // }
+        } else {
+            // Jika gagal mengambil informasi pengguna dari Google, tampilkan pesan kesalahan
+            dd('Failed to retrieve user information from Google.');
+        }
+    }
 }

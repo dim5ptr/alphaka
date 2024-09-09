@@ -7,6 +7,8 @@
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
     <style>
         /* CSS Enhancements */
 
@@ -274,7 +276,9 @@
         .open-btn:hover {
             color: darkblue;
         }
-
+        .open-btn span {
+           color: #2d4da3;
+        }
         .main-content {
             width: calc(100% - 270px);
             height: 100%;
@@ -321,25 +325,103 @@
             color: aliceblue;
             font-weight: 700;
         }
-    </style>
+/* General Styles */
+
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+}
+
+
+/* Form Section */
+.form-section {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center; /* Center form-container horizontally */
+}
+
+.form-container {
+    background-color: #AFC3FC; /* Light Blue */
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto; /* Center form-container within row */
+}
+
+.form-group {
+    margin-bottom: 20px; /* Adjusted margin for better spacing */
+}
+
+.form-label {
+    display: block;
+    color: #365AC2; /* Dark Blue */
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.form-input {
+    width: 90%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    background-color: #fff; /* White */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-input:focus {
+    border-color: #365AC2; /* Dark Blue border on focus */
+    outline: none;
+    box-shadow: 0 0 8px rgba(54, 90, 194, 0.2);
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 14px;
+    background-color: #365AC2; /* Dark Blue */
+    color: #fff; /* White */
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-submit:hover {
+    background-color: #2d4da3; /* Darker Blue on hover */
+    box-shadow: 0 6px 16px rgba(45, 77, 163, 0.2);
+}
+
+
+</style>
 </head>
 <body>
     <nav class="navbar">
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
 
-    <button class="open-btn" onclick="toggleSidebar()">&#9776; Dashboard</button>
+    <button class="open-btn" onclick="toggleSidebar()">&#9776; Organization <span> > Create Organization</span></button>
 
     <div id="sidebar" class="sidebar">
         <div class="sidebar-isi">
             <ul class="list">
                 <li>
-                    <a href="/" class="nav-link-act">
+                    <a href="/" class="nav-link">
                         <span class="link"><i class="fa-solid fa-house-chimney"></i>ㅤDashboard</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/organization" class="nav-link">
+                    <a href="/organization" class="nav-link-act">
                         <span class="link"><i class="nav-icon fas fa-users"></i>ㅤOrganization</span>
                     </a>
                 </li>
@@ -361,6 +443,37 @@
             </ul>
         </div>
     </div>
+    <div id="main-content" class="main-content">
+        <!-- Content Header (Page header) -->
+
+
+                <!-- Form Section -->
+                <section class="form-section">
+                    <div class="row justify-center">
+                        <div class="form-container">
+                            <!-- Form for creating organization -->
+                            <form action="{{ route('addorganization') }}" method="POST">
+                                @csrf
+                                <div class="form-group">
+                                    <label for="organization_name" class="form-label">Organization Name</label>
+                                    <input type="text" name="organization_name" id="organization_name" class="form-input" placeholder="Enter Organization Name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="description" class="form-label">Description</label>
+                                    <input type="text" name="description" id="description" class="form-input" placeholder="Enter Organization Description" required>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn-submit">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </div>
+    </div>
+
+
+
 
     <script>
         function toggleSidebar() {
@@ -411,3 +524,4 @@
 
 </body>
 </html>
+
