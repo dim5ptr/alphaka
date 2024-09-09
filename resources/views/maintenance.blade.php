@@ -275,11 +275,11 @@
             color: darkblue;
         }
 
-        .main-content {
+        .main-content{
             width: calc(100% - 270px);
             height: 100%;
             flex: 1;
-            margin-top: 5%;
+            margin-top: 10%;
             margin-left: 10%;
             transition: margin-left .3s;
         }
@@ -321,6 +321,20 @@
             color: aliceblue;
             font-weight: 700;
         }
+        img {
+            width: 130px;
+            height: 130px;
+        }
+        .container {
+
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
     </style>
 </head>
 <body>
@@ -328,18 +342,18 @@
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
 
-    <button class="open-btn" onclick="toggleSidebar()">&#9776; Dashboard</button>
+    <button class="open-btn" onclick="toggleSidebar()">&#9776; Organization</button>
 
     <div id="sidebar" class="sidebar">
         <div class="sidebar-isi">
             <ul class="list">
                 <li>
-                    <a href="/" class="nav-link-act">
+                    <a href="/" class="nav-link">
                         <span class="link"><i class="fa-solid fa-house-chimney"></i>ㅤDashboard</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/maintenance" class="nav-link">
+                    <a href="/maintenance" class="nav-link-act">
                         <span class="link"><i class="nav-icon fas fa-users"></i>ㅤOrganization</span>
                     </a>
                 </li>
@@ -361,7 +375,13 @@
             </ul>
         </div>
     </div>
-
+<div id="main-content" class="main-content">
+    <div class="container">
+        <img src="{{ asset('img/H.jpg') }}" alt="Fitur dalam perbaikan">
+        <h1>Fitur Sedang Dalam Perbaikan</h1>
+        <p>Fitur ini sedang diperbaiki. Kami mohon maaf atas ketidaknyamanannya.</p>
+    </div>
+</div>
     <script>
         function toggleSidebar() {
             var sidebar = document.getElementById("sidebar");
@@ -411,3 +431,4 @@
 
 </body>
 </html>
+

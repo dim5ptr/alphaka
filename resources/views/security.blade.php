@@ -430,7 +430,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/viewsorganization" class="nav-link">
+                    <a href="/maintenance" class="nav-link">
                         <span class="link"><i class="nav-icon fas fa-users"></i>ㅤOrganization</span>
                     </a>
                 </li>

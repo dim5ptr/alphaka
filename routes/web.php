@@ -54,6 +54,9 @@ Route::post('/formforgetpassword', [HttpController::class, 'submitResetPasswordF
 
 // Rute-rute yang memerlukan autentikasi
 Route::middleware(['auth'])->group(function () {
+    Route::get('/maintenance', function () {
+        return view('maintenance');
+    });
     // Rute untuk logout
     Route::get('/logout', [HttpController::class, 'logout'])->name('logout');
     // Rute untuk konfirmasi logout
