@@ -430,6 +430,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="/viewsorganization" class="nav-link">
+                        <span class="link"><i class="nav-icon fas fa-users"></i>ㅤOrganization</span>
+                    </a>
+                </li>
+                <li>
                     <a href="/personal" class="nav-link">
                         <span class="link"><i class="fa-solid fa-id-card"></i>ㅤProfile</span>
                     </a>

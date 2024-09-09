@@ -248,6 +248,7 @@
             margin-top: 5%;
         }
 
+    }
 
     </style>
 </head>
@@ -289,6 +290,7 @@
                 window.history.back();
             }
         }
+        console.log('Referrer:', referrer);
     </script>
 
 

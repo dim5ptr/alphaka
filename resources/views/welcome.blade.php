@@ -339,7 +339,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/organization" class="nav-link">
+                    <a href="/viewsorganization" class="nav-link">
                         <span class="link"><i class="nav-icon fas fa-users"></i>ㅤOrganization</span>
                     </a>
                 </li>
