@@ -66,6 +66,23 @@
         .form-group .input-group input:hover {
             box-shadow: 0 0 5px #AFC3FC;
         }
+
+        .input-group .btn {
+            position: absolute;
+            top: 50%;
+            right: 35%;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #365AC2;
+            font-size: 1rem;
+        }
+
+        .input-group .btn i {
+            font-size: 1rem;
+        }
+
+
         .btn-primary {
             font-weight: bolder;
             width: 60%;
@@ -145,7 +162,7 @@
     .pict {
         display: none;
     }
-    
+
     .container{
         max-width: 100%;
     }
@@ -176,7 +193,7 @@
 
     .input-group .icon {
         font-size: 0.8rem;
-        left: 10px; 
+        left: 10px;
     }
 
     .input-group input {
@@ -218,16 +235,24 @@
                     <div class="input-group">
                         <i class="fa fa-lock"></i>
                         <input type="password" id="password" name="password" placeholder="Password" required>
+                        <button type="button" class="btn" id="toggle-password">
+                            <i class="fa fa-eye"></i>
+                        </button>
                     </div>
                     <span id="password-error" class="error"></span>
                 </div>
+
                 <div class="form-group">
                     <div class="input-group">
                         <i class="fa fa-lock"></i>
                         <input type="password" id="confirmpassword" name="confirmpassword" placeholder="Confirm Password" required>
+                        <button type="button" class="btn" id="toggle-confirm-password">
+                            <i class="fa fa-eye"></i>
+                        </button>
                     </div>
                     <span id="password-confirmation-error" class="error"></span>
                 </div>
+
                 <button type="submit" class="btn btn-primary">Daftar</button>
             </form>
             <p class="form-text">Sudah punya akun? <a href="{{ route('login') }}">Login disini</a></p>
@@ -236,6 +261,38 @@
             <img src="{{ asset('img/A.jpg') }}" alt="">
         </div>
     </div>
+
+    <script>
+            document.getElementById('toggle-password').addEventListener('click', function () {
+            const passwordField = document.getElementById('password');
+            const passwordIcon = this.querySelector('i');
+
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                passwordIcon.classList.remove('fa-eye');
+                passwordIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                passwordIcon.classList.remove('fa-eye-slash');
+                passwordIcon.classList.add('fa-eye');
+            }
+        });
+
+        document.getElementById('toggle-confirm-password').addEventListener('click', function () {
+            const confirmPasswordField = document.getElementById('confirmpassword');
+            const confirmPasswordIcon = this.querySelector('i');
+
+            if (confirmPasswordField.type === 'password') {
+                confirmPasswordField.type = 'text';
+                confirmPasswordIcon.classList.remove('fa-eye');
+                confirmPasswordIcon.classList.add('fa-eye-slash');
+            } else {
+                confirmPasswordField.type = 'password';
+                confirmPasswordIcon.classList.remove('fa-eye-slash');
+                confirmPasswordIcon.classList.add('fa-eye');
+            }
+        });
+    </script>
 
     <script>
         document.getElementById('email').addEventListener('input', function () {
