@@ -22,7 +22,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Str;
-
+use App\Notifications\OrganizationCreated;
+use Illuminate\Notifications\Notifiable;
 
 
 
@@ -494,34 +495,127 @@ public function submitResetPasswordForm(Request $request)
     {
         return view('addorganization');
     }
+    public function inbox()
+{
+    // Fetch notifications from the session
+    $notifications = session('notifications', []);
+
+    return view('inbox', compact('notifications'));
+}
+
+public function clearNotifications()
+{
+    // Clear notifications from the session
+    session()->forget('notifications');
+
+    return redirect()->route('inbox')->with('message', 'All notifications cleared.');
+}
+
 
     public function addorganization(Request $request)
-    {
-        Log::info('Attempting to add organization with name: ' . $request->organization_name);
+{
+    // Retrieve access token from session
+    $token = session('access_token');
 
-        try {
-            $response = Http::withHeaders([
-                'Authorization' => session('access_token'),
-                'x-api-key' => self::API_KEY,
-            ])->post(self::API_URL . '/sso/create_organization', [
-                'organization_name' => $request->organization_name,
-                'description' => $request->description,
-            ]);
-
-            if ($response->successful()) {
-                $data = $response->json(); // Mengambil seluruh data dari respons
-                $organizations = $data['data']['organizations'];
-                Log::info('Organization added successfully: ' . $request->organization_name);
-                return view('organization', ['organizations' => $organizations]); // Mengirimkan data ke blade
-            } else {
-                Log::error('Failed to add organization. Response: ' . $response->body());
-                return back()->with('error', 'Failed to get organization list. Please try again.');
-            }
-        } catch (\Exception $e) {
-            Log::error('Exception occurred while adding organization: ' . $e->getMessage());
-            return back()->with('error', $e->getMessage());
-        }
+    if (!$token) {
+        Log::warning('Access token not found. Redirecting to login.');
+        return redirect()->route('login')->withErrors(['error' => 'Access token not found. Please login again.']);
     }
+
+    // Validate input
+    $request->validate([
+        'organization_name' => 'required|string|max:255',
+        'description' => 'required|string|max:500',
+    ]);
+
+    Log::info('Attempting to add organization with name: ' . $request->organization_name);
+
+    try {
+        // Send a request to the API to add the organization
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'x-api-key' => self::API_KEY,
+        ])->post(self::API_URL . '/sso/create_organization.json', [
+            'organization_name' => $request->organization_name,
+            'description' => $request->description,
+        ]);
+
+        // Retrieve the response data
+        $data = $response->json();
+        Log::info('API Response:', $data);
+
+        if ($response->successful() && isset($data['success']) && $data['success'] === true) {
+            // Save verification token to session if present
+            if (isset($data['verification_token'])) {
+                session(['verification_token' => $data['verification_token']]);
+            }
+
+            session(['organization_name' => $request->organization_name]);
+
+            Log::info('Organization added successfully: ' . $request->organization_name);
+
+            // Store a notification in the session (instead of a database)
+            $notifications = session('notifications', []); // Fetch current notifications from the session
+
+            $notifications[] = [
+                'title' => 'Organization Created Successfully',
+                'message' => 'Your organization "' . $request->organization_name . '" has been created successfully. Please verify it using the provided token.',
+                'verification_token' => session('verification_token'),
+            ];
+
+            // Save the updated notifications array back to the session
+            session(['notifications' => $notifications]);
+
+            Log::info('Notification stored in the session.');
+
+            // Add success message with access token
+            return redirect('/organization')->with([
+                'success_message' => 'Organization created successfully.',
+                'access_token' => $token,
+            ]);
+        } else {
+            Log::error('Failed to add organization. Response: ' . $response->body());
+            return back()->withErrors(['error_message' => 'Failed to add organization. Please try again.'])->withInput();
+        }
+    } catch (\Illuminate\Http\Client\RequestException $e) {
+        Log::error('HTTP Request failed: ' . $e->getMessage());
+        return back()->withErrors(['error_message' => 'HTTP Request failed: ' . $e->getMessage()])->withInput();
+    } catch (\Exception $e) {
+        Log::error('An error occurred: ' . $e->getMessage());
+        return back()->withErrors(['error_message' => 'Something went wrong, try again! ' . $e->getMessage()])->withInput();
+    }
+}
+
+
+
+
+    // public function addorganization(Request $request)
+    // {
+    //     Log::info('Attempting to add organization with name: ' . $request->organization_name);
+
+    //     try {
+    //         $response = Http::withHeaders([
+    //             'Authorization' => session('access_token'),
+    //             'x-api-key' => self::API_KEY,
+    //         ])->post(self::API_URL . '/sso/create_organization', [
+    //             'organization_name' => $request->organization_name,
+    //             'description' => $request->description,
+    //         ]);
+
+    //         if ($response->successful()) {
+    //             $data = $response->json(); // Mengambil seluruh data dari respons
+    //             $organizations = $data['data']['organizations'];
+    //             Log::info('Organization added successfully: ' . $request->organization_name);
+    //             return view('organization', ['organizations' => $organizations]); // Mengirimkan data ke blade
+    //         } else {
+    //             Log::error('Failed to add organization. Response: ' . $response->body());
+    //             return back()->with('error', 'Failed to get organization list. Please try again.');
+    //         }
+    //     } catch (\Exception $e) {
+    //         Log::error('Exception occurred while adding organization: ' . $e->getMessage());
+    //         return back()->with('error', $e->getMessage());
+    //     }
+    // }
 
     public function showvieworganization($organization_name)
     {
