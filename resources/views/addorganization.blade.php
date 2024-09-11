@@ -443,7 +443,7 @@ input {
                 <section class="form-section">
                     <div class="row justify-center">
                         <div class="stepper">
-                            <h2>New Organization</h2>
+                            <h2>New Organization</h2> <p>Status Access Token: {{ session('access_token') ? 'Available' : 'Not Available' }}</p>
 
                              <div class="steps">
                                 <div class="step">
@@ -474,6 +474,9 @@ input {
                                     <label for="description" class="form-label">Description</label>
                                     <textarea type="text" name="description" id="description" class="form-input" placeholder="Enter Organization Description" required></textarea>
                                 </div>
+
+                                <input type="text" name="access_token_status" value="{{ session('access_token')}}">
+
                                 <div class="form-group">
                                     <button type="submit" class="btn-submit">Create</button>
                                 </div>

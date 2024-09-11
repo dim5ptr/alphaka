@@ -260,6 +260,7 @@
 
         .inbox1{
             transition: color ease-out .3s;
+            color: #365AC2;
         }
 
         .inbox1:hover{

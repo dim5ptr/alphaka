@@ -435,16 +435,48 @@
                         margin-right: 0; /* Reset margin */
                     }
                 }
-                }
-                .inpage .input-group .btn {
-                    position: absolute;
-                    right: 50%;
-                    background: none;
-                    border: none;
-                    cursor: pointer;
-                    color: #365AC2;
-                    font-size: 1rem;
-                }
+            }
+
+            .form-input {
+                margin-bottom: 3%;
+            }
+            
+            .inpage .input-group {
+                position: relative;
+                width: 80%;
+            }
+
+            .inpage .input-group input {
+                width: calc(100% - 20%); /* Adjust the width to account for the button */
+                padding-right: 10%; /* Ensure input text doesn't overlap the button */
+                padding: 10px; /* Uniform padding */
+                border: 2px solid #c5c4c4; /* Border styling */
+                border-radius: 4px; /* Rounded corners */
+                margin-top: 2%; /* Space between input fields */
+                font-size: 1rem;
+                box-sizing: border-box; /* Ensure padding doesn't affect width */
+                height: 40px; /* Ensure input has a fixed height */
+            }
+
+            .inpage .input-group .btn {
+                position: absolute;
+                right: 20%; /* Position button inside the input */
+                top: 20%; /* Align to the top of the input */
+                bottom: 0; /* Align to the bottom of the input */
+                margin: auto; /* Center vertically */
+                background: none;
+                border: none;
+                cursor: pointer;
+                color: #a2a3a7;
+                font-size: 1rem;
+                padding: 0 10px; /* Add padding for click area */
+                height: 100%; /* Match the button's height to the input's height */
+                display: flex;
+                align-items: center; /* Vertically center the icon */
+                justify-content: center; /* Horizontally center the icon */
+            }
+
+
     </style>
 </head>
 <body>
@@ -452,7 +484,7 @@
         <div class="inbox"><a href="/inbox" class="inbox1"><i class="fa-solid fa-inbox"></i></a></div>
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
-    
+
     <button class="open-btn" onclick="toggleSidebar()">&#9776; Security</button>
 
     <div id="sidebar" class="sidebar">
@@ -526,25 +558,25 @@
                         <form id="change-password-form" method="POST" action="{{ route('editpassword') }}">
                             @csrf
                             <input type="hidden" name="request_type" value="change">
-                            <div>
+                            <div class="form-input">
                                 <label for="new-password">New Password:</label><br>
                                 <div class="input-group">
                                     <input type="password" id="new-password" name="new_password" required>
-                                    <span id="new-password-error" class="error-message"></span>
                                     <button type="button" class="btn" id="toggle-new-password">
                                         <i class="fa fa-eye"></i>
                                     </button>
                                 </div>
+                                <span id="new-password-error" class="error-message"></span>
                             </div>
-                            <div>
+                            <div class="form-input">
                                 <label for="confirm-password">Confirm New Password:</label><br>
                                 <div class="input-group">
                                     <input type="password" id="confirm-password" name="confirm_new_password" required>
-                                    <span id="confirm-password-error" class="error-message"></span>
                                     <button type="button" class="btn" id="toggle-confirm-password">
                                         <i class="fa fa-eye"></i>
                                     </button>
                                 </div>
+                                <span id="confirm-password-error" class="error-message"></span>
                             </div>
                             <button type="submit">Change Password</button>
                         </form>
