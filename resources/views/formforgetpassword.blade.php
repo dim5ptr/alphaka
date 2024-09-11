@@ -6,6 +6,8 @@
     <title>Reset Password</title>
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <!-- Include toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <style>
@@ -54,6 +56,17 @@
             background-color: #f8d7da;
             border-color: #f5c6cb;
         }
+
+        .input-group .btn {
+    position: absolute;
+    left: 85%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #365AC2;
+    font-size: 1rem;
+    z-index: 1001;
+        }
     </style>
 </head>
 <body>
@@ -82,18 +95,61 @@
                 <input type="hidden" id="token" name="reset_token" class="form-control" value="{{session('reset_token')}}" required>
                 <div class="mb-3">
                     <label for="new_password" class="form-label">New Password</label>
-                    <input type="password" id="new_password" name="new_password" class="form-control" required>
+                    <div class="input-group">
+                        <input type="password" id="new_password" name="new_password" class="form-control" required>
+                        <button type="button" class="btn" id="toggle-new-password">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="confirm_new_password" class="form-label">Confirm New Password</label>
-                    <input type="password" id="confirm_new_password" name="confirm_new_password" class="form-control" required>
+                    <div class="input-group">
+                        <input type="password" id="confirm_new_password" name="confirm_new_password" class="form-control" required>
+                        <button type="button" class="btn" id="toggle-confirm-password">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-md px-5 rounded-pill text-light" style="background-color: #2f58cc;">
                     Save Password
                 </button>
             </form>
-        </div>
-    </div>
+
+            <script>
+                // Toggle visibility for New Password
+                document.getElementById('toggle-new-password').addEventListener('click', function () {
+                    const passwordField = document.getElementById('new_password');
+                    const passwordIcon = this.querySelector('i');
+
+                    if (passwordField.type === 'password') {
+                        passwordField.type = 'text';  // Change to 'text' to show password
+                        passwordIcon.classList.remove('fa-eye');
+                        passwordIcon.classList.add('fa-eye-slash');
+                    } else {
+                        passwordField.type = 'password';  // Change back to 'password' to hide
+                        passwordIcon.classList.remove('fa-eye-slash');
+                        passwordIcon.classList.add('fa-eye');
+                    }
+                });
+
+                // Toggle visibility for Confirm New Password
+                document.getElementById('toggle-confirm-password').addEventListener('click', function () {
+                    const confirmPasswordField = document.getElementById('confirm_new_password');
+                    const confirmPasswordIcon = this.querySelector('i');
+
+                    if (confirmPasswordField.type === 'password') {
+                        confirmPasswordField.type = 'text';  // Change to 'text' to show password
+                        confirmPasswordIcon.classList.remove('fa-eye');
+                        confirmPasswordIcon.classList.add('fa-eye-slash');
+                    } else {
+                        confirmPasswordField.type = 'password';  // Change back to 'password' to hide
+                        confirmPasswordIcon.classList.remove('fa-eye-slash');
+                        confirmPasswordIcon.classList.add('fa-eye');
+                    }
+                });
+            </script>
+
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>

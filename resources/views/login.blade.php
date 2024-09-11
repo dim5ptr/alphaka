@@ -96,11 +96,37 @@
             font-size: 1rem;
         }
 
-        .input-group input:hover {
-            box-shadow: 0 0 5px #AFC3FC;
-        }
+        /* Style untuk toggle button dan ikon */
+.input-group .btn {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #365AC2;
+    font-size: 1.2rem;
+}
 
-        .input-group .icon {
+.input-group .btn i {
+    font-size: 1rem;
+}
+
+/* Saat tombol ditekan */
+.input-group .btn:focus {
+    outline: none;
+}
+
+/* Style untuk input di mobile */
+@media (max-width: 480px) {
+    .input-group .btn {
+        right: 10px;
+        font-size: 1rem;
+    }
+}
+
+        .input-group .icon  {
             position: absolute;
             left: 20px;
             top: 50%;
@@ -213,7 +239,7 @@
         width: 100%;
     }
 
-    
+
 
 }
 
@@ -234,7 +260,7 @@
 
     .input-group .icon {
         font-size: 0.8rem;
-        left: 10px; 
+        left: 10px;
     }
 
     .input-group input {
@@ -280,6 +306,9 @@
                 <div class="input-group">
                     <input type="password" id="password" name="password" placeholder="Password" required>
                     <span class="icon"><i class="fas fa-lock"></i></span>
+                        <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                            <i class="fa fa-eye"></i>
+                        </button>
                     <div id="passwordError" class="error-message"></div>
                 </div>
 
@@ -296,6 +325,21 @@
         </div>
     </div>
 </div>
+
+<script>
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#password');
+
+    togglePassword.addEventListener('click', function (e) {
+        // Toggle the type attribute
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+
+        // Toggle icon
+        this.querySelector('i').classList.toggle('fa-eye');
+        this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
