@@ -7,8 +7,6 @@
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-
     <style>
         /* CSS Enhancements */
 
@@ -247,6 +245,30 @@
             z-index: 900;
         }
 
+        .inbox {
+            padding-left: 5%;
+            border-right: 5px solid #365AC2;
+            width: 3%;
+            height: 40px;
+            margin-top: 0.9%;
+            margin-right: 1.5%;
+            font-size: 1.5rem;
+            justify-content: center;
+            align-content: center;
+            color: #365AC2;
+        }
+
+        .inbox1{
+            transition: color ease-out .3s;
+        }
+
+        .inbox1:hover{
+            color: #626981;
+        }
+        .inbox i {
+            cursor: pointer;
+        }
+
         .navbar p {
             margin-right: 2%;
             padding: 0;
@@ -323,126 +345,61 @@
             color: aliceblue;
             font-weight: 700;
         }
+        #main-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 77%;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 5%;
+}
 
-        .container {
-        max-width: 1200px;
-        margin: 20px auto;
-        padding: 20px;
-    }
+#main-content h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #365AC2;
+    margin-bottom: 20px;
+}
 
-    .row {
-        display: flex;
-        justify-content: center;
-    }
+#main-content p {
+    font-size: 1.2rem;
+    color: #666;
+}
 
-    /* Content Header */
-    .content-header {
-        padding: 20px 0;
-        background-color: #f8f9fa;
-        margin-bottom: 30px;
-    }
+#main-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
 
-    .breadcrumb {
-        list-style: none;
-        padding: 0;
-        display: flex;
-        background-color: transparent;
-        margin-bottom: 20px;
-    }
+#main-content ul li {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
 
-    .breadcrumb-item {
-        margin-right: 10px;
-        font-size: 16px;
-    }
+#main-content ul li h4 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #365AC2;
+}
 
-    .breadcrumb-link {
-        text-decoration: none;
-        color: #7773d4;
-    }
+#main-content ul li p {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: #333;
+}
 
-    .breadcrumb-item.active {
-        color: #365AC2;
-        font-weight: bold;
-    }
-
-    .page-title {
-        color: #365AC2;
-        text-align: center;
-        font-size: 2.5rem;
-    }
-
-    /* Form Styles */
-    .form-container {
-        background-color: #bac1ef;
-        padding: 40px;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        max-width: 600px;
-    }
-
-    .card {
-        background-color: white;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .card-body {
-        padding: 15px;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-label {
-        display: block;
-        color: #365AC2;
-        font-size: 16px;
-        margin-bottom: 8px;
-    }
-
-    .form-input {
-        width: 100%;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        font-size: 16px;
-        background-color: #fff;
-    }
-
-    /* Button Styles */
-    .btn-primary {
-        background-color: #365AC2;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.3s ease;
-    }
-
-    .btn-primary:hover {
-        background-color: #2e4a8c;
-        transform: scale(1.05);
-    }
-
-    /* Optional styles for other buttons */
-    .btn-secondary {
-        background-color: #AFC3FC;
-        color: black;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-size: 16px;
-        text-decoration: none;
-        transition: background-color 0.3s ease, transform 0.3s ease;
-    }
-
-    .btn-secondary:hover {
-        background-color: #8cb1e2;
-        transform: scale(1.05);
-    }
+#main-content ul li small {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #888;
+}
 
     </style>
 </head>
@@ -452,7 +409,7 @@
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
 
-    <button class="open-btn" onclick="toggleSidebar()">&#9776; Organization</button>
+    <button class="open-btn" onclick="toggleSidebar()">&#9776; Inbox</button>
 
     <div id="sidebar" class="sidebar">
         <div class="sidebar-isi">
@@ -463,7 +420,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/organization" class="nav-link-act">
+                    <a href="/viewsorganization" class="nav-link">
                         <span class="link"><i class="nav-icon fas fa-users"></i>ㅤOrganization</span>
                     </a>
                 </li>
@@ -485,150 +442,30 @@
             </ul>
         </div>
     </div>
-    <div id="main-content" class="main-content">
-        
-        <header class="content-header">
-            <div class="container">
-                <div class="row mb-2 align-items-center">
-                    <div class="col-sm-12 d-flex justify-content-end">
-                        <form action="{{ route('showcreateorganization') }}" method="GET">
-                            @csrf
-                            <button type="submit" class="btn btn-primary rounded">
-                                <i class="fas fa-plus"></i>
-                                Tambah Organisasi
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </header>
+<div id="main-content" class="main-content">
+    <h2>Inbox</h2>
+    @if(!empty($notifications))
+    <form action="{{ route('clear-notifications') }}" method="POST">
+        @csrf
+        <button type="submit">Clear Notifications</button>
+    </form>
+@endif
 
-        <section class="content">
-            <div class="container">
-                @if(isset($organizations))
-                    <div class="row">
-                        @foreach($organizations as $organization)
-                            <div class="col-md-4 mb-4">
-                                <div class="card shadow-sm">
-                                    <img src="{{ $organization['logo'] }}" alt="Logo" class="card-img-top">
-                                    <div class="card-body">
-                                        <h3 class="card-title">{{ $organization['organization_name'] }}</h3>
-                                        <p class="card-description">{{ $organization['description'] }}</p>
-                                        <div class="members-count">
-                                            Anggota: {{ $organization['members_count'] }}
-                                        </div>
-                                    </div>
-                                    <div class="card-footer text-center">
-                                        <a href="{{ route('showvieworganization', ['organization_name' => $organization['organization_name']]) }}" class="btn btn-secondary">Lihat</a>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @elseif(isset($data['success']) && !$data['success'])
-                    <div class="alert alert-danger" role="alert">
-                        Terjadi kesalahan saat mengambil data organisasi. Silakan coba lagi nanti.
-                    </div>
-                @else
-                    <div class="alert alert-info" role="alert">
-                        Tidak ada data organisasi yang tersedia.
-                    </div>
-                @endif
-            </div>
-        </section>
-    </div>
+@if(empty($notifications))
+    <p>No new notifications.</p>
+@else
+    <ul>
+        @foreach($notifications as $notification)
+            <li>
+                <h4>{{ $notification['title'] }}</h4>
+                <p>{{ $notification['message'] }}</p>
+                <small>Verification Token: {{ $notification['verification_token'] }}</small>
+            </li>
+        @endforeach
+    </ul>
+@endif
 
-    <div class="container">
-        <header>
-            <div class="logo">
-                <i class="fas fa-sitemap"></i>
-            </div>
-            <h1>Organization Hub</h1>
-            <button class="add-department-btn"><i class="fas fa-plus"></i> Add new department</button>
-        </header>
-
-        <main>
-            <section class="departments">
-                <h2><i class="fas fa-chart-line"></i> Department Chart</h2>
-                <div class="department-chart">
-                    <div class="department-section">
-                        <h3>Board of directors <span>1</span></h3>
-                        <div class="department-card">
-                            <i class="fas fa-key"></i> 1001
-                            <p>Board of directors</p>
-                        </div>
-                    </div>
-
-                    <div class="department-section">
-                        <h3>Project Management <span>3</span></h3>
-                        <div class="department-card">
-                            <i class="fas fa-user-tie"></i> 2001
-                            <p>Head of Project Management</p>
-                        </div>
-                        <div class="department-card">
-                            <i class="fas fa-users"></i> 2002
-                            <p>Project Team #1</p>
-                        </div>
-                        <div class="department-card">
-                            <i class="fas fa-users"></i> 2003
-                            <p>Project Team #2</p>
-                        </div>
-                    </div>
-
-                    <!-- More department sections... -->
-                </div>
-            </section>
-
-            <section class="department-list">
-                <h2><i class="fas fa-list"></i> Department List</h2>
-                <div class="list-item">
-                    <i class="fas fa-key"></i> 1001
-                    <p>Board of directors</p>
-                </div>
-                <div class="list-item">
-                    <i class="fas fa-user-tie"></i> 2001
-                    <p>Head of Project Management</p>
-                </div>
-                <!-- More department list items... -->
-            </section>
-        </main>
-    </div>
-
-    <section class="content">
-        <div class="container">
-            @if(isset($organizations))
-                <div class="row">
-                    @foreach($organizations as $organization)
-                        <div class="col-md-4 mb-4">
-                            <div class="card shadow-sm">
-                                <img src="{{ $organization['logo'] }}" alt="Logo" class="card-img-top">
-                                <div class="card-body">
-                                    <h3 class="card-title">{{ $organization['organization_name'] }}</h3>
-                                    <p class="card-description">{{ $organization['description'] }}</p>
-                                    <div class="members-count">
-                                        Anggota: {{ $organization['members_count'] }}
-                                    </div>
-                                </div>
-                                <div class="card-footer text-center">
-                                    <a href="{{ route('showvieworganization', ['organization_name' => $organization['organization_name']]) }}" class="btn btn-secondary">Lihat</a>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            @elseif(isset($data['success']) && !$data['success'])
-                <div class="alert alert-danger" role="alert">
-                    Terjadi kesalahan saat mengambil data organisasi. Silakan coba lagi nanti.
-                </div>
-            @else
-                <div class="alert alert-info" role="alert">
-                    Tidak ada data organisasi yang tersedia.
-                </div>
-            @endif
-        </div>
-    </section>
-
-
+</div>
     <script>
         function toggleSidebar() {
             var sidebar = document.getElementById("sidebar");

@@ -304,7 +304,7 @@
             border: 1px solid #ccc;
         }
 
-        .inpage button {
+        .inpage button[type="submit"] {
             background-color: #365AC5;
             color: white;
             padding: 10px 20px;
@@ -313,7 +313,7 @@
             cursor: pointer;
             margin-top: 20px;
         }
-        .inpage button:hover {
+        .inpage button[type="submit"]:hover {
             background-color: #365AA3;
         }
 
@@ -329,23 +329,23 @@
         }
 
         /* In your CSS file */
-            .alert {
-                padding: 15px;
-                border-radius: 4px;
-                margin-bottom: 20px;
-            }
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
 
-            .alert-success {
-                background-color: #d4edda;
-                color: #155724;
-                border-color: #c3e6cb;
-            }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
 
-            .alert-danger {
-                background-color: #f8d7da;
-                color: #5b0d0d;
-                border-color: #f5c6cb;
-            }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #5b0d0d;
+            border-color: #f5c6cb;
+        }
 
             @media (max-width: 768px) {
                 .menu {
@@ -369,7 +369,6 @@
                 .list2 ul {
                     width: 100%;
                 }
-
                 .page {
                     width: 95%; /* Full width on mobile */
                     margin: 0 auto; /* Center horizontally */
@@ -378,37 +377,103 @@
 
                 .inpage input[type="password"] {
                     width: 83%; /* Full width on mobile */
-                    padding-bottom: 3%;
+                    padding-bottom: 3%; /* Add space at the bottom of input fields */
+                    font-size: 1rem; /* Adjust the font size of input fields */
+                    border: 1px solid #ccc; /* Add border for input fields */
+                    border-radius: 4px; /* Rounded corners */
+                    padding: 10px; /* Add some internal padding */
+                    margin-bottom: 10px; /* Space between input fields */
                 }
+
+
+
 
                 .inpage button {
                     float: right;
-                    margin-right: 2%;
-                    font-size: 0.850rem;
+                    margin-right: 2%; /* Right margin for submit button */
+                    font-size: 0.850rem; /* Adjust font size for submit button */
+                    padding: 10px 20px; /* Add padding for submit button */
+                    background-color: #007bff; /* Set background color */
+                    color: white; /* White text */
+                    border: none; /* Remove border */
+                    border-radius: 4px; /* Rounded corners */
+                    cursor: pointer; /* Pointer cursor */
                 }
 
                 .inpage h3 {
-                        margin-bottom: 5px;
-                        margin-top: 2%;
-                        font-size: 1.3rem;
-                        color: #333;
-                    }
+                    margin-bottom: 5px;
+                    margin-top: 2%;
+                    font-size: 1.3rem;
+                    color: #333;
+                }
 
-                    .inpage p {
-                        margin-bottom: 10%;
-                        font-size: 0.837rem
-                    }
+                .inpage p {
+                    margin-bottom: 10%;
+                    font-size: 0.837rem;
+                }
 
-                    .inpage label {
-                        font-size: 0.870rem;
-                        font-weight: 500;
-                    }
+                .inpage label {
+                    font-size: 0.870rem;
+                    font-weight: 500;
+                }
 
-                    .error-message {
+                .error-message {
                     font-size: 12px;
                     margin-bottom: 15px;
                     margin-top: 2px;
+                    color: #365AC2; /* Set error message color */
+                }
+
+                /* Optional: Add responsive styling for smaller screens */
+                @media screen and (max-width: 768px) {
+                    .inpage input[type="password"] {
+                        width: 100%; /* Full width on smaller screens */
                     }
+
+                    .inpage button[type="submit"] {
+                        width: 100%; /* Full width for submit button on smaller screens */
+                        margin-right: 0; /* Reset margin */
+                    }
+                }
+            }
+
+            .form-input {
+                margin-bottom: 3%;
+            }
+            
+            .inpage .input-group {
+                position: relative;
+                width: 80%;
+            }
+
+            .inpage .input-group input {
+                width: calc(100% - 20%); /* Adjust the width to account for the button */
+                padding-right: 10%; /* Ensure input text doesn't overlap the button */
+                padding: 10px; /* Uniform padding */
+                border: 2px solid #c5c4c4; /* Border styling */
+                border-radius: 4px; /* Rounded corners */
+                margin-top: 2%; /* Space between input fields */
+                font-size: 1rem;
+                box-sizing: border-box; /* Ensure padding doesn't affect width */
+                height: 40px; /* Ensure input has a fixed height */
+            }
+
+            .inpage .input-group .btn {
+                position: absolute;
+                right: 20%; /* Position button inside the input */
+                top: 20%; /* Align to the top of the input */
+                bottom: 0; /* Align to the bottom of the input */
+                margin: auto; /* Center vertically */
+                background: none;
+                border: none;
+                cursor: pointer;
+                color: #a2a3a7;
+                font-size: 1rem;
+                padding: 0 10px; /* Add padding for click area */
+                height: 100%; /* Match the button's height to the input's height */
+                display: flex;
+                align-items: center; /* Vertically center the icon */
+                justify-content: center; /* Horizontally center the icon */
             }
 
 
@@ -416,7 +481,8 @@
 </head>
 <body>
     <nav class="navbar">
-        <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }} </span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
+        <div class="inbox"><a href="/inbox" class="inbox1"><i class="fa-solid fa-inbox"></i></a></div>
+        <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
 
     <button class="open-btn" onclick="toggleSidebar()">&#9776; Security</button>
@@ -492,14 +558,24 @@
                         <form id="change-password-form" method="POST" action="{{ route('editpassword') }}">
                             @csrf
                             <input type="hidden" name="request_type" value="change">
-                            <div>
+                            <div class="form-input">
                                 <label for="new-password">New Password:</label><br>
-                                <input type="password" id="new-password" name="new_password" required>
+                                <div class="input-group">
+                                    <input type="password" id="new-password" name="new_password" required>
+                                    <button type="button" class="btn" id="toggle-new-password">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
+                                </div>
                                 <span id="new-password-error" class="error-message"></span>
                             </div>
-                            <div>
+                            <div class="form-input">
                                 <label for="confirm-password">Confirm New Password:</label><br>
-                                <input type="password" id="confirm-password" name="confirm_new_password" required>
+                                <div class="input-group">
+                                    <input type="password" id="confirm-password" name="confirm_new_password" required>
+                                    <button type="button" class="btn" id="toggle-confirm-password">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
+                                </div>
                                 <span id="confirm-password-error" class="error-message"></span>
                             </div>
                             <button type="submit">Change Password</button>
@@ -510,6 +586,40 @@
             </div>
         </div>
     </div>
+
+    <script>
+    // Toggle visibility for New Password
+document.getElementById('toggle-new-password').addEventListener('click', function () {
+    const passwordField = document.getElementById('new-password');
+    const passwordIcon = this.querySelector('i');
+
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';  // Change to 'text' to show password
+        passwordIcon.classList.remove('fa-eye');
+        passwordIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = 'password';  // Change back to 'password' to hide
+        passwordIcon.classList.remove('fa-eye-slash');
+        passwordIcon.classList.add('fa-eye');
+    }
+});
+
+// Toggle visibility for Confirm New Password
+document.getElementById('toggle-confirm-password').addEventListener('click', function () {
+    const confirmPasswordField = document.getElementById('confirm-password');
+    const confirmPasswordIcon = this.querySelector('i');
+
+    if (confirmPasswordField.type === 'password') {
+        confirmPasswordField.type = 'text';  // Change to 'text' to show password
+        confirmPasswordIcon.classList.remove('fa-eye');
+        confirmPasswordIcon.classList.add('fa-eye-slash');
+    } else {
+        confirmPasswordField.type = 'password';  // Change back to 'password' to hide
+        confirmPasswordIcon.classList.remove('fa-eye-slash');
+        confirmPasswordIcon.classList.add('fa-eye');
+    }
+});
+</script>
 
     <script>
         // Function to toggle sidebar visibility

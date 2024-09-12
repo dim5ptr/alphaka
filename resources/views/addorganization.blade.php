@@ -22,123 +22,12 @@
             box-shadow: 0 4px 8px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .wlc h2 {
-            margin-top: 3%;
-            font-size: 2rem;
-            font-weight: 800;
-            color: rgba(20, 19, 19, 0.923);
-            margin-bottom: 1%;
-        }
-
-        .wlc span {
-            color: #365AC2;
-            font-weight: bolder;
-        }
-
-        .wlc {
-            margin-left: 10%;
-            max-width: 40%;
-        }
-
-        .wlc p {
-            color: #666;
-            font-size: 1.2rem;
-            line-height: 1.5;
-        }
-
-        .pict {
-            max-width: 40%;
-            margin-left: 50px;
-        }
-
-        .pict img {
-            width: 70%;
-            margin-left: 20%;
-        }
-
         section {
             max-width: 100%;
             margin: 0 auto;
             padding: 20px;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(5%, 4fr));
-            height: 100%;
-            gap: 20px;
-            margin: 0px 2%;
-            padding: 17px;
-        }
-
-        .card {
-            background-color: #fff;
-            border-radius: 15px;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .card-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .card-text {
-            position: absolute;
-            top: 80%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: left;
-            border-radius: 15px;
-            border: 2px solid white;
-            width: 93%;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.849);
-            color: #020202;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .card:hover .card-overlay {
-            opacity: 1;
-        }
-
-        .card:hover .card-text {
-            opacity: 1;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        .card-content {
-            align-items: center;
-        }
-
-        .card-icon {
-            width: 97%;
-            height: 0.5%;
-            border: 5px solid white;
-            border-radius: 15px;
-        }
-
-        .card p {
-            font-size: 1rem;
-            margin-bottom: 25%;
-            padding: 10px;
-        }
-
-        .card span {
-            font-weight: bold;
-        }
 
         html, body {
             height: 100%;
@@ -247,6 +136,29 @@
             z-index: 900;
         }
 
+        .inbox {
+            padding-left: 5%;
+            border-right: 5px solid #365AC2;
+            width: 3%;
+            height: 40px;
+            margin-top: 0.9%;
+            margin-right: 1.5%;
+            font-size: 1.5rem;
+            justify-content: center;
+            align-content: center;
+            color: #365AC2;
+        }
+
+        .inbox1{
+            transition: color ease-out .3s;
+        }
+
+        .inbox1:hover{
+            color: #626981;
+        }
+        .inbox i {
+            cursor: pointer;
+        }
         .navbar p {
             margin-right: 2%;
             padding: 0;
@@ -305,7 +217,7 @@
             font-size: 15px;
             width: calc(80% - 40px);
             box-sizing: border-box;
-            position: relative;
+            position: fixed;
             top: 100%;
             background-color: white;
             color: #c23636;
@@ -327,79 +239,160 @@
         }
 /* General Styles */
 
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
 .row {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  width: 900px;
+  height: auto;
+  justify-content: center;
+  margin-left: 16%;
 }
 
+.stepper {
+  display: flex;
+  flex-direction: column;
+  padding-top: 3%;
+  width: 60%;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  background-color: #365AC2;
+}
 
-/* Form Section */
-.form-section {
-    margin-top: 30px;
-    display: flex;
-    justify-content: center; /* Center form-container horizontally */
+.stepper h2 {
+    color: white;
+    margin-top: 2%;
+    margin-left: 5%;
+    font-size: 1.7rem;
+}
+
+.steps {
+    margin-top: 0%;
+    margin-left: 5%;
+}
+.step {
+  display: flex;
+  align-items: center;
+  margin-left: 3%;
+  margin-top: 1%;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.step p{
+    color: #ffffff;
+    margin-right: 5%;
+
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  background-color: #ffffff;
+  color: #365AC2;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  margin-right: 10px;
+  line-height: 1; /* Pastikan line-height tidak mengganggu */
+  flex-shrink: 0; /* Agar ukuran lingkaran tidak berubah */
+}
+
+.step-instruction {
+  font-size: 1rem;
+  color: #333;
+}
+
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 80%;
+  background-color: #ddd;
+  left: 5%;
+  top: 57px;
+}
+
+.form-container1 {
+    padding-left: 20px;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #f9f9f9;
+  border-radius: 20px;
+}
+
+label {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
 }
 
 .form-container {
-    background-color: #AFC3FC; /* Light Blue */
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    width: 100%;
-    margin: 0 auto; /* Center form-container within row */
+    width: 55%;
+    height: 50%;
+    border-radius: 20px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow untuk isi form */
+    margin-top: 2%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 5%;
+    padding-top: 5%;
 }
 
 .form-group {
-    margin-bottom: 20px; /* Adjusted margin for better spacing */
+    margin-top: 0px;
 }
 
-.form-label {
-    display: block;
-    color: #365AC2; /* Dark Blue */
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
 
-.form-input {
-    width: 90%;
-    padding: 12px;
+.form-group input {
+    width: 83%;
+    padding: 15px;
+    margin-top: 10px;
     border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    background-color: #fff; /* White */
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid #365AC2; /* Menambahkan border */
 }
 
-.form-input:focus {
-    border-color: #365AC2; /* Dark Blue border on focus */
-    outline: none;
-    box-shadow: 0 0 8px rgba(54, 90, 194, 0.2);
-}
-
-.btn-submit {
-    width: 100%;
-    padding: 14px;
-    background-color: #365AC2; /* Dark Blue */
-    color: #fff; /* White */
-    border: none;
+.form-group textarea {
+    width: 83%;
+    height: 90px;
+    padding: 15px;
+    margin-top: 10px;
+    margin-bottom: 2%;
     border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid #365AC2;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
 }
 
-.btn-submit:hover {
-    background-color: #2d4da3; /* Darker Blue on hover */
-    box-shadow: 0 6px 16px rgba(45, 77, 163, 0.2);
+
+.form-container button[type="submit"]{
+    float: right;
+    margin-right: 11%;
+    margin-top: 2%;
+    margin-bottom: 7%; /* Right margin for submit button */
+    font-size: 0.850rem; /* Adjust font size for submit button */
+    padding: 10px 20px; /* Add padding for submit button */
+    background-color: #365AC2; /* Set background color */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
 }
 
 
@@ -407,6 +400,7 @@
 </head>
 <body>
     <nav class="navbar">
+        <div class="inbox"><a href="/inbox" class="inbox1"><i class="fa-solid fa-inbox"></i></a></div>
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
 
@@ -436,7 +430,6 @@
                     </a>
                 </li>
             </ul>
-
                 <form id="logoutForm" method="GET" class="logoutForm" action="{{ route('confirm-logout') }}">
                 <button type="submit" class="logout-button">ㅤ <i class="fa-solid fa-right-from-bracket"></i>ㅤLogout</button>
                 </form>
@@ -446,11 +439,30 @@
     <div id="main-content" class="main-content">
         <!-- Content Header (Page header) -->
 
-
                 <!-- Form Section -->
                 <section class="form-section">
                     <div class="row justify-center">
-                        <div class="form-container">
+                        <div class="stepper">
+                            <h2>New Organization</h2> <p>Status Access Token: {{ session('access_token') ? 'Available' : 'Not Available' }}</p>
+
+                             <div class="steps">
+                                <div class="step">
+                                    <div class="step-number">1</div>
+                                    <p class="step-instruction">Isi nama dan deskripsi organisasi yang akan dibuat, klik "create"</p>
+                                </div>
+                                <div class="step">
+                                    <div class="step-number">2</div>
+                                    <p class="step-instruction">Cek kode verivikasi di "inbox", klik button "verivikasi"</p>
+                                </div>
+                                <div class="step">
+                                    <div class="step-number">3</div>
+                                    <p class="step-instruction">Kembali ke "Organization" dan refresh. Organisasi baru berhasil dibuat!</p>
+                                </div>
+                             </div>
+                        </div>
+
+                          <!-- Form Section -->
+                          <div class="form-container">
                             <!-- Form for creating organization -->
                             <form action="{{ route('addorganization') }}" method="POST">
                                 @csrf
@@ -460,20 +472,21 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="description" class="form-label">Description</label>
-                                    <input type="text" name="description" id="description" class="form-input" placeholder="Enter Organization Description" required>
+                                    <textarea type="text" name="description" id="description" class="form-input" placeholder="Enter Organization Description" required></textarea>
                                 </div>
+
+                                <input type="text" name="access_token_status" value="{{ session('access_token')}}">
+
                                 <div class="form-group">
-                                    <button type="submit" class="btn-submit">Save</button>
+                                    <button type="submit" class="btn-submit">Create</button>
                                 </div>
                             </form>
                         </div>
-                    </div>
+
                 </section>
+
             </div>
     </div>
-
-
-
 
     <script>
         function toggleSidebar() {
@@ -489,36 +502,6 @@
             }
         }
     </script>
-{{--
-<script>
-    document.getElementById('logoutForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Mencegah form submit secara default
-
-        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        const headers = new Headers();
-        headers.append('X-CSRF-TOKEN', token);
-        headers.append('Content-Type', 'application/json');
-
-        fetch(this.action, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify({})
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Logout berhasil!');
-                window.location.href = data.redirect; // Redirect ke halaman login setelah logout
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat logout!');
-        });
-    });
-</script> --}}
 </div>
 
 

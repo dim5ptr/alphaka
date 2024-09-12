@@ -11,6 +11,7 @@ Route::get('/test-mail', function (){
     Notification::route('mail', 'yourMailtrapEmailAddress')->notify(new NewMessage());
     return 'Sent';
 });
+Route::get('/verify/{token}', [HttpController::class, 'organizationVerify'])->name('organization.verify');
 
 // Rute untuk tampilan register
 Route::get('active/{token}', [HttpController::class, 'showActivationForm'])->name('active');
@@ -18,6 +19,9 @@ Route::get('active/{token}', [HttpController::class, 'showActivationForm'])->nam
 
 // Rute untuk login
 Route::middleware('auth.redirect')->group(function () {
+    Route::get('/inbox', [HttpController::class, 'inbox'])->name('inbox');
+    Route::post('/inbox/clear', [HttpController::class, 'clearNotifications'])->name('clear-notifications');
+
     Route::get('/register', [HttpController::class, 'showRegister'])->name('register');
     Route::post('/register', [HttpController::class, 'register']);
 
