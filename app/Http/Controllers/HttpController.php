@@ -32,7 +32,20 @@ class HttpController extends Controller
     const API_KEY = '5af97cb7eed7a5a4cff3ed91698d2ffb';
     private static $access_token = null;
 
+    public function clearNotifications(Request $request)
+    {
+        // Clear notifications from the session
+        session()->forget('notifications');
 
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Notifications cleared successfully.');
+    }
+
+    public function inbox(Request $request)
+    {
+        // Your logic for the inbox functionality
+        return view('inbox'); // Return the view for inbox or perform other actions
+    }
 
     public function showRegister()
     {
@@ -782,7 +795,6 @@ public function addOrganization(Request $request)
         return back()->withErrors(['error_message' => 'Something went wrong, try again! ' . $e->getMessage()])->withInput();
     }
 }
-
 
 public function organizationVerify(Request $request)
 {
