@@ -775,13 +775,13 @@ public function addOrganization(Request $request)
 
             // Send notification email
             Log::info('Preparing to send organization creation email');
-            Mail::send('emails.verify-organization', ['organization' => $request->organization_name], function ($message) use ($request) {
-                $message->to($request->user()->email);
+            Mail::send('emails.verify-organization', ['organization' => $request->organization_name, 'token' => session('verification_token')], function ($message) use ($request) {
+                $message->to(session('email'));
                 $message->subject('Organization Created Successfully');
             });
             Log::info('Organization creation email sent');
 
-            return redirect('/organizations')->with('success_message', 'Organization created successfully.');
+            return redirect('/organization')->with('success_message', 'Organization created successfully.');
         } else {
             // Log error and show error message
             Log::error('Failed to add organization. Response: ' . $response->body());

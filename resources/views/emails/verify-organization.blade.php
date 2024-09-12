@@ -69,9 +69,9 @@
         <div class="container">
             <div class="inner-body">
                 <h2>Halo!</h2>
-                <p>Anda menerima email ini untuk memverifikasi email Anda.</p>
+                <p>Anda menerima email ini untuk memverifikasi email Anda. {{$organization}}</p>
                 <p class="text-center">
-                    <a href="{{ url('verify/' . $verification_token) }}" class="btn">Verifikasi Email</a>
+                    <a href="{{ url('organization/' . $token) }}" class="btn">Verifikasi Email</a>
                 </p>
                 <p>Tautan verifikasi email ini akan kedaluwarsa dalam waktu 60 menit.<br>
                 Jika Anda tidak merasa membutuhkan verifikasi email, abaikan saja pesan ini.</p>
