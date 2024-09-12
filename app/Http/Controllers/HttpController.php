@@ -652,75 +652,174 @@ public function submitResetPasswordForm(Request $request)
 //     }
 // }
 
-public function addorganization(Request $request)
+// public function addorganization(Request $request)
+// {
+//     // Validasi request data
+//     $request->validate([
+//         'organization_name' => 'required|string|max:255',
+//         'description' => 'required|string|max:500',
+//     ]);
+
+//     // Ambil access token dari session
+//     $token = session('access_token');
+
+//     // Periksa apakah token ada
+//     if (!$token) {
+//         return redirect()->route('login')->withErrors(['error' => 'Access token not found. Please login again.']);
+//     }
+
+//     Log::info('Attempting to add organization with name: ' . $request->organization_name);
+//     Log::info('Access Token Status: Token Available');
+
+//     try {
+//         // Kirim permintaan API untuk membuat organisasi
+//         $response = Http::withHeaders([
+//             'Authorization' => 'Bearer ' . $token, // Gunakan format Bearer untuk Authorization
+//             'x-api-key' => self::API_KEY,
+//         ])->post(self::API_URL . '/sso/create_organization.json', [
+//             'organization_name' => $request->organization_name,
+//             'description' => $request->description,
+//         ]);
+
+//         // Log status respons dan body untuk debugging
+//         Log::info('Response Status: ' . $response->status());
+//         Log::info('Response Body: ' . $response->body());
+
+//         // Tangani respons yang sukses
+//         if ($response->successful()) {
+//             $data = $response->json(); // Ambil data dari respons
+
+//             // Log struktur data
+//             Log::info('Response Data: ' . print_r($data, true));
+
+//             // Tangani respons berdasarkan struktur yang sebenarnya
+//             if (isset($data['success']) && $data['success']) {
+//                 // Siapkan data notifikasi
+//                 $notifications = session('notifications', []);
+//                 $notifications[] = [
+//                     'title' => 'Organization Created Successfully',
+//                     'message' => 'Your organization "' . $request->organization_name . '" has been created successfully. Please verify it using the provided token.',
+//                     'verification_token' => session('verification_token'), // Mengasumsikan verification_token tersedia di sesi
+//                 ];
+//                 session(['notifications' => $notifications]);
+
+//                 // Log pembuatan organisasi yang sukses
+//                 Log::info('Organization added successfully: ' . $request->organization_name);
+
+//                 // Redirect atau kembalikan view sesuai kebutuhan
+//                 return redirect()->route('organization.index')->with('success', 'Organization created successfully.');
+//             } else {
+//                 Log::error('Unexpected response format. Success flag is not set or false.');
+//                 return back()->with('error', 'Failed to add organization. Please try again.');
+//             }
+//         } else {
+//             // Log dan tangani respons kesalahan
+//             Log::error('Failed to add organization. Response: ' . $response->body());
+//             return back()->with('error', 'Failed to add organization. Please try again.');
+//         }
+//     } catch (\Exception $e) {
+//         // Log dan tangani pengecualian
+//         Log::error('Exception occurred while adding organization: ' . $e->getMessage());
+//         return back()->with('error', $e->getMessage());
+//     }
+// }
+
+public function addOrganization(Request $request)
 {
-    // Validasi request data
+    // Validate input
     $request->validate([
         'organization_name' => 'required|string|max:255',
         'description' => 'required|string|max:500',
     ]);
 
-    // Ambil access token dari session
-    $token = session('access_token');
-
-    // Periksa apakah token ada
-    if (!$token) {
-        return redirect()->route('login')->withErrors(['error' => 'Access token not found. Please login again.']);
-    }
-
     Log::info('Attempting to add organization with name: ' . $request->organization_name);
-    Log::info('Access Token Status: Token Available');
 
     try {
-        // Kirim permintaan API untuk membuat organisasi
+        // Send a request to the API to add the organization
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $token, // Gunakan format Bearer untuk Authorization
+            'Authorization' => session('access_token'),
             'x-api-key' => self::API_KEY,
         ])->post(self::API_URL . '/sso/create_organization.json', [
             'organization_name' => $request->organization_name,
             'description' => $request->description,
         ]);
 
-        // Log status respons dan body untuk debugging
-        Log::info('Response Status: ' . $response->status());
-        Log::info('Response Body: ' . $response->body());
+        // Retrieve the response data
+        $data = $response->json();
+        Log::info('API Response:', $data);
 
-        // Tangani respons yang sukses
-        if ($response->successful()) {
-            $data = $response->json(); // Ambil data dari respons
-
-            // Log struktur data
-            Log::info('Response Data: ' . print_r($data, true));
-
-            // Tangani respons berdasarkan struktur yang sebenarnya
-            if (isset($data['success']) && $data['success']) {
-                // Siapkan data notifikasi
-                $notifications = session('notifications', []);
-                $notifications[] = [
-                    'title' => 'Organization Created Successfully',
-                    'message' => 'Your organization "' . $request->organization_name . '" has been created successfully. Please verify it using the provided token.',
-                    'verification_token' => session('verification_token'), // Mengasumsikan verification_token tersedia di sesi
-                ];
-                session(['notifications' => $notifications]);
-
-                // Log pembuatan organisasi yang sukses
-                Log::info('Organization added successfully: ' . $request->organization_name);
-
-                // Redirect atau kembalikan view sesuai kebutuhan
-                return redirect()->route('organization.index')->with('success', 'Organization created successfully.');
-            } else {
-                Log::error('Unexpected response format. Success flag is not set or false.');
-                return back()->with('error', 'Failed to add organization. Please try again.');
+        // Check if the response is successful
+        if ($response->successful() && isset($data['success']) && $data['success'] === true) {
+            // Organization created successfully
+            if (isset($data['verification_token'])) {
+                // Save verification token in session
+                session(['verification_token' => $data['verification_token']]);
             }
+
+            session(['organization_name' => $request->organization_name]);
+
+            Log::info('Organization added successfully: ' . $request->organization_name);
+
+            // Send notification email
+            Log::info('Preparing to send organization creation email');
+            Mail::send('emails.verify-organization', ['organization' => $request->organization_name], function ($message) use ($request) {
+                $message->to($request->user()->email);
+                $message->subject('Organization Created Successfully');
+            });
+            Log::info('Organization creation email sent');
+
+            return redirect('/organizations')->with('success_message', 'Organization created successfully.');
         } else {
-            // Log dan tangani respons kesalahan
+            // Log error and show error message
             Log::error('Failed to add organization. Response: ' . $response->body());
-            return back()->with('error', 'Failed to add organization. Please try again.');
+            return back()->withErrors(['error_message' => 'Failed to add organization. Please try again.'])->withInput();
         }
+    } catch (\Illuminate\Http\Client\RequestException $e) {
+        Log::error('HTTP Request failed: ' . $e->getMessage());
+        return back()->withErrors(['error_message' => 'HTTP Request failed: ' . $e->getMessage()])->withInput();
     } catch (\Exception $e) {
-        // Log dan tangani pengecualian
-        Log::error('Exception occurred while adding organization: ' . $e->getMessage());
-        return back()->with('error', $e->getMessage());
+        Log::error('An error occurred: ' . $e->getMessage());
+        return back()->withErrors(['error_message' => 'Something went wrong, try again! ' . $e->getMessage()])->withInput();
+    }
+}
+
+
+public function organizationVerify(Request $request)
+{
+    // Retrieve the verification token from session
+    $organizationVerify = session('verification_token');
+
+    // Log for debugging
+    Log::info('Attempting to verify organization with organizationVerify: ' . $organizationVerify);
+
+    try {
+        // Send request to the API for organization verification
+        $response = Http::withHeaders([
+            'Authorization' => 'faeda4d37466f4ce232e74e1f5ea9e8d',  // Hardcoded Authorization key
+            'x-api-key' => self::API_KEY,
+        ])->post(self::API_URL . '/sso/organization_verify.json', [
+            'activation_key' => $organizationVerify,
+        ]);
+
+        // Retrieve the response data
+        $data = $response->json();
+        Log::info('Activation API Response:', $data);
+
+        // Check if the response is successful
+        if ($response->successful() && $data['success']) {
+            // Organization activated successfully
+            return redirect('/organizations')->with('success_message', 'Your organization has been activated successfully.');
+        } else {
+            // Log error and show error message
+            Log::error('Failed to activate organization. Response: ' . $response->body());
+            return back()->withErrors(['error_message' => 'Failed to activate your organization. Please try again.'])->withInput();
+        }
+    } catch (\Illuminate\Http\Client\RequestException $e) {
+        Log::error('HTTP Request failed: ' . $e->getMessage());
+        return back()->withErrors(['error_message' => 'HTTP Request failed: ' . $e->getMessage()])->withInput();
+    } catch (\Exception $e) {
+        Log::error('An error occurred: ' . $e->getMessage());
+        return back()->withErrors(['error_message' => 'Something went wrong, try again! ' . $e->getMessage()])->withInput();
     }
 }
 
