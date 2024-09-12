@@ -448,7 +448,6 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="inbox"><a href="/inbox" class="inbox1"><i class="fa-solid fa-inbox"></i></a></div>
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
 
@@ -486,7 +485,7 @@
         </div>
     </div>
     <div id="main-content" class="main-content">
-        
+
         <header class="content-header">
             <div class="container">
                 <div class="row mb-2 align-items-center">
