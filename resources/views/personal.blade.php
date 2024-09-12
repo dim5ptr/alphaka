@@ -107,6 +107,7 @@
             position: fixed;
             background-color: white;
             padding: 0px;
+            margin-bottom: 10%;
             display: flex;
             justify-content: flex-end;
             font-size: 14px;
@@ -114,6 +115,30 @@
             width: 100%;
             top: 0;
             z-index: 900;
+        }
+
+        .inbox {
+            padding-left: 5%;
+            border-right: 5px solid #365AC2;
+            width: 3%;
+            height: 40px;
+            margin-top: 0.9%;
+            margin-right: 1.5%;
+            font-size: 1.5rem;
+            justify-content: center;
+            align-content: center;
+            color: #365AC2;
+        }
+
+        .inbox1{
+            transition: color ease-out .3s;
+        }
+
+        .inbox1:hover{
+            color: #626981;
+        }
+        .inbox i {
+            cursor: pointer;
         }
 
         .navbar p {
