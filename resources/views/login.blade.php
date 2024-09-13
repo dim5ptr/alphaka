@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <title>Login</title>
+    <title>login</title>
 
     <style>
         * {
@@ -315,12 +315,12 @@
                 <div class="forgot-password">
                     <a href="{{ route('password.request') }}">Lupa Password?</a>
                 </div>
-                <input type="submit" value="Login" class="btn-login">
+                <input type="submit" value="login" class="btn-login">
             </form>
 
             <br>
             <div class="register-link">
-                <p>Belum punya akun? <a href="{{ route('register') }}">Daftar Sekarang</a></p>
+                <p>Belum punya akun? <a href="{{ route('register') }}">Register Sekarang</a></p>
             </div>
         </div>
     </div>
