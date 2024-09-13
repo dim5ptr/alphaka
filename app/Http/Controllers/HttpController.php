@@ -736,7 +736,6 @@ public function submitResetPasswordForm(Request $request)
 //         return back()->with('error', $e->getMessage());
 //     }
 // }
-
 public function addOrganization(Request $request)
 {
     // Validate input
@@ -763,23 +762,30 @@ public function addOrganization(Request $request)
 
         // Check if the response is successful
         if ($response->successful() && isset($data['success']) && $data['success'] === true) {
-            // Organization created successfully
-            if (isset($data['verification_token'])) {
+            Log::info('Organization added successfully: ' . $request->organization_name);
+
+            // Check for activation key
+            if (isset($data['activation_key'])) {
                 // Save verification token in session
-                session(['verification_token' => $data['verification_token']]);
+                session(['activation_key' => $data['activation_key']]);
+                Log::info('Activation key: ' . $data['activation_key']);
+            } else {
+                Log::warning('No activation key provided in the response.');
             }
 
+            // Save organization name in session
             session(['organization_name' => $request->organization_name]);
-
-            Log::info('Organization added successfully: ' . $request->organization_name);
 
             // Send notification email
             Log::info('Preparing to send organization creation email');
-            Mail::send('emails.verify-organization', ['organization' => $request->organization_name, 'token' => session('verification_token')], function ($message) use ($request) {
+            Mail::send('emails.verify-organization', [
+                'organization' => $request->organization_name,
+                'token' => session('activation_key') ?? 'No token available' // Fallback if activation_key is missing
+            ], function ($message) use ($request) {
                 $message->to(session('email'));
                 $message->subject('Organization Created Successfully');
             });
-            Log::info('Organization creation email sent');
+            Log::info('Organization creation email sent.');
 
             return redirect('/organization')->with('success_message', 'Organization created successfully.');
         } else {
@@ -796,10 +802,69 @@ public function addOrganization(Request $request)
     }
 }
 
+// public function addOrganization(Request $request)
+// {
+//     // Validate input
+//     $request->validate([
+//         'organization_name' => 'required|string|max:255',
+//         'description' => 'required|string|max:500',
+//     ]);
+
+//     Log::info('Attempting to add organization with name: ' . $request->organization_name);
+
+//     try {
+//         // Send a request to the API to add the organization
+//         $response = Http::withHeaders([
+//             'Authorization' => session('access_token'),
+//             'x-api-key' => self::API_KEY,
+//         ])->post(self::API_URL . '/sso/create_organization.json', [
+//             'organization_name' => $request->organization_name,
+//             'description' => $request->description,
+//         ]);
+
+//         // Retrieve the response data
+//         $data = $response->json();
+//         Log::info('API Response:', $data);
+
+//         // Check if the response is successful
+//         if ($response->successful() && isset($data['success']) && $data['success'] === true) {
+//             // Organization created successfully
+//             if (isset($data['activation_key'])) {
+//                 // Save verification token in session
+//                 session(['activation_key' => $data['activation_key']]);
+//             }
+
+//             session(['organization_name' => $request->organization_name]);
+
+//             Log::info('Organization added successfully: ' . $request->organization_name);
+
+//             // Send notification email
+//             Log::info('Preparing to send organization creation email');
+//             Mail::send('emails.verify-organization', ['organization' => $request->organization_name, 'token' => session('activation_key')], function ($message) use ($request) {
+//                 $message->to(session('email'));
+//                 $message->subject('Organization Created Successfully');
+//             });
+//             Log::info('Organization creation email sent with activation key: ' . session(['activation_key' => $data['activation_key']]));
+
+//             return redirect('/organization')->with('success_message', 'Organization created successfully.');
+//         } else {
+//             // Log error and show error message
+//             Log::error('Failed to add organization. Response: ' . $response->body());
+//             return back()->withErrors(['error_message' => 'Failed to add organization. Please try again.'])->withInput();
+//         }
+//     } catch (\Illuminate\Http\Client\RequestException $e) {
+//         Log::error('HTTP Request failed: ' . $e->getMessage());
+//         return back()->withErrors(['error_message' => 'HTTP Request failed: ' . $e->getMessage()])->withInput();
+//     } catch (\Exception $e) {
+//         Log::error('An error occurred: ' . $e->getMessage());
+//         return back()->withErrors(['error_message' => 'Something went wrong, try again! ' . $e->getMessage()])->withInput();
+//     }
+// }
+
 public function organizationVerify(Request $request)
 {
     // Retrieve the verification token from session
-    $organizationVerify = session('verification_token');
+    $organizationVerify = session('activation_key');
 
     // Log for debugging
     Log::info('Attempting to verify organization with organizationVerify: ' . $organizationVerify);

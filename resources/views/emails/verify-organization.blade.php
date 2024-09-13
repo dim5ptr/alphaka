@@ -69,7 +69,8 @@
         <div class="container">
             <div class="inner-body">
                 <h2>Halo!</h2>
-                <p>Anda menerima email ini untuk memverifikasi email Anda. {{$organization}}</p>
+                <p>Dear {{ session(['organization_name']) }},</p>
+                <p>Your organization has been created successfully. Please verify your organization using the following link:</p>
                 <p class="text-center">
                     <a href="{{ url('organization/' . $token) }}" class="btn">Verifikasi Email</a>
                 </p>
