@@ -328,7 +328,7 @@
 });
 
 document.getElementById('toggle-confirm-password').addEventListener('click', function () {
-    const confirmPasswordField = document.getElementById('confirmpassword');
+    const confirmPasswordField = document.getElementById('password_confirmation');
     const confirmPasswordIcon = this.querySelector('i');
 
     if (confirmPasswordField.type === 'password') {
