@@ -1,26 +1,27 @@
-# Use a base PHP image with necessary extensions
+# Gunakan base image PHP dengan FPM dan Nginx
 FROM php:8.3-fpm
 
-# Install system dependencies and PHP extensions
-RUN apt-get update && apt-get install -y \
-    libpng-dev libjpeg-dev libfreetype6-dev \
-    libzip-dev unzip git nginx \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd zip
+# Install Nginx
+RUN apt-get update && apt-get install -y nginx
 
-# Set up Nginx configuration
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+# Copy file konfigurasi Nginx
+COPY ./nginx.conf /etc/nginx/nginx.conf
 
-# Set up the Laravel application
+# Install ekstensi PHP yang diperlukan Laravel
+RUN docker-php-ext-install pdo pdo_mysql
+
+# Set working directory
 WORKDIR /var/www/html
-COPY . .
 
-# Set permissions
+# Copy semua file Laravel ke dalam container
+COPY . /var/www/html
+
+# Set permission untuk folder Laravel
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
 
-# Expose the ports
-EXPOSE 80 9000
+# Expose port 80 untuk Nginx
+EXPOSE 80
 
-# Start Nginx and PHP-FPM
-CMD ["sh", "-c", "service nginx start && php-fpm"]
+# Script entrypoint untuk menjalankan Nginx dan PHP-FPM
+CMD service nginx start && php-fpm
