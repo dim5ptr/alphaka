@@ -528,7 +528,7 @@
                                         </div>
                                         <div class="card-footer text-center">
                                             <div class="members-count">
-                                                <p><i class="fa-solid fa-user-group"></i>{{--{{ $organization['members_count'] }} --}}</p>
+                                                <p><i class="fa-solid fa-user-group"></i>163{{--{{ $organization['members_count'] }} --}}</p>
                                             </div>
                                             <a href="{{ route('showvieworganization', ['organization_name' => $organization['organization_name']]) }}" class="btn btn-secondary">Lihat</a>
                                         </div>
