@@ -294,6 +294,7 @@
     width: calc(33.333% - 20px); /* Adjust width to fit the container with gaps */
     box-sizing: border-box;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+
 }
 
 .card-id {
@@ -303,7 +304,9 @@
 
 .card-data {
     width: 80%;
-}
+  overflow: hidden;     /* Sembunyikan teks yang melebihi batas */
+  text-overflow: ellipsis;
+    }
 
 .card-id img {
     float: right;
