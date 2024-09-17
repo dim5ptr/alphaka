@@ -509,13 +509,13 @@
                         @foreach($organizations as $organization)
                             <div class="col-md-4 mb-4">
                                 <div class="card shadow-sm">
-                                    <img src="{{ $organization['logo'] }}" alt="Logo" class="card-img-top">
+                                    {{-- <img src="{{ $organization['logo'] }}" alt="Logo" class="card-img-top"> --}}
                                     <div class="card-body">
                                         <h3 class="card-title">{{ $organization['organization_name'] }}</h3>
                                         <p class="card-description">{{ $organization['description'] }}</p>
-                                        <div class="members-count">
+                                        {{-- <div class="members-count">
                                             Anggota: {{ $organization['members_count'] }}
-                                        </div>
+                                        </div> --}}
                                     </div>
                                     <div class="card-footer text-center">
                                         <a href="{{ route('showvieworganization', ['organization_name' => $organization['organization_name']]) }}" class="btn btn-secondary">Lihat</a>
@@ -600,13 +600,13 @@
                     @foreach($organizations as $organization)
                         <div class="col-md-4 mb-4">
                             <div class="card shadow-sm">
-                                <img src="{{ $organization['logo'] }}" alt="Logo" class="card-img-top">
+                                {{-- <img src="{{ $organization['logo'] }}" alt="Logo" class="card-img-top"> --}}
                                 <div class="card-body">
                                     <h3 class="card-title">{{ $organization['organization_name'] }}</h3>
                                     <p class="card-description">{{ $organization['description'] }}</p>
-                                    <div class="members-count">
+                                    {{-- <div class="members-count">
                                         Anggota: {{ $organization['members_count'] }}
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <div class="card-footer text-center">
                                     <a href="{{ route('showvieworganization', ['organization_name' => $organization['organization_name']]) }}" class="btn btn-secondary">Lihat</a>
