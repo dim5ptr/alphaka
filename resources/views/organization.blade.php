@@ -414,6 +414,45 @@
 
 }
 
+.alert {
+        padding: 15px;
+        border: 1px solid transparent;
+        text-align: left;
+        position: absolute;
+        width: 40%;
+        height: 3%;
+        margin-left: 20%;
+        font-size: 0.890rem;
+        justify-content: center;
+        z-index: 1001;
+    }
+
+    .alert-success {
+        color: white;
+        background-color: #1363DF;
+        border-color: #c3e6cb;
+        font-weight: bold;
+        border-radius: 5px;
+    }
+
+    .alert-info {
+        color: #0c5460;
+        background-color: #d1ecf1;
+        border-color: #bee5eb;
+    }
+
+    .alert-warning {
+        color: #856404;
+        background-color: #fff3cd;
+        border-color: #ffeeba;
+    }
+
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+
 
 
     </style>
@@ -489,7 +528,7 @@
                                         </div>
                                         <div class="card-footer text-center">
                                             <div class="members-count">
-                                                <p><i class="fa-solid fa-user-group"></i>163{{--{{ $organization['members_count'] }} --}}</p>
+                                                <p><i class="fa-solid fa-user-group"></i>{{--{{ $organization['members_count'] }} --}}</p>
                                             </div>
                                             <a href="{{ route('showvieworganization', ['organization_name' => $organization['organization_name']]) }}" class="btn btn-secondary">Lihat</a>
                                         </div>
