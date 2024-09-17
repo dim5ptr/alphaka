@@ -865,7 +865,7 @@ public function organizationVerify(Request $request, $token)
 {
     // Log for debugging
     Log::info('Route accessed with token: ' . $token);
-    
+
     try {
         // Send request to the API for organization verification
         $response = Http::withHeaders([
@@ -919,7 +919,8 @@ public function organizationVerify(Request $request, $token)
                     if ($org['organization_name'] === $organization_name) {
                         $organization = [
                             'organization_name' => $organization_name,
-                            'description' => $org['description']
+                            'description' => $org['description'],
+                            'members_count' => $org['members_count'] ?? 0
                         ];
                         Log::info('Organization found: ' . $organization_name);
                         return view('vieworganization', compact('organization'));
