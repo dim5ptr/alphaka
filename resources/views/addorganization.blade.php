@@ -400,7 +400,7 @@ input {
 </head>
 <body>
     <nav class="navbar">
-        <div class="inbox"><a href="/inbox" class="inbox1"><i class="fa-solid fa-inbox"></i></a></div>
+        
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
 
@@ -443,7 +443,7 @@ input {
                 <section class="form-section">
                     <div class="row justify-center">
                         <div class="stepper">
-                            <h2>New Organization</h2> <p>Status Access Token: {{ session('access_token') ? 'Available' : 'Not Available' }}</p>
+                            <h2>New Organization</h2>
 
                              <div class="steps">
                                 <div class="step">
@@ -452,7 +452,7 @@ input {
                                 </div>
                                 <div class="step">
                                     <div class="step-number">2</div>
-                                    <p class="step-instruction">Cek kode verivikasi di "inbox", klik button "verivikasi"</p>
+                                    <p class="step-instruction">Cek kode verivikasi di "email", klik button "verifikasi"</p>
                                 </div>
                                 <div class="step">
                                     <div class="step-number">3</div>
@@ -475,7 +475,7 @@ input {
                                     <textarea type="text" name="description" id="description" class="form-input" placeholder="Enter Organization Description" required></textarea>
                                 </div>
 
-                                <input type="text" name="access_token_status" value="{{ session('access_token')}}">
+                                <input type="hidden" name="access_token_status" value="{{ session('access_token')}}">
 
                                 <div class="form-group">
                                     <button type="submit" class="btn-submit">Create</button>
