@@ -12,134 +12,6 @@
     <style>
         /* CSS Enhancements */
 
-        .banner {
-            display: flex;
-            background-color: #ffffff;
-            background-size: cover;
-            border-radius: 20px;
-            margin: 5px 5%;
-            padding: 40px;
-            box-shadow: 0 4px 8px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .wlc h2 {
-            margin-top: 3%;
-            font-size: 2rem;
-            font-weight: 800;
-            color: rgba(20, 19, 19, 0.923);
-            margin-bottom: 1%;
-        }
-
-        .wlc span {
-            color: #365AC2;
-            font-weight: bolder;
-        }
-
-        .wlc {
-            margin-left: 10%;
-            max-width: 40%;
-        }
-
-        .wlc p {
-            color: #666;
-            font-size: 1.2rem;
-            line-height: 1.5;
-        }
-
-        .pict {
-            max-width: 40%;
-            margin-left: 50px;
-        }
-
-        .pict img {
-            width: 70%;
-            margin-left: 20%;
-        }
-
-        section {
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(5%, 4fr));
-            height: 100%;
-            gap: 20px;
-            margin: 0px 2%;
-            padding: 17px;
-        }
-
-        .card {
-            background-color: #fff;
-            border-radius: 15px;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .card-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .card-text {
-            position: absolute;
-            top: 80%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: left;
-            border-radius: 15px;
-            border: 2px solid white;
-            width: 93%;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.849);
-            color: #020202;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .card:hover .card-overlay {
-            opacity: 1;
-        }
-
-        .card:hover .card-text {
-            opacity: 1;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        .card-content {
-            align-items: center;
-        }
-
-        .card-icon {
-            width: 97%;
-            height: 0.5%;
-            border: 5px solid white;
-            border-radius: 15px;
-        }
-
-        .card p {
-            font-size: 1rem;
-            margin-bottom: 25%;
-            padding: 10px;
-        }
-
-        .card span {
-            font-weight: bold;
-        }
-
         html, body {
             height: 100%;
             margin: 0;
@@ -324,101 +196,24 @@
             font-weight: 700;
         }
 
-        .container {
-        max-width: 1200px;
-        margin: 20px auto;
-        padding: 20px;
-    }
-
-    .row {
-        display: flex;
-        justify-content: center;
-    }
-
     /* Content Header */
-    .content-header {
-        padding: 20px 0;
-        background-color: #f8f9fa;
-        margin-bottom: 30px;
-    }
-
-    .breadcrumb {
-        list-style: none;
-        padding: 0;
-        display: flex;
-        background-color: transparent;
-        margin-bottom: 20px;
-    }
-
-    .breadcrumb-item {
-        margin-right: 10px;
-        font-size: 16px;
-    }
-
-    .breadcrumb-link {
-        text-decoration: none;
-        color: #7773d4;
-    }
-
-    .breadcrumb-item.active {
-        color: #365AC2;
-        font-weight: bold;
-    }
-
-    .page-title {
-        color: #365AC2;
-        text-align: center;
-        font-size: 2.5rem;
-    }
-
-    /* Form Styles */
-    .form-container {
-        background-color: #bac1ef;
-        padding: 40px;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        max-width: 600px;
-    }
-
-    .card {
-        background-color: white;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .card-body {
-        padding: 15px;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-label {
-        display: block;
-        color: #365AC2;
-        font-size: 16px;
-        margin-bottom: 8px;
-    }
-
-    .form-input {
-        width: 100%;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        font-size: 16px;
-        background-color: #fff;
-    }
+        section {
+            max-width: 100%;
+            height: 100%;
+            margin: 5% auto;
+            padding: 20px;
+            justify-content: center;
+            align-items: center;
+        }
 
     /* Button Styles */
     .btn-primary {
+        padding: 10px 10px;
         background-color: #365AC2;
         color: white;
-        padding: 10px 20px;
         border: none;
-        border-radius: 5px;
-        font-size: 16px;
+        border-radius: 20px;
+        font-size: 0.890rem;
         cursor: pointer;
         transition: background-color 0.3s ease, transform 0.3s ease;
     }
@@ -428,21 +223,195 @@
         transform: scale(1.05);
     }
 
-    /* Optional styles for other buttons */
-    .btn-secondary {
-        background-color: #AFC3FC;
-        color: black;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-size: 16px;
-        text-decoration: none;
-        transition: background-color 0.3s ease, transform 0.3s ease;
+    .btn-primary i {
+        margin-right: 2%;
+        font-size: 2rem;
     }
 
-    .btn-secondary:hover {
-        background-color: #8cb1e2;
-        transform: scale(1.05);
+
+    .profile {
+       margin-top: 1%;
+       margin-bottom: 1%;
+       margin-right: 2%;
+       padding-right: 2%;
+       align-content: center;
+       width: 5%;
+       border-right: 5px solid #365AC2;
     }
+
+    img {
+        float: right;
+        width: 50%;
+    }
+
+    .add {
+        float: right;
+        margin-right: 3%;/* Atur padding sesuai kebutuhan */
+    }
+
+    footer {
+        position: fixed;
+        bottom: 5%;
+        left: 0;
+        width: 100%;
+        z-index: 998; /* Pastikan footer berada di bawah tombol "Buat Organisasi" */
+    }
+
+    .display {
+    width: 90%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-left: 5%;
+    margin-top: 2%;
+}
+
+/* Card styling */
+.card {
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: calc(33.333% - 20px); /* Adjust width to fit the container with gaps */
+    box-sizing: border-box;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Card body styling */
+.card-body {
+    padding: 20px;
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: calc(33.333% - 20px); /* Adjust width to fit the container with gaps */
+    box-sizing: border-box;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-id {
+    display: flex;
+    width: 100%;
+}
+
+.card-data {
+    width: 80%;
+}
+
+.card-id img {
+    float: right;
+    width: 15%;
+    height: 15%;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.card-description {
+    font-size: 1rem;
+    color: #666;
+}
+
+/* Card footer styling */
+.card-footer {
+    padding: 10px 20px;
+    height: 25%;
+    justify-content: flex-end;
+    border-top: 1.5px solid #dddddd;
+}
+
+.members-count {
+    margin-top: 2%;
+   float: left;
+    width: 30%;
+    height: 70%;
+    font-size: 0.790rem;
+    text-align: center;
+    border-radius: 10px;
+    background-color: #d5d5d5ac;
+    padding-top: 2%;
+}
+
+.members-count p {
+    margin: 0;
+    padding-top: 3%;
+}
+
+.members-count i{
+    margin-right: 5%;
+}
+
+.card-footer .btn {
+    text-decoration: none;
+    float: right;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #ffffff;
+    background: #007bff;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+.card-footer .btn:hover {
+    background: #0056b3;
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+        left: -220px;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .card {
+        width: calc(50% - 20px); /* Adjust for smaller screens */
+    }
+
+    .card-body {
+        width: calc(50% - 20px); /* Adjust for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+
+    .main-content {
+        margin-top: 15%;
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .card {
+        width: calc(100% - 20px); /* Adjust for very small screens */
+    }
+
+    .card-body {
+        width: calc(100% - 20px); /* Adjust for very small screens */
+        font-size: 0.890rem;
+    }
+
+}
+
+
 
     </style>
 </head>
@@ -485,43 +454,43 @@
         </div>
     </div>
     <div id="main-content" class="main-content">
-
-        <header class="content-header">
-            <div class="container">
-                <div class="row mb-2 align-items-center">
-                    <div class="col-sm-12 d-flex justify-content-end">
-                        <form action="{{ route('showcreateorganization') }}" method="GET">
-                            @csrf
-                            <button type="submit" class="btn btn-primary rounded">
-                                <i class="fas fa-plus"></i>
-                                Tambah Organisasi
-                            </button>
-                        </form>
-                    </div>
-                </div>
+        @if (session('success_message'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success_message') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-        </header>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @foreach ($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
 
         <section class="content">
             <div class="container">
                 @if(isset($organizations))
-                    <div class="row">
+                    <div class="display">
                         @foreach($organizations as $organization)
-                            <div class="col-md-4 mb-4">
-                                <div class="card shadow-sm">
-                                    {{-- <img src="{{ $organization['logo'] }}" alt="Logo" class="card-img-top"> --}}
                                     <div class="card-body">
+                                        <div class="card-id">
+                                        <div class="card-data">
                                         <h3 class="card-title">{{ $organization['organization_name'] }}</h3>
                                         <p class="card-description">{{ $organization['description'] }}</p>
-                                        {{-- <div class="members-count">
-                                            Anggota: {{ $organization['members_count'] }}
-                                        </div> --}}
+                                        </div>
+
+                                          <img id="profile_picture" src="{{ asset('img/user.png') }}"  alt="Foto Profil" class="profile-picture">
+                                        </div>
+                                        <div class="card-footer text-center">
+                                            <div class="members-count">
+                                                <p><i class="fa-solid fa-user-group"></i>163{{--{{ $organization['members_count'] }} --}}</p>
+                                            </div>
+                                            <a href="{{ route('showvieworganization', ['organization_name' => $organization['organization_name']]) }}" class="btn btn-secondary">Lihat</a>
+                                        </div>
                                     </div>
-                                    <div class="card-footer text-center">
-                                        <a href="{{ route('showvieworganization', ['organization_name' => $organization['organization_name']]) }}" class="btn btn-secondary">Lihat</a>
-                                    </div>
-                                </div>
-                            </div>
                         @endforeach
                     </div>
                 @elseif(isset($data['success']) && !$data['success'])
@@ -535,97 +504,18 @@
                 @endif
             </div>
         </section>
-    </div>
 
-    <div class="container">
-        <header>
-            <div class="logo">
-                <i class="fas fa-sitemap"></i>
+        <footer>
+             <div class="add">
+                <form action="{{ route('showcreateorganization') }}" method="GET">
+                @csrf
+                   <button type="submit" class="btn btn-primary rounded">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </form>
             </div>
-            <h1>Organization Hub</h1>
-            <button class="add-department-btn"><i class="fas fa-plus"></i> Add new department</button>
-        </header>
-
-        <main>
-            <section class="departments">
-                <h2><i class="fas fa-chart-line"></i> Department Chart</h2>
-                <div class="department-chart">
-                    <div class="department-section">
-                        <h3>Board of directors <span>1</span></h3>
-                        <div class="department-card">
-                            <i class="fas fa-key"></i> 1001
-                            <p>Board of directors</p>
-                        </div>
-                    </div>
-
-                    <div class="department-section">
-                        <h3>Project Management <span>3</span></h3>
-                        <div class="department-card">
-                            <i class="fas fa-user-tie"></i> 2001
-                            <p>Head of Project Management</p>
-                        </div>
-                        <div class="department-card">
-                            <i class="fas fa-users"></i> 2002
-                            <p>Project Team #1</p>
-                        </div>
-                        <div class="department-card">
-                            <i class="fas fa-users"></i> 2003
-                            <p>Project Team #2</p>
-                        </div>
-                    </div>
-
-                    <!-- More department sections... -->
-                </div>
-            </section>
-
-            <section class="department-list">
-                <h2><i class="fas fa-list"></i> Department List</h2>
-                <div class="list-item">
-                    <i class="fas fa-key"></i> 1001
-                    <p>Board of directors</p>
-                </div>
-                <div class="list-item">
-                    <i class="fas fa-user-tie"></i> 2001
-                    <p>Head of Project Management</p>
-                </div>
-                <!-- More department list items... -->
-            </section>
-        </main>
+        </footer>
     </div>
-
-    <section class="content">
-        <div class="container">
-            @if(isset($organizations))
-                <div class="row">
-                    @foreach($organizations as $organization)
-                        <div class="col-md-4 mb-4">
-                            <div class="card shadow-sm">
-                                {{-- <img src="{{ $organization['logo'] }}" alt="Logo" class="card-img-top"> --}}
-                                <div class="card-body">
-                                    <h3 class="card-title">{{ $organization['organization_name'] }}</h3>
-                                    <p class="card-description">{{ $organization['description'] }}</p>
-                                    {{-- <div class="members-count">
-                                        Anggota: {{ $organization['members_count'] }}
-                                    </div> --}}
-                                </div>
-                                <div class="card-footer text-center">
-                                    <a href="{{ route('showvieworganization', ['organization_name' => $organization['organization_name']]) }}" class="btn btn-secondary">Lihat</a>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            @elseif(isset($data['success']) && !$data['success'])
-                <div class="alert alert-danger" role="alert">
-                    Terjadi kesalahan saat mengambil data organisasi. Silakan coba lagi nanti.
-                </div>
-            @else
-                <div class="alert alert-info" role="alert">
-                    Tidak ada data organisasi yang tersedia.
-                </div>
-            @endif
-        </div>
-    </section>
 
 
     <script>
