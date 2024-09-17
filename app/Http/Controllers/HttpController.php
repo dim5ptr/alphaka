@@ -861,21 +861,18 @@ public function addOrganization(Request $request)
 //     }
 // }
 
-public function organizationVerify(Request $request)
+public function organizationVerify(Request $request, $token)
 {
-    // Retrieve the verification token from session
-    $organizationVerify = session('activation_key');
-
     // Log for debugging
-    Log::info('Attempting to verify organization with organizationVerify: ' . $organizationVerify);
-
+    Log::info('Route accessed with token: ' . $token);
+    
     try {
         // Send request to the API for organization verification
         $response = Http::withHeaders([
-            'Authorization' => 'faeda4d37466f4ce232e74e1f5ea9e8d',  // Hardcoded Authorization key
+            'Authorization' => session('access_token'),  // Use access token from session
             'x-api-key' => self::API_KEY,
         ])->post(self::API_URL . '/sso/organization_verify.json', [
-            'activation_key' => $organizationVerify,
+            'activation_key' => $token,  // Use token from the URL
         ]);
 
         // Retrieve the response data
@@ -885,7 +882,7 @@ public function organizationVerify(Request $request)
         // Check if the response is successful
         if ($response->successful() && $data['success']) {
             // Organization activated successfully
-            return redirect('/organizations')->with('success_message', 'Your organization has been activated successfully.');
+            return redirect('/organization')->with('success_message', 'Your organization has been activated successfully.');
         } else {
             // Log error and show error message
             Log::error('Failed to activate organization. Response: ' . $response->body());
@@ -899,6 +896,8 @@ public function organizationVerify(Request $request)
         return back()->withErrors(['error_message' => 'Something went wrong, try again! ' . $e->getMessage()])->withInput();
     }
 }
+
+
 
 
     public function showvieworganization($organization_name)

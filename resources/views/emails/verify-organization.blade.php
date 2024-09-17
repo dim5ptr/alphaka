@@ -69,14 +69,14 @@
         <div class="container">
             <div class="inner-body">
                 <h2>Halo!</h2>
-                <p>Dear {{ session(['organization_name']) }},</p>
-                <p>Your organization has been created successfully. Please verify your organization using the following link:</p>
+                <p>Yth. {{ session('organization_name') }},</p>
+                <p>Organisasi Anda telah berhasil dibuat. Silakan verifikasi organisasi Anda menggunakan tautan berikut:</p>
                 <p class="text-center">
-                    <a href="{{ url('organization/' . $token) }}" class="btn">Verifikasi Email</a>
+                    <a href="{{ url('organizations/' . $token) }}" class="btn">Verifikasi Organisasi</a>
                 </p>
-                <p>Tautan verifikasi email ini akan kedaluwarsa dalam waktu 60 menit.<br>
-                Jika Anda tidak merasa membutuhkan verifikasi email, abaikan saja pesan ini.</p>
-                <p>Salam,<br>
+                <p>Tautan verifikasi ini akan kedaluwarsa dalam 60 menit.<br>
+                Jika Anda merasa tidak membutuhkan verifikasi organisasi, silakan abaikan pesan ini.</p>
+                <p>Salam hangat,<br>
                 Sarastya Technology</p>
                 <br>
             </div>
