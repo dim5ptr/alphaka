@@ -535,6 +535,38 @@ html, body {
         max-width: 180px;
     }
 }
+.breadcrumb {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "/";
+    margin: 0 8px; /* Jarak antara elemen dan garis miring */
+    color: #3200af;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+    color: #3200af;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: #3200af;
+}
 
 
     </style>
@@ -578,7 +610,13 @@ html, body {
         </div>
     </div>
     <div id="main-content" class="main-content">
-
+        <br>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb" style="background-color: transparent;">
+                <li class="breadcrumb-item"><a href="{{ route('organization') }}" style="color: #3200af;">Organization</a></li>
+                <li class="breadcrumb-item" style="color: #3200af;">{{ $organization['organization_name'] }}</a></li>
+            </ol>
+        </nav>
         <!-- Content -->
         <div class="container main-content">
             <!-- Organization Card -->
