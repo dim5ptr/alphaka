@@ -152,6 +152,12 @@
             text-decoration: underline;
         }
 
+        .navbar span {
+            font-weight: 800;
+            color: #365AC2;
+            font-size: 16px;
+        }
+
         .open-btn {
             position: relative;
             justify-content: center;
@@ -384,13 +390,44 @@ input {
 }
 
 
+.breadcrumb {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "/";
+    margin: 0 8px; /* Jarak antara elemen dan garis miring */
+    color: #3200af;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+    color: #3200af;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: #3200af;
+}
 </style>
 </head>
 <body>
     <nav class="navbar">
         <div class="open-btn">
-            <button onclick="toggleSidebar()">&#9776; Organization > </button>
-            <a href="#">New Organization</a>
+            <button onclick="toggleSidebar()">&#9776; Organization</button>
         </div>
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
@@ -427,7 +464,15 @@ input {
     </div>
     <div id="main-content" class="main-content">
         <!-- Content Header (Page header) -->
-
+        <br>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb" style="background-color: transparent;">
+                <li class="breadcrumb-item">
+                    <a href="{{ route('organization') }}" style="color: #3200af;">Organization</a> <!-- Kembali ke Organization Overview -->
+                </li>
+                <li class="breadcrumb-item active" aria-current="page" style="color: #3200af;">Create Organization</li> <!-- Halaman saat ini -->
+            </ol>
+        </nav>
                 <!-- Form Section -->
                 <section class="form-section">
                     <div class="row justify-center">
