@@ -14,7 +14,7 @@
     /* CSS Enhancements */
 
 html, body {
-    height: 100%;
+    height: auto;
     margin: 0;
     padding: 0;
     font-family: 'Poppins', sans-serif;
@@ -156,7 +156,7 @@ body {
 
 .main-content {
     width: calc(100% - 270px);
-    height: 100%;
+    height: auto;
     flex: 1;
     margin-top: 5%;
     margin-left: 10%;
@@ -202,16 +202,6 @@ body {
     font-weight: 700;
 }
 
-/* Content Header */
-section {
-    max-width: 100%;
-    height: 100%;
-    margin: 5% auto;
-    padding: 20px;
-    justify-content: center;
-    align-items: center;
-}
-
 /* Button Styles */
 .btn-primary {
     padding: 10px 10px;
@@ -234,154 +224,39 @@ section {
     font-size: 2rem;
 }
 
-.profile {
-    margin-top: 1%;
-    margin-bottom: 1%;
-    margin-right: 2%;
-    padding-right: 2%;
-    align-content: center;
-    width: 5%;
-    border-right: 5px solid #365AC2;
-}
-
-img {
-    float: right;
-    width: 50%;
-}
-
-.add {
-    float: right;
-    margin-right: 3%;
-}
-
-footer {
-    position: fixed;
-    bottom: 5%;
-    left: 0;
-    width: 100%;
-    z-index: 998;
-}
-
-.display {
-    width: 90%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-left: 5%;
-    margin-top: 2%;
-}
-
-/* Card styling */
-.card {
-    background: #ffffff;
-    border: 1px solid #dddddd;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: calc(33.333% - 20px);
-    box-sizing: border-box;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-/* Card body styling */
-.card-body {
-    padding: 20px;
-    background: #ffffff;
-    border: 1px solid #dddddd;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: calc(33.333% - 20px);
-    box-sizing: border-box;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card-id {
-    display: flex;
-    width: 100%;
-}
-
-.card-data {
-    width: 80%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.card-id img {
-    float: right;
-    width: 15%;
-    height: 15%;
-}
-
-.card-title {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.card-description {
-    font-size: 1rem;
-    color: #666;
-}
-
-/* Card footer styling */
-.card-footer {
-    padding: 10px 20px;
-    height: 25%;
-    justify-content: flex-end;
-    border-top: 1.5px solid #dddddd;
-}
-
-/* Alert styling */
-.alert {
-    margin: 10px auto;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #f2f2f2;
-    color: #333;
-    width: 80%;
-    max-width: 500px;
-    text-align: center;
-}
-
-.alert-success {
-    border: 1px solid #4caf50;
-    color: #4caf50;
-    background-color: #d4edda;
-}
-
-.alert-error {
-    border: 1px solid #f44336;
-    color: #f44336;
-    background-color: #f8d7da;
-}
 /* Main Content */
-
+.container {
+    padding-top: 5%;
+    width: 70%;
+    height: 100%;
+}
 
 /* Organization Card */
 .card-organization {
     border: 1px solid #ddd;
     border-radius: 10px;
-    padding: 20px;
+    padding: 20px 30px 30px;
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 2rem;
     position: relative;
+    justify-content: space-between;
+    display: flex;
+    width: 100%;
 }
 
-.card-organization h1 {
+.info{
+    width: 90%;
+}
+
+.info h1 {
     font-size: 2rem;
     font-weight: bold;
     color: #3200af;
     margin-bottom: 0.5rem;
 }
 
-.card-organization small {
+.info small {
     font-size: 1rem;
     color: #3200af;
 }
@@ -540,6 +415,128 @@ footer {
     color: white;
 }
 
+/* CSS Responsive Styles */
+
+/* General Responsive Styles */
+html, body {
+    font-size: 16px;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+
+    .navbar p {
+        font-size: 0.678rem;
+        margin-right: 5%;
+    }
+
+    .open-btn button{
+        font-size: 0.990rem;
+        width: 100%;
+        display: inline;
+    }
+
+    .open-btn {
+        width: 35%;
+        display: inline;
+    }
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 5%;
+    }
+
+    .container {
+        padding-top: 20px;
+        width: 90%;
+    }
+
+    .card-organization {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+        width: auto;
+    }
+
+    .card-organization .info h1 {
+        font-size: 1.5rem;
+    }
+
+    .card-organization .btn-edit {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+        bottom: 10px;
+        right: 10px;
+    }
+
+    .btn-primary {
+        font-size: 0.85rem;
+        padding: 8px 12px;
+    }
+
+    .mb-3 {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        justify-content: flex-start;
+    }
+
+    .input-group{
+        width: 100%;
+        font-size: auto;
+        margin: 0;
+
+    }
+    .table {
+        font-size: 0.85rem;
+    }
+
+    .table thead {
+        display: none;
+    }
+
+    .table tbody td {
+        display: block;
+        width: 100%;
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+
+    .table tbody td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 15px;
+        font-weight: bold;
+        text-align: left;
+        background-color: #f4f4f4;
+    }
+}
+
+/* Extra Small Devices (max-width: 480px) */
+@media (max-width: 480px) {
+    .open-btn {
+        font-size: 16px;
+    }
+
+    .card-organization .info h1 {
+        font-size: 1.2rem;
+    }
+
+    .btn-primary {
+        font-size: 0.8rem;
+    }
+
+    .input-group {
+        width: 100%;
+        max-width: 180px;
+    }
+}
+
+
     </style>
 </head>
 <body>
@@ -547,7 +544,7 @@ footer {
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
 
-    <button class="open-btn" onclick="toggleSidebar()">&#9776; Organization > {{ $organization['organization_name'] }}</button>
+    <button class="open-btn" onclick="toggleSidebar()">&#9776; Organization</button>
 
     <div id="sidebar" class="sidebar">
         <div class="sidebar-isi">
@@ -586,8 +583,10 @@ footer {
         <div class="container main-content">
             <!-- Organization Card -->
             <div class="card-organization position-relative">
-                <h1 class="m-0">{{ $organization['organization_name'] }}</h1>
-                <small>{{ $organization['description'] }}</small>
+                <div class="info">
+                    <h1 class="m-0">{{ $organization['organization_name'] }}</h1>
+                    <small>{{ $organization['description'] }}</small>
+                </div>
                 <a href="{{ route('showeditorganization', ['organization_name' => $organization['organization_name']]) }}"
                     class="btn-edit">
                     <i class="fa fa-pencil-alt"></i>
@@ -595,7 +594,7 @@ footer {
             </div>
 
             <!-- Member List -->
-            <div class="container">
+            <div class="member">
                 <!-- Buttons and Search Input -->
                 <div class="mb-3 d-flex">
                     <div>
