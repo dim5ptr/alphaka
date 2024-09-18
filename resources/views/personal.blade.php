@@ -33,7 +33,7 @@
             transition: 0.3s;
             padding-top: 100px;
             box-shadow: 1px 0 9px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
+            z-index: 1;
         }
 
         .sidebar .sidebar-isi {
@@ -107,14 +107,16 @@
             position: fixed;
             background-color: white;
             padding: 0px;
-            margin-bottom: 10%;
+            margin-bottom: 5%;
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
             font-size: 14px;
-            box-shadow: 0 2px 9px rgba(0, 0, 0, 0.2);
+            /* box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2); */
             width: 100%;
             top: 0;
-            z-index: 900;
+            z-index: 3;
+
         }
 
         .navbar p {
@@ -130,22 +132,32 @@
         }
 
         .open-btn {
-            position: fixed;
-            left: 2%;
-            top: 2.5%;
+            position: relative;
+            justify-content: center;
+            align-items: center;
+            float: left;
+            margin-left: 2%;
+            width: 20%;
+            height: auto;
+            z-index: 5;
+            background: none;
+        }
+
+        .open-btn button {
+            border: none;
+            background: none;
             cursor: pointer;
             color: #365AC2;
             font-size: 20px;
             font-weight: 600;
             border: none;
             transition: 0.3s;
-            z-index: 1001;
-            background: none;
         }
 
         .open-btn:hover {
             color: darkblue;
         }
+
 
         .logout-Form {
             list-style: none;
@@ -518,6 +530,21 @@
 
     @media (max-width: 768px) {
 
+        .navbar p {
+        font-size: 0.678rem;
+        margin-right: 5%;
+    }
+
+    .open-btn button{
+        font-size: 0.990rem;
+        width: 100%;
+        display: inline;
+    }
+
+    .open-btn {
+        width: 35%;
+        display: inline;
+    }
     .profile-info img {
         /* Tambahkan jarak bawah antara gambar profil dan teks */
     }
@@ -650,10 +677,11 @@
 </head>
 <body>
     <nav class="navbar">
+        <div class="open-btn">
+            <button onclick="toggleSidebar()">&#9776; Personal</button>
+        </div>
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
-
-    <button class="open-btn" onclick="toggleSidebar()">&#9776; Profile</button>
 
     <div id="sidebar" class="sidebar">
         <div class="sidebar-isi">

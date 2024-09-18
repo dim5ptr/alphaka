@@ -10,133 +10,12 @@
     <style>
         /* CSS Enhancements */
 
-        .banner {
-            display: flex;
-            background-color: #ffffff;
-            background-size: cover;
-            border-radius: 20px;
-            margin: 5px 5%;
-            padding: 40px;
-            box-shadow: 0 4px 8px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .wlc h2 {
-            margin-top: 3%;
-            font-size: 2rem;
-            font-weight: 800;
-            color: rgba(20, 19, 19, 0.923);
-            margin-bottom: 1%;
-        }
-
-        .wlc span {
-            color: #365AC2;
-            font-weight: bolder;
-        }
-
-        .wlc {
-            margin-left: 10%;
-            max-width: 40%;
-        }
-
-        .wlc p {
-            color: #666;
-            font-size: 1.2rem;
-            line-height: 1.5;
-        }
-
-        .pict {
-            max-width: 40%;
-            margin-left: 50px;
-        }
-
-        .pict img {
-            width: 70%;
-            margin-left: 20%;
-        }
-
         section {
             max-width: 100%;
             margin: 0 auto;
             padding: 20px;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(5%, 4fr));
-            height: 100%;
-            gap: 20px;
-            margin: 0px 2%;
-            padding: 17px;
-        }
-
-        .card {
-            background-color: #fff;
-            border-radius: 15px;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .card-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .card-text {
-            position: absolute;
-            top: 80%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: left;
-            border-radius: 15px;
-            border: 2px solid white;
-            width: 93%;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.849);
-            color: #020202;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .card:hover .card-overlay {
-            opacity: 1;
-        }
-
-        .card:hover .card-text {
-            opacity: 1;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        .card-content {
-            align-items: center;
-        }
-
-        .card-icon {
-            width: 97%;
-            height: 0.5%;
-            border: 5px solid white;
-            border-radius: 15px;
-        }
-
-        .card p {
-            font-size: 1rem;
-            margin-bottom: 25%;
-            padding: 10px;
-        }
-
-        .card span {
-            font-weight: bold;
-        }
 
         html, body {
             height: 100%;
@@ -150,18 +29,73 @@
             transition: margin-left 0.3s;
         }
 
+        .navbar {
+            position: fixed;
+            background-color: white;
+            padding: 0px;
+            margin-bottom: 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            /* box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2); */
+            width: 100%;
+            top: 0;
+            z-index: 3;
+
+        }
+
+        .navbar p {
+            margin-right: 2%;
+            padding: 0;
+            color: gray;
+        }
+
+        .navbar span {
+            font-weight: 800;
+            color: #365AC2;
+            font-size: 16px;
+        }
+
+        .open-btn {
+            position: relative;
+            justify-content: center;
+            align-items: center;
+            float: left;
+            margin-left: 2%;
+            width: 20%;
+            height: auto;
+            z-index: 5;
+            background: none;
+        }
+
+        .open-btn button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #365AC2;
+            font-size: 20px;
+            font-weight: 600;
+            border: none;
+            transition: 0.3s;
+        }
+
+        .open-btn:hover {
+            color: darkblue;
+        }
+
+
         .sidebar {
             height: 100%;
             width: 250px;
             position: fixed;
-            top: 0;
             left: -270px;
             background-color: white;
             overflow-x: hidden;
             transition: 0.3s;
-            padding-top: 100px;
+            padding-top: 6%;
             box-shadow: 1px 0 9px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
+            z-index: 1;
         }
 
         .sidebar .sidebar-isi {
@@ -231,50 +165,6 @@
             color: white;
         }
 
-        .navbar {
-            position: fixed;
-            background-color: white;
-            padding: 0px;
-            margin-bottom: 10%;
-            display: flex;
-            justify-content: flex-end;
-            font-size: 14px;
-            box-shadow: 0 2px 9px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            top: 0;
-            z-index: 900;
-        }
-
-        .navbar p {
-            margin-right: 2%;
-            padding: 0;
-            color: gray;
-        }
-
-        .navbar span {
-            font-weight: 800;
-            color: #365AC2;
-            font-size: 16px;
-        }
-
-        .open-btn {
-            position: fixed;
-            left: 2%;
-            top: 2.5%;
-            cursor: pointer;
-            color: #365AC2;
-            font-size: 20px;
-            font-weight: 600;
-            border: none;
-            transition: 0.3s;
-            z-index: 1001;
-            background: none;
-        }
-
-        .open-btn:hover {
-            color: darkblue;
-        }
-
         .main-content {
             width: calc(100% - 270px);
             height: 100%;
@@ -321,14 +211,37 @@
             color: aliceblue;
             font-weight: 700;
         }
+
+        @media (max-width: 768px) {
+
+            .navbar p {
+        font-size: 0.678rem;
+        margin-right: 5%;
+    }
+
+    .open-btn button{
+        font-size: 0.990rem;
+        width: 100%;
+        display: inline;
+    }
+
+    .open-btn {
+        width: 35%;
+        display: inline;
+    }
+
+
+        }
+
     </style>
 </head>
 <body>
     <nav class="navbar">
+        <div class="open-btn">
+            <button onclick="toggleSidebar()">&#9776; Dashboard</button>
+        </div>
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
-
-    <button class="open-btn" onclick="toggleSidebar()">&#9776; Dashboard</button>
 
     <div id="sidebar" class="sidebar">
         <div class="sidebar-isi">

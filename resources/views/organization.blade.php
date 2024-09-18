@@ -35,7 +35,7 @@
             transition: 0.3s;
             padding-top: 100px;
             box-shadow: 1px 0 9px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
+            z-index: 1;
         }
 
         .sidebar .sidebar-isi {
@@ -109,14 +109,16 @@
             position: fixed;
             background-color: white;
             padding: 0px;
-            margin-bottom: 10%;
+            margin-bottom: 5%;
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
             font-size: 14px;
-            box-shadow: 0 2px 9px rgba(0, 0, 0, 0.2);
+            /* box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2); */
             width: 100%;
             top: 0;
-            z-index: 900;
+            z-index: 3;
+
         }
 
         .navbar p {
@@ -132,22 +134,34 @@
         }
 
         .open-btn {
-            position: fixed;
-            left: 2%;
-            top: 2.5%;
+            position: relative;
+            justify-content: center;
+            align-items: center;
+            float: left;
+            margin-left: 2%;
+            width: 20%;
+            display: inline;
+            height: auto;
+            z-index: 5;
+            background: none;
+        }
+
+        .open-btn button {
+            display: inline;
+            border: none;
+            background: none;
             cursor: pointer;
             color: #365AC2;
             font-size: 20px;
             font-weight: 600;
             border: none;
             transition: 0.3s;
-            z-index: 1001;
-            background: none;
         }
 
         .open-btn:hover {
             color: darkblue;
         }
+
 
         .main-content {
             width: calc(100% - 270px);
@@ -263,7 +277,7 @@
     flex-wrap: wrap;
     gap: 20px;
     margin-left: 5%;
-    margin-top: 2%;
+
 }
 
 /* Card styling */
@@ -304,8 +318,12 @@
 
 .card-data {
     width: 80%;
-  overflow: hidden;     /* Sembunyikan teks yang melebihi batas */
-  text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Batasi hingga 3 baris */
+    -webkit-box-orient: vertical;
+    overflow: hidden;     /* Sembunyikan teks yang melebihi batas */
+    text-overflow: ellipsis;
+    margin-bottom: 5%;
     }
 
 .card-id img {
@@ -356,6 +374,7 @@
 
 .card-footer .btn {
     text-decoration: none;
+    margin-top: 2%;
     float: right;
     padding: 10px 20px;
     font-size: 1rem;
@@ -370,28 +389,99 @@
 }
 
 
+.alert {
+        padding: 15px 15px 20px;
+        border: 1px solid transparent;
+        text-align: center;
+        position: relative;
+        width: 40%;
+        height: 3%;
+        margin-left: 25%;
+        font-size: 100%;
+        justify-content: center;
+
+    }
+
+    .alert-success {
+        color: white;
+        background-color: #1363DF;
+        border-color: #c3e6cb;
+        font-weight: bold;
+        border-radius: 5px;
+        z-index: 3;
+    }
+
+    .alert-info {
+        color: #0c5460;
+        background-color: #d1ecf1;
+        border-color: #bee5eb;
+    }
+
+    .alert-warning {
+        color: #856404;
+        background-color: #fff3cd;
+        border-color: #ffeeba;
+    }
+
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+
+    .alert button {
+        width: auto;
+        height: auto;
+        font-size: 1rem;
+        border: none;
+        background: none;
+        color: white;
+    }
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-    .sidebar {
-        width: 200px;
-        left: -220px;
+
+    .navbar p {
+        font-size: 0.678rem;
+        margin-right: 5%;
     }
 
-    .sidebar.open {
-        left: 0;
-    }
-
-    .main-content {
-        margin-left: 0;
+    .open-btn button{
+        font-size: 0.990rem;
         width: 100%;
+        display: inline;
+    }
+
+    .open-btn {
+        width: 35%;
+        display: inline;
+    }
+
+    footer {
+        width: 95%;
+    }
+    .main-content {
+        position: fixed;
+        margin-left: 0;
+        width: 80%;
+        height: 90%;
     }
 
     .card {
         width: calc(50% - 20px); /* Adjust for smaller screens */
+        height: 40%;
     }
 
     .card-body {
         width: calc(50% - 20px); /* Adjust for smaller screens */
+    }
+
+    .logout-button{
+        top: 50%;
+    }
+
+    .alert {
+        font-size: 70%;
     }
 }
 
@@ -414,55 +504,17 @@
 
 }
 
-.alert {
-        padding: 15px;
-        border: 1px solid transparent;
-        text-align: left;
-        position: absolute;
-        width: 40%;
-        height: 3%;
-        margin-left: 20%;
-        font-size: 0.890rem;
-        justify-content: center;
-        z-index: 1001;
-    }
-
-    .alert-success {
-        color: white;
-        background-color: #1363DF;
-        border-color: #c3e6cb;
-        font-weight: bold;
-        border-radius: 5px;
-    }
-
-    .alert-info {
-        color: #0c5460;
-        background-color: #d1ecf1;
-        border-color: #bee5eb;
-    }
-
-    .alert-warning {
-        color: #856404;
-        background-color: #fff3cd;
-        border-color: #ffeeba;
-    }
-
-    .alert-danger {
-        color: #721c24;
-        background-color: #f8d7da;
-        border-color: #f5c6cb;
-    }
-
 
 
     </style>
 </head>
 <body>
     <nav class="navbar">
+        <div class="open-btn">
+            <button onclick="toggleSidebar()">&#9776; Organization</button>
+        </div>
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
-
-    <button class="open-btn" onclick="toggleSidebar()">&#9776; Organization</button>
 
     <div id="sidebar" class="sidebar">
         <div class="sidebar-isi">
@@ -573,6 +625,27 @@
                 mainContent.style.marginLeft = "19%";
             }
         }
+
+        const successAlert = document.getElementById('alert-success');
+            if (successAlert) {
+                setTimeout(function() {
+                    successAlert.style.opacity = 0;
+                    setTimeout(function() {
+                        successAlert.style.display = 'none';
+                    }, 500);
+                }, 5000);
+            }
+
+            // Hide error alert after 5 seconds
+            const errorAlert = document.getElementById('alert-danger');
+            if (errorAlert) {
+                setTimeout(function() {
+                    errorAlert.style.opacity = 0;
+                    setTimeout(function() {
+                        errorAlert.style.display = 'none';
+                    }, 500);
+                }, 5000);
+            }
     </script>
 {{--
 <script>

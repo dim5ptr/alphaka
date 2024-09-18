@@ -52,7 +52,7 @@
             transition: 0.3s;
             padding-top: 100px;
             box-shadow: 1px 0 9px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
+            z-index: 1;
         }
 
         .sidebar .sidebar-isi {
@@ -126,71 +126,59 @@
             position: fixed;
             background-color: white;
             padding: 0px;
-            margin-bottom: 10%;
+            margin-bottom: 5%;
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
             font-size: 14px;
-            box-shadow: 0 2px 9px rgba(0, 0, 0, 0.2);
+            /* box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2); */
             width: 100%;
             top: 0;
-            z-index: 900;
+            z-index: 3;
+
         }
 
-        .inbox {
-            padding-left: 5%;
-            border-right: 5px solid #365AC2;
-            width: 3%;
-            height: 40px;
-            margin-top: 0.9%;
-            margin-right: 1.5%;
-            font-size: 1.5rem;
-            justify-content: center;
-            align-content: center;
-            color: #365AC2;
-        }
-
-        .inbox1{
-            transition: color ease-out .3s;
-        }
-
-        .inbox1:hover{
-            color: #626981;
-        }
-        .inbox i {
-            cursor: pointer;
-        }
         .navbar p {
             margin-right: 2%;
             padding: 0;
             color: gray;
         }
 
-        .navbar span {
-            font-weight: 800;
+        .navbar a {
+            font-weight: 600;
             color: #365AC2;
-            font-size: 16px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            text-decoration: underline;
         }
 
         .open-btn {
-            position: fixed;
-            left: 2%;
-            top: 2.5%;
+            position: relative;
+            justify-content: center;
+            align-items: center;
+            float: left;
+            margin-left: 2%;
+            width: 40%;
+            height: auto;
+            z-index: 5;
+            background: none;
+        }
+
+        .open-btn button {
+            border: none;
+            background: none;
             cursor: pointer;
             color: #365AC2;
             font-size: 20px;
             font-weight: 600;
             border: none;
             transition: 0.3s;
-            z-index: 1001;
-            background: none;
         }
 
         .open-btn:hover {
             color: darkblue;
         }
-        .open-btn span {
-           color: #2d4da3;
-        }
+
         .main-content {
             width: calc(100% - 270px);
             height: 100%;
@@ -400,11 +388,12 @@ input {
 </head>
 <body>
     <nav class="navbar">
-        
+        <div class="open-btn">
+            <button onclick="toggleSidebar()">&#9776; Organization > </button>
+            <a href="#">New Organization</a>
+        </div>
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
-
-    <button class="open-btn" onclick="toggleSidebar()">&#9776; Organization <span> > Create Organization</span></button>
 
     <div id="sidebar" class="sidebar">
         <div class="sidebar-isi">
