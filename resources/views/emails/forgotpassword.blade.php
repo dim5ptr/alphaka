@@ -69,6 +69,7 @@
         <div class="container">
             <div class="inner-body">
                 <h2>Halo!</h2>
+                <p>Yth. {{ session('username') ?? session('email') }}</p>
                 <p>Anda menerima email ini karena kami menerima permintaan pengaturan ulang kata sandi untuk akun Anda.<br>
                 Tekan tombol di bawah ini untuk mengatur ulang kata sandi.</p>
                 <p class="text-center">

@@ -215,9 +215,15 @@
             max-width: 100%;
             height: 100%;
             margin: 5% auto;
-            padding: 20px;
+            padding: 3px;
             justify-content: center;
             align-items: center;
+        }
+
+        .container {
+            margin-top: 3%;
+            transition: 0.3s ease-out;
+            position: relative;
         }
 
     /* Button Styles */
@@ -240,17 +246,6 @@
     .btn-primary i {
         margin-right: 2%;
         font-size: 2rem;
-    }
-
-
-    .profile {
-       margin-top: 1%;
-       margin-bottom: 1%;
-       margin-right: 2%;
-       padding-right: 2%;
-       align-content: center;
-       width: 5%;
-       border-right: 5px solid #365AC2;
     }
 
     img {
@@ -399,6 +394,7 @@
         margin-left: 25%;
         font-size: 100%;
         justify-content: center;
+        transition: 0.3s ease-out;
 
     }
 
@@ -412,10 +408,14 @@
     }
 
     .alert-info {
+        position: relative;
+        width: auto;
+        margin: 10%;
+        justify-content: center;
+        align-items: center;
         color: #0c5460;
-        background-color: #d1ecf1;
-        border-color: #bee5eb;
-    }
+        font-weight: bolder;
+        }
 
     .alert-warning {
         color: #856404;
@@ -461,7 +461,7 @@
         width: 95%;
     }
     .main-content {
-        position: fixed;
+        position: relative;
         margin-left: 0;
         width: 80%;
         height: 90%;
@@ -548,7 +548,9 @@
         </div>
     </div>
     <div id="main-content" class="main-content">
-        @if (session('success_message'))
+
+        <section class="content">
+            @if (session('success_message'))
             <div class="alert alert-success alert-dismissible fade show" role="alert" id="alert-success">
                 {{ session('success_message') }}
             </div>
@@ -563,7 +565,6 @@
             </div>
         @endif
 
-        <section class="content">
             <div class="container">
                 @if(isset($organizations))
                     <div class="display">

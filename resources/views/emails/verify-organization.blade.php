@@ -69,8 +69,8 @@
         <div class="container">
             <div class="inner-body">
                 <h2>Halo!</h2>
-                <p>Yth. {{ session('organization_name') }},</p>
-                <p>Organisasi Anda telah berhasil dibuat. Silakan verifikasi organisasi Anda menggunakan tautan berikut:</p>
+                <p>Yth. {{ session('username') }}</p>
+                <p>Organisasi {{ session('organization_name') }} telah berhasil dibuat. Silakan verifikasi organisasi Anda menggunakan tautan berikut:</p>
                 <p class="text-center">
                     <a href="{{ url('organizations/' . $token) }}" class="btn">Verifikasi Organisasi</a>
                 </p>
