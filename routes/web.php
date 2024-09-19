@@ -77,6 +77,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/vieworganization', [HttpController::class, 'vieworganization'])->name('vieworganization');
     Route::get('/editorganization/{organization_name}', [HttpController::class, 'showeditorganization'])->name('showeditorganization');
     Route::post('/editorganization/{organization_name}', [HttpController::class, 'editorganization'])->name('editorganization');
+    // Route to show the search and add member view
+    Route::get('/organization/{id}/add_member', [HttpController::class, 'showAddMember'])->name('showAddMember');
+    // Route to handle the member search and add functionality
+    Route::post('/organization/{id}/add_member', [HttpController::class, 'addMember'])->name('addMember');
     Route::get('/personal', [HttpController::class, 'personal'])->name('personal');
     Route::get('/editpersonal',  [HttpController::class, 'showeditpersonal'])->name('showeditpersonal');
     Route::post('/editpersonal', [HttpController::class, 'editpersonal'])->name('editpersonal');

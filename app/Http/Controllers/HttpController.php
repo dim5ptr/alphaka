@@ -801,7 +801,83 @@ public function addOrganization(Request $request)
         return back()->withErrors(['error_message' => 'Something went wrong, try again! ' . $e->getMessage()])->withInput();
     }
 }
+    public function showAddMember($id)
+    {
+        return view('addmember', ['organization_id' => $id]);
+    }
 
+    // Add member to the organization
+    public function addMember(Request $request, $id)
+    {
+        // Validate the request input (search term)
+        $request->validate([
+            'search' => 'required|string',
+        ]);
+
+        // API request to search for users
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => session('access_token'),
+                'x-api-key' => self::API_KEY,
+            ])->post(self::API_URL . '/sso/list_user.json', [
+                'find' => $request->input('search'),
+            ]);
+
+            $data = $response->json();
+
+            // Log the response for debugging
+            Log::info('List User API Response:', ['response' => $data]);
+
+            // Check if API response is successful
+            if ($response->successful()) {
+                // Return view with search results
+                return view('organization.add_member', [
+                    'organization_id' => $id,
+                    'users' => $data['users'] ?? [],
+                ]);
+            } else {
+                return back()->withErrors('Failed to fetch users. Please try again.');
+            }
+        } catch (\Exception $e) {
+            Log::error('Error fetching users:', ['message' => $e->getMessage()]);
+            return back()->withErrors('An error occurred while fetching users.');
+        }
+    }
+
+    // Add selected member to the organization
+    public function addMemberToOrganization(Request $request, $id)
+    {
+        // Validate the input
+        $request->validate([
+            'user_id' => 'required|integer',
+        ]);
+
+        // API request to add a member
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => session('access_token'),
+                'x-api-key' => self::API_KEY,
+            ])->post(self::API_URL . '/sso/add_member_organization.json', [
+                'organization_id' => $id,
+                'user_ids' => $request->input('user_id'),
+            ]);
+
+            $data = $response->json();
+
+            // Log the response for debugging
+            Log::info('Add Member API Response:', ['response' => $data]);
+
+            if ($response->successful()) {
+                return redirect()->route('showvieworganization', $id)
+                    ->with('success', 'Member added successfully.');
+            } else {
+                return back()->withErrors('Failed to add member. Please try again.');
+            }
+        } catch (\Exception $e) {
+            Log::error('Error adding member to organization:', ['message' => $e->getMessage()]);
+            return back()->withErrors('An error occurred while adding the member.');
+        }
+    }
 // public function addOrganization(Request $request)
 // {
 //     // Validate input

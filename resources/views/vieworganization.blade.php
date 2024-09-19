@@ -335,7 +335,7 @@ body {
 
 .input-group {
     width: 100%;
-    max-width: 235px;
+    max-width: 180px;
     display: flex;
     align-items: center;
     position: relative;
@@ -378,7 +378,7 @@ body {
 
 /* Table Styling */
 .table {
-    width: 100%;
+    width: 108%;
     border-collapse: collapse;
     background-color: white;
     border-radius: 10px;
@@ -532,7 +532,6 @@ html, body {
 
     .input-group {
         width: 100%;
-        max-width: 180px;
     }
 }
 .breadcrumb {
@@ -568,7 +567,22 @@ html, body {
     color: #3200af;
 }
 
-
+.add {
+        float: right;
+        width: 5%;
+        margin-right: 3%;/* Atur padding sesuai kebutuhan */
+    }
+.add button{
+    width: 80%;
+    padding: 10px;
+}
+    footer {
+        position: fixed;
+        bottom: 5%;
+        left: 0;
+        width: 100%;
+        z-index: 998; /* Pastikan footer berada di bawah tombol "Buat Organisasi" */
+    }
     </style>
 </head>
 <body>
@@ -669,9 +683,16 @@ html, body {
                 </table>
             </div>
         </div>
-
-
-
+        <footer>
+            <div class="add">
+               <form action="{{ route('showcreateorganization') }}" method="GET">
+               @csrf
+                  <button type="submit" class="btn btn-primary rounded">
+                       <i class="fas fa-plus"></i>
+                   </button>
+               </form>
+           </div>
+       </footer>
     </div>
 
 
