@@ -69,6 +69,7 @@
         <div class="container">
             <div class="inner-body">
                 <h2>Halo!</h2>
+                <p>Yth. {{ session('email') }}</p>
                 <p>Anda menerima email ini untuk memverifikasi email Anda.</p>
                 <p class="text-center">
                 <a href="{{ url('active/' . $token) }}" class="btn">Activation</a>
@@ -83,6 +84,4 @@
         <div class="container text-center footer">
             <p>© {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
         </div>
-    </div>
-</body>
-</html>
+    </div>tail -f storage/logs
