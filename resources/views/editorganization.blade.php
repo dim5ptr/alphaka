@@ -501,6 +501,7 @@ input {
                             <!-- Form for creating organization -->
                                 <form action="{{ route('editorganization', ['organization_name' => $organization['organization_name']]) }}" method="POST">
                                     @csrf
+                                    <input type="hidden" name="organization_id" value="{{ $organization['organization_id'] }}">
                                     <div class="form-group">
                                         <label for="organization_name" class="form-label">Organization Name</label>
                                         <input type="text" name="organization_name" class="form-control" value="{{ $organization['organization_name'] }}">
