@@ -13,6 +13,67 @@
 <style>
     /* CSS Enhancements */
 
+    /* css modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1001;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 2% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+        border-radius: 10px;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e5e5e5;
+        background-color: #365AC2;
+        color: white;
+        padding: 10px 20px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        margin-bottom: 2.1%;
+    }
+
+    .modal-header h1 {
+        margin: 0;
+        font-size: 24px;
+    }
+
+    .btn-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: white;
+    }
+    
+    .form-group .form-control{
+    width: 100%; /* Ensures the form group takes full width */
+    box-sizing: border-box; /* Includes padding and border in the element's total width */
+    margin-bottom: 2%;
+    }
+
+    .btn-block {
+    width: 100%; /* Makes the button full width */
+    box-sizing: border-box; /* Includes padding and border in the element's total width */
+}
+
+
 html, body {
     height: auto;
     margin: 0;
@@ -571,6 +632,15 @@ html, body {
         float: right;
         width: 5%;
         margin-right: 3%;/* Atur padding sesuai kebutuhan */
+        display: flex;
+        justify-content: center; /* Center the button */
+        align-items: center;
+    }
+
+    /* Responsive image within the button */
+    .add img {
+        max-width: 100%; /* Ensure the image does not exceed button width */
+        height: auto; /* Maintain aspect ratio */
     }
 .add button{
     width: 80%;
@@ -685,9 +755,7 @@ html, body {
         </div>
         <footer>
             <div class="add">
-               <form action="{{ route('showcreateorganization') }}" method="GET">
-               @csrf
-                  <button type="submit" class="btn btn-primary rounded">
+                  <button type="submit" class="btn btn-primary rounded" onclick="openModal()">
                        <i class="fas fa-plus"></i>
                    </button>
                </form>
@@ -695,6 +763,22 @@ html, body {
        </footer>
     </div>
 
+    <div class="modal" id="addMemberModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="addMemberModalLabel">Add Member</h1>
+                    <button type="button" class="btn-close" onclick="closeModal()">×</button>
+                </div>
+                <form action="{{ route('addmember') }}" method="POST">
+                    @csrf
+                    <!-- Personal information fields -->
+                    <div class="form-group" class="form-label">
+                        <input type="email" name="email" id="email" class="form-control" placeholder="Enter someone email" value="{{ session('email') }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Add Member</button>
+                </form>
+            </div>
+        </div>
 
     <script>
         function toggleSidebar() {
@@ -709,6 +793,14 @@ html, body {
                 mainContent.style.marginLeft = "19%";
             }
         }
+
+        function openModal() {
+        document.getElementById('addMemberModal').style.display = 'block';
+        }
+
+         function closeModal() {
+        document.getElementById('addMemberModal').style.display = 'none';
+         }
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
