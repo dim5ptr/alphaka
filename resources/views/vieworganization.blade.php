@@ -33,7 +33,6 @@
         border: 1px solid #888;
         width: 80%;
         max-width: 600px;
-        border-radius: 10px;
     }
 
     .modal-header {
@@ -71,7 +70,7 @@
     .btn-block {
     width: 100%; /* Makes the button full width */
     box-sizing: border-box; /* Includes padding and border in the element's total width */
-}
+    }
 
 
 html, body {
@@ -423,7 +422,7 @@ body {
 
 .form-control {
     border: 1px solid #ddd;
-    border-radius: 0 0.5rem 0.5rem 0;
+    border-radius: 0.5rem;
     padding: 0.75rem;
     font-size: 0.875rem;
     box-shadow: none;
@@ -628,24 +627,38 @@ html, body {
     color: #3200af;
 }
 
-.add {
-        float: right;
-        width: 5%;
-        margin-right: 3%;/* Atur padding sesuai kebutuhan */
-        display: flex;
-        justify-content: center; /* Center the button */
-        align-items: center;
+ /* Button Styles */
+ .btn-primary {
+        padding: 10px 10px;
+        background-color: #365AC2;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        font-size: 0.890rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
     }
 
-    /* Responsive image within the button */
-    .add img {
-        max-width: 100%; /* Ensure the image does not exceed button width */
-        height: auto; /* Maintain aspect ratio */
+    .btn-primary:hover {
+        background-color: #2e4a8c;
+        transform: scale(1.05);
     }
-.add button{
-    width: 80%;
-    padding: 10px;
-}
+
+    .btn-primary i {
+        margin-right: 2%;
+        font-size: 2rem;
+    }
+
+    img {
+        float: right;
+        width: 50%;
+    }
+
+    .add {
+        float: right;
+        margin-right: 3%;/* Atur padding sesuai kebutuhan */
+    }
+
     footer {
         position: fixed;
         bottom: 5%;
