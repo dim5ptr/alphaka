@@ -21,7 +21,8 @@ use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Str;
+use Illuminate\Support\Str;
+
 
 
 
@@ -31,6 +32,125 @@ class HttpController extends Controller
     const API_URL = 'http://192.168.1.24:14041/api';
     const API_KEY = '5af97cb7eed7a5a4cff3ed91698d2ffb';
     private static $access_token = null;
+
+    // Fungsi untuk redirect ke Google login page
+    public function redirectToGoogle($type)
+{
+    // Determine the redirect URI based on the type
+    $redirectUri = $type === 'register'
+        ? env('GOOGLE_REDIRECT_URI_REGISTER')
+        : env('GOOGLE_REDIRECT_URI_LOGIN');
+
+    // Redirect to Google for authentication
+    return Socialite::driver('google')
+        ->redirect(); // This will automatically use the redirect URI set in the Google Cloud Console
+}
+
+
+
+    public function handleGoogleLoginCallback()
+{
+    $user = Socialite::driver('google')->user();
+    // Handle login logic for $user
+}
+
+public function handleGoogleRegisterCallback()
+{
+    $user = Socialite::driver('google')->user();
+    // Handle registration logic for $user
+}
+
+
+
+
+  // Callback untuk Login dengan Google
+// public function handleGoogleLoginCallback()
+// {
+//     try {
+//         // Dapatkan pengguna Google
+//         $googleUser = Socialite::driver('google')->user();
+
+//         $userData = [
+//             'email' => $googleUser->email,
+//             'name' => $googleUser->name,
+//             'avatar' => $googleUser->avatar,
+//         ];
+
+//         // Coba login menggunakan email Google
+//         $loginResponse = Http::withHeaders([
+//             'x-api-key' => self::API_KEY
+//         ])->post(self::API_URL . '/sso/login.json', [
+//             'username' => $userData['email'],
+//             'password' => bcrypt(Str::random(10)), // Password acak
+//         ]);
+
+//         $loginData = $loginResponse->json();
+
+//         if ($loginResponse->successful() && isset($loginData['data']['access_token'])) {
+//             session(['access_token' => $loginData['data']['access_token']]);
+//             // Simpan data personal info ke session jika ada
+//             if (isset($loginData['data']['personal_info'])) {
+//                 session(['email' => $userData['email']]);
+//             }
+//             return redirect()->route('dashboard');
+//         }
+
+//         return back()->withErrors([
+//             'error' => 'Login failed, please try again.'
+//         ]);
+//     } catch (\Exception $e) {
+//         return redirect('/login')->withErrors([
+//             'error_message' => 'Something went wrong, please try again.'
+//         ]);
+//     }
+// }
+
+// // Callback untuk Registrasi dengan Google
+// public function handleGoogleRegisterCallback()
+// {
+//     try {
+//         $googleUser = Socialite::driver('google')->user();
+
+//         $userData = [
+//             'email' => $googleUser->email,
+//             'name' => $googleUser->name,
+//             'avatar' => $googleUser->avatar,
+//         ];
+
+//         // Proses registrasi menggunakan Google email
+//         $registerResponse = Http::withHeaders([
+//             'x-api-key' => self::API_KEY
+//         ])->post(self::API_URL . '/sso/register.json', [
+//             'email' => $userData['email'],
+//             'password' => bcrypt(Str::random(10)), // Buat password acak
+//         ]);
+
+//         $registerData = $registerResponse->json();
+
+//         if ($registerResponse->successful() && isset($registerData['activation_key'])) {
+//             session([
+//                 'verification_token' => $registerData['activation_key'],
+//                 'email' => $userData['email'],
+//             ]);
+
+//             // Kirim email verifikasi
+//             Mail::send('emails.verification', ['token' => session('verification_token')], function ($message) use ($userData) {
+//                 $message->to($userData['email']);
+//                 $message->subject('Email Activation');
+//             });
+
+//             return redirect('/verify')->with('success_message', 'Please check your email to activate your account.');
+//         }
+
+//         return back()->withErrors([
+//             'error_message' => $registerData['data'] ?? 'Registration failed, please try again.',
+//         ]);
+//     } catch (\Exception $e) {
+//         return redirect('/register')->withErrors([
+//             'error_message' => 'Something went wrong, please try again.'
+//         ]);
+//     }
+// }
 
 
 
@@ -1090,47 +1210,48 @@ public function addorganization(Request $request)
 
 
 
-    public function redirectToGoogle()
-    {
-        // Redirect pengguna ke halaman autentikasi Google menggunakan Socialite
-        return Socialite::driver('google')->redirect();
-    }
+//     public function redirectToGoogle()
+//     {
+//         // Redirect pengguna ke halaman autentikasi Google menggunakan Socialite
+//         return Socialite::driver('google')->redirect();
+//     }
 
-    public function handleGoogleCallback()
-    {
-        try {
-            // Ambil informasi pengguna dari Google setelah autentikasi
-            $googleUser = Socialite::driver('google')->user();
-        } catch (\Exception $e) {
-            // Tangkap dan tampilkan pesan kesalahan jika autentikasi gagal
-            dd($e->getMessage());
-        }
+//     public function handleGoogleCallback()
+//     {
+//         try {
+//             // Ambil informasi pengguna dari Google setelah autentikasi
+//             $googleUser = Socialite::driver('google')->user();
+//         } catch (\Exception $e) {
+//             // Tangkap dan tampilkan pesan kesalahan jika autentikasi gagal
+//             dd($e->getMessage());
+//         }
 
-        // Periksa apakah pengguna berhasil diambil dari Google
-        if ($googleUser) {
-            // Ambil alamat email pengguna dari data yang diterima dari Google
-            $email = $googleUser->email;
+//         // Periksa apakah pengguna berhasil diambil dari Google
+//         if ($googleUser) {
+//             // Ambil alamat email pengguna dari data yang diterima dari Google
+//             $email = $googleUser->email;
 
-            // Kirim permintaan registrasi pengguna ke backend menggunakan HTTP Client
-            $response = Http::withHeaders([
-                'x-api-key' => self::API_KEY, // Header x-api-key untuk otentikasi pada API backend
-            ])->post(self::API_URL . '/sso/register.json', [
-                'email' => $email, // Kirim alamat email pengguna untuk registrasi
-                'password' => 'password_default', // Tambahkan kata sandi default untuk registrasi
-            ]);
+//             // Kirim permintaan registrasi pengguna ke backend menggunakan HTTP Client
+//             $response = Http::withHeaders([
+//                 'x-api-key' => self::API_KEY, // Header x-api-key untuk otentikasi pada API backend
+//             ])->post(self::API_URL . '/sso/register.json', [
+//                 'email' => $email, // Kirim alamat email pengguna untuk registrasi
+//                 'password' => 'password_default', // Tambahkan kata sandi default untuk registrasi
+//             ]);
 
-            // Periksa apakah permintaan registrasi berhasil
-            if ($response->successful()) {
-                // Jika berhasil, arahkan pengguna ke halaman dashboard
-                return redirect()->route('dashboard');
-            } else {
-                // Jika gagal, arahkan pengguna kembali ke halaman registrasi dengan pesan kesalahan
-                return redirect()->route('register')->with('error', 'Gagal melakukan registrasi. Silakan coba lagi.');
-            }
+//             // Periksa apakah permintaan registrasi berhasil
+//             if ($response->successful()) {
+//                 // Jika berhasil, arahkan pengguna ke halaman dashboard
+//                 return redirect()->route('dashboard');
+//             } else {
+//                 // Jika gagal, arahkan pengguna kembali ke halaman registrasi dengan pesan kesalahan
+//                 return redirect()->route('register')->with('error', 'Gagal melakukan registrasi. Silakan coba lagi.');
+//             }
 
-        } else {
-            // Jika gagal mengambil informasi pengguna dari Google, tampilkan pesan kesalahan
-            dd('Failed to retrieve user information from Google.');
-        }
-    }
+//         } else {
+//             // Jika gagal mengambil informasi pengguna dari Google, tampilkan pesan kesalahan
+//             dd('Failed to retrieve user information from Google.');
+//         }
+//     }
+// }
 }

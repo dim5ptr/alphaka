@@ -321,6 +321,7 @@
             <br>
             <div class="register-link">
                 <p>Belum punya akun? <a href="{{ route('register') }}">Daftar Sekarang</a></p>
+                <a href="{{ route('login.google') }}" class="btn btn-google">Login with Google</a>
             </div>
         </div>
     </div>

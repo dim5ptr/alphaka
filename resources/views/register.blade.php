@@ -256,6 +256,8 @@
                 <button type="submit" class="btn btn-primary">Daftar</button>
             </form>
             <p class="form-text">Sudah punya akun? <a href="{{ route('login') }}">Login disini</a></p>
+            <a href="{{ route('register.google') }}" class="btn btn-google">Register with Google</a>
+
         </div>
         <div class="pict">
             <img src="{{ asset('img/A.jpg') }}" alt="">

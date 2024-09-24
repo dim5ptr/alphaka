@@ -31,11 +31,16 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    'google' => [
-        'client_id' => env('GOOGLE_CLIENT_ID'),
-        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect' => env('GOOGLE_REDIRECT_URI'),
+   'google' => [
+    'client_id' => env('GOOGLE_CLIENT_ID'),
+    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+    'redirect' => [
+        'login' => env('GOOGLE_REDIRECT_URI_LOGIN'),
+        'register' => env('GOOGLE_REDIRECT_URI_REGISTER'),
     ],
+],
+
+
 
 
 ];

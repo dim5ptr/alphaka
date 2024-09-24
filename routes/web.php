@@ -54,6 +54,19 @@ Route::post('/formforgetpassword', [HttpController::class, 'submitResetPasswordF
     Route::get('/activation', [HttpController::class, 'showActivationForm'])->name('activate.form');
 
 
+    // Route::get('auth/google', [HttpController::class, 'redirectToGoogle']);
+    // Route::get('auth/google/callback', [HttpController::class, 'handleGoogleCallback']);
+
+    Route::get('login/google', function () {
+        return (new HttpController)->redirectToGoogle('login');
+    })->name('login.google');
+
+    Route::get('register/google', function () {
+        return (new HttpController)->redirectToGoogle('register');
+    })->name('register.google');
+
+    Route::get('auth/google/callback/login', [HttpController::class, 'handleGoogleLoginCallback']);
+    Route::get('auth/google/callback/register', [HttpController::class, 'handleGoogleRegisterCallback']);
 });
 
 // Rute-rute yang memerlukan autentikasi
@@ -61,6 +74,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/maintenance', function () {
         return view('maintenance');
     });
+
     // Rute untuk logout
     Route::get('/logout', [HttpController::class, 'logout'])->name('logout');
     // Rute untuk konfirmasi logout
