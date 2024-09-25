@@ -56,14 +56,14 @@ Route::post('/formforgetpassword', [HttpController::class, 'submitResetPasswordF
 
     // Route::get('auth/google', [HttpController::class, 'redirectToGoogle']);
     // Route::get('auth/google/callback', [HttpController::class, 'handleGoogleCallback']);
+// routes/web.php
+Route::get('login/google', function () {
+    return (new HttpController)->redirectToGoogle('login');
+})->name('login.google');
 
-    Route::get('login/google', function () {
-        return (new HttpController)->redirectToGoogle('login');
-    })->name('login.google');
-
-    Route::get('register/google', function () {
-        return (new HttpController)->redirectToGoogle('register');
-    })->name('register.google');
+Route::get('register/google', function () {
+    return (new HttpController)->redirectToGoogle('register');
+})->name('register.google');
 
     Route::get('auth/google/callback/login', [HttpController::class, 'handleGoogleLoginCallback']);
     Route::get('auth/google/callback/register', [HttpController::class, 'handleGoogleRegisterCallback']);
