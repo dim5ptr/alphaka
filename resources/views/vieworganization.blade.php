@@ -33,6 +33,12 @@
         border: 1px solid #888;
         width: 80%;
         max-width: 600px;
+        border-radius: 10px;
+        
+        /* Pengaturan posisi konten modal */
+        position: relative;
+        top: 30%;
+        transform: translateY(-50%); /* Moves the modal up by 50% of its own height */
     }
 
     .modal-header {
@@ -215,6 +221,9 @@ body {
 }
 
 .main-content {
+    padding-top: 30px; /* Adjust this value based on the height of your navbar */
+    position: relative;
+    
     width: calc(100% - 270px);
     height: auto;
     flex: 1;
@@ -286,7 +295,7 @@ body {
 
 /* Main Content */
 .container {
-    padding-top: 5%;
+    padding-top: 1%;
     width: 70%;
     height: 100%;
 }
@@ -368,6 +377,7 @@ body {
     cursor: pointer;
     transition: background-color 0.3s ease;
     display: inline-block;
+    margin-top: 3%;
 }
 
 #anggotaBtn, #pengurusBtn {
@@ -399,6 +409,7 @@ body {
     display: flex;
     align-items: center;
     position: relative;
+    margin-left: 3%;
 }
 
 .input-group-prepend {
@@ -428,6 +439,11 @@ body {
     box-shadow: none;
     border-left: none;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+    /* Responsive width */
+    width: 800px; /* Default to 100% of the parent container */
+    max-width: 100%; /* Set a max width for larger screens */
+    box-sizing: border-box; /* Ensure padding and border are included in the total width */
 }
 
 .form-control:focus {
@@ -482,151 +498,6 @@ html, body {
     font-size: 16px;
 }
 
-/* Mobile Styles */
-@media (max-width: 768px) {
-
-    .navbar p {
-        font-size: 0.678rem;
-        margin-right: 5%;
-    }
-
-    .open-btn button{
-        font-size: 0.990rem;
-        width: 100%;
-        display: inline;
-    }
-
-    .open-btn {
-        width: 35%;
-        display: inline;
-    }
-    .main-content {
-        margin-left: 0;
-        width: 100%;
-        padding: 5%;
-    }
-
-    .container {
-        padding-top: 20px;
-        width: 90%;
-    }
-
-    .card-organization {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 15px;
-        width: auto;
-    }
-
-    .card-organization .info h1 {
-        font-size: 1.5rem;
-    }
-
-    .card-organization .btn-edit {
-        width: 35px;
-        height: 35px;
-        font-size: 1rem;
-        bottom: 10px;
-        right: 10px;
-    }
-
-    .btn-primary {
-        font-size: 0.85rem;
-        padding: 8px 12px;
-    }
-
-    .mb-3 {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        justify-content: flex-start;
-    }
-
-    .input-group{
-        width: 100%;
-        font-size: auto;
-        margin: 0;
-
-    }
-    .table {
-        font-size: 0.85rem;
-    }
-
-    .table thead {
-        display: none;
-    }
-
-    .table tbody td {
-        display: block;
-        width: 100%;
-        text-align: right;
-        padding-left: 50%;
-        position: relative;
-    }
-
-    .table tbody td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 0;
-        width: 50%;
-        padding-left: 15px;
-        font-weight: bold;
-        text-align: left;
-        background-color: #f4f4f4;
-    }
-}
-
-/* Extra Small Devices (max-width: 480px) */
-@media (max-width: 480px) {
-    .open-btn {
-        font-size: 16px;
-    }
-
-    .card-organization .info h1 {
-        font-size: 1.2rem;
-    }
-
-    .btn-primary {
-        font-size: 0.8rem;
-    }
-
-    .input-group {
-        width: 100%;
-    }
-}
-.breadcrumb {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-}
-
-.breadcrumb-item {
-    display: flex;
-    align-items: center;
-}
-
-.breadcrumb-item + .breadcrumb-item::before {
-    content: "/";
-    margin: 0 8px; /* Jarak antara elemen dan garis miring */
-    color: #3200af;
-}
-
-.breadcrumb a {
-    text-decoration: none;
-    color: #3200af;
-}
-
-.breadcrumb a:hover {
-    text-decoration: underline;
-}
-
-.breadcrumb-item.active {
-    color: #3200af;
-}
-
  /* Button Styles */
  .btn-primary {
         padding: 10px 10px;
@@ -666,6 +537,40 @@ html, body {
         width: 100%;
         z-index: 998; /* Pastikan footer berada di bawah tombol "Buat Organisasi" */
     }
+
+    .breadcrumb {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    padding: 0;
+    margin: 2%;
+    list-style: none;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "/";
+    margin: 0 8px; /* Jarak antara elemen dan garis miring */
+    color: #3200af;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+    color: #3200af;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: #3200af;
+}
+
     </style>
 </head>
 <body>
