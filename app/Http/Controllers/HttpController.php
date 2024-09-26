@@ -1035,4 +1035,75 @@ public function organizationVerify(Request $request, $token)
             dd('Failed to retrieve user information from Google.');
         }
     }
+
+    public function searchUsers(Request $request)
+{
+    // Log the incoming request data
+    Log::info('Request Data:', $request->all());
+
+    // Extract the email from the request
+    $email = $request->input('email');
+    Log::info('Searching for email', ['email' => $email]); // Corrected to ensure array context
+
+    // Check if the email is null or empty
+    if (empty($email)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'The email field is required.',
+        ], 400);
+    }
+
+    // Prepare the payload for the API (simplified version)
+    $payload = [
+        'find' => $email // Directly send the email without wrapping it in 'body'
+    ];
+    Log::info('Payload being sent to API', ['payload' => $payload]); // Ensure payload is logged as array
+
+    // Log the access token and API key for comparison
+    Log::info('Access Token:', ['token' => session('access_token')]);
+    Log::info('API Key:', ['api_key' => self::API_KEY]);
+
+    // Call the external API using the full URL
+    $response = Http::withHeaders([
+            'Authorization' => session('access_token'), // Using the access token from session
+            'x-api-key' => self::API_KEY, // Using the API key
+        ])->post(self::API_URL . '/sso/list_user.json', $payload);
+
+    // Log the entire response for debugging
+    Log::info('API Response:', [
+        'status' => $response->status(),
+        'body' => $response->body(),
+        'headers' => $response->headers(),
+    ]);
+
+    // Handle API response
+    if ($response->successful()) {
+        $data = $response->json();
+        Log::info('API Parsed Response:', ['data' => $data]); // Log the parsed API response as array
+
+        // Check if the response indicates success
+        if (isset($data['success']) && $data['success']) {
+            return response()->json([
+                'success' => true,
+                'data' => $data['data'], // List of users
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => $data['data'] ?? 'Unknown error.', // Error from the API
+            ], 400);
+        }
+    } else {
+        // Log the failure details
+        Log::error('Failed API request. Status: ' . $response->status());
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to connect to the API.',
+        ], 500);
+    }
+}
+
+
+
 }
