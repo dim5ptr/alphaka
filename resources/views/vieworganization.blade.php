@@ -223,14 +223,12 @@ body {
 .main-content {
     padding-top: 30px; /* Adjust this value based on the height of your navbar */
     position: relative;
-
+    box-sizing: border-box;
     width: calc(100% - 270px);
     height: auto;
     flex: 1;
     margin-top: 5%;
     margin-left: 10%;
-    margin-right: 10%;
-    margin-bottom: 10%;
     transition: margin-left .3s;
 }
 
@@ -298,8 +296,9 @@ body {
 /* Main Content */
 .container {
     padding-top: 1%;
-    width: 70%;
+    width: 80%;
     height: 100%;
+    margin-left: 5%;
 }
 
 /* Organization Card */
@@ -314,10 +313,11 @@ body {
     justify-content: space-between;
     display: flex;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .info{
-    width: 90%;
+    width: 70%;
 }
 
 .info h1 {
@@ -332,7 +332,7 @@ body {
     color: #3200af;
 }
 
-.card-organization .btn-edit {
+ .btn-edit {
     background-color: #365AC2;
     color: #fff;
     border: none;
@@ -351,33 +351,36 @@ body {
     line-height: 1;
 }
 
-.card-organization .btn-edit i {
+ .btn-edit i {
     font-size: 1rem;
 }
 
-.card-organization .btn-edit:hover {
+.btn-edit:hover {
     background-color: #5a5bd4;
     transform: translateY(-2px);
 }
 
-/* Buttons and Search Input */
 .member {
     width: 100%;
 }
-/* Flexbox styling */
-.mb-3 {
+
+/* Buttons and Search Input */
+.mb-side {
     margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.group-btn  {
+    width: 30%;
 }
 
 .d-flex {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap; /* Allow wrapping for small screens */
-    gap: 1rem;
 }
 
-/* Button styling */
 .btn {
     font-size: 0.875rem;
     padding: 0.5rem 1.5rem;
@@ -412,18 +415,9 @@ body {
     background-color: #5a5bd4;
 }
 
-/* Search bar styling */
 .input-group {
+    width: 30%;
     display: flex;
-    flex-grow: 1;
-    max-width: 500px; /* Limit width on desktop */
-    min-width: 250px; /* Minimum width for mobile */
-    flex-basis: 100%; /* Flex to fill available space */
-    align-items: center;
-    margin-left: 3%;
-    border: 1px solid #ddd; /* Border around the entire search bar */
-    border-radius: 0.5rem;
-    overflow: hidden; /* Ensure icon and input stay together */
 }
 
 .input-group-prepend {
@@ -434,78 +428,42 @@ body {
     background-color: #365AC2; /* Blue background */
     border: none;
     color: #fff; /* White icon color */
-    padding: 0.5rem 0.75rem; /* Adjust padding to match button */
+    border-radius: 0.5rem 0 0 0.5rem;
+    padding: 0.75rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 0.5rem 0 0 0.5rem; /* Rounded only on left side */
-    height: 100%; /* Make sure the icon takes full height */
-    box-sizing: border-box;
 }
 
 .input-group-text i {
     color: #ffffff;
-    font-size: 1rem; /* Ensure the icon is appropriately sized */
 }
 
 .form-control {
-    flex-grow: 1; /* Grow to fill available space */
-    padding: 0.5rem 0.75rem; /* Adjust padding to match button */
-    border: none; /* No border since parent div has border */
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
     font-size: 0.875rem;
-    border-radius: 0 0.5rem 0.5rem 0; /* Rounded only on right side */
-    height: 100%; /* Ensure the input takes full height */
-    box-sizing: border-box;
+    box-shadow: none;
+    border-left: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+    /* Responsive width */
+    width: 800px; /* Default to 100% of the parent container */
+    max-width: 100%; /* Set a max width for larger screens */
+    box-sizing: border-box; /* Ensure padding and border are included in the total width */
 }
 
 .form-control:focus {
+    border-color: #7773d4;
+    box-shadow: 0 0 0 0.2rem rgba(119, 115, 212, 0.25);
     outline: none;
-    border-color: #365AC2;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .d-flex {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .input-group {
-        max-width: 100%; /* Full width for input group on small screens */
-        margin-left: 0;
-    }
-
-    .btn {
-        margin-top: 1rem;
-        width: 100%; /* Full width buttons on smaller screens */
-    }
-
-    .form-control {
-        font-size: 1rem; /* Slightly larger font size on mobile */
-        padding: 0.5rem 0.75rem; /* Ensure enough padding on small screens */
-        height: 100%; /* Full height for mobile */
-    }
-}
-
-@media (max-width: 576px) {
-    .input-group-prepend .input-group-text {
-        padding: 0.5rem 0.75rem; /* Ensure consistent padding with input */
-        font-size: 1rem; /* Consistent icon size */
-        height: 100%; /* Match the height of input */
-        border-radius: 0.5rem 0 0 0.5rem; /* Ensure smooth corners for icon */
-    }
-
-    .form-control {
-        font-size: 1rem;
-        padding: 0.5rem 0.75rem; /* Match padding with button */
-        border-radius: 0 0.5rem 0.5rem 0; /* No left radius to blend with icon */
-        height: 100%; /* Match height of icon for full alignment */
-    }
 }
 
 /* Table Styling */
 .table-container {
     width: 450%;
+    box-sizing: border-box;
     overflow-x: auto; /* Tambahkan scroll horizontal jika diperlukan */
     -webkit-overflow-scrolling: touch; /* Untuk smooth scrolling di perangkat iOS */
     margin: 0 auto; /* Pusatkan kontainer */
@@ -513,9 +471,8 @@ body {
 
 /* Atur max-width hanya untuk tampilan desktop */
 @media (min-width: 768px) {
-    .table-container {
-        max-width: 1200px; /* Batasi lebar maksimum di desktop */
-    }
+.table-container {
+    width: 100%;    }
 }
 
 .table {
@@ -690,16 +647,16 @@ html, body {
     </div>
     <div id="main-content" class="main-content">
         <br>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb" style="background-color: transparent;">
+        <nav>
+            <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('organization') }}" style="color: #3200af;">Organization</a></li>
                 <li class="breadcrumb-item" style="color: #3200af;">{{ $organization['organization_name'] }}</a></li>
             </ol>
         </nav>
         <!-- Content -->
-        <div class="container main-content">
+        <div class="container">
             <!-- Organization Card -->
-            <div class="card-organization position-relative">
+            <div class="card-organization">
                 <div class="info">
                     <h1 class="m-0">{{ $organization['organization_name'] }}</h1>
                     <small>{{ $organization['description'] }}</small>
@@ -713,8 +670,8 @@ html, body {
             <!-- Member List -->
             <div class="member">
                 <!-- Buttons and Search Input -->
-                <div class="mb-3 d-flex">
-                    <div>
+                <div class="mb-side">
+                    <div class="group-btn">
                         <button type="button" class="btn" id="anggotaBtn">Member</button>
                         <button type="button" class="btn" id="pengurusBtn">Administrator</button>
                     </div>
@@ -732,7 +689,7 @@ html, body {
 
                 <!-- Table -->
                 <div class="table-container">
-                    <table class="table table-bordered" id="dataTable">
+                    <table class="table" id="dataTable">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -753,7 +710,7 @@ html, body {
         </div>
         <footer>
             <div class="add">
-                  <button type="submit" class="btn btn-primary rounded" onclick="openModal()">
+                  <button type="submit" class="btn btn-primary" onclick="openModal()">
                        <i class="fas fa-plus"></i>
                    </button>
                </form>
@@ -773,7 +730,7 @@ html, body {
                     <div class="form-group" class="form-label">
                         <input type="email" name="email" id="email" class="form-control" placeholder="Enter someone email" value="{{ session('email') }}">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Add Member</button>
+                    <button type="submit" class="btn btn-primary">Add Member</button>
                 </form>
             </div>
         </div>
