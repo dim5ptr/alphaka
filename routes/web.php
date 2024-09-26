@@ -56,6 +56,10 @@ Route::post('/formforgetpassword', [HttpController::class, 'submitResetPasswordF
     Route::post('/addmember', [HttpController::class, 'addMember'])->name('addmember'); 
 
 
+    // In routes/web.php or routes/api.php
+    Route::post('/search-users', [HttpController::class, 'searchUsers'])->name('searchUsers');
+
+
 });
 
 // Rute-rute yang memerlukan autentikasi

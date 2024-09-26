@@ -790,21 +790,76 @@ html, body {
     </div>
 
     <div class="modal" id="addMemberModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title" id="addMemberModalLabel">Add Member</h1>
-                    <button type="button" class="btn-close" onclick="closeModal()">×</button>
-                </div>
-                <form action="{{ route('addmember') }}" method="POST">
-                    @csrf
-                    <!-- Personal information fields -->
-                    <div class="form-group" class="form-label">
-                        <input type="email" name="email" id="email" class="form-control" placeholder="Enter someone email" value="{{ session('email') }}">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Add Member</button>
-                </form>
-            </div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title" id="addMemberModalLabel">Add Member</h1>
+            <button type="button" class="btn-close" onclick="closeModal()">×</button>
         </div>
+        <form id="searchUsers" action="{{ route('searchUsers') }}" method="POST" onsubmit="return handleSearch(event)">
+            @csrf
+            <div class="form-group">
+                <input type="email" name="email" id="email" class="form-control" placeholder="Enter someone email" required>
+                <div id="responseMessage" class=""></div> <!-- Display found users here -->
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Search</button>
+        </form>
+        <button type="submit" class="btn btn-primary btn-block">Add Member</button>
+    </div>
+</div>
+
+
+    <!-- ajax section untuk modal add member-->
+<script>
+   function handleSearch(event) {
+    event.preventDefault(); // Prevent the form from submitting
+
+    const emailInput = document.getElementById('email');
+    const email = emailInput.value;
+    const responseMessageDiv = document.getElementById('responseMessage');
+
+    // Make the API call to search users (replace with your actual API call)
+    fetch('{{ route('searchUsers') }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: email })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Check if users are found
+        if (data.success && data.data) {
+            // Loop through each user found
+            data.data.forEach(user => {
+                // Create a new user div
+                const userDiv = document.createElement('div');
+                userDiv.className = 'user-entry'; // Optional: Add a class for styling
+                userDiv.innerHTML = `
+                    <p>${user.email} <button onclick="removeUser(this)">Remove</button></p>
+                `;
+                responseMessageDiv.appendChild(userDiv); // Append the user div to the responseMessage div
+            });
+        } else {
+            responseMessageDiv.innerHTML += '<p>No users found for this email.</p>'; // Message if no users found
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+
+    // Clear the input field
+    emailInput.value = '';
+}
+
+function removeUser(button) {
+    button.parentElement.parentElement.remove(); // Remove the user entry
+}
+</script>
+        
+    </div>
+</div>
+
 
     <script>
         function toggleSidebar() {
@@ -921,8 +976,38 @@ html, body {
             alert('Terjadi kesalahan saat logout!');
         });
     });
+
+    document.getElementById('addMemberForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    const emailInput = document.getElementById('email');
+    const email = emailInput.value.trim(); // Get the email input value
+
+    // Call your userSearch function here, passing the email or search value
+    userSearch(email);
+
+    // Optionally, you can also submit the form if needed:
+    // this.submit(); 
+});
+
+function userSearch(email) {
+    // Implement the user search logic, e.g., fetch from the API and populate the table
+    console.log('Searching for:', email);
+    
+    // Add your search logic here, for example:
+    fetch(`http://192.168.1.24:14041/api/search-users?find=${email}`)
+        .then(response => response.json())
+        .then(data => {
+            // Handle the data returned from the search
+            console.log(data); // or update the table with the search results
+        })
+        .catch(error => console.error('Error fetching user:', error));
+}
+
+
 </script> --}}
 </div>
+
 
 
 </body>
@@ -974,5 +1059,5 @@ html, body {
     @if(session('error'))
         toastr.error('{{ session('error') }}');
     @endif
-</script>
+
 @endsection --}}
