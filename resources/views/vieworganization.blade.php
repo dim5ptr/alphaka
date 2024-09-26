@@ -769,64 +769,71 @@ html, body {
     </div>
 
     <div class="modal" id="addMemberModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title" id="addMemberModalLabel">Add Member</h1>
-                    <button type="button" class="btn-close" onclick="closeModal()">×</button>
-                </div>
-                <!-- <form id="addMemberForm" action="{{ route('addmember') }}" method="POST">
-                        @csrf -->
-                        <form id="searchUsers" action="{{ route('searchUsers') }}" method="POST">
-                            @csrf
-                        <div class="form-group">
-                            <input type="email" name="email" id="email" class="form-control" placeholder="Enter someone email" required>
-                            <p id="responseMessage" class=""></p> <!-- Menambahkan ID ke elemen <p> -->
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block">Search</button>
-                    </form>
-                        <button type="submit" class="btn btn-primary btn-block">Add Member</button>
-                    <!-- </form> -->
-            </div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title" id="addMemberModalLabel">Add Member</h1>
+            <button type="button" class="btn-close" onclick="closeModal()">×</button>
         </div>
+        <form id="searchUsers" action="{{ route('searchUsers') }}" method="POST" onsubmit="return handleSearch(event)">
+            @csrf
+            <div class="form-group">
+                <input type="email" name="email" id="email" class="form-control" placeholder="Enter someone email" required>
+                <div id="responseMessage" class=""></div> <!-- Display found users here -->
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Search</button>
+        </form>
+        <button type="submit" class="btn btn-primary btn-block">Add Member</button>
+    </div>
+</div>
 
-        </script>
 
     <!-- ajax section untuk modal add member-->
 <script>
-    document.getElementById('searchUsers').addEventListener('submit', function (event) {
-    event.preventDefault(); // Mencegah form dari pengiriman biasa
+   function handleSearch(event) {
+    event.preventDefault(); // Prevent the form from submitting
 
-    // Ambil nilai email dari input form
-    var email = document.getElementById('email').value;
+    const emailInput = document.getElementById('email');
+    const email = emailInput.value;
+    const responseMessageDiv = document.getElementById('responseMessage');
 
-    // Kirim permintaan AJAX menggunakan Fetch API
+    // Make the API call to search users (replace with your actual API call)
     fetch('{{ route('searchUsers') }}', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-            email: email
-        })
+        body: JSON.stringify({ email: email })
     })
     .then(response => response.json())
     .then(data => {
-        // Jika permintaan sukses, tampilkan pesan di elemen <p>
-        var responseMessage = document.getElementById('responseMessage');
-        
-        if (data.success) {
-            responseMessage.textContent = '' + data.data.map(user => user.email).join(', ');
+        // Check if users are found
+        if (data.success && data.data) {
+            // Loop through each user found
+            data.data.forEach(user => {
+                // Create a new user div
+                const userDiv = document.createElement('div');
+                userDiv.className = 'user-entry'; // Optional: Add a class for styling
+                userDiv.innerHTML = `
+                    <p>${user.email} <button onclick="removeUser(this)">Remove</button></p>
+                `;
+                responseMessageDiv.appendChild(userDiv); // Append the user div to the responseMessage div
+            });
         } else {
-            responseMessage.textContent = 'Error: ' + data.message;
+            responseMessageDiv.innerHTML += '<p>No users found for this email.</p>'; // Message if no users found
         }
     })
     .catch(error => {
-        // Jika terjadi error, tampilkan pesan error
-        document.getElementById('responseMessage').textContent = 'Terjadi kesalahan: ' + error.message;
+        console.error('Error:', error);
     });
-});
 
+    // Clear the input field
+    emailInput.value = '';
+}
+
+function removeUser(button) {
+    button.parentElement.parentElement.remove(); // Remove the user entry
+}
 </script>
         
     </div>
