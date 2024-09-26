@@ -34,7 +34,7 @@
         width: 80%;
         max-width: 600px;
         border-radius: 10px;
-        
+
         /* Pengaturan posisi konten modal */
         position: relative;
         top: 30%;
@@ -66,7 +66,7 @@
         cursor: pointer;
         color: white;
     }
-    
+
     .form-group .form-control{
     width: 100%; /* Ensures the form group takes full width */
     box-sizing: border-box; /* Includes padding and border in the element's total width */
@@ -223,7 +223,7 @@ body {
 .main-content {
     padding-top: 30px; /* Adjust this value based on the height of your navbar */
     position: relative;
-    
+    box-sizing: border-box;
     width: calc(100% - 270px);
     height: auto;
     flex: 1;
@@ -296,8 +296,9 @@ body {
 /* Main Content */
 .container {
     padding-top: 1%;
-    width: 70%;
+    width: 80%;
     height: 100%;
+    margin-left: 5%;
 }
 
 /* Organization Card */
@@ -307,15 +308,19 @@ body {
     padding: 20px 30px 30px;
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
+    margin: 1rem auto; /* Margin otomatis di samping agar responsif */
     position: relative;
     justify-content: space-between;
     display: flex;
+    flex-wrap: wrap; /* Untuk memastikan layout tetap rapi di layar kecil */
     width: 100%;
+    max-width: 1000px; /* Membatasi lebar maksimal pada layar besar */
+    box-sizing: border-box;
 }
 
-.info{
-    width: 90%;
+.info {
+    width: 100%; /* Default 100% untuk layar kecil */
+    margin-bottom: 1rem; /* Memberikan ruang antara teks dan tombol di layar kecil */
 }
 
 .info h1 {
@@ -330,13 +335,13 @@ body {
     color: #3200af;
 }
 
-.card-organization .btn-edit {
+.btn-edit {
     background-color: #365AC2;
     color: #fff;
     border: none;
-    width: 40px; /* Fixed width for square shape */
-    height: 40px; /* Fixed height for square shape */
-    border-radius: 8px; /* Optional: Rounded corners for square shape */
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease, transform 0.3s ease;
     position: absolute;
@@ -349,18 +354,75 @@ body {
     line-height: 1;
 }
 
-.card-organization .btn-edit i {
+.btn-edit i {
     font-size: 1rem;
 }
 
-.card-organization .btn-edit:hover {
+.btn-edit:hover {
     background-color: #5a5bd4;
     transform: translateY(-2px);
 }
 
+/* Responsif untuk layar tablet (max-width: 768px) */
+@media (max-width: 768px) {
+    .card-organization {
+        padding: 15px 20px; /* Mengurangi padding untuk layar kecil */
+        margin: 1rem; /* Mengurangi margin untuk lebih pas di layar kecil */
+        width: 100%; /* Pastikan card menyesuaikan lebar layar */
+    }
+
+    .info {
+        width: 100%; /* Info mengambil seluruh lebar di layar kecil */
+        margin-bottom: 1rem; /* Memberikan ruang lebih banyak untuk konten */
+    }
+
+    .btn-edit {
+        bottom: 10px; /* Adjust tombol edit lebih ke atas agar tidak terlalu ke tepi */
+        right: 10px; /* Sama untuk kanan */
+    }
+}
+
+/* Responsif untuk layar mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    .card-organization {
+        padding: 10px 15px; /* Padding lebih kecil untuk layar mobile */
+        margin: 0.5rem; /* Lebih kecil lagi untuk layar sempit */
+        width: 450%;
+    }
+
+    .btn-edit {
+        bottom: 8px; /* Adjust posisi tombol edit lebih ke atas */
+        right: 8px;  /* Sama untuk kanan */
+        width: 35px; /* Lebar tombol edit lebih kecil */
+        height: 35px; /* Tinggi tombol edit lebih kecil */
+    }
+
+    .btn-edit i {
+        font-size: 0.875rem; /* Ukuran ikon lebih kecil untuk menyesuaikan ukuran tombol */
+    }
+
+    .info h1 {
+        font-size: 1.5rem; /* Ukuran font lebih kecil di layar mobile */
+    }
+
+    .info small {
+        font-size: 0.875rem; /* Ukuran font kecil di mobile */
+    }
+}
+
+.member {
+    width: 100%;
+}
+
 /* Buttons and Search Input */
-.mb-3 {
+.mb-side {
     margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.group-btn  {
+    width: 30%;
 }
 
 .d-flex {
@@ -404,12 +466,8 @@ body {
 }
 
 .input-group {
-    width: 100%;
-    max-width: 180px;
+    width: 30%;
     display: flex;
-    align-items: center;
-    position: relative;
-    margin-left: 3%;
 }
 
 .input-group-prepend {
@@ -453,8 +511,22 @@ body {
 }
 
 /* Table Styling */
+.table-container {
+    width: 450%;
+    box-sizing: border-box;
+    overflow-x: auto; /* Tambahkan scroll horizontal jika diperlukan */
+    -webkit-overflow-scrolling: touch; /* Untuk smooth scrolling di perangkat iOS */
+    margin: 0 auto; /* Pusatkan kontainer */
+}
+
+/* Atur max-width hanya untuk tampilan desktop */
+@media (min-width: 768px) {
+.table-container {
+    width: 100%;    }
+}
+
 .table {
-    width: 108%;
+    width: 100%;
     border-collapse: collapse;
     background-color: white;
     border-radius: 10px;
@@ -467,13 +539,15 @@ body {
     color: #ffffff;
 }
 
-.table th,
-.table td {
+.table th, .table td {
     padding: 15px;
     text-align: left;
     border-bottom: 1px solid #f0f0f0;
+    width: auto; /* Pastikan kolom tidak meluas */
 }
 
+
+/* Gaya baris */
 .table tbody tr {
     transition: background-color 0.2s;
 }
@@ -489,6 +563,16 @@ body {
 
 .table tbody tr.selected td {
     color: white;
+}
+
+/* Media Queries untuk layar kecil */
+@media (max-width: 768px) {
+    .table th, .table td {
+        padding: 10px;
+    }
+    .table-container {
+        margin-bottom: 15px; /* Tambahkan margin bawah untuk spasi di layar kecil */
+    }
 }
 
 /* CSS Responsive Styles */
@@ -613,16 +697,16 @@ html, body {
     </div>
     <div id="main-content" class="main-content">
         <br>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb" style="background-color: transparent;">
+        <nav>
+            <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('organization') }}" style="color: #3200af;">Organization</a></li>
                 <li class="breadcrumb-item" style="color: #3200af;">{{ $organization['organization_name'] }}</a></li>
             </ol>
         </nav>
         <!-- Content -->
-        <div class="container main-content">
+        <div class="container">
             <!-- Organization Card -->
-            <div class="card-organization position-relative">
+            <div class="card-organization">
                 <div class="info">
                     <h1 class="m-0">{{ $organization['organization_name'] }}</h1>
                     <small>{{ $organization['description'] }}</small>
@@ -636,8 +720,8 @@ html, body {
             <!-- Member List -->
             <div class="member">
                 <!-- Buttons and Search Input -->
-                <div class="mb-3 d-flex">
-                    <div>
+                <div class="mb-side">
+                    <div class="group-btn">
                         <button type="button" class="btn" id="anggotaBtn">Member</button>
                         <button type="button" class="btn" id="pengurusBtn">Administrator</button>
                     </div>
@@ -654,26 +738,29 @@ html, body {
                 </div>
 
                 <!-- Table -->
-                <table class="table table-bordered" id="dataTable">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">First Name</th>
-                            <th scope="col">Last Name</th>
-                            <th scope="col">Handle</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dataBody">
-                        <!-- Data will be populated by JavaScript -->
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table class="table" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">First Name</th>
+                                <th scope="col">Last Name</th>
+                                <th scope="col">Handle</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataBody">
+                            <!-- Data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
         <footer>
             <div class="add">
-                  <button type="submit" class="btn btn-primary rounded" onclick="openModal()">
+                  <button type="submit" class="btn btn-primary" onclick="openModal()">
                        <i class="fas fa-plus"></i>
                    </button>
                </form>
@@ -682,10 +769,20 @@ html, body {
     </div>
 
     <div class="modal" id="addMemberModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h1 class="modal-title" id="addMemberModalLabel">Add Member</h1>
-            <button type="button" class="btn-close" onclick="closeModal()">×</button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="addMemberModalLabel">Add Member</h1>
+                    <button type="button" class="btn-close" onclick="closeModal()">×</button>
+                </div>
+                <form action="{{ route('addmember') }}" method="POST">
+                    @csrf
+                    <!-- Personal information fields -->
+                    <div class="form-group" class="form-label">
+                        <input type="email" name="email" id="email" class="form-control" placeholder="Enter someone email" value="{{ session('email') }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Member</button>
+                </form>
+            </div>
         </div>
 
         <!-- <form id="addMemberForm" action="{{ route('addmember') }}" method="POST">
