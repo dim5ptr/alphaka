@@ -308,16 +308,19 @@ body {
     padding: 20px 30px 30px;
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
+    margin: 1rem auto; /* Margin otomatis di samping agar responsif */
     position: relative;
     justify-content: space-between;
     display: flex;
+    flex-wrap: wrap; /* Untuk memastikan layout tetap rapi di layar kecil */
     width: 100%;
+    max-width: 1000px; /* Membatasi lebar maksimal pada layar besar */
     box-sizing: border-box;
 }
 
-.info{
-    width: 70%;
+.info {
+    width: 100%; /* Default 100% untuk layar kecil */
+    margin-bottom: 1rem; /* Memberikan ruang antara teks dan tombol di layar kecil */
 }
 
 .info h1 {
@@ -332,13 +335,13 @@ body {
     color: #3200af;
 }
 
- .btn-edit {
+.btn-edit {
     background-color: #365AC2;
     color: #fff;
     border: none;
-    width: 40px; /* Fixed width for square shape */
-    height: 40px; /* Fixed height for square shape */
-    border-radius: 8px; /* Optional: Rounded corners for square shape */
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease, transform 0.3s ease;
     position: absolute;
@@ -351,13 +354,60 @@ body {
     line-height: 1;
 }
 
- .btn-edit i {
+.btn-edit i {
     font-size: 1rem;
 }
 
 .btn-edit:hover {
     background-color: #5a5bd4;
     transform: translateY(-2px);
+}
+
+/* Responsif untuk layar tablet (max-width: 768px) */
+@media (max-width: 768px) {
+    .card-organization {
+        padding: 15px 20px; /* Mengurangi padding untuk layar kecil */
+        margin: 1rem; /* Mengurangi margin untuk lebih pas di layar kecil */
+        width: 100%; /* Pastikan card menyesuaikan lebar layar */
+    }
+
+    .info {
+        width: 100%; /* Info mengambil seluruh lebar di layar kecil */
+        margin-bottom: 1rem; /* Memberikan ruang lebih banyak untuk konten */
+    }
+
+    .btn-edit {
+        bottom: 10px; /* Adjust tombol edit lebih ke atas agar tidak terlalu ke tepi */
+        right: 10px; /* Sama untuk kanan */
+    }
+}
+
+/* Responsif untuk layar mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    .card-organization {
+        padding: 10px 15px; /* Padding lebih kecil untuk layar mobile */
+        margin: 0.5rem; /* Lebih kecil lagi untuk layar sempit */
+        width: 450%;
+    }
+
+    .btn-edit {
+        bottom: 8px; /* Adjust posisi tombol edit lebih ke atas */
+        right: 8px;  /* Sama untuk kanan */
+        width: 35px; /* Lebar tombol edit lebih kecil */
+        height: 35px; /* Tinggi tombol edit lebih kecil */
+    }
+
+    .btn-edit i {
+        font-size: 0.875rem; /* Ukuran ikon lebih kecil untuk menyesuaikan ukuran tombol */
+    }
+
+    .info h1 {
+        font-size: 1.5rem; /* Ukuran font lebih kecil di layar mobile */
+    }
+
+    .info small {
+        font-size: 0.875rem; /* Ukuran font kecil di mobile */
+    }
 }
 
 .member {
