@@ -229,6 +229,8 @@ body {
     flex: 1;
     margin-top: 5%;
     margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 10%;
     transition: margin-left .3s;
 }
 
@@ -359,6 +361,10 @@ body {
 }
 
 /* Buttons and Search Input */
+.member {
+    width: 100%;
+}
+/* Flexbox styling */
 .mb-3 {
     margin-bottom: 2rem;
 }
@@ -367,8 +373,11 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap; /* Allow wrapping for small screens */
+    gap: 1rem;
 }
 
+/* Button styling */
 .btn {
     font-size: 0.875rem;
     padding: 0.5rem 1.5rem;
@@ -403,13 +412,18 @@ body {
     background-color: #5a5bd4;
 }
 
+/* Search bar styling */
 .input-group {
-    width: 100%;
-    max-width: 180px;
     display: flex;
+    flex-grow: 1;
+    max-width: 500px; /* Limit width on desktop */
+    min-width: 250px; /* Minimum width for mobile */
+    flex-basis: 100%; /* Flex to fill available space */
     align-items: center;
-    position: relative;
     margin-left: 3%;
+    border: 1px solid #ddd; /* Border around the entire search bar */
+    border-radius: 0.5rem;
+    overflow: hidden; /* Ensure icon and input stay together */
 }
 
 .input-group-prepend {
@@ -420,36 +434,73 @@ body {
     background-color: #365AC2; /* Blue background */
     border: none;
     color: #fff; /* White icon color */
-    border-radius: 0.5rem 0 0 0.5rem;
-    padding: 0.75rem;
+    padding: 0.5rem 0.75rem; /* Adjust padding to match button */
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 0.5rem 0 0 0.5rem; /* Rounded only on left side */
+    height: 100%; /* Make sure the icon takes full height */
+    box-sizing: border-box;
 }
 
 .input-group-text i {
     color: #ffffff;
+    font-size: 1rem; /* Ensure the icon is appropriately sized */
 }
 
 .form-control {
-    border: 1px solid #ddd;
-    border-radius: 0.5rem;
-    padding: 0.75rem;
+    flex-grow: 1; /* Grow to fill available space */
+    padding: 0.5rem 0.75rem; /* Adjust padding to match button */
+    border: none; /* No border since parent div has border */
     font-size: 0.875rem;
-    box-shadow: none;
-    border-left: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-
-    /* Responsive width */
-    width: 800px; /* Default to 100% of the parent container */
-    max-width: 100%; /* Set a max width for larger screens */
-    box-sizing: border-box; /* Ensure padding and border are included in the total width */
+    border-radius: 0 0.5rem 0.5rem 0; /* Rounded only on right side */
+    height: 100%; /* Ensure the input takes full height */
+    box-sizing: border-box;
 }
 
 .form-control:focus {
-    border-color: #7773d4;
-    box-shadow: 0 0 0 0.2rem rgba(119, 115, 212, 0.25);
     outline: none;
+    border-color: #365AC2;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .d-flex {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .input-group {
+        max-width: 100%; /* Full width for input group on small screens */
+        margin-left: 0;
+    }
+
+    .btn {
+        margin-top: 1rem;
+        width: 100%; /* Full width buttons on smaller screens */
+    }
+
+    .form-control {
+        font-size: 1rem; /* Slightly larger font size on mobile */
+        padding: 0.5rem 0.75rem; /* Ensure enough padding on small screens */
+        height: 100%; /* Full height for mobile */
+    }
+}
+
+@media (max-width: 576px) {
+    .input-group-prepend .input-group-text {
+        padding: 0.5rem 0.75rem; /* Ensure consistent padding with input */
+        font-size: 1rem; /* Consistent icon size */
+        height: 100%; /* Match the height of input */
+        border-radius: 0.5rem 0 0 0.5rem; /* Ensure smooth corners for icon */
+    }
+
+    .form-control {
+        font-size: 1rem;
+        padding: 0.5rem 0.75rem; /* Match padding with button */
+        border-radius: 0 0.5rem 0.5rem 0; /* No left radius to blend with icon */
+        height: 100%; /* Match height of icon for full alignment */
+    }
 }
 
 /* Table Styling */
