@@ -774,28 +774,61 @@ html, body {
                     <h1 class="modal-title" id="addMemberModalLabel">Add Member</h1>
                     <button type="button" class="btn-close" onclick="closeModal()">×</button>
                 </div>
-                <form action="{{ route('addmember') }}" method="POST">
-                    @csrf
-                    <!-- Personal information fields -->
-                    <div class="form-group" class="form-label">
-                        <input type="email" name="email" id="email" class="form-control" placeholder="Enter someone email" value="{{ session('email') }}">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Add Member</button>
-                </form>
+                <!-- <form id="addMemberForm" action="{{ route('addmember') }}" method="POST">
+                        @csrf -->
+                        <form id="searchUsers" action="{{ route('searchUsers') }}" method="POST">
+                            @csrf
+                        <div class="form-group">
+                            <input type="email" name="email" id="email" class="form-control" placeholder="Enter someone email" required>
+                            <p id="responseMessage" class=""></p> <!-- Menambahkan ID ke elemen <p> -->
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Search</button>
+                    </form>
+                        <button type="submit" class="btn btn-primary btn-block">Add Member</button>
+                    <!-- </form> -->
             </div>
         </div>
 
-        <!-- <form id="addMemberForm" action="{{ route('addmember') }}" method="POST">
-            @csrf -->
-            <form id="searchUsers" action="{{ route('searchUsers') }}" method="POST">
-                @csrf
-            <div class="form-group">
-                <input type="email" name="email" id="email" class="form-control" placeholder="Enter someone email" required>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">Search</button>
-        </form>
-            <button type="submit" class="btn btn-primary btn-block">Add Member</button>
-        <!-- </form> -->
+        </script>
+
+    <!-- ajax section untuk modal add member-->
+<script>
+    document.getElementById('searchUsers').addEventListener('submit', function (event) {
+    event.preventDefault(); // Mencegah form dari pengiriman biasa
+
+    // Ambil nilai email dari input form
+    var email = document.getElementById('email').value;
+
+    // Kirim permintaan AJAX menggunakan Fetch API
+    fetch('{{ route('searchUsers') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+        },
+        body: JSON.stringify({
+            email: email
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Jika permintaan sukses, tampilkan pesan di elemen <p>
+        var responseMessage = document.getElementById('responseMessage');
+        
+        if (data.success) {
+            responseMessage.textContent = '' + data.data.map(user => user.email).join(', ');
+        } else {
+            responseMessage.textContent = 'Error: ' + data.message;
+        }
+    })
+    .catch(error => {
+        // Jika terjadi error, tampilkan pesan error
+        document.getElementById('responseMessage').textContent = 'Terjadi kesalahan: ' + error.message;
+    });
+});
+
+</script>
+        
     </div>
 </div>
 
@@ -998,5 +1031,5 @@ function userSearch(email) {
     @if(session('error'))
         toastr.error('{{ session('error') }}');
     @endif
-</script>
+
 @endsection --}}
