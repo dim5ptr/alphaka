@@ -34,7 +34,7 @@
         width: 80%;
         max-width: 600px;
         border-radius: 10px;
-        
+
         /* Pengaturan posisi konten modal */
         position: relative;
         top: 30%;
@@ -66,7 +66,7 @@
         cursor: pointer;
         color: white;
     }
-    
+
     .form-group .form-control{
     width: 100%; /* Ensures the form group takes full width */
     box-sizing: border-box; /* Includes padding and border in the element's total width */
@@ -223,7 +223,7 @@ body {
 .main-content {
     padding-top: 30px; /* Adjust this value based on the height of your navbar */
     position: relative;
-    
+
     width: calc(100% - 270px);
     height: auto;
     flex: 1;
@@ -453,8 +453,22 @@ body {
 }
 
 /* Table Styling */
+.table-container {
+    width: 450%;
+    overflow-x: auto; /* Tambahkan scroll horizontal jika diperlukan */
+    -webkit-overflow-scrolling: touch; /* Untuk smooth scrolling di perangkat iOS */
+    margin: 0 auto; /* Pusatkan kontainer */
+}
+
+/* Atur max-width hanya untuk tampilan desktop */
+@media (min-width: 768px) {
+    .table-container {
+        max-width: 1200px; /* Batasi lebar maksimum di desktop */
+    }
+}
+
 .table {
-    width: 108%;
+    width: 100%;
     border-collapse: collapse;
     background-color: white;
     border-radius: 10px;
@@ -467,13 +481,15 @@ body {
     color: #ffffff;
 }
 
-.table th,
-.table td {
+.table th, .table td {
     padding: 15px;
     text-align: left;
     border-bottom: 1px solid #f0f0f0;
+    width: auto; /* Pastikan kolom tidak meluas */
 }
 
+
+/* Gaya baris */
 .table tbody tr {
     transition: background-color 0.2s;
 }
@@ -489,6 +505,16 @@ body {
 
 .table tbody tr.selected td {
     color: white;
+}
+
+/* Media Queries untuk layar kecil */
+@media (max-width: 768px) {
+    .table th, .table td {
+        padding: 10px;
+    }
+    .table-container {
+        margin-bottom: 15px; /* Tambahkan margin bawah untuk spasi di layar kecil */
+    }
 }
 
 /* CSS Responsive Styles */
@@ -654,21 +680,24 @@ html, body {
                 </div>
 
                 <!-- Table -->
-                <table class="table table-bordered" id="dataTable">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">First Name</th>
-                            <th scope="col">Last Name</th>
-                            <th scope="col">Handle</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dataBody">
-                        <!-- Data will be populated by JavaScript -->
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table class="table table-bordered" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">First Name</th>
+                                <th scope="col">Last Name</th>
+                                <th scope="col">Handle</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataBody">
+                            <!-- Data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
         <footer>
