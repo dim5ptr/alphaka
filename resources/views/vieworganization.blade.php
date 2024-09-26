@@ -308,13 +308,12 @@ body {
     padding: 20px 30px 30px;
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin: 1rem auto; /* Margin otomatis di samping agar responsif */
     position: relative;
     justify-content: space-between;
     display: flex;
     flex-wrap: wrap; /* Untuk memastikan layout tetap rapi di layar kecil */
     width: 100%;
-    max-width: 1000px; /* Membatasi lebar maksimal pada layar besar */
+    margin-bottom: 2%;
     box-sizing: border-box;
 }
 
@@ -483,6 +482,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 100%;
+    box-sizing: border-box;
 }
 
 .input-group-text i {
@@ -490,17 +491,16 @@ body {
 }
 
 .form-control {
-    border: 1px solid #ddd;
-    border-radius: 0.5rem;
+    border: 2px solid #ffffff;
+   border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
     padding: 0.75rem;
     font-size: 0.875rem;
     box-shadow: none;
     border-left: none;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
-
-    /* Responsive width */
-    width: 800px; /* Default to 100% of the parent container */
-    max-width: 100%; /* Set a max width for larger screens */
+    width: 100%; /* Default to 100% of the parent container */
+    height: 100%;
     box-sizing: border-box; /* Ensure padding and border are included in the total width */
 }
 
@@ -509,21 +509,43 @@ body {
     box-shadow: 0 0 0 0.2rem rgba(119, 115, 212, 0.25);
     outline: none;
 }
+/* Responsive Design for Mobile */
+@media (max-width: 768px) {
+    .mb-side {
+        flex-direction: column; /* Stack buttons and search input vertically */
 
+    }
+
+    .group-btn {
+        width: 100%; /* Full width for buttons */
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .input-group {
+        width: 450%; /* Full width for search input */
+        margin-top: 1rem; /* Add some space between buttons and search input */
+    }
+
+    .btn {
+        width: auto; /* Each button takes 48% width to leave some space between them */
+        margin-top: 0; /* Remove top margin for buttons */
+    }
+
+    /* Ensure the form input and buttons are well-aligned */
+    .form-control, .input-group-text {
+        height: auto; /* Ensure height adapts properly */
+    }
+}
 /* Table Styling */
 .table-container {
-    width: 450%;
+    width: 100%;
     box-sizing: border-box;
     overflow-x: auto; /* Tambahkan scroll horizontal jika diperlukan */
     -webkit-overflow-scrolling: touch; /* Untuk smooth scrolling di perangkat iOS */
     margin: 0 auto; /* Pusatkan kontainer */
 }
 
-/* Atur max-width hanya untuk tampilan desktop */
-@media (min-width: 768px) {
-.table-container {
-    width: 100%;    }
-}
 
 .table {
     width: 100%;
@@ -565,16 +587,11 @@ body {
     color: white;
 }
 
-/* Media Queries untuk layar kecil */
 @media (max-width: 768px) {
-    .table th, .table td {
-        padding: 10px;
-    }
     .table-container {
-        margin-bottom: 15px; /* Tambahkan margin bawah untuk spasi di layar kecil */
-    }
+    width: 450%;
 }
-
+}
 /* CSS Responsive Styles */
 
 /* General Responsive Styles */
@@ -622,6 +639,9 @@ html, body {
         z-index: 998; /* Pastikan footer berada di bawah tombol "Buat Organisasi" */
     }
 
+    .bc-pr {
+        width: 100%;
+    }
     .breadcrumb {
     display: flex;
     flex-wrap: nowrap;
@@ -629,6 +649,7 @@ html, body {
     padding: 0;
     margin: 2%;
     list-style: none;
+    width: 100%;
 }
 
 .breadcrumb-item {
@@ -697,7 +718,7 @@ html, body {
     </div>
     <div id="main-content" class="main-content">
         <br>
-        <nav>
+        <nav class="bc-pr">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('organization') }}" style="color: #3200af;">Organization</a></li>
                 <li class="breadcrumb-item" style="color: #3200af;">{{ $organization['organization_name'] }}</a></li>

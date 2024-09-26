@@ -230,6 +230,23 @@
         display: inline;
     }
 
+    .sidebar {
+       font-size: 100%;
+       padding-top: 10%;
+    }
+
+    .sidebar-isi {
+        margin-top: 15%;
+    }
+
+    .logoutForm {
+        height: 50%;
+    }
+
+    ul {
+        font-size: 0.876rem;
+    }
+
 
         }
 
