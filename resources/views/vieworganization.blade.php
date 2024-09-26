@@ -13,6 +13,72 @@
 <style>
     /* CSS Enhancements */
 
+    /* css modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1001;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 2% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+        border-radius: 10px;
+        
+        /* Pengaturan posisi konten modal */
+        position: relative;
+        top: 30%;
+        transform: translateY(-50%); /* Moves the modal up by 50% of its own height */
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e5e5e5;
+        background-color: #365AC2;
+        color: white;
+        padding: 10px 20px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        margin-bottom: 2.1%;
+    }
+
+    .modal-header h1 {
+        margin: 0;
+        font-size: 24px;
+    }
+
+    .btn-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: white;
+    }
+    
+    .form-group .form-control{
+    width: 100%; /* Ensures the form group takes full width */
+    box-sizing: border-box; /* Includes padding and border in the element's total width */
+    margin-bottom: 2%;
+    }
+
+    .btn-block {
+    width: 100%; /* Makes the button full width */
+    box-sizing: border-box; /* Includes padding and border in the element's total width */
+    }
+
+
 html, body {
     height: auto;
     margin: 0;
@@ -155,6 +221,9 @@ body {
 }
 
 .main-content {
+    padding-top: 30px; /* Adjust this value based on the height of your navbar */
+    position: relative;
+    
     width: calc(100% - 270px);
     height: auto;
     flex: 1;
@@ -226,7 +295,7 @@ body {
 
 /* Main Content */
 .container {
-    padding-top: 5%;
+    padding-top: 1%;
     width: 70%;
     height: 100%;
 }
@@ -308,6 +377,7 @@ body {
     cursor: pointer;
     transition: background-color 0.3s ease;
     display: inline-block;
+    margin-top: 3%;
 }
 
 #anggotaBtn, #pengurusBtn {
@@ -339,6 +409,7 @@ body {
     display: flex;
     align-items: center;
     position: relative;
+    margin-left: 3%;
 }
 
 .input-group-prepend {
@@ -362,12 +433,17 @@ body {
 
 .form-control {
     border: 1px solid #ddd;
-    border-radius: 0 0.5rem 0.5rem 0;
+    border-radius: 0.5rem;
     padding: 0.75rem;
     font-size: 0.875rem;
     box-shadow: none;
     border-left: none;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+    /* Responsive width */
+    width: 800px; /* Default to 100% of the parent container */
+    max-width: 100%; /* Set a max width for larger screens */
+    box-sizing: border-box; /* Ensure padding and border are included in the total width */
 }
 
 .form-control:focus {
@@ -422,124 +498,52 @@ html, body {
     font-size: 16px;
 }
 
-/* Mobile Styles */
-@media (max-width: 768px) {
-
-    .navbar p {
-        font-size: 0.678rem;
-        margin-right: 5%;
+ /* Button Styles */
+ .btn-primary {
+        padding: 10px 10px;
+        background-color: #365AC2;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        font-size: 0.890rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
     }
 
-    .open-btn button{
-        font-size: 0.990rem;
-        width: 100%;
-        display: inline;
+    .btn-primary:hover {
+        background-color: #2e4a8c;
+        transform: scale(1.05);
     }
 
-    .open-btn {
-        width: 35%;
-        display: inline;
-    }
-    .main-content {
-        margin-left: 0;
-        width: 100%;
-        padding: 5%;
+    .btn-primary i {
+        margin-right: 2%;
+        font-size: 2rem;
     }
 
-    .container {
-        padding-top: 20px;
-        width: 90%;
-    }
-
-    .card-organization {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 15px;
-        width: auto;
-    }
-
-    .card-organization .info h1 {
-        font-size: 1.5rem;
-    }
-
-    .card-organization .btn-edit {
-        width: 35px;
-        height: 35px;
-        font-size: 1rem;
-        bottom: 10px;
-        right: 10px;
-    }
-
-    .btn-primary {
-        font-size: 0.85rem;
-        padding: 8px 12px;
-    }
-
-    .mb-3 {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        justify-content: flex-start;
-    }
-
-    .input-group{
-        width: 100%;
-        font-size: auto;
-        margin: 0;
-
-    }
-    .table {
-        font-size: 0.85rem;
-    }
-
-    .table thead {
-        display: none;
-    }
-
-    .table tbody td {
-        display: block;
-        width: 100%;
-        text-align: right;
-        padding-left: 50%;
-        position: relative;
-    }
-
-    .table tbody td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 0;
+    img {
+        float: right;
         width: 50%;
-        padding-left: 15px;
-        font-weight: bold;
-        text-align: left;
-        background-color: #f4f4f4;
-    }
-}
-
-/* Extra Small Devices (max-width: 480px) */
-@media (max-width: 480px) {
-    .open-btn {
-        font-size: 16px;
     }
 
-    .card-organization .info h1 {
-        font-size: 1.2rem;
+    .add {
+        float: right;
+        margin-right: 3%;/* Atur padding sesuai kebutuhan */
     }
 
-    .btn-primary {
-        font-size: 0.8rem;
-    }
-
-    .input-group {
+    footer {
+        position: fixed;
+        bottom: 5%;
+        left: 0;
         width: 100%;
+        z-index: 998; /* Pastikan footer berada di bawah tombol "Buat Organisasi" */
     }
-}
-.breadcrumb {
+
+    .breadcrumb {
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
     padding: 0;
-    margin: 0;
+    margin: 2%;
     list-style: none;
 }
 
@@ -567,22 +571,6 @@ html, body {
     color: #3200af;
 }
 
-.add {
-        float: right;
-        width: 5%;
-        margin-right: 3%;/* Atur padding sesuai kebutuhan */
-    }
-.add button{
-    width: 80%;
-    padding: 10px;
-}
-    footer {
-        position: fixed;
-        bottom: 5%;
-        left: 0;
-        width: 100%;
-        z-index: 998; /* Pastikan footer berada di bawah tombol "Buat Organisasi" */
-    }
     </style>
 </head>
 <body>
@@ -685,9 +673,7 @@ html, body {
         </div>
         <footer>
             <div class="add">
-               <form action="{{ route('showcreateorganization') }}" method="GET">
-               @csrf
-                  <button type="submit" class="btn btn-primary rounded">
+                  <button type="submit" class="btn btn-primary rounded" onclick="openModal()">
                        <i class="fas fa-plus"></i>
                    </button>
                </form>
@@ -695,6 +681,22 @@ html, body {
        </footer>
     </div>
 
+    <div class="modal" id="addMemberModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="addMemberModalLabel">Add Member</h1>
+                    <button type="button" class="btn-close" onclick="closeModal()">×</button>
+                </div>
+                <form action="{{ route('addmember') }}" method="POST">
+                    @csrf
+                    <!-- Personal information fields -->
+                    <div class="form-group" class="form-label">
+                        <input type="email" name="email" id="email" class="form-control" placeholder="Enter someone email" value="{{ session('email') }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Add Member</button>
+                </form>
+            </div>
+        </div>
 
     <script>
         function toggleSidebar() {
@@ -709,6 +711,14 @@ html, body {
                 mainContent.style.marginLeft = "19%";
             }
         }
+
+        function openModal() {
+        document.getElementById('addMemberModal').style.display = 'block';
+        }
+
+         function closeModal() {
+        document.getElementById('addMemberModal').style.display = 'none';
+         }
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>

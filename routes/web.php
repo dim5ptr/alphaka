@@ -53,6 +53,8 @@ Route::post('/formforgetpassword', [HttpController::class, 'submitResetPasswordF
     // Menampilkan formulir aktivasi
     Route::get('/activation', [HttpController::class, 'showActivationForm'])->name('activate.form');
 
+    Route::post('/addmember', [HttpController::class, 'addMember'])->name('addmember'); 
+
 
 });
 

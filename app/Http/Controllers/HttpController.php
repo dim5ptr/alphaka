@@ -608,6 +608,7 @@ public function organizationVerify(Request $request, $token)
                 foreach ($organizations as $org) {
                     if ($org['organization_name'] === $organization_name) {
                         $organization = [
+                            'organization_id' => $org['id'],
                             'organization_name' => $organization_name,
                             'description' => $org['description'],
                             'members_count' => $org['members_count'] ?? 0
@@ -665,9 +666,44 @@ public function organizationVerify(Request $request, $token)
 
 
     public function editorganization(Request $request)
-    {
+{
+    // Validate input
+    $request->validate([
+        'organization_id' => 'required|integer',
+        'organization_name' => 'required|string|max:255',
+        'description' => 'nullable|string|max:500',
+    ]);
 
+    Log::info('Attempting to update organization ID: ' . $request->organization_id);
+
+    try {
+        // Send a request to update the organization
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->post(self::API_URL . '/sso/update_organization.json', [
+            'organization_id' => $request->organization_id,
+            'parent_id' => null, // Adjust as necessary
+            'organization_name' => $request->organization_name,
+            'description' => $request->description,
+        ]);
+
+        // Check the response
+        if ($response->successful() && $response->json('success')) {
+            Log::info('Organization updated successfully: ' . $request->organization_id);
+            return redirect('/organization')->with('success_message', 'Organization updated successfully.');
+        } else {
+            Log::error('Failed to update organization. Response: ' . $response->body());
+            return back()->withErrors(['error_message' => 'Failed to update organization. Please try again.'])->withInput();
+        }
+    } catch (\Illuminate\Http\Client\RequestException $e) {
+        Log::error('HTTP Request failed: ' . $e->getMessage());
+        return back()->withErrors(['error_message' => 'HTTP Request failed: ' . $e->getMessage()])->withInput();
+    } catch (\Exception $e) {
+        Log::error('An error occurred: ' . $e->getMessage());
+        return back()->withErrors(['error_message' => 'Something went wrong, try again! ' . $e->getMessage()])->withInput();
     }
+}
 
 
     public function personal()
