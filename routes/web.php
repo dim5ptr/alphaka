@@ -58,6 +58,8 @@ Route::post('/formforgetpassword', [HttpController::class, 'submitResetPasswordF
 
     // In routes/web.php or routes/api.php
     Route::post('/search-users', [HttpController::class, 'searchUsers'])->name('searchUsers');
+    // Route for submitting member details (like name, role, etc.)
+    Route::post('/add-member-details', [HttpController::class, 'addMemberDetails'])->name('addMemberDetails');
 
 
 });

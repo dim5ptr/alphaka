@@ -789,10 +789,11 @@ html, body {
        </footer>
     </div>
 
-    <div class="modal" id="addMemberModal">
+    <!-- Main Modal for Searching Users -->
+<div class="modal" id="addMemberModal">
     <div class="modal-content">
         <div class="modal-header">
-            <h1 class="modal-title" id="addMemberModalLabel">Add Member</h1>
+            <h1 class="modal-title" id="addMemberModalLabel">Search Emails</h1>
             <button type="button" class="btn-close" onclick="closeModal()">×</button>
         </div>
         <form id="searchUsers" action="{{ route('searchUsers') }}" method="POST" onsubmit="return handleSearch(event)">
@@ -803,19 +804,40 @@ html, body {
             </div>
             <button type="submit" class="btn btn-primary btn-block">Search</button>
         </form>
-        <button type="submit" class="btn btn-primary btn-block">Add Member</button>
+        <button type="button" class="btn btn-primary btn-block" onclick="openAddedUsersModal()">Add Member</button>
     </div>
 </div>
 
+<!-- Modal for Added Users -->
+<div class="modal" id="addedUsersModal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title" id="addedUsersModalLabel">Added Members</h1>
+            <button type="button" class="btn-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="form-group">
+            <h3>Email yang sudah ditambahkan</h3>
+            <div id="addedUsersList"></div> <!-- Emails will be listed here -->
+        </div>
+        <button type="button" class="btn btn-primary btn-block" onclick="sendEmails()">Send Email</button>
+        <button type="button" class="btn btn-secondary btn-block" onclick="showSearchModal()">Previous</button>
+    </div>
+</div>
 
-    <!-- ajax section untuk modal add member-->
 <script>
-   function handleSearch(event) {
+// Function to handle search and add users dynamically
+function handleSearch(event) {
     event.preventDefault(); // Prevent the form from submitting
 
     const emailInput = document.getElementById('email');
-    const email = emailInput.value;
+    const email = emailInput.value.trim(); // Get and trim the email
     const responseMessageDiv = document.getElementById('responseMessage');
+
+    // Check if the email is already added
+    if (isEmailAlreadyAdded(email)) {
+        displayTemporaryMessage('This email is already added.');
+        return; // Exit the function if the email is already added
+    }
 
     // Make the API call to search users (replace with your actual API call)
     fetch('{{ route('searchUsers') }}', {
@@ -841,7 +863,7 @@ html, body {
                 responseMessageDiv.appendChild(userDiv); // Append the user div to the responseMessage div
             });
         } else {
-            responseMessageDiv.innerHTML += '<p>No users found for this email.</p>'; // Message if no users found
+            displayTemporaryMessage('No users found for this email.');
         }
     })
     .catch(error => {
@@ -852,14 +874,81 @@ html, body {
     emailInput.value = '';
 }
 
+// Function to check if the email is already added
+function isEmailAlreadyAdded(email) {
+    const userEntries = document.querySelectorAll('.user-entry p');
+    for (const entry of userEntries) {
+        if (entry.textContent.includes(email)) {
+            return true; // Return true if email is already added
+        }
+    }
+    return false; // Return false if email is not found
+}
+
+// Function to display a temporary message that disappears after 5 seconds
+function displayTemporaryMessage(message) {
+    const responseMessageDiv = document.getElementById('responseMessage');
+    const tempMessage = document.createElement('p');
+    tempMessage.innerText = message;
+    responseMessageDiv.appendChild(tempMessage);
+
+    // Remove the message after 5 seconds
+    setTimeout(() => {
+        tempMessage.remove();
+    }, 5000);
+}
+
+// Function to remove a user entry
 function removeUser(button) {
     button.parentElement.parentElement.remove(); // Remove the user entry
 }
+
+// Function to open the modal for added users
+function openAddedUsersModal() {
+    // Close the current modal
+    document.getElementById('addMemberModal').style.display = 'none';
+    
+    // Show the added users modal
+    document.getElementById('addedUsersModal').style.display = 'block';
+    
+    // Populate the added emails into the modal
+    const addedUsersList = document.getElementById('addedUsersList');
+    const userEntries = document.querySelectorAll('.user-entry p');
+
+    addedUsersList.innerHTML = ''; // Clear previous list
+    userEntries.forEach(entry => {
+        const email = entry.textContent.split(' ')[0]; // Get the email from the entry
+        addedUsersList.innerHTML += `<p>${email}</p>`; // Append the email to the modal
+    });
+}
+
+// Function to send the emails (placeholder for actual email sending logic)
+function sendEmails() {
+    const addedUsersList = document.getElementById('addedUsersList');
+    const emails = addedUsersList.innerText.split('\n');
+    
+    console.log('Sending emails to:', emails); // Replace with actual email sending logic
+    alert('Emails sent to: ' + emails.join(', '));
+}
+
+// Function to show the search modal again
+function showSearchModal() {
+    // Close the added users modal
+    document.getElementById('addedUsersModal').style.display = 'none';
+
+    // Show the original search modal
+    document.getElementById('addMemberModal').style.display = 'block';
+}
+
+// Function to close both modals
+function closeModal() {
+    document.getElementById('addMemberModal').style.display = 'none';
+    document.getElementById('addedUsersModal').style.display = 'none';
+}
 </script>
 
-    </div>
-</div>
 
+</script>
 
     <script>
         function toggleSidebar() {
@@ -873,6 +962,16 @@ function removeUser(button) {
                 sidebar.style.left = "0px";
                 mainContent.style.marginLeft = "19%";
             }
+        }
+
+        // Function to open the second modal (Add Member Details)
+        function openAddMemberDetailsModal() {
+            document.getElementById('addMemberDetailsModal').style.display = 'block';
+        }
+
+        // Function to close the second modal
+        function closeMemberDetailsModal() {
+            document.getElementById('addMemberDetailsModal').style.display = 'none';
         }
 
         function openModal() {
