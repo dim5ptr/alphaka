@@ -856,7 +856,7 @@ function removeUser(button) {
     button.parentElement.parentElement.remove(); // Remove the user entry
 }
 </script>
-        
+
     </div>
 </div>
 
@@ -987,13 +987,13 @@ function removeUser(button) {
     userSearch(email);
 
     // Optionally, you can also submit the form if needed:
-    // this.submit(); 
+    // this.submit();
 });
 
 function userSearch(email) {
     // Implement the user search logic, e.g., fetch from the API and populate the table
     console.log('Searching for:', email);
-    
+
     // Add your search logic here, for example:
     fetch(`http://192.168.1.24:14041/api/search-users?find=${email}`)
         .then(response => response.json())
