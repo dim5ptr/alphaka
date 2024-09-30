@@ -1108,6 +1108,10 @@ public function organizationVerify(Request $request, $token)
 
 public function sendAddMemberEmail(Request $request)
 {
+
+    Log::info('Attempting to send email to: ' . $email);
+    Mail::to($email)->send(new VerifAddMember($email));
+    Log::info('Email sent to: ' . $email);
     Log::info('Received email send request:', $request->all());
 
     $emails = $request->input('emails');
