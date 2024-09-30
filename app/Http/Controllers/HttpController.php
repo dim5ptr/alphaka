@@ -1108,31 +1108,28 @@ public function organizationVerify(Request $request, $token)
 
 public function sendAddMemberEmail(Request $request)
 {
-
-    Log::info('Attempting to send email to: ' . $email);
-    Mail::to($email)->send(new VerifAddMember($email));
-    Log::info('Email sent to: ' . $email);
     Log::info('Received email send request:', $request->all());
 
-    $emails = $request->input('emails');
+    $emails = $request->input('emails'); // Getting the emails from the request
 
     if (empty($emails)) {
         return response()->json(['success' => false, 'message' => 'No emails provided.'], 400);
     }
 
-    // Logic to send the email
-    // For example, using Laravel's Mail facade:
     try {
         foreach ($emails as $email) {
-            Mail::to($email)->send(new VerifAddMember($email)); // Use your actual Mailable class
+            Log::info('Attempting to send email to: ' . $email); // Log the email being sent
+
+            // You need to ensure you pass the correct variables to your Mailable class
+            Mail::to($email)->send(new VerifAddMember($email)); // Make sure VerifAddMember is a valid Mailable
         }
 
         return response()->json(['success' => true, 'message' => 'Emails sent successfully!']);
     } catch (\Exception $e) {
+        Log::error('Email sending error: ' . $e->getMessage());
         return response()->json(['success' => false, 'message' => 'Failed to send emails: ' . $e->getMessage()], 500);
     }
 }
-
 
 
 }
