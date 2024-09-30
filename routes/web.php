@@ -65,8 +65,10 @@ Route::get('register/google', function () {
     return (new HttpController)->redirectToGoogle('register');
 })->name('register.google');
 
-    Route::get('auth/google/callback/login', [HttpController::class, 'handleGoogleLoginCallback']);
-    Route::get('auth/google/callback/register', [HttpController::class, 'handleGoogleRegisterCallback']);
+
+Route::get('/auth/google', [HttpController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [HttpController::class, 'handleGoogleCallback']);
+
 });
 
 // Rute-rute yang memerlukan autentikasi
