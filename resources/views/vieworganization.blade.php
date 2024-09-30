@@ -789,11 +789,11 @@ html, body {
        </footer>
     </div>
 
-    <!-- Main Modal for Searching Users -->
+<!-- Main Modal for Searching Users -->
 <div class="modal" id="addMemberModal">
     <div class="modal-content">
         <div class="modal-header">
-            <h1 class="modal-title" id="addMemberModalLabel">Search Emails</h1>
+            <h1 class="modal-title" id="addMemberModalLabel">Add Member</h1>
             <button type="button" class="btn-close" onclick="closeModal()">×</button>
         </div>
         <form id="searchUsers" action="{{ route('searchUsers') }}" method="POST" onsubmit="return handleSearch(event)">
@@ -804,7 +804,8 @@ html, body {
             </div>
             <button type="submit" class="btn btn-primary btn-block">Search</button>
         </form>
-        <button type="button" class="btn btn-primary btn-block" onclick="openAddedUsersModal()">Add Member</button>
+        <!-- Disable the Add Member button by default -->
+        <button type="button" class="btn btn-primary btn-block" id="addMemberButton" onclick="openAddedUsersModal()" disabled>Add Member</button>
     </div>
 </div>
 
@@ -813,16 +814,25 @@ html, body {
     <div class="modal-content">
         <div class="modal-header">
             <h1 class="modal-title" id="addedUsersModalLabel">Added Members</h1>
-            <button type="button" class="btn-close" onclick="closeModal()">×</button>
         </div>
         <div class="form-group">
-            <h3>Email yang sudah ditambahkan</h3>
-            <div id="addedUsersList"></div> <!-- Emails will be listed here -->
+            <h3>Emails Already Added</h3>
+            <div id="addedUsersList">
+                <!-- Example of how emails will be added dynamically -->
+                <!-- <div class="user-entry">
+                    <p class="user-email">user1@example.com</p>
+                </div>
+                <div class="user-entry">
+                    <p class="user-email">user2@example.com</p>
+                </div> -->
+            </div>
         </div>
         <button type="button" class="btn btn-primary btn-block" onclick="sendEmails()">Send Email</button>
         <button type="button" class="btn btn-secondary btn-block" onclick="showSearchModal()">Previous</button>
     </div>
 </div>
+
+
 
 <script>
 // Function to handle search and add users dynamically
@@ -832,6 +842,7 @@ function handleSearch(event) {
     const emailInput = document.getElementById('email');
     const email = emailInput.value.trim(); // Get and trim the email
     const responseMessageDiv = document.getElementById('responseMessage');
+    const addMemberButton = document.getElementById('addMemberButton');
 
     // Check if the email is already added
     if (isEmailAlreadyAdded(email)) {
@@ -862,6 +873,9 @@ function handleSearch(event) {
                 `;
                 responseMessageDiv.appendChild(userDiv); // Append the user div to the responseMessage div
             });
+
+            // Enable the Add Member button
+            addMemberButton.disabled = false;
         } else {
             displayTemporaryMessage('No users found for this email.');
         }
@@ -901,6 +915,13 @@ function displayTemporaryMessage(message) {
 // Function to remove a user entry
 function removeUser(button) {
     button.parentElement.parentElement.remove(); // Remove the user entry
+
+    // Disable the Add Member button if no users are left
+    const userEntries = document.querySelectorAll('.user-entry p');
+    const addMemberButton = document.getElementById('addMemberButton');
+    if (userEntries.length === 0) {
+        addMemberButton.disabled = true;
+    }
 }
 
 // Function to open the modal for added users
@@ -922,15 +943,6 @@ function openAddedUsersModal() {
     });
 }
 
-// Function to send the emails (placeholder for actual email sending logic)
-function sendEmails() {
-    const addedUsersList = document.getElementById('addedUsersList');
-    const emails = addedUsersList.innerText.split('\n');
-    
-    console.log('Sending emails to:', emails); // Replace with actual email sending logic
-    alert('Emails sent to: ' + emails.join(', '));
-}
-
 // Function to show the search modal again
 function showSearchModal() {
     // Close the added users modal
@@ -944,6 +956,46 @@ function showSearchModal() {
 function closeModal() {
     document.getElementById('addMemberModal').style.display = 'none';
     document.getElementById('addedUsersModal').style.display = 'none';
+}
+
+// Function to send the emails
+function sendEmails() {
+    const addedUsersList = document.getElementById('addedUsersList');
+    const emails = [];
+
+    // Loop through each email in the list and collect the text content
+    addedUsersList.querySelectorAll('p').forEach(emailElement => {
+        emails.push(emailElement.textContent.trim()); // Collect emails
+    });
+
+    console.log('Emails collected for sending:', emails); // Log the collected emails for debugging
+
+    // Check if there are any emails before proceeding
+    if (emails.length === 0) {
+        alert('No emails added.');
+        return;
+    }
+
+    // Make an API call to send emails
+    fetch('{{ route('sendAddMemberEmail') }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ emails: emails })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Emails sent successfully!');
+        } else {
+            alert('Failed to send emails: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error sending emails:', error);
+    });
 }
 </script>
 

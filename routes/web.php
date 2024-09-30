@@ -61,6 +61,11 @@ Route::post('/formforgetpassword', [HttpController::class, 'submitResetPasswordF
     // Route for submitting member details (like name, role, etc.)
     Route::post('/add-member-details', [HttpController::class, 'addMemberDetails'])->name('addMemberDetails');
 
+    // Route send email add member
+    Route::post('/send-add-member-email', [HttpController::class, 'sendAddMemberEmail'])->name('sendAddMemberEmail');
+    
+
+
 
 });
 

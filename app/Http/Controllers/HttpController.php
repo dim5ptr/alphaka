@@ -22,6 +22,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Str;
+use App\Mail\VerifAddMember; // Add this line
+
 
 
 
@@ -1101,6 +1103,29 @@ public function organizationVerify(Request $request, $token)
             'success' => false,
             'message' => 'Failed to connect to the API.',
         ], 500);
+    }
+}
+
+public function sendAddMemberEmail(Request $request)
+{
+    Log::info('Received email send request:', $request->all());
+
+    $emails = $request->input('emails');
+
+    if (empty($emails)) {
+        return response()->json(['success' => false, 'message' => 'No emails provided.'], 400);
+    }
+
+    // Logic to send the email
+    // For example, using Laravel's Mail facade:
+    try {
+        foreach ($emails as $email) {
+            Mail::to($email)->send(new VerifAddMember($email)); // Use your actual Mailable class
+        }
+
+        return response()->json(['success' => true, 'message' => 'Emails sent successfully!']);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => 'Failed to send emails: ' . $e->getMessage()], 500);
     }
 }
 
