@@ -382,19 +382,35 @@ public function submitResetPasswordForm(Request $request)
         return view('organization');
     }
 
-
     public function showaddorganization()
     {
         try {
-            $response = Http::withHeaders([
+            // API call to list organizations by owner
+            $ownerResponse = Http::withHeaders([
                 'Authorization' => session('access_token'),
                 'x-api-key' => self::API_KEY,
             ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
 
-            if ($response->successful()) {
-                $data = $response->json(); // Mengambil seluruh data dari respons
-                $organizations = $data['data']['organizations']; // Mengambil data organisasi dari respons
-                return view('organization', ['organizations' => $organizations]); // Mengirimkan data ke blade
+            // API call to list organizations by member
+            $memberResponse = Http::withHeaders([
+                'Authorization' => session('access_token'), // Static authorization key for member API
+                'x-api-key' => '5af97cb7eed7a5a4cff3ed91698d2ffb',
+            ])->post(self::API_URL . '/sso/list_organization_by_member.json');
+
+            // Check if both responses are successful
+            if ($ownerResponse->successful() && $memberResponse->successful()) {
+                $ownerData = $ownerResponse->json();
+                $memberData = $memberResponse->json();
+
+                // Extract organization data from both responses
+                $ownerOrganizations = $ownerData['data']['organizations'] ?? [];
+                $memberOrganizations = $memberData['data']['organizations'] ?? [];
+
+                // Merge the two organization arrays
+                $organizations = array_merge($ownerOrganizations, $memberOrganizations);
+
+                // Pass the merged data to the Blade view
+                return view('organization', ['organizations' => $organizations]);
             } else {
                 return back()->with('error', 'Gagal mendapatkan daftar organisasi. Silakan coba lagi.');
             }
@@ -403,6 +419,27 @@ public function submitResetPasswordForm(Request $request)
             return back()->with('error', $e->getMessage());
         }
     }
+
+    // public function showaddorganization()
+    // {
+    //     try {
+    //         $response = Http::withHeaders([
+    //             'Authorization' => session('access_token'),
+    //             'x-api-key' => self::API_KEY,
+    //         ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
+
+    //         if ($response->successful()) {
+    //             $data = $response->json(); // Mengambil seluruh data dari respons
+    //             $organizations = $data['data']['organizations']; // Mengambil data organisasi dari respons
+    //             return view('organization', ['organizations' => $organizations]); // Mengirimkan data ke blade
+    //         } else {
+    //             return back()->with('error', 'Gagal mendapatkan daftar organisasi. Silakan coba lagi.');
+    //         }
+
+    //     } catch (\Exception $e) {
+    //         return back()->with('error', $e->getMessage());
+    //     }
+    // }
 
 
     public function showcreateorganization()
@@ -592,45 +629,105 @@ public function organizationVerify(Request $request, $token)
 
 
 
+    // public function showvieworganization($organization_name)
+    // {
+    //     Log::info('Attempting to view organization with name: ' . $organization_name);
+
+    //     try {
+    //         $response = Http::withHeaders([
+    //             'Authorization' => session('access_token'),
+    //             'x-api-key' => self::API_KEY,
+    //         ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
+
+    //         if ($response->successful()) {
+    //             $data = $response->json(); // Mengambil seluruh data dari respons
+    //             $organizations = $data['data']['organizations']; // Mengambil data organisasi dari respons
+
+    //             // Cari organisasi yang sesuai dengan nama yang diberikan
+    //             foreach ($organizations as $org) {
+    //                 if ($org['organization_name'] === $organization_name) {
+    //                     $organization = [
+    //                         'organization_id' => $org['id'],
+    //                         'organization_name' => $organization_name,
+    //                         'description' => $org['description'],
+    //                         'members_count' => $org['members_count'] ?? 0
+    //                     ];
+    //                     Log::info('Organization found: ' . $organization_name);
+    //                     return view('vieworganization', compact('organization'));
+    //                 }
+    //             }
+
+    //             Log::warning('Organization not found: ' . $organization_name);
+    //             return back()->with('error', 'Organization not found');
+    //         } else {
+    //             Log::error('Failed to get organization list. Response: ' . $response->body());
+    //             return back()->with('error', 'Failed to get organization list. Please try again.');
+    //         }
+    //     } catch (\Exception $e) {
+    //         Log::error('Exception occurred while viewing organization: ' . $e->getMessage());
+    //         return back()->with('error', $e->getMessage());
+    //     }
+    // }
+
     public function showvieworganization($organization_name)
-    {
-        Log::info('Attempting to view organization with name: ' . $organization_name);
+{
+    Log::info('Attempting to view organization with name: ' . $organization_name);
 
-        try {
-            $response = Http::withHeaders([
-                'Authorization' => session('access_token'),
-                'x-api-key' => self::API_KEY,
-            ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
+    try {
+        // API call to list organizations by owner
+        $ownerResponse = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
 
-            if ($response->successful()) {
-                $data = $response->json(); // Mengambil seluruh data dari respons
-                $organizations = $data['data']['organizations']; // Mengambil data organisasi dari respons
+        // API call to list organizations by member
+        $memberResponse = Http::withHeaders([
+            'Authorization' => session('access_token'), 
+            'x-api-key' => '5af97cb7eed7a5a4cff3ed91698d2ffb',
+        ])->post(self::API_URL . '/sso/list_organization_by_member.json');
 
-                // Cari organisasi yang sesuai dengan nama yang diberikan
-                foreach ($organizations as $org) {
-                    if ($org['organization_name'] === $organization_name) {
-                        $organization = [
-                            'organization_id' => $org['id'],
-                            'organization_name' => $organization_name,
-                            'description' => $org['description'],
-                            'members_count' => $org['members_count'] ?? 0
-                        ];
-                        Log::info('Organization found: ' . $organization_name);
-                        return view('vieworganization', compact('organization'));
-                    }
+        // Check if both API responses are successful
+        if ($ownerResponse->successful() && $memberResponse->successful()) {
+            // Parse the responses
+            $ownerData = $ownerResponse->json();
+            $memberData = $memberResponse->json();
+
+            // Get the organizations from both responses
+            $ownerOrganizations = $ownerData['data']['organizations'] ?? [];
+            $memberOrganizations = $memberData['data']['organizations'] ?? [];
+
+            // Combine both organizations
+            $organizations = array_merge($ownerOrganizations, $memberOrganizations);
+
+            // Search for the organization by name
+            foreach ($organizations as $org) {
+                if ($org['organization_name'] === $organization_name) {
+                    // Organization found, prepare data for the view
+                    $organization = [
+                        'organization_id' => $org['id'],
+                        'organization_name' => $organization_name,
+                        'description' => $org['description'],
+                        'members_count' => $org['members_count'] ?? 0
+                    ];
+                    Log::info('Organization found: ' . $organization_name);
+                    return view('vieworganization', compact('organization'));
                 }
-
-                Log::warning('Organization not found: ' . $organization_name);
-                return back()->with('error', 'Organization not found');
-            } else {
-                Log::error('Failed to get organization list. Response: ' . $response->body());
-                return back()->with('error', 'Failed to get organization list. Please try again.');
             }
-        } catch (\Exception $e) {
-            Log::error('Exception occurred while viewing organization: ' . $e->getMessage());
-            return back()->with('error', $e->getMessage());
+
+            // If no matching organization is found
+            Log::warning('Organization not found: ' . $organization_name);
+            return back()->with('error', 'Organization not found');
+        } else {
+            // Log error if either API fails
+            Log::error('Failed to get organization list. Owner Response: ' . $ownerResponse->body() . ', Member Response: ' . $memberResponse->body());
+            return back()->with('error', 'Failed to get organization list. Please try again.');
         }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred while viewing organization: ' . $e->getMessage());
+        return back()->with('error', $e->getMessage());
     }
+}
+
     public function showmoredetails($organization_name)
     {
         Log::info('Attempting to show more details for organization: ' . $organization_name);
