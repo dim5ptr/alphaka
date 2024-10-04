@@ -53,7 +53,7 @@ Route::post('/formforgetpassword', [HttpController::class, 'submitResetPasswordF
     // Menampilkan formulir aktivasi
     Route::get('/activation', [HttpController::class, 'showActivationForm'])->name('activate.form');
 
-    Route::post('/addmember', [HttpController::class, 'addMember'])->name('addmember'); 
+    Route::post('/addmember', [HttpController::class, 'addMember'])->name('addmember');
 
 
     // In routes/web.php or routes/api.php
@@ -63,7 +63,7 @@ Route::post('/formforgetpassword', [HttpController::class, 'submitResetPasswordF
 
     // Route send email add member
     Route::post('/send-add-member-email', [HttpController::class, 'sendAddMemberEmail'])->name('sendAddMemberEmail');
-    
+
 
 
 
@@ -94,6 +94,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/organization/{id}/add_member', [HttpController::class, 'showAddMember'])->name('showAddMember');
     // Route to handle the member search and add functionality
     Route::post('/organization/{id}/add_member', [HttpController::class, 'addMember'])->name('addMember');
+    Route::post('/organization/add-member-organization', [HttpController::class, 'addMemberOrganization'])->name('addMemberOrganization');
+    Route::post('/organization/get-member-token', [HttpController::class, 'getMemberToken'])->name('getMemberToken');
     Route::get('/personal', [HttpController::class, 'personal'])->name('personal');
     Route::get('/editpersonal',  [HttpController::class, 'showeditpersonal'])->name('showeditpersonal');
     Route::post('/editpersonal', [HttpController::class, 'editpersonal'])->name('editpersonal');

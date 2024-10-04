@@ -682,7 +682,7 @@ public function organizationVerify(Request $request, $token)
 
         // API call to list organizations by member
         $memberResponse = Http::withHeaders([
-            'Authorization' => session('access_token'), 
+            'Authorization' => session('access_token'),
             'x-api-key' => '5af97cb7eed7a5a4cff3ed91698d2ffb',
         ])->post(self::API_URL . '/sso/list_organization_by_member.json');
 
@@ -1089,52 +1089,6 @@ public function organizationVerify(Request $request, $token)
 
     }
 
-
-
-    public function redirectToGoogle()
-    {
-        // Redirect pengguna ke halaman autentikasi Google menggunakan Socialite
-        return Socialite::driver('google')->redirect();
-    }
-
-    public function handleGoogleCallback()
-    {
-        try {
-            // Ambil informasi pengguna dari Google setelah autentikasi
-            $googleUser = Socialite::driver('google')->user();
-        } catch (\Exception $e) {
-            // Tangkap dan tampilkan pesan kesalahan jika autentikasi gagal
-            dd($e->getMessage());
-        }
-
-        // Periksa apakah pengguna berhasil diambil dari Google
-        if ($googleUser) {
-            // Ambil alamat email pengguna dari data yang diterima dari Google
-            $email = $googleUser->email;
-
-            // Kirim permintaan registrasi pengguna ke backend menggunakan HTTP Client
-            $response = Http::withHeaders([
-                'x-api-key' => self::API_KEY, // Header x-api-key untuk otentikasi pada API backend
-            ])->post(self::API_URL . '/sso/register.json', [
-                'email' => $email, // Kirim alamat email pengguna untuk registrasi
-                'password' => 'password_default', // Tambahkan kata sandi default untuk registrasi
-            ]);
-
-            // Periksa apakah permintaan registrasi berhasil
-            if ($response->successful()) {
-                // Jika berhasil, arahkan pengguna ke halaman dashboard
-                return redirect()->route('dashboard');
-            } else {
-                // Jika gagal, arahkan pengguna kembali ke halaman registrasi dengan pesan kesalahan
-                return redirect()->route('register')->with('error', 'Gagal melakukan registrasi. Silakan coba lagi.');
-            }
-
-        } else {
-            // Jika gagal mengambil informasi pengguna dari Google, tampilkan pesan kesalahan
-            dd('Failed to retrieve user information from Google.');
-        }
-    }
-
     public function searchUsers(Request $request)
 {
     // Log the incoming request data
@@ -1227,6 +1181,62 @@ public function sendAddMemberEmail(Request $request)
         return response()->json(['success' => false, 'message' => 'Failed to send emails: ' . $e->getMessage()], 500);
     }
 }
+public function addMemberOrganization(Request $request)
+{
+    Log::info('Received add member organization request:', $request->all());
 
+    $token = $request->input('token'); // Getting the token from the request
+
+    if (empty($token)) {
+        return response()->json(['success' => false, 'message' => 'Token is required.'], 400);
+    }
+
+    try {
+        $response = Http::withHeaders([
+            'x-api-key' => '5af97cb7eed7a5a4cff3ed91698d2ffb',
+        ])->post(config('app.base_url') . '/sso/add_member_organization.json', [
+            'token' => $token,
+        ]);
+
+        if ($response->successful()) {
+            return response()->json(['success' => true, 'data' => $response->json()]);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Failed to add member organization.', 'error' => $response->body()], $response->status());
+        }
+    } catch (\Exception $e) {
+        Log::error('Error adding member organization: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'Internal server error: ' . $e->getMessage()], 500);
+    }
+}
+
+public function getMemberToken(Request $request)
+{
+    Log::info('Received get member token request:', $request->all());
+
+    $organizationId = $request->input('organization_id'); // Getting the organization ID from the request
+    $userEmails = $request->input('user_emails'); // Getting the user emails from the request
+
+    if (empty($organizationId) || empty($userEmails)) {
+        return response()->json(['success' => false, 'message' => 'Organization ID and user emails are required.'], 400);
+    }
+
+    try {
+        $response = Http::withHeaders([
+            'x-api-key' => '5af97cb7eed7a5a4cff3ed91698d2ffb',
+        ])->post(config('app.base_url') . '/sso/get_member_token.json', [
+            'organization_id' => $organizationId,
+            'user_emails' => $userEmails,
+        ]);
+
+        if ($response->successful()) {
+            return response()->json(['success' => true, 'data' => $response->json()]);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Failed to get member token.', 'error' => $response->body()], $response->status());
+        }
+    } catch (\Exception $e) {
+        Log::error('Error getting member token: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'Internal server error: ' . $e->getMessage()], 500);
+    }
+}
 
 }
