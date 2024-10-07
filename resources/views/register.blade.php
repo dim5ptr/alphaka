@@ -255,8 +255,10 @@
 
                 <button type="submit" class="btn btn-primary">Daftar</button>
             </form>
-            <p class="form-text">Sudah punya akun? <a href="{{ route('login') }}">Login disini</a></p>
-            <a href="{{ route('auth.google') }}">Register with Google</a>
+            <div class="form-text">
+                <p>Sudah punya akun? <a href="{{ route('login') }}">Login disini</a></p>
+                <a href="{{ route('auth.google') }}">Register with Google</a>
+            </div>
 
         </div>
         <div class="pict">
