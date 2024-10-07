@@ -153,7 +153,7 @@
 
         input[type="submit"] {
             width: 100%;
-            padding: 18px;
+            padding: 15px;
             background: #e9edf9;
             color: #365AC2;
             border: none;
@@ -168,6 +168,36 @@
         input[type="submit"]:hover {
             background: #AFC3FC;
             color: rgb(0, 0, 0);
+        }
+
+        .google-form{
+            margin-top: 5%;
+            padding: 5px;
+        }
+
+        .google-form a{
+            margin-left: 2%;
+            color: #c3e6cb;
+            text-decoration: none;
+        }
+      .google {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 12px;
+            color: #e9edf9;
+            border: 2px solid #e9edf9;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.3s;
+            text-decoration: none;
+        }
+
+      .google:hover {
+            background: #9fb7ff7f;
         }
 
         .register-link {
@@ -268,6 +298,7 @@
 }
 
 }
+
     </style>
 </head>
 <body>
@@ -316,12 +347,19 @@
                     <a href="{{ route('password.request') }}">Lupa Password?</a>
                 </div>
                 <input type="submit" value="Login" class="btn-login">
+                <br>
+
+                <div class="google-form">
+                    <div class="google">
+                        <i class="fab fa-google"></i>
+                        <a class="google-login" href="{{ route('auth.google') }}" class="btn btn-google">Login with Google</a>
+                    </div>
+                </div>
             </form>
 
             <br>
             <div class="register-link">
                 <p>Belum punya akun? <a href="{{ route('register') }}">Daftar Sekarang</a></p>
-                <a href="{{ route('auth.google') }}" class="btn btn-google">Login with Google</a>
             </div>
         </div>
     </div>
