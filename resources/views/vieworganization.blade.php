@@ -1090,15 +1090,14 @@ function sendEmails() {
             // API URL
             const apiUrl = 'http://192.168.1.24:14041/api/sso/list_user_by_organization.json';
 
-            // Access token dari sesi Laravel (disisipkan menggunakan Blade)
+            // Access token from Laravel session (injected using Blade)
             const accessToken = '{{ session('access_token') }}';
             console.log("Access Token: ", accessToken); // Log access token
             const organizationId = "{{ $organization['organization_id'] }}"; // Ensure organization_id is passed correctly
 
-
             // Request headers
             const headers = {
-                'Authorization': accessToken, // Menggunakan token dari session
+                'Authorization': accessToken, // Use token from session
                 'x-api-key': '5af97cb7eed7a5a4cff3ed91698d2ffb',
                 'Content-Type': 'application/json'
             };
@@ -1126,46 +1125,48 @@ function sendEmails() {
                 if (data.success && data.data && data.data.length > 0) {
                     populateTable(data.data); // Populate table with the users array
                 } else {
-                    console.log("No users found in response"); // Log if no users are found
+                    populateTable([]); // Pass empty array if no users are found
                 }
             })
-
             .catch(error => {
                 console.error('Error:', error); // Log any errors
             });
         }
 
-        // Function to populate table with API data
-        // Function to populate table with API data
+        // Function to populate table with API data or show "No data found"
         function populateTable(data) {
             var tbody = document.getElementById('dataBody');
-            tbody.innerHTML = '';
+            tbody.innerHTML = ''; // Clear the table body
 
-            // Pastikan data yang digunakan adalah data dari respons API
-            data.forEach(function(item, index) {
+            if (data.length === 0) {
+                // If no data, append "No data found" row
                 var row = document.createElement('tr');
-                row.innerHTML = `
-                    <th scope="row">${index + 1}</th>
-                    <td>${item.username ? item.username : 'N/A'}</td> <!-- Menggunakan username atau N/A jika null -->
-                    <td>${item.email}</td>
-                    <td>
-                        <form action="{{ route('showmoredetails', ['organization_name' => $organization['organization_name']]) }}" method="GET">
-                            @csrf
-                            <button type="submit" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="top" title="More Details" style="background: none; border: none; padding: 0;">
-                                ㅤ<i class="bi bi-info-circle" style="font-size: 1.8rem; color: #007bff;"></i>
-                            </button>
-                        </form>
-                    </td>
-                `;
+                var noDataCell = `<td colspan="4" class="text-center">No data found</td>`;
+                row.innerHTML = noDataCell;
                 tbody.appendChild(row);
-            });
+            } else {
+                // Populate table with user data
+                data.forEach(function(item, index) {
+                    var row = document.createElement('tr');
+                    row.innerHTML = `
+                        <th scope="row">${index + 1}</th>
+                        <td>${item.username ? item.username : 'N/A'}</td> <!-- Use username or N/A if null -->
+                        <td>${item.email}</td>
+                        <td>
+                            <form action="{{ route('showmoredetails', ['organization_name' => $organization['organization_name']]) }}" method="GET">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="top" title="More Details" style="background: none; border: none; padding: 0;">
+                                    ㅤ<i class="bi bi-info-circle" style="font-size: 1.8rem; color: #007bff;"></i>
+                                </button>
+                            </form>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
         }
 
-
         // Call fetchDataFromAPI on page load
-        document.addEventListener('DOMContentLoaded', function () {
-            fetchDataFromAPI(); // Fetch and populate table on page load
-        });
         document.addEventListener('DOMContentLoaded', function () {
             fetchDataFromAPI(); // Fetch and populate table on page load
 
@@ -1186,6 +1187,7 @@ function sendEmails() {
         });
 
     </script>
+
 
     {{-- <script>
         var anggotaData = [
