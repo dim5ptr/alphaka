@@ -420,9 +420,26 @@ body {
     justify-content: space-between;
 }
 
-.group-btn  {
+.group-btn {
     width: 30%;
+    padding: 15px; /* Ruang dalam */
+    background-color: #f8f9fa; /* Warna latar belakang cerah */
+    color: #333; /* Warna teks gelap */
+    font-size: 18px; /* Ukuran font lebih besar */
+    text-align: center; /* Pusatkan teks */
+    border: 1px solid #dee2e6; /* Border ringan */
+    border-radius: 8px; /* Sudut melengkung */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Efek bayangan */
+    display: flex; /* Menggunakan Flexbox */
+    align-items: center; /* Pusatkan item secara vertikal */
+    justify-content: center; /* Pusatkan item secara horizontal */
 }
+
+.group-btn i {
+    margin-right: 8px; /* Ruang antara ikon dan teks */
+    color: #007bff; /* Warna ikon */
+}
+
 
 .d-flex {
     display: flex;
@@ -743,8 +760,14 @@ html, body {
                 <!-- Buttons and Search Input -->
                 <div class="mb-side">
                     <div class="group-btn">
-                        <button type="button" class="btn" id="anggotaBtn">Member</button>
-                        <button type="button" class="btn" id="pengurusBtn">Administrator</button>
+                        <i class="fas fa-user"></i> <!-- Ikon pemilik -->
+                        Owner by:
+                        @if($organization['owner']) <!-- Check if owner data exists -->
+                            {{ $organization['owner']['name'] }} <!-- Display owner's name -->
+                            ({{ $organization['owner']['username'] }} - {{ $organization['owner']['email'] }}) <!-- Show username and email -->
+                        @else
+                            No Owner <!-- Fallback message if there's no owner -->
+                        @endif
                     </div>
 
                     <!-- Search Input with Icon -->
@@ -760,21 +783,20 @@ html, body {
 
                 <!-- Table -->
                 <div class="table-container">
-                    <table class="table" id="dataTable">
+                    <table id="dataTable" class="table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">First Name</th>
-                                <th scope="col">Last Name</th>
-                                <th scope="col">Handle</th>
+                                <th scope="col">Username</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody id="dataBody">
-                            <!-- Data will be populated by JavaScript -->
+                            <!-- Data akan diisi di sini -->
                         </tbody>
                     </table>
+<br><br><br>
                 </div>
 
             </div>
@@ -920,10 +942,10 @@ function removeUser(button) {
 function openAddedUsersModal() {
     // Close the current modal
     document.getElementById('addMemberModal').style.display = 'none';
-    
+
     // Show the added users modal
     document.getElementById('addedUsersModal').style.display = 'block';
-    
+
     // Populate the added emails into the modal
     const addedUsersList = document.getElementById('addedUsersList');
     const userEntries = document.querySelectorAll('.user-entry p');
@@ -1061,6 +1083,106 @@ function sendEmails() {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
+        // Fetch data from external API
+        function fetchDataFromAPI() {
+            // API URL
+            const apiUrl = 'http://192.168.1.24:14041/api/sso/list_user_by_organization.json';
+
+            // Access token dari sesi Laravel (disisipkan menggunakan Blade)
+            const accessToken = '{{ session('access_token') }}';
+            console.log("Access Token: ", accessToken); // Log access token
+
+            // Request headers
+            const headers = {
+                'Authorization': accessToken, // Menggunakan token dari session
+                'x-api-key': '5af97cb7eed7a5a4cff3ed91698d2ffb',
+                'Content-Type': 'application/json'
+            };
+
+            // Body of the POST request
+            const body = JSON.stringify({
+                find: ""
+            });
+            console.log("Request Body: ", body); // Log body request
+
+            // Fetch data using fetch API
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: headers,
+                body: body
+            })
+            .then(response => {
+                console.log("Raw Response: ", response); // Log raw response
+                return response.json();
+            }) // Convert response to JSON
+            .then(data => {
+                console.log("Response Data: ", data); // Log response data
+
+                if (data.success && data.data && data.data.length > 0) {
+                    populateTable(data.data); // Populate table with the users array
+                } else {
+                    console.log("No users found in response"); // Log if no users are found
+                }
+            })
+
+            .catch(error => {
+                console.error('Error:', error); // Log any errors
+            });
+        }
+
+        // Function to populate table with API data
+        // Function to populate table with API data
+        function populateTable(data) {
+            var tbody = document.getElementById('dataBody');
+            tbody.innerHTML = '';
+
+            // Pastikan data yang digunakan adalah data dari respons API
+            data.forEach(function(item, index) {
+                var row = document.createElement('tr');
+                row.innerHTML = `
+                    <th scope="row">${index + 1}</th>
+                    <td>${item.username ? item.username : 'N/A'}</td> <!-- Menggunakan username atau N/A jika null -->
+                    <td>${item.email}</td>
+                    <td>
+                        <form action="{{ route('showmoredetails', ['organization_name' => $organization['organization_name']]) }}" method="GET">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="top" title="More Details" style="background: none; border: none; padding: 0;">
+                                ㅤ<i class="bi bi-info-circle" style="font-size: 1.8rem; color: #007bff;"></i>
+                            </button>
+                        </form>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+
+        // Call fetchDataFromAPI on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchDataFromAPI(); // Fetch and populate table on page load
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+    fetchDataFromAPI(); // Fetch and populate table on page load
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function () {
+        var searchValue = this.value.toLowerCase();
+        var rows = document.querySelectorAll('#dataTable tbody tr');
+
+        rows.forEach(function (row) {
+            var cells = row.querySelectorAll('td');
+            var found = Array.from(cells).some(function (cell) {
+                return cell.textContent.toLowerCase().includes(searchValue);
+            });
+
+            row.style.display = found ? '' : 'none';
+        });
+    });
+});
+
+    </script>
+
+    {{-- <script>
         var anggotaData = [
             { id: 1, first: 'John', last: 'Doe', handle: '@john_doe', email: 'john@gmail.com' },
             { id: 2, first: 'Jane', last: 'Smith', handle: '@jane_smith', email: 'jane@gmail.com' }
@@ -1120,7 +1242,7 @@ function sendEmails() {
         });
 
         populateTable(anggotaData); // Default load data anggota saat halaman dimuat
-    </script>
+    </script> --}}
 {{--
 <script>
     document.getElementById('logoutForm').addEventListener('submit', function(event) {

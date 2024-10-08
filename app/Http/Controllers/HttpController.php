@@ -701,18 +701,34 @@ public function organizationVerify(Request $request, $token)
 
             // Search for the organization by name
             foreach ($organizations as $org) {
+                Log::info('Organization data being processed:', $org); // Log the entire organization data
+
                 if ($org['organization_name'] === $organization_name) {
+                    // Log the organization name we're attempting to view
+                    Log::info('Attempting to view organization with name: ' . $organization_name);
+
                     // Organization found, prepare data for the view
                     $organization = [
                         'organization_id' => $org['id'],
                         'organization_name' => $organization_name,
                         'description' => $org['description'],
-                        'members_count' => $org['members_count'] ?? 0
+                        'members_count' => $org['members_count'] ?? 0,
+                        // Check if owner data exists before accessing it
+                        'owner' => isset($org['owner']) ? [
+                            'email' => $org['owner']['email'] ?? 'Email not available', // Default message if not set
+                            'username' => $org['owner']['username'] ?? 'Username not available', // Default message if not set
+                            'name' => $org['owner']['name'] ?? 'Owner not available', // Default message if not set
+                        ] : null, // Set to null if owner data doesn't exist
                     ];
-                    Log::info('Organization found: ' . $organization_name);
+
+                    // Log the prepared organization data
+                    Log::info('Prepared organization data:', $organization);
+
                     return view('vieworganization', compact('organization'));
                 }
             }
+
+
 
             // If no matching organization is found
             Log::warning('Organization not found: ' . $organization_name);
