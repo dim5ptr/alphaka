@@ -719,12 +719,6 @@ public function organizationVerify(Request $request, $token)
                         'organization_name' => $organization_name,
                         'description' => $org['description'],
                         'members_count' => $org['members_count'] ?? 0,
-                        // Check if owner data exists before accessing it
-                        'owner' => isset($org['owner']) ? [
-                            'email' => $org['owner']['email'] ?? 'Email not available', // Default message if not set
-                            'username' => $org['owner']['username'] ?? 'Username not available', // Default message if not set
-                            'name' => $org['owner']['name'] ?? 'Owner not available', // Default message if not set
-                        ] : null, // Set to null if owner data doesn't exist
                     ];
 
                     // Log the prepared organization data

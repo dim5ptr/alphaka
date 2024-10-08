@@ -762,12 +762,7 @@ html, body {
                     <div class="group-btn">
                         <i class="fas fa-user"></i> <!-- Ikon pemilik -->
                         Owner by:
-                        @if($organization['owner']) <!-- Check if owner data exists -->
-                            {{ $organization['owner']['name'] }} <!-- Display owner's name -->
-                            ({{ $organization['owner']['username'] }} - {{ $organization['owner']['email'] }}) <!-- Show username and email -->
-                        @else
-                            No Owner <!-- Fallback message if there's no owner -->
-                        @endif
+                       
                     </div>
 
                     <!-- Search Input with Icon -->
