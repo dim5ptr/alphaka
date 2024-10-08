@@ -69,7 +69,7 @@
         <div class="container">
             <div class="inner-body">
                 <h2>Halo!</h2>
-                <p>Yth. {{ session('username') }}</p>
+                <p>Yth.</p>
                 <p>Anda telah diundang untuk bergabung dengan organisasi {{ session('organization_name') }}.</p>
                 <p>Apakah Anda yakin ingin menjadi bagian dari organisasi ini? Jika ya, silakan konfirmasi dengan mengklik tautan berikut:</p>
                 <p class="text-center">
@@ -88,4 +88,5 @@
         </div>
     </div>
 </body>
+
 </html>

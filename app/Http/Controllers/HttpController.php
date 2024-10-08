@@ -719,12 +719,6 @@ public function organizationVerify(Request $request, $token)
                         'organization_name' => $organization_name,
                         'description' => $org['description'],
                         'members_count' => $org['members_count'] ?? 0,
-                        // Check if owner data exists before accessing it
-                        'owner' => isset($org['owner']) ? [
-                            'email' => $org['owner']['email'] ?? 'Email not available', // Default message if not set
-                            'username' => $org['owner']['username'] ?? 'Username not available', // Default message if not set
-                            'name' => $org['owner']['name'] ?? 'Owner not available', // Default message if not set
-                        ] : null, // Set to null if owner data doesn't exist
                     ];
 
                     // Log the prepared organization data
@@ -1181,28 +1175,78 @@ public function organizationVerify(Request $request, $token)
 
 public function sendAddMemberEmail(Request $request)
 {
-    Log::info('Received email send request:', $request->all());
+    // Validate input
+    $request->validate([
+        'organization_id' => 'required|string',
+        'emails' => 'required|array',
+        'emails.*' => 'email', // Validate each email in the array
+    ]);
 
-    $emails = $request->input('emails'); // Getting the emails from the request
-
-    if (empty($emails)) {
-        return response()->json(['success' => false, 'message' => 'No emails provided.'], 400);
-    }
+    $organizationId = $request->input('organization_id');
+    $emails = $request->input('emails');
 
     try {
-        foreach ($emails as $email) {
-            Log::info('Attempting to send email to: ' . $email); // Log the email being sent
+        // Logging the emails for debugging
+        Log::info('Received request to send emails:', ['emails' => $emails]);
 
-            // You need to ensure you pass the correct variables to your Mailable class
-            Mail::to($email)->send(new VerifAddMember($email)); // Make sure VerifAddMember is a valid Mailable
+        // Get member tokens for the emails
+        $tokenResponse = $this->getMemberToken(new Request([
+            'organization_id' => $organizationId,
+            'user_emails' => $emails
+        ]));
+
+        // Check if the token response is successful
+        if ($tokenResponse->status() !== 200) {
+            return response()->json(['success' => false, 'message' => 'Failed to get member tokens.'], 500);
+        }
+
+        $responseData = json_decode($tokenResponse->getContent(), true);
+
+        $tokens = $responseData['tokens'] ?? []; // Get tokens directly
+        $failedEmails = $responseData['failed_emails'] ?? [];
+
+        // Handle failed emails
+        if (!empty($failedEmails)) {
+            foreach ($failedEmails as $failedEmail) {
+                Log::warning('Failed to generate token for email: ' . $failedEmail['email'] . ', Reason: ' . $failedEmail['reason']);
+            }
+        }
+
+        // Proceed only if there are tokens available
+        if (empty($tokens)) {
+            Log::warning('No tokens generated for the provided emails.');
+            return response()->json(['success' => false, 'message' => 'No tokens generated.'], 400);
+        }
+
+        // Process each token and send emails
+        foreach ($tokens as $tokenData) {
+            $email = $tokenData['email'];
+            $token = $tokenData['token']; // Ensure this matches your actual API response
+
+            Log::info('Attempting to send email to: ' . $email);
+
+            // Send email with the token
+            Log::info('Preparing to send verification email for: ' . $email);
+            Mail::send('emails.verif-addmember', ['token' => $token], function($message) use ($email) {
+                $message->to($email)
+                    ->subject('Add Member Verification');
+            });
+
+            Log::info('Verification email sent to: ' . $email);
         }
 
         return response()->json(['success' => true, 'message' => 'Emails sent successfully!']);
     } catch (\Exception $e) {
-        Log::error('Email sending error: ' . $e->getMessage());
+        Log::error('An error occurred: ' . $e->getMessage());
         return response()->json(['success' => false, 'message' => 'Failed to send emails: ' . $e->getMessage()], 500);
     }
 }
+
+
+
+
+
+
 public function addMemberOrganization(Request $request)
 {
     Log::info('Received add member organization request:', $request->all());
@@ -1237,13 +1281,13 @@ public function getMemberToken(Request $request)
 
     // Validate incoming request
     $validator = Validator::make($request->all(), [
-        'organization_id' => 'required|string', // Assuming UUID for organization ID
+        'organization_id' => 'required|string',
         'user_emails' => 'required|array',
-        'user_emails.*' => 'email', // Validate each email in the array
+        'user_emails.*' => 'email',
     ]);
 
     if ($validator->fails()) {
-        Log::error('Validation failed:', ['errors' => $validator->errors()]); // Log the validation errors for debugging
+        Log::error('Validation failed:', ['errors' => $validator->errors()]);
         return response()->json(['success' => false, 'message' => 'Validation failed', 'errors' => $validator->errors()], 422);
     }
 
@@ -1251,31 +1295,35 @@ public function getMemberToken(Request $request)
     $userEmails = $request->input('user_emails');
 
     try {
+        // Send request to get member tokens
         $response = Http::withHeaders([
-            'x-api-key' => self::API_KEY, // Move the API key to .env and reference it
-        ])->post(self::API_URL .'/sso/get_member_token.json', [
+            'x-api-key' => self::API_KEY,
+        ])->post(self::API_URL . '/sso/get_member_token.json', [
             'organization_id' => $organizationId,
             'user_emails' => $userEmails,
         ]);
 
         if ($response->successful()) {
-            Log::info('Successfully received member tokens:', ['data' => $response->json()]); // Log success
-            return response()->json(['success' => true, 'data' => $response->json()]);
+            $responseData = $response->json();
+            Log::info('Successfully received member tokens:', ['data' => $responseData]);
+
+            return response()->json($responseData);
         }
 
-        // If the response is not successful
+        // Handle unsuccessful response
         return response()->json([
             'success' => false,
             'message' => 'Failed to get member token.',
-            'error' => $response->json(), // Return the JSON response for more context
+            'error' => $response->json(),
         ], $response->status());
     } catch (\Exception $e) {
         Log::error('Error getting member token', [
-            'error' => 'Internal server error: ' . $e->getMessage() // Log error without exposing sensitive info
+            'error' => 'Internal server error: ' . $e->getMessage()
         ]);
         return response()->json(['success' => false, 'message' => 'Internal server error'], 500);
     }
 }
+
 
 
 
