@@ -759,11 +759,11 @@ html, body {
             <div class="member">
                 <!-- Buttons and Search Input -->
                 <div class="mb-side">
-                    <div class="group-btn">
+                    {{-- <div class="group-btn">
                         <i class="fas fa-user"></i> <!-- Ikon pemilik -->
                         Owner by:
-                       
-                    </div>
+
+                    </div> --}}
 
                     <!-- Search Input with Icon -->
                     <div class="input-group">
@@ -853,12 +853,12 @@ function handleSearch(event) {
     const email = emailInput.value.trim();
     const responseMessageDiv = document.getElementById('responseMessage');
     const addMemberButton = document.getElementById('addMemberButton');
-    
+
     // Show loading indicator
     const loadingIndicator = document.createElement('p');
     loadingIndicator.innerText = 'Searching...';
     responseMessageDiv.appendChild(loadingIndicator);
-    
+
     // Check if the email is already added
     if (isEmailAlreadyAdded(email)) {
         displayTemporaryMessage('This email is already added.');
