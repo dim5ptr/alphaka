@@ -226,6 +226,43 @@
             position: relative;
         }
 
+        .infoo {
+            align-content: center;
+            display: inline-flex;
+            width: 20%;
+            padding-right: 0.5%;
+            justify-content:flex-end;
+        }
+
+        .filter {
+            margin-top: 5%;
+            padding-right: 10%;
+            margin-right: 10%;
+            height: 35px;
+            align-content: center;
+            border-right: 5px solid #365AC2;
+        }
+
+        #filterDropdown {
+ padding: 10px 40px 10px 15px;
+ font-size: 1rem;
+ text-align: center;
+    border: 2px solid #365AC2;
+    border-radius: 5px;
+    color: #333;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover and focus effect on dropdown */
+#filterDropdown:hover,
+#filterDropdown:focus {
+    background-color: #f0f8ff;
+
+}
+
+
     /* Button Styles */
     .btn-primary {
         padding: 10px 10px;
@@ -263,7 +300,7 @@
         bottom: 5%;
         left: 0;
         width: 100%;
-        z-index: 998; /* Pastikan footer berada di bawah tombol "Buat Organisasi" */
+        z-index: 900; /* Pastikan footer berada di bawah tombol "Buat Organisasi" */
     }
 
     .display {
@@ -513,7 +550,16 @@
         <div class="open-btn">
             <button onclick="toggleSidebar()">&#9776; Organization</button>
         </div>
+        <div class="infoo">
+        <div class="filter">
+            <select id="filterDropdown" onchange="filterOrganizations(this.value)">
+                <option value="all">Semua</option>
+                <option value="owner">Milik Saya</option>
+                <option value="member">Anggota</option>
+            </select>
+        </div>
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
+        </div>
     </nav>
 
     <div id="sidebar" class="sidebar">
@@ -548,43 +594,42 @@
         </div>
     </div>
     <div id="main-content" class="main-content">
-
         <section class="content">
             @if (session('success_message'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert" id="alert-success">
-                {{ session('success_message') }}
-            </div>
-        @endif
+                <div class="alert alert-success alert-dismissible fade show" role="alert" id="alert-success">
+                    {{ session('success_message') }}
+                </div>
+            @endif
 
-        @if ($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                @foreach ($errors->all() as $error)
-                    <div>{{ $error }}</div>
-                @endforeach
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" id="alert-success"></button>
-            </div>
-        @endif
+            @if ($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @foreach ($errors->all() as $error)
+                        <div>{{ $error }}</div>
+                    @endforeach
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" id="alert-success"></button>
+                </div>
+            @endif
 
             <div class="container">
+
                 @if(isset($organizations))
-                    <div class="display">
+                    <div class="display" id="organization-list">
                         @foreach($organizations as $organization)
-                                    <div class="card-body">
-                                        <div class="card-id">
-                                        <div class="card-data">
+                            <div class="card-body organization-card" data-type="{{ $organization['type'] }}">
+                                <div class="card-id">
+                                    <div class="card-data">
                                         <h3 class="card-title">{{ $organization['organization_name'] }}</h3>
                                         <p class="card-description">{{ $organization['description'] }}</p>
-                                        </div>
-
-                                          <img id="profile_picture" src="{{ asset('img/user.png') }}"  alt="Foto Profil" class="profile-picture">
-                                        </div>
-                                        <div class="card-footer text-center">
-                                            <div class="members-count">
-                                                <p><i class="fa-solid fa-user-group"></i>{{ $organization['members_count'] ?? 0 }}</p>
-                                            </div>
-                                            <a href="{{ route('showvieworganization', ['organization_name' => $organization['organization_name']]) }}" class="btn btn-secondary">Lihat</a>
-                                        </div>
                                     </div>
+                                    <img id="profile_picture" src="{{ asset('img/user.png') }}" alt="Foto Profil" class="profile-picture">
+                                </div>
+                                <div class="card-footer text-center">
+                                    <div class="members-count">
+                                        <p><i class="fa-solid fa-user-group"></i>{{ $organization['members_count'] ?? 0 }}</p>
+                                    </div>
+                                    <a href="{{ route('showvieworganization', ['organization_name' => $organization['organization_name']]) }}" class="btn btn-secondary">Lihat</a>
+                                </div>
+                            </div>
                         @endforeach
                     </div>
                 @elseif(isset($data['success']) && !$data['success'])
@@ -600,10 +645,10 @@
         </section>
 
         <footer>
-             <div class="add">
+            <div class="add">
                 <form action="{{ route('showcreateorganization') }}" method="GET">
-                @csrf
-                   <button type="submit" class="btn btn-primary rounded">
+                    @csrf
+                    <button type="submit" class="btn btn-primary rounded">
                         <i class="fas fa-plus"></i>
                     </button>
                 </form>
@@ -611,6 +656,25 @@
         </footer>
     </div>
 
+    <script>
+    // JavaScript function to filter organizations based on type and update the selected filter label
+    function filterOrganizations(type) {
+        const cards = document.querySelectorAll('.organization-card');
+        const selectedFilter = document.getElementById('selectedFilter');
+
+        // Filter logic
+        cards.forEach(card => {
+            if (type === 'all') {
+                card.style.display = 'block';
+            } else if (card.dataset.type === type) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+    }
+    </script>
 
     <script>
         function toggleSidebar() {
