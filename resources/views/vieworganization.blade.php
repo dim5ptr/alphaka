@@ -779,6 +779,8 @@ html, body {
                         </div>
                         <input type="search" id="searchInput" class="form-control" placeholder="Search...">
                     </div>
+                    <input type="hidden" id="organizationId" value="{{ $organization['organization_id'] }}">
+
                 </div>
 
                 <!-- Table -->
@@ -1091,6 +1093,8 @@ function sendEmails() {
             // Access token dari sesi Laravel (disisipkan menggunakan Blade)
             const accessToken = '{{ session('access_token') }}';
             console.log("Access Token: ", accessToken); // Log access token
+            const organizationId = "{{ $organization['organization_id'] }}"; // Ensure organization_id is passed correctly
+
 
             // Request headers
             const headers = {
@@ -1101,6 +1105,7 @@ function sendEmails() {
 
             // Body of the POST request
             const body = JSON.stringify({
+                organization_id: organizationId,
                 find: ""
             });
             console.log("Request Body: ", body); // Log body request
@@ -1162,23 +1167,23 @@ function sendEmails() {
             fetchDataFromAPI(); // Fetch and populate table on page load
         });
         document.addEventListener('DOMContentLoaded', function () {
-    fetchDataFromAPI(); // Fetch and populate table on page load
+            fetchDataFromAPI(); // Fetch and populate table on page load
 
-    // Search functionality
-    document.getElementById('searchInput').addEventListener('input', function () {
-        var searchValue = this.value.toLowerCase();
-        var rows = document.querySelectorAll('#dataTable tbody tr');
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', function () {
+                var searchValue = this.value.toLowerCase();
+                var rows = document.querySelectorAll('#dataTable tbody tr');
 
-        rows.forEach(function (row) {
-            var cells = row.querySelectorAll('td');
-            var found = Array.from(cells).some(function (cell) {
-                return cell.textContent.toLowerCase().includes(searchValue);
+                rows.forEach(function (row) {
+                    var cells = row.querySelectorAll('td');
+                    var found = Array.from(cells).some(function (cell) {
+                        return cell.textContent.toLowerCase().includes(searchValue);
+                    });
+
+                    row.style.display = found ? '' : 'none';
+                });
             });
-
-            row.style.display = found ? '' : 'none';
         });
-    });
-});
 
     </script>
 
