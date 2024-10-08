@@ -722,7 +722,7 @@ public function organizationVerify(Request $request, $token)
                     ];
 
                     // Log the prepared organization data
-                    Log::info('Prepared organization data:', $organization_name);
+                    Log::info('Prepared organization data:', $organization);
 
                     return view('vieworganization', compact('organization'));
                 }
