@@ -849,16 +849,21 @@ html, body {
 // Function to handle search and add users dynamically
 function handleSearch(event) {
     event.preventDefault(); // Prevent the form from submitting
-
     const emailInput = document.getElementById('email');
-    const email = emailInput.value.trim(); // Get and trim the email
+    const email = emailInput.value.trim();
     const responseMessageDiv = document.getElementById('responseMessage');
     const addMemberButton = document.getElementById('addMemberButton');
-
+    
+    // Show loading indicator
+    const loadingIndicator = document.createElement('p');
+    loadingIndicator.innerText = 'Searching...';
+    responseMessageDiv.appendChild(loadingIndicator);
+    
     // Check if the email is already added
     if (isEmailAlreadyAdded(email)) {
         displayTemporaryMessage('This email is already added.');
-        return; // Exit the function if the email is already added
+        loadingIndicator.remove(); // Remove loading indicator
+        return;
     }
 
     // Make the API call to search users
@@ -872,32 +877,30 @@ function handleSearch(event) {
     })
     .then(response => response.json())
     .then(data => {
-        // Check if users are found
+        loadingIndicator.remove(); // Remove loading indicator
         if (data.success && data.data) {
-            // Loop through each user found
             data.data.forEach(user => {
-                // Create a new user div
                 const userDiv = document.createElement('div');
-                userDiv.className = 'user-entry'; // Optional: Add a class for styling
+                userDiv.className = 'user-entry';
                 userDiv.innerHTML = `
                     <p>${user.email} <button onclick="removeUser(this)">Remove</button></p>
                 `;
-                responseMessageDiv.appendChild(userDiv); // Append the user div to the responseMessage div
+                responseMessageDiv.appendChild(userDiv);
             });
-
-            // Enable the Add Member button
             addMemberButton.disabled = false;
         } else {
             displayTemporaryMessage('No users found for this email.');
         }
     })
     .catch(error => {
+        loadingIndicator.remove(); // Remove loading indicator
         console.error('Error:', error);
+        displayTemporaryMessage('An error occurred while searching for users.');
     });
 
-    // Clear the input field
     emailInput.value = '';
 }
+
 
 // Function to check if the email is already added
 function isEmailAlreadyAdded(email) {
