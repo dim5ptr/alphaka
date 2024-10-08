@@ -383,42 +383,48 @@ public function submitResetPasswordForm(Request $request)
     }
 
     public function showaddorganization()
-    {
-        try {
-            // API call to list organizations by owner
-            $ownerResponse = Http::withHeaders([
-                'Authorization' => session('access_token'),
-                'x-api-key' => self::API_KEY,
-            ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
+{
+    try {
+        // API call to list organizations by owner
+        $ownerResponse = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
 
-            // API call to list organizations by member
-            $memberResponse = Http::withHeaders([
-                'Authorization' => session('access_token'), // Static authorization key for member API
-                'x-api-key' => '5af97cb7eed7a5a4cff3ed91698d2ffb',
-            ])->post(self::API_URL . '/sso/list_organization_by_member.json');
+        // API call to list organizations by member
+        $memberResponse = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => '5af97cb7eed7a5a4cff3ed91698d2ffb',
+        ])->post(self::API_URL . '/sso/list_organization_by_member.json');
 
-            // Check if both responses are successful
-            if ($ownerResponse->successful() && $memberResponse->successful()) {
-                $ownerData = $ownerResponse->json();
-                $memberData = $memberResponse->json();
+        if ($ownerResponse->successful() && $memberResponse->successful()) {
+            $ownerData = $ownerResponse->json();
+            $memberData = $memberResponse->json();
 
-                // Extract organization data from both responses
-                $ownerOrganizations = $ownerData['data']['organizations'] ?? [];
-                $memberOrganizations = $memberData['data']['organizations'] ?? [];
+            // Extract organization data and add type to differentiate between owner and member
+            $ownerOrganizations = array_map(function ($org) {
+                $org['type'] = 'owner';
+                return $org;
+            }, $ownerData['data']['organizations'] ?? []);
 
-                // Merge the two organization arrays
-                $organizations = array_merge($ownerOrganizations, $memberOrganizations);
+            $memberOrganizations = array_map(function ($org) {
+                $org['type'] = 'member';
+                return $org;
+            }, $memberData['data']['organizations'] ?? []);
 
-                // Pass the merged data to the Blade view
-                return view('organization', ['organizations' => $organizations]);
-            } else {
-                return back()->with('error', 'Gagal mendapatkan daftar organisasi. Silakan coba lagi.');
-            }
+            // Merge the two organization arrays
+            $organizations = array_merge($ownerOrganizations, $memberOrganizations);
 
-        } catch (\Exception $e) {
-            return back()->with('error', $e->getMessage());
+            // Pass the merged data to the Blade view
+            return view('organization', ['organizations' => $organizations]);
+        } else {
+            return back()->with('error', 'Gagal mendapatkan daftar organisasi. Silakan coba lagi.');
         }
+
+    } catch (\Exception $e) {
+        return back()->with('error', $e->getMessage());
     }
+}
 
     // public function showaddorganization()
     // {
