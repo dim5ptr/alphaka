@@ -1219,30 +1219,49 @@ public function getMemberToken(Request $request)
 {
     Log::info('Received get member token request:', $request->all());
 
-    $organizationId = $request->input('organization_id'); // Getting the organization ID from the request
-    $userEmails = $request->input('user_emails'); // Getting the user emails from the request
+    // Validate incoming request
+    $validator = Validator::make($request->all(), [
+        'organization_id' => 'required|string', // Assuming UUID for organization ID
+        'user_emails' => 'required|array',
+        'user_emails.*' => 'email', // Validate each email in the array
+    ]);
 
-    if (empty($organizationId) || empty($userEmails)) {
-        return response()->json(['success' => false, 'message' => 'Organization ID and user emails are required.'], 400);
+    if ($validator->fails()) {
+        Log::error('Validation failed:', ['errors' => $validator->errors()]); // Log the validation errors for debugging
+        return response()->json(['success' => false, 'message' => 'Validation failed', 'errors' => $validator->errors()], 422);
     }
+
+    $organizationId = $request->input('organization_id');
+    $userEmails = $request->input('user_emails');
 
     try {
         $response = Http::withHeaders([
-            'x-api-key' => '5af97cb7eed7a5a4cff3ed91698d2ffb',
-        ])->post(config('app.base_url') . '/sso/get_member_token.json', [
+            'x-api-key' => self::API_KEY, // Move the API key to .env and reference it
+        ])->post(self::API_URL .'/sso/get_member_token.json', [
             'organization_id' => $organizationId,
             'user_emails' => $userEmails,
         ]);
 
         if ($response->successful()) {
+            Log::info('Successfully received member tokens:', ['data' => $response->json()]); // Log success
             return response()->json(['success' => true, 'data' => $response->json()]);
-        } else {
-            return response()->json(['success' => false, 'message' => 'Failed to get member token.', 'error' => $response->body()], $response->status());
         }
+
+        // If the response is not successful
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to get member token.',
+            'error' => $response->json(), // Return the JSON response for more context
+        ], $response->status());
     } catch (\Exception $e) {
-        Log::error('Error getting member token: ' . $e->getMessage());
-        return response()->json(['success' => false, 'message' => 'Internal server error: ' . $e->getMessage()], 500);
+        Log::error('Error getting member token', [
+            'error' => 'Internal server error: ' . $e->getMessage() // Log error without exposing sensitive info
+        ]);
+        return response()->json(['success' => false, 'message' => 'Internal server error'], 500);
     }
 }
+
+
+
 
 }

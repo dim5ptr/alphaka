@@ -799,7 +799,7 @@ html, body {
         <form id="searchUsers" action="{{ route('searchUsers') }}" method="POST" onsubmit="return handleSearch(event)">
             @csrf
             <div class="form-group">
-                <input type="email" name="email" id="email" class="form-control" placeholder="Enter someone email" required>
+                <input type="email" name="email" id="email" class="form-control" placeholder="Enter someone's email" required>
                 <div id="responseMessage" class=""></div> <!-- Display found users here -->
             </div>
             <button type="submit" class="btn btn-primary btn-block">Search</button>
@@ -819,20 +819,12 @@ html, body {
             <h3>Emails Already Added</h3>
             <div id="addedUsersList">
                 <!-- Example of how emails will be added dynamically -->
-                <!-- <div class="user-entry">
-                    <p class="user-email">user1@example.com</p>
-                </div>
-                <div class="user-entry">
-                    <p class="user-email">user2@example.com</p>
-                </div> -->
             </div>
         </div>
         <button type="button" class="btn btn-primary btn-block" onclick="sendEmails()">Send Email</button>
         <button type="button" class="btn btn-secondary btn-block" onclick="showSearchModal()">Previous</button>
     </div>
 </div>
-
-
 
 <script>
 // Function to handle search and add users dynamically
@@ -850,7 +842,7 @@ function handleSearch(event) {
         return; // Exit the function if the email is already added
     }
 
-    // Make the API call to search users (replace with your actual API call)
+    // Make the API call to search users
     fetch('{{ route('searchUsers') }}', {
         method: 'POST',
         headers: {
@@ -941,6 +933,36 @@ function openAddedUsersModal() {
         const email = entry.textContent.split(' ')[0]; // Get the email from the entry
         addedUsersList.innerHTML += `<p>${email}</p>`; // Append the email to the modal
     });
+
+    // Call getMemberToken API for each added user
+const emails = Array.from(userEntries).map(entry => entry.textContent.split(' ')[0]);
+
+if (emails.length > 0) {
+    fetch('{{ route('getMemberToken') }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            organization_id: '98',  // Replace with the actual organization ID
+            user_emails: emails
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Member tokens generated:', data.data);
+            // You can handle the tokens here if needed
+        } else {
+            console.error('Error generating tokens:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
 }
 
 // Function to show the search modal again
@@ -998,6 +1020,7 @@ function sendEmails() {
     });
 }
 </script>
+
 
 
 </script>
