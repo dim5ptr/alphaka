@@ -722,7 +722,7 @@ public function organizationVerify(Request $request, $token)
                     ];
 
                     // Log the prepared organization data
-                    Log::info('Prepared organization data:', $organization);
+                    Log::info('Prepared organization data:', $organization_name);
 
                     return view('vieworganization', compact('organization'));
                 }
@@ -1201,7 +1201,7 @@ public function sendAddMemberEmail(Request $request)
         }
 
         $responseData = json_decode($tokenResponse->getContent(), true);
-        
+
         $tokens = $responseData['tokens'] ?? []; // Get tokens directly
         $failedEmails = $responseData['failed_emails'] ?? [];
 
