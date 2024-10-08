@@ -383,42 +383,48 @@ public function submitResetPasswordForm(Request $request)
     }
 
     public function showaddorganization()
-    {
-        try {
-            // API call to list organizations by owner
-            $ownerResponse = Http::withHeaders([
-                'Authorization' => session('access_token'),
-                'x-api-key' => self::API_KEY,
-            ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
+{
+    try {
+        // API call to list organizations by owner
+        $ownerResponse = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
 
-            // API call to list organizations by member
-            $memberResponse = Http::withHeaders([
-                'Authorization' => session('access_token'), // Static authorization key for member API
-                'x-api-key' => '5af97cb7eed7a5a4cff3ed91698d2ffb',
-            ])->post(self::API_URL . '/sso/list_organization_by_member.json');
+        // API call to list organizations by member
+        $memberResponse = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => '5af97cb7eed7a5a4cff3ed91698d2ffb',
+        ])->post(self::API_URL . '/sso/list_organization_by_member.json');
 
-            // Check if both responses are successful
-            if ($ownerResponse->successful() && $memberResponse->successful()) {
-                $ownerData = $ownerResponse->json();
-                $memberData = $memberResponse->json();
+        if ($ownerResponse->successful() && $memberResponse->successful()) {
+            $ownerData = $ownerResponse->json();
+            $memberData = $memberResponse->json();
 
-                // Extract organization data from both responses
-                $ownerOrganizations = $ownerData['data']['organizations'] ?? [];
-                $memberOrganizations = $memberData['data']['organizations'] ?? [];
+            // Extract organization data and add type to differentiate between owner and member
+            $ownerOrganizations = array_map(function ($org) {
+                $org['type'] = 'owner';
+                return $org;
+            }, $ownerData['data']['organizations'] ?? []);
 
-                // Merge the two organization arrays
-                $organizations = array_merge($ownerOrganizations, $memberOrganizations);
+            $memberOrganizations = array_map(function ($org) {
+                $org['type'] = 'member';
+                return $org;
+            }, $memberData['data']['organizations'] ?? []);
 
-                // Pass the merged data to the Blade view
-                return view('organization', ['organizations' => $organizations]);
-            } else {
-                return back()->with('error', 'Gagal mendapatkan daftar organisasi. Silakan coba lagi.');
-            }
+            // Merge the two organization arrays
+            $organizations = array_merge($ownerOrganizations, $memberOrganizations);
 
-        } catch (\Exception $e) {
-            return back()->with('error', $e->getMessage());
+            // Pass the merged data to the Blade view
+            return view('organization', ['organizations' => $organizations]);
+        } else {
+            return back()->with('error', 'Gagal mendapatkan daftar organisasi. Silakan coba lagi.');
         }
+
+    } catch (\Exception $e) {
+        return back()->with('error', $e->getMessage());
     }
+}
 
     // public function showaddorganization()
     // {
@@ -701,18 +707,34 @@ public function organizationVerify(Request $request, $token)
 
             // Search for the organization by name
             foreach ($organizations as $org) {
+                Log::info('Organization data being processed:', $org); // Log the entire organization data
+
                 if ($org['organization_name'] === $organization_name) {
+                    // Log the organization name we're attempting to view
+                    Log::info('Attempting to view organization with name: ' . $organization_name);
+
                     // Organization found, prepare data for the view
                     $organization = [
                         'organization_id' => $org['id'],
                         'organization_name' => $organization_name,
                         'description' => $org['description'],
-                        'members_count' => $org['members_count'] ?? 0
+                        'members_count' => $org['members_count'] ?? 0,
+                        // Check if owner data exists before accessing it
+                        'owner' => isset($org['owner']) ? [
+                            'email' => $org['owner']['email'] ?? 'Email not available', // Default message if not set
+                            'username' => $org['owner']['username'] ?? 'Username not available', // Default message if not set
+                            'name' => $org['owner']['name'] ?? 'Owner not available', // Default message if not set
+                        ] : null, // Set to null if owner data doesn't exist
                     ];
-                    Log::info('Organization found: ' . $organization_name);
+
+                    // Log the prepared organization data
+                    Log::info('Prepared organization data:', $organization);
+
                     return view('vieworganization', compact('organization'));
                 }
             }
+
+
 
             // If no matching organization is found
             Log::warning('Organization not found: ' . $organization_name);
