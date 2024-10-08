@@ -73,7 +73,7 @@
                 <p>Anda telah diundang untuk bergabung dengan organisasi {{ session('organization_name') }}.</p>
                 <p>Apakah Anda yakin ingin menjadi bagian dari organisasi ini? Jika ya, silakan konfirmasi dengan mengklik tautan berikut:</p>
                 <p class="text-center">
-                    <a href="{{ url('organizations/confirm/' ) }}" class="btn">Konfirmasi Bergabung</a>
+                    <a href="{{ url('organizations/confirm/' . $token) }}" class="btn">Konfirmasi Bergabung</a>
                 </p>
                 <p>Tautan konfirmasi ini akan kedaluwarsa dalam 60 menit.<br>
                 Jika Anda merasa tidak ingin bergabung dengan organisasi ini, silakan abaikan pesan ini.</p>
