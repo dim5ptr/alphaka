@@ -235,18 +235,17 @@
         }
 
         .filter {
-            margin-top: 5%;
+            margin-top: 3.5%;
+            align-content: center;
             padding-right: 10%;
             margin-right: 10%;
-            height: 35px;
-            align-content: center;
+            height: 45px;
             border-right: 5px solid #365AC2;
         }
 
         #filterDropdown {
  padding: 10px 40px 10px 15px;
  font-size: 1rem;
- text-align: center;
     border: 2px solid #365AC2;
     border-radius: 5px;
     color: #333;
@@ -258,7 +257,7 @@
 /* Hover and focus effect on dropdown */
 #filterDropdown:hover,
 #filterDropdown:focus {
-    background-color: #f0f8ff;
+    background-color: #ffffff;
 
 }
 
@@ -541,6 +540,55 @@
 
 }
 
+/* Media Query untuk layar kecil (ponsel) */
+@media (max-width: 768px) {
+    .infoo {
+        justify-content: center; /* Sentralisasi di layar kecil */
+    }
+
+    .filter {
+        padding-right: 5%; /* Atur ulang padding agar sesuai dengan layar kecil */
+        margin-right: 5%;
+        border-right: 3px solid #365AC2; /* Kurangi ketebalan border */
+    }
+
+    #filterDropdown {
+        padding: 10px 20px 10px 10px; /* Kurangi padding agar pas di layar kecil */
+        font-size: 0.9rem; /* Sesuaikan font untuk layar kecil */
+        border-radius: 3px;
+    }
+}
+
+/* Media Query untuk layar sangat kecil (di bawah 480px) */
+@media (max-width: 480px) {
+    .infoo {
+        /* Stack elemen secara vertikal */
+        align-items: center; /* Sentralisasi konten */
+        width: 40%;
+        font-size: 0.780rem;
+        margin-right: 4%;
+    }
+
+    .infoo p{
+        width: 50%;
+    }
+
+    .filter {
+        padding-left: 15%;
+        margin-top: 5%; /* Tambahkan margin atas */
+        margin-right: 0;
+        padding-right: 0;
+        width: 30%; /* Ambil lebar penuh */
+        border-right: none; /* Hapus border untuk tampilan lebih sederhana */
+    }
+
+    #filterDropdown {
+        width: 50%; /* Ambil lebar penuh pada layar kecil */
+        padding: 8px 10px;
+        font-size: 0.8rem; /* Font lebih kecil */
+    }
+}
+
 
 
     </style>
@@ -553,9 +601,9 @@
         <div class="infoo">
         <div class="filter">
             <select id="filterDropdown" onchange="filterOrganizations(this.value)">
-                <option value="all">Semua</option>
-                <option value="owner">Milik Saya</option>
-                <option value="member">Anggota</option>
+                <option value="all">All</option>
+                <option value="owner">Mine</option>
+                <option value="member">Added By</option>
             </select>
         </div>
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
