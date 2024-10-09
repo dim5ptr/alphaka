@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>STI | Sarastya Technology Integrata</title>
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRw9u/tZzfp2TF/jLpxk/M0q06f6TQXkrChh1I2D0" crossorigin="anonymous">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -35,7 +36,7 @@
             transition: 0.3s;
             padding-top: 100px;
             box-shadow: 1px 0 9px rgba(0, 0, 0, 0.1);
-            z-index: 1;
+            z-index: 2;
         }
 
         .sidebar .sidebar-isi {
@@ -235,18 +236,17 @@
         }
 
         .filter {
-            margin-top: 5%;
+            margin-top: 3.5%;
+            align-content: center;
             padding-right: 10%;
             margin-right: 10%;
-            height: 35px;
-            align-content: center;
+            height: 45px;
             border-right: 5px solid #365AC2;
         }
 
         #filterDropdown {
- padding: 10px 40px 10px 15px;
+ padding: 5px 10px 5px 10px;
  font-size: 1rem;
- text-align: center;
     border: 2px solid #365AC2;
     border-radius: 5px;
     color: #333;
@@ -258,7 +258,7 @@
 /* Hover and focus effect on dropdown */
 #filterDropdown:hover,
 #filterDropdown:focus {
-    background-color: #f0f8ff;
+    background-color: #ffffff;
 
 }
 
@@ -300,7 +300,7 @@
         bottom: 5%;
         left: 0;
         width: 100%;
-        z-index: 900; /* Pastikan footer berada di bawah tombol "Buat Organisasi" */
+        z-index: 1; /* Pastikan footer berada di bawah tombol "Buat Organisasi" */
     }
 
     .display {
@@ -541,6 +541,55 @@
 
 }
 
+/* Media Query untuk layar kecil (ponsel) */
+@media (max-width: 768px) {
+    .infoo {
+        justify-content: center; /* Sentralisasi di layar kecil */
+    }
+
+    .filter {
+        padding-right: 5%; /* Atur ulang padding agar sesuai dengan layar kecil */
+        margin-right: 5%;
+        border-right: 3px solid #365AC2; /* Kurangi ketebalan border */
+    }
+
+    #filterDropdown {
+        padding: 10px 20px 10px 10px; /* Kurangi padding agar pas di layar kecil */
+        font-size: 0.9rem; /* Sesuaikan font untuk layar kecil */
+        border-radius: 3px;
+    }
+}
+
+/* Media Query untuk layar sangat kecil (di bawah 480px) */
+@media (max-width: 480px) {
+    .infoo {
+        /* Stack elemen secara vertikal */
+        align-items: center; /* Sentralisasi konten */
+        width: 40%;
+        font-size: 0.780rem;
+        margin-right: 4%;
+    }
+
+    .infoo p{
+        width: 50%;
+    }
+
+    .filter {
+        padding-left: 15%;
+        margin-top: 5%; /* Tambahkan margin atas */
+        margin-right: 0;
+        padding-right: 0;
+        width: 30%; /* Ambil lebar penuh */
+        border-right: none; /* Hapus border untuk tampilan lebih sederhana */
+    }
+
+    #filterDropdown {
+        width: 50%; /* Ambil lebar penuh pada layar kecil */
+        padding: 8px 10px;
+        font-size: 0.8rem; /* Font lebih kecil */
+    }
+}
+
 
 
     </style>
@@ -553,9 +602,9 @@
         <div class="infoo">
         <div class="filter">
             <select id="filterDropdown" onchange="filterOrganizations(this.value)">
-                <option value="all">Semua</option>
-                <option value="owner">Milik Saya</option>
-                <option value="member">Anggota</option>
+                <option value="all">All</option>
+                <option value="owner">Mine</option>
+                <option value="member">Added By</option>
             </select>
         </div>
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>

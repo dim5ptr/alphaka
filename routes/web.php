@@ -77,9 +77,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/confirm-logout', [HttpController::class, 'confirmLogout'])->name('confirm-logout');
 
     Route::get('/', [HttpController::class, 'index'])->name('dashboard');
+
     Route::get('/organization', [HttpController::class, 'showaddorganization'])->name('organization');
+
+
     Route::get('/organizations/{token}', [HttpController::class, 'organizationVerify'])->name('organizations');
     Route::get('/viewsorganization', [HttpController::class, 'organization'])->name('viewsorganization');
+    
+    Route::get('/viewsorganization', [HttpController::class, 'addMemberOrganization'])->name('addMemberView');
+
     Route::get('/showcreateorganization', [HttpController::class, 'showcreateorganization'])->name('showcreateorganization');
 
     Route::get('/moredetails/{organization_name}', [HttpController::class, 'showmoredetails'])->name('showmoredetails');
