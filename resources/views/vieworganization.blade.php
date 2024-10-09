@@ -939,6 +939,8 @@ function removeUser(button) {
 }
 
 // Function to open the modal for added users
+let emailsToTokenize = []; // Store emails for token generation
+
 function openAddedUsersModal() {
     // Close the current modal
     document.getElementById('addMemberModal').style.display = 'none';
@@ -951,40 +953,12 @@ function openAddedUsersModal() {
     const userEntries = document.querySelectorAll('.user-entry p');
 
     addedUsersList.innerHTML = ''; // Clear previous list
+    emailsToTokenize = []; // Clear previous emails for token generation
     userEntries.forEach(entry => {
         const email = entry.textContent.split(' ')[0]; // Get the email from the entry
         addedUsersList.innerHTML += `<p>${email}</p>`; // Append the email to the modal
+        emailsToTokenize.push(email); // Store email for later use
     });
-
-    // Call getMemberToken API for each added user
-const emails = Array.from(userEntries).map(entry => entry.textContent.split(' ')[0]);
-
-if (emails.length > 0) {
-    fetch('{{ route('getMemberToken') }}', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            organization_id: '98',  // Replace with the actual organization ID
-            user_emails: emails
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log('Member tokens generated:', data.data);
-            // You can handle the tokens here if needed
-        } else {
-            console.error('Error generating tokens:', data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
-
 }
 
 // Function to show the search modal again
@@ -1002,7 +976,6 @@ function closeModal() {
     document.getElementById('addedUsersModal').style.display = 'none';
 }
 
-// Function to send the emails
 // Function to send the emails
 function sendEmails() {
     const addedUsersList = document.getElementById('addedUsersList');

@@ -1245,6 +1245,17 @@ public function sendAddMemberEmail(Request $request)
 
 
 
+public function confirmJoin(Request $request)
+{
+    $token = $request->input('token'); // Getting the token from the request
+
+    if (empty($token)) {
+        return response()->json(['success' => false, 'message' => 'Token is required.'], 400);
+    }
+
+    // Redirecting to the addMemberOrganization route with the token
+    return redirect()->route('addMemberView', ['token' => $token]);
+}
 
 
 
@@ -1259,6 +1270,10 @@ public function addMemberOrganization(Request $request)
     }
 
     try {
+        // Log the token to ensure it is correct
+        Log::info('Adding member organization for token:', ['token' => $token]);
+
+        // Step 1: Proceed with the API call to add the member organization
         $response = Http::withHeaders([
             'x-api-key' => '5af97cb7eed7a5a4cff3ed91698d2ffb',
         ])->post(config('app.base_url') . '/sso/add_member_organization.json', [
@@ -1275,6 +1290,8 @@ public function addMemberOrganization(Request $request)
         return response()->json(['success' => false, 'message' => 'Internal server error: ' . $e->getMessage()], 500);
     }
 }
+
+
 
 public function getMemberToken(Request $request)
 {
