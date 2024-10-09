@@ -644,22 +644,6 @@
     </div>
     <div id="main-content" class="main-content">
 
-        <header class="content-header">
-            <div class="container">
-                <div class="row mb-2 align-items-center">
-                    <div class="col-sm-12 d-flex justify-content-end">
-                        <form action="{{ route('showcreateorganization') }}" method="GET">
-                            @csrf
-                            <button type="submit" class="btn btn-primary rounded">
-                                <i class="fas fa-plus"></i>
-                                Tambah Organisasi
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </header>
-
         <section class="content">
             @if (session('success_message'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert" id="alert-success">
