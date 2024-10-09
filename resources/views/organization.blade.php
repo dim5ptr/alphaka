@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>STI | Sarastya Technology Integrata</title>
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRw9u/tZzfp2TF/jLpxk/M0q06f6TQXkrChh1I2D0" crossorigin="anonymous">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -35,7 +36,7 @@
             transition: 0.3s;
             padding-top: 100px;
             box-shadow: 1px 0 9px rgba(0, 0, 0, 0.1);
-            z-index: 1;
+            z-index: 2;
         }
 
         .sidebar .sidebar-isi {
@@ -244,7 +245,7 @@
         }
 
         #filterDropdown {
- padding: 10px 40px 10px 15px;
+ padding: 5px 10px 5px 10px;
  font-size: 1rem;
     border: 2px solid #365AC2;
     border-radius: 5px;
@@ -299,7 +300,7 @@
         bottom: 5%;
         left: 0;
         width: 100%;
-        z-index: 900; /* Pastikan footer berada di bawah tombol "Buat Organisasi" */
+        z-index: 1; /* Pastikan footer berada di bawah tombol "Buat Organisasi" */
     }
 
     .display {
