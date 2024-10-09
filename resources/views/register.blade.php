@@ -337,7 +337,7 @@
                 <div class="google-form">
                     <div class="google">
                         <i class="fab fa-google"></i>
-                        <a class="google-login" href="{{ route('auth.google') }}" class="btn btn-google">Login with Google</a>
+                        <a class="google-login" href="{{ route('auth.google') }}" class="btn btn-google">Register with Google</a>
                     </div>
                 </div>
             </form>
