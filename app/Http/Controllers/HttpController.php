@@ -1172,7 +1172,6 @@ public function organizationVerify(Request $request, $token)
         ], 500);
     }
 }
-
 public function sendAddMemberEmail(Request $request)
 {
     // Validate input
@@ -1181,7 +1180,6 @@ public function sendAddMemberEmail(Request $request)
         'emails' => 'required|array',
         'emails.*' => 'email',  // validate each email
     ]);
-    
     
     $organizationId = $request->input('organization_id');
     $emails = $request->input('emails');
@@ -1218,6 +1216,13 @@ public function sendAddMemberEmail(Request $request)
             Log::warning('No tokens generated for the provided emails.');
             return response()->json(['success' => false, 'message' => 'No tokens generated.'], 400);
         }
+
+        // Store the first token in the session (you can decide how you want to handle this)
+        $firstToken = $tokens[0]['token']; // Ensure this matches your actual API response structure
+        session(['token' => $firstToken]);
+
+        // Log for ensuring the token is stored
+        Log::info('Token stored in session:', ['token' => $firstToken]);
 
         // Process each token and send emails
         foreach ($tokens as $tokenData) {
@@ -1257,16 +1262,17 @@ public function confirmJoin(Request $request)
     return redirect()->route('addMemberView', ['token' => $token]);
 }
 
-
-
 public function addMemberOrganization(Request $request)
 {
     Log::info('Received add member organization request:', $request->all());
 
-    $token = $request->input('token'); // Getting the token from the request
+    // Retrieve the token from the session
+    $token = session('token');
+    Log::info('Token in session:', ['token' => $token]);
 
     if (empty($token)) {
-        return response()->json(['success' => false, 'message' => 'Token is required.'], 400);
+        // Redirect back with an error message if the token is not available
+        return back()->withErrors(['message' => 'Token is required.']);
     }
 
     try {
@@ -1275,21 +1281,31 @@ public function addMemberOrganization(Request $request)
 
         // Step 1: Proceed with the API call to add the member organization
         $response = Http::withHeaders([
-            'x-api-key' => '5af97cb7eed7a5a4cff3ed91698d2ffb',
-        ])->post(config('app.base_url') . '/sso/add_member_organization.json', [
+            'x-api-key' => self::API_KEY,
+        ])->post(self::API_URL . '/sso/add_member_organization.json', [
             'token' => $token,
         ]);
 
+        // Log the full response
+        Log::info('API Response:', $response->json());
+
         if ($response->successful()) {
-            return response()->json(['success' => true, 'data' => $response->json()]);
+            // Redirect back with a success message if the API call is successful
+            return back()->with('success', 'Member added successfully.'); 
         } else {
-            return response()->json(['success' => false, 'message' => 'Failed to add member organization.', 'error' => $response->body()], $response->status());
+            // Redirect back with an error message if the API response is not successful
+            return back()->withErrors(['message' => 'Failed to add member organization: ' . $response->body()]);
         }
     } catch (\Exception $e) {
         Log::error('Error adding member organization: ' . $e->getMessage());
-        return response()->json(['success' => false, 'message' => 'Internal server error: ' . $e->getMessage()], 500);
+        // Redirect back with an error message in case of an exception
+        return back()->withErrors(['message' => 'Internal server error: ' . $e->getMessage()]);
     }
 }
+
+
+
+
 
 
 

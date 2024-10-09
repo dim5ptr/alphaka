@@ -741,6 +741,22 @@ html, body {
                 <li class="breadcrumb-item" style="color: #3200af;">{{ $organization['organization_name'] }}</a></li>
             </ol>
         </nav>
+        @if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
         <!-- Content -->
         <div class="container">
             <!-- Organization Card -->
@@ -815,6 +831,9 @@ html, body {
             <h1 class="modal-title" id="addMemberModalLabel">Add Member</h1>
             <button type="button" class="btn-close" onclick="closeModal()">×</button>
         </div>
+
+        
+        
         <form id="searchUsers" action="{{ route('searchUsers') }}" method="POST" onsubmit="return handleSearch(event)">
             @csrf
             <div class="form-group">

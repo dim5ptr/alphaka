@@ -83,8 +83,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/organizations/{token}', [HttpController::class, 'organizationVerify'])->name('organizations');
     Route::get('/viewsorganization', [HttpController::class, 'organization'])->name('viewsorganization');
-    
-    Route::get('/viewsorganization', [HttpController::class, 'addMemberOrganization'])->name('addMemberView');
+
+    Route::get('/viewsorganization/{token}', [HttpController::class, 'addMemberOrganization'])->name('addMemberView');
 
     Route::get('/showcreateorganization', [HttpController::class, 'showcreateorganization'])->name('showcreateorganization');
 
