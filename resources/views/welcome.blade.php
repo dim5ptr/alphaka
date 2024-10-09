@@ -62,7 +62,7 @@
             justify-content: center;
             align-items: center;
             float: left;
-            margin-left: 2%;
+            /* margin-left: 2%; */
             width: 20%;
             height: auto;
             z-index: 5;
