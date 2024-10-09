@@ -434,7 +434,39 @@ footer {
     font-weight: bold;
     color: #365AC2;
 }
+.breadcrumb {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    padding: 0;
+    margin: 2%;
+    list-style: none;
+    width: 100%;
+}
 
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "/";
+    margin: 0 8px; /* Jarak antara elemen dan garis miring */
+    color: #3200af;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+    color: #3200af;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: #3200af;
+}
 
     </style>
 </head>
@@ -443,7 +475,7 @@ footer {
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
 
-    <button class="open-btn" onclick="toggleSidebar()">&#9776; Organization > {{ $organization['organization_name'] }} > More Details</button>
+    <button class="open-btn" onclick="toggleSidebar()">&#9776; Organization</button>
 
     <div id="sidebar" class="sidebar">
         <div class="sidebar-isi">
@@ -477,6 +509,14 @@ footer {
         </div>
     </div>
     <div id="main-content" class="main-content">
+        <br>
+        <nav class="bc-pr">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('organization') }}" style="color: #3200af;">Organization</a></li>
+                <li class="breadcrumb-item" style="color: #3200af;"><a href="{{ route('showvieworganization', ['organization_name' => $organization['organization_name']]) }}" style="color: #3200af;">{{ $organization['organization_name'] }}</a></li>
+                <li class="breadcrumb-item" aria-current="page" style="color: #3200af;">More Details</li>
+            </ol>
+        </nav>
         <section class="content">
             <div class="container-flex">
                 <div class="judul">
