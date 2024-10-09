@@ -693,6 +693,76 @@ html, body {
     color: #3200af;
 }
 
+/* notification add member style */
+.notification {
+    position: fixed; /* Fix position on screen */
+    top: 20px;      /* Distance from the top */
+    right: 20px;    /* Distance from the right */
+    z-index: 1050;  /* Ensure it's above other content */
+    transition: opacity 0.5s ease; /* Smooth fade out */
+    opacity: 1;     /* Start fully visible */
+}
+
+.notification.fade-out {
+    opacity: 0;     /* Fade out effect */
+}
+
+.alert {
+        padding: 15px;
+        border: 1px solid transparent;
+        text-align: center;
+        position: relative;
+        width: 40%;
+        height: 3%;
+        margin-left: 25%;
+        font-size: 100%;
+        justify-content: center;
+        transition: 0.3s ease-out;
+
+
+    }
+
+    .alert-success, .alert-danger{
+        color: white;
+        background-color: #1363DF;
+        border-color: #c3e6cb;
+        font-weight: bold;
+        border-radius: 15px;
+        z-index: 3;
+        font-size: 20px;
+    }
+
+    .alert-info {
+        position: relative;
+        width: auto;
+        margin: 10%;
+        justify-content: center;
+        align-items: center;
+        color: #0c5460;
+        font-weight: bolder;
+        }
+
+    .alert-warning {
+        color: #856404;
+        background-color: #fff3cd;
+        border-color: #ffeeba;
+    }
+
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+
+    .alert button {
+        width: auto;
+        height: auto;
+        font-size: 1rem;
+        border: none;
+        background: none;
+        color: white;
+    }
+
     </style>
 </head>
 <body>
@@ -733,7 +803,44 @@ html, body {
             </ul>
         </div>
     </div>
+
+   
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    // Select all notifications
+    const notifications = document.querySelectorAll('.notification');
+
+    notifications.forEach(notification => {
+        setTimeout(() => {
+            notification.classList.add('fade-out'); // Add fade-out class
+            // Remove the notification from the DOM after the fade-out transition
+            setTimeout(() => {
+                notification.remove();
+            }, 500); // Match this duration with the CSS transition time
+        }, 5000); // Delay before fade-out
+    });
+});
+
+</script>
+
     <div id="main-content" class="main-content">
+        @if (session('success'))
+            <div class="alert alert-success notification" role="alert">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger notification" role="alert">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <br>
         <nav class="bc-pr">
             <ol class="breadcrumb">
@@ -741,22 +848,7 @@ html, body {
                 <li class="breadcrumb-item" style="color: #3200af;">{{ $organization['organization_name'] }}</a></li>
             </ol>
         </nav>
-        @if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
-
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
+       
         <!-- Content -->
         <div class="container">
             <!-- Organization Card -->

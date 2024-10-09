@@ -1290,11 +1290,13 @@ public function addMemberOrganization(Request $request)
         Log::info('API Response:', $response->json());
 
         if ($response->successful()) {
-            // Redirect back with a success message if the API call is successful
-            return back()->with('success', 'Member added successfully.'); 
+            // Get success message from the response if available
+            $successMessage = $response->json()['data'] ?? 'Member added successfully.';
+            return back()->with('success', $successMessage);
         } else {
-            // Redirect back with an error message if the API response is not successful
-            return back()->withErrors(['message' => 'Failed to add member organization: ' . $response->body()]);
+            // Extract the error message from the API response
+            $errorMessage = $response->json()['data'] ?? 'Failed to add member organization.';
+            return back()->withErrors(['message' => $errorMessage]);
         }
     } catch (\Exception $e) {
         Log::error('Error adding member organization: ' . $e->getMessage());
@@ -1302,6 +1304,10 @@ public function addMemberOrganization(Request $request)
         return back()->withErrors(['message' => 'Internal server error: ' . $e->getMessage()]);
     }
 }
+
+
+
+
 
 
 
