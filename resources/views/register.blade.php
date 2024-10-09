@@ -183,6 +183,11 @@
             background: #9fb7ff7f;
         }
 
+        button[type="submit"]:hover {
+            background: #AFC3FC;
+            color: rgb(0, 0, 0);
+        }
+
         .register-link {
             text-align: center;
             margin-top: 10px;

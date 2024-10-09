@@ -11,7 +11,7 @@ Route::get('/test-mail', function (){
     Notification::route('mail', 'yourMailtrapEmailAddress')->notify(new NewMessage());
     return 'Sent';
 });
-Route::get('/verify/{token}', [HttpController::class, 'organizationVerify'])->name('organization.verify');
+// Route::get('/verify/{token}', [HttpController::class, 'organizationVerify'])->name('organization.verify');
 
 // Rute untuk tampilan register
 Route::get('active/{token}', [HttpController::class, 'showActivationForm'])->name('active');
@@ -53,6 +53,19 @@ Route::post('/formforgetpassword', [HttpController::class, 'submitResetPasswordF
     // Menampilkan formulir aktivasi
     Route::get('/activation', [HttpController::class, 'showActivationForm'])->name('activate.form');
 
+    Route::post('/addmember', [HttpController::class, 'addMember'])->name('addmember');
+
+
+    // In routes/web.php or routes/api.php
+    Route::post('/search-users', [HttpController::class, 'searchUsers'])->name('searchUsers');
+    // Route for submitting member details (like name, role, etc.)
+    Route::post('/add-member-details', [HttpController::class, 'addMemberDetails'])->name('addMemberDetails');
+
+    // Route send email add member
+    Route::post('/send-add-member-email', [HttpController::class, 'sendAddMemberEmail'])->name('sendAddMemberEmail');
+
+
+
 
     // Route::get('auth/google', [HttpController::class, 'redirectToGoogle']);
     // Route::get('auth/google/callback', [HttpController::class, 'handleGoogleCallback']);
@@ -74,8 +87,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/confirm-logout', [HttpController::class, 'confirmLogout'])->name('confirm-logout');
 
     Route::get('/', [HttpController::class, 'index'])->name('dashboard');
+
     Route::get('/organization', [HttpController::class, 'showaddorganization'])->name('organization');
+
+
+    Route::get('/organizations/{token}', [HttpController::class, 'organizationVerify'])->name('organizations');
     Route::get('/viewsorganization', [HttpController::class, 'organization'])->name('viewsorganization');
+
+    Route::get('/viewsorganization/{token}', [HttpController::class, 'addMemberOrganization'])->name('addMemberView');
+
     Route::get('/showcreateorganization', [HttpController::class, 'showcreateorganization'])->name('showcreateorganization');
 
     Route::get('/moredetails/{organization_name}', [HttpController::class, 'showmoredetails'])->name('showmoredetails');
@@ -86,6 +106,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/vieworganization', [HttpController::class, 'vieworganization'])->name('vieworganization');
     Route::get('/editorganization/{organization_name}', [HttpController::class, 'showeditorganization'])->name('showeditorganization');
     Route::post('/editorganization/{organization_name}', [HttpController::class, 'editorganization'])->name('editorganization');
+    // Route to show the search and add member view
+    Route::get('/organization/{id}/add_member', [HttpController::class, 'showAddMember'])->name('showAddMember');
+    // Route to handle the member search and add functionality
+    Route::post('/organization/{id}/add_member', [HttpController::class, 'addMember'])->name('addMember');
+    Route::post('/organization/add-member-organization', [HttpController::class, 'addMemberOrganization'])->name('addMemberOrganization');
+    Route::post('/organization/get-member-token', [HttpController::class, 'getMemberToken'])->name('getMemberToken');
     Route::get('/personal', [HttpController::class, 'personal'])->name('personal');
     Route::get('/editpersonal',  [HttpController::class, 'showeditpersonal'])->name('showeditpersonal');
     Route::post('/editpersonal', [HttpController::class, 'editpersonal'])->name('editpersonal');

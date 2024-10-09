@@ -21,7 +21,8 @@ use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Str;
+use App\Mail\VerifAddMember; // Add this line
 
 
 
@@ -33,138 +34,20 @@ class HttpController extends Controller
     const API_KEY = '5af97cb7eed7a5a4cff3ed91698d2ffb';
     private static $access_token = null;
 
-  // Fungsi untuk redirect ke Google login page
-  public function redirectToGoogle()
-  {
-      return Socialite::driver('google')->redirect();
-  }
+    public function clearNotifications(Request $request)
+    {
+        // Clear notifications from the session
+        session()->forget('notifications');
 
-  public function handleGoogleCallback()
-{
-    try {
-        Log::info('Attempting to get user from Google...');
-        $user = Socialite::driver('google')->user();
-
-        $userData = [
-            'google_id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'avatar' => $user->avatar,
-        ];
-
-        Log::info('User data received from Google:', $userData ?? []);
-
-        // Try to log in with Google ID and email first
-        Log::info('Attempting to log in with Google ID: ' . $userData['google_id']);
-        $loginResponse = Http::withHeaders([
-            'x-api-key' => self::API_KEY
-        ])->post(self::API_URL . '/sso/login.json', [
-            'username' => $userData['email'],
-            'google_id' => $userData['google_id'],
-        ]);
-
-        $loginData = $loginResponse->json();
-        Log::info('Login API response:', $loginData ?? []);
-
-        // If login is successful
-        if ($loginResponse->successful() && isset($loginData['data']['access_token'])) {
-            session(['access_token' => $loginData['data']['access_token']]);
-            Log::info('Access token saved in session: ' . $loginData['data']['access_token']);
-
-            // Storing personal information in session
-            if (isset($loginData['data']['personal_info'])) {
-                $personalInfo = $loginData['data']['personal_info'];
-                session([
-                    'birthday' => $personalInfo['birthday'],
-                    'full_name' => $personalInfo['full_name'],
-                    'gender' => $personalInfo['gender'],
-                    'phone' => $personalInfo['phone'],
-                    'username' => $personalInfo['username'],
-                    'email' => $userData['email'],
-                    'profile_picture' => $personalInfo['profile_picture'] ?? $userData['avatar'],
-                ]);
-                Log::info('Personal information saved in session:', $personalInfo ?? []);
-            }
-
-            Log::info('Login successful for user: ' . $userData['email']);
-            return redirect()->route('dashboard');
-        }
-
-        // If login fails or user is not found, attempt registration
-        Log::info('Login failed, attempting to register the user: ' . $userData['email']);
-        $registerCheckResponse = Http::withHeaders([
-            'x-api-key' => self::API_KEY
-        ])->post(self::API_URL . '/sso/register-check.json', [
-            'email' => $userData['email'],
-        ]);
-
-        $registerCheckData = $registerCheckResponse->json();
-        Log::info('Register check API response:', $registerCheckData ?? []);
-
-        if (!$registerCheckResponse->successful() || $registerCheckData['result'] == 'not_registered') {
-            Log::info('User not registered, attempting registration for: ' . $userData['email']);
-
-            // Registering the user
-            $registerResponse = Http::withHeaders([
-                'x-api-key' => self::API_KEY
-            ])->post(self::API_URL . '/sso/register.json', [
-                'email' => $userData['email'],
-                'google_id' => $userData['google_id'],
-                'name' => $userData['name'],
-                'password' => bcrypt(Str::random(10)), // Generate a random password
-            ]);
-
-            $registerData = $registerResponse->json();
-            Log::info('Registration API response:', $registerData ?? []);
-
-            if ($registerResponse->successful() && isset($registerData['activation_key'])) {
-                // Save the verification token in session
-                session([
-                    'verification_token' => $registerData['activation_key'],
-                    'email' => $userData['email'],
-                ]);
-                Log::info('Registration successful, verification token saved in session: ' . $registerData['activation_key']);
-
-                // Sending verification email
-                Log::info('Preparing to send verification email to: ' . $userData['email']);
-                Mail::send('emails.verification', ['token' => session('verification_token')], function($message) use ($userData) {
-                    $message->to($userData['email']);
-                    $message->subject('Email Activation');
-                });
-                Log::info('Verification email sent to: ' . $userData['email']);
-
-                return redirect('/verify')->with('success_message', 'Please check your email to activate your account.');
-            } else {
-                Log::warning('Registration failed for user: ' . $userData['email'], [
-                    'api_response' => $registerData ?? [],
-                    'status' => $registerResponse->status(),
-                ]);
-
-                return back()->withErrors([
-                    'error_message' => $registerData['data'] ?? 'Registration failed, please try again.',
-                ])->withInput();
-            }
-        } else {
-            Log::info('User is already registered, but login failed.');
-            return back()->withErrors([
-                'error_message' => 'Login failed, please try again.',
-            ])->withInput();
-        }
-
-    } catch (\Exception $e) {
-        Log::error('An error occurred during Google login/registration: ' . $e->getMessage());
-        Log::error('Stack trace: ' . $e->getTraceAsString());
-
-        return redirect('/login')->withErrors([
-            'error_message' => 'Something went wrong, please try again.'
-        ]);
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Notifications cleared successfully.');
     }
-}
 
-
-
-
-
+    public function inbox(Request $request)
+    {
+        // Your logic for the inbox functionality
+        return view('inbox'); // Return the view for inbox or perform other actions
+    }
 
     public function showRegister()
     {
@@ -265,38 +148,6 @@ public function showActivationForm(Request $request)
     }
 }
 
-// public function register(Request $request)
-//     {
-//         // Kirim request ke API dengan header dan body yang sesuai
-//         $response = Http::withHeaders([
-//             'x-api-key' => self::API_KEY,
-//         ])->post(self::API_URL . '/sso/register.json', [
-//             'email' => $request->email,
-//             'password' => $request->password,
-//             'address' => $request->address,
-//         ]);
-
-//         // Ambil respons JSON dari API
-//         $result = $response->json();
-
-//         if (isset($result['success']) && $result['success'] == true) {
-//             // Kirim email verifikasi
-//             Mail::to($request->email)->send(new ActivationMail($result['data']));
-
-//             return response()->json([
-//                 'success' => true,
-//                 'message' => 'Registration successful. Please check your email for verification.',
-//             ], 200);
-//         } else {
-//             return response()->json([
-//                 'success' => false,
-//                 'message' => $result['data'] ?? 'Registration failed.',
-//             ], 400);
-//         }
-//     }
-
-
-
     public function showuserverify()
     {
         return view('verification');
@@ -368,67 +219,6 @@ public function sendResetLinkEmail(Request $request)
         return view('forgetpassword');
     }
 
-//     public function showformforgetpassword(Request $request)
-// {
-//     // Validasi input email
-//     $request->validate([
-//         'email' => 'required|email|exists:users,email',
-//     ]);
-
-//     try {
-//         // Panggil API untuk mendapatkan reset token
-//         $response = Http::withHeaders([
-//             'x-api-key' => self::API_KEY,
-//         ])->post(self::API_URL . '/api/get_reset_token.json', [
-//             'email' => $request->email,
-//         ]);
-
-//         // Ambil data dari respons API
-//         $responseData = $response->json();
-//         Log::info('Full Response Data: ' . json_encode($responseData));
-
-//         if ($response->successful() && isset($responseData['token']) && isset($responseData['expires_date'])) {
-//             // Simpan data token dan expired_date ke session
-//             session([
-//                 'reset_token' => $responseData['token'],
-//                 'expires_at' => $responseData['expires_date'] ?? 'N/A', // Gunakan default jika tidak ada
-//                 'email' => $request->email,
-//                 'status' => $responseData['status'] ?? 'unknown', // Gunakan default jika tidak ada
-//             ]);
-
-//             // Logging untuk debug
-//             Log::info('Generated Token: ' . session('reset_token'));
-//             Log::info('Expires At: ' . session('expired_date'));
-//             Log::info('Status: ' . session('status'));
-
-//             // Kirim email untuk reset password
-//             Mail::send('emails.forgotPassword', [
-//                 'token' => session('reset_token'),
-//                 'expired_date' => session('expired_date'),
-//                 'status' => session('status'),
-//             ], function($message) use ($request) {
-//                 $message->to($request->email);
-//                 $message->subject('Reset Password Notification');
-//             });
-
-//             // Kembali ke halaman sebelumnya dengan status
-//             return back()->with('status', 'We have e-mailed your password reset link!');
-//         } else {
-//             // Tangani kasus jika token tidak berhasil dibuat
-//             return back()->withErrors(['email' => 'Failed to generate reset link. Please try again later.']);
-//         }
-//     } catch (\Exception $e) {
-//         // Logging untuk error
-//         Log::error('Error during reset token generation: ' . $e->getMessage());
-
-//         // Tampilkan pesan error umum
-//         return back()->withErrors(['email' => 'An error occurred while processing your request. Please try again later.']);
-//     }
-// }
-
-
-
-
 
 public function showResetPasswordForm($resetToken)
 {
@@ -478,13 +268,6 @@ public function submitResetPasswordForm(Request $request)
         Log::info('Password reset successful for token:', ['token' => $resetToken]);
         return redirect()->route('login');
 
-
-        // if ($varIsUse === true) {
-        //     // Jika var_is_use FALSE, maka password berhasil diubah
-        // } else {
-        //     // Jika var_is_use TRUE, redirect ke halaman cantreset
-
-        // }
     } else {
         // Penanganan error jika API gagal
         Log::error('Failed to reset password:', [
@@ -599,27 +382,70 @@ public function submitResetPasswordForm(Request $request)
         return view('organization');
     }
 
-
     public function showaddorganization()
-    {
-        try {
-            $response = Http::withHeaders([
-                'Authorization' => session('access_token'),
-                'x-api-key' => self::API_KEY,
-            ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
+{
+    try {
+        // API call to list organizations by owner
+        $ownerResponse = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
 
-            if ($response->successful()) {
-                $data = $response->json(); // Mengambil seluruh data dari respons
-                $organizations = $data['data']['organizations']; // Mengambil data organisasi dari respons
-                return view('organization', ['organizations' => $organizations]); // Mengirimkan data ke blade
-            } else {
-                return back()->with('error', 'Gagal mendapatkan daftar organisasi. Silakan coba lagi.');
-            }
+        // API call to list organizations by member
+        $memberResponse = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => '5af97cb7eed7a5a4cff3ed91698d2ffb',
+        ])->post(self::API_URL . '/sso/list_organization_by_member.json');
 
-        } catch (\Exception $e) {
-            return back()->with('error', $e->getMessage());
+        if ($ownerResponse->successful() && $memberResponse->successful()) {
+            $ownerData = $ownerResponse->json();
+            $memberData = $memberResponse->json();
+
+            // Extract organization data and add type to differentiate between owner and member
+            $ownerOrganizations = array_map(function ($org) {
+                $org['type'] = 'owner';
+                return $org;
+            }, $ownerData['data']['organizations'] ?? []);
+
+            $memberOrganizations = array_map(function ($org) {
+                $org['type'] = 'member';
+                return $org;
+            }, $memberData['data']['organizations'] ?? []);
+
+            // Merge the two organization arrays
+            $organizations = array_merge($ownerOrganizations, $memberOrganizations);
+
+            // Pass the merged data to the Blade view
+            return view('organization', ['organizations' => $organizations]);
+        } else {
+            return back()->with('error', 'Gagal mendapatkan daftar organisasi. Silakan coba lagi.');
         }
+
+    } catch (\Exception $e) {
+        return back()->with('error', $e->getMessage());
     }
+}
+
+    // public function showaddorganization()
+    // {
+    //     try {
+    //         $response = Http::withHeaders([
+    //             'Authorization' => session('access_token'),
+    //             'x-api-key' => self::API_KEY,
+    //         ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
+
+    //         if ($response->successful()) {
+    //             $data = $response->json(); // Mengambil seluruh data dari respons
+    //             $organizations = $data['data']['organizations']; // Mengambil data organisasi dari respons
+    //             return view('organization', ['organizations' => $organizations]); // Mengirimkan data ke blade
+    //         } else {
+    //             return back()->with('error', 'Gagal mendapatkan daftar organisasi. Silakan coba lagi.');
+    //         }
+
+    //     } catch (\Exception $e) {
+    //         return back()->with('error', $e->getMessage());
+    //     }
+    // }
 
 
     public function showcreateorganization()
@@ -627,273 +453,297 @@ public function submitResetPasswordForm(Request $request)
         return view('addorganization');
     }
 
-//     public function addorganization(Request $request)
-// {
-//     // Retrieve access token from session
-//     $token = session('access_token');
-//     $refreshToken = session('refresh_token'); // Ensure you store a refresh token if provided
-
-//     if (!$token) {
-//         Log::warning('Access token not found. Redirecting to login.');
-//         return redirect()->route('login')->withErrors(['error' => 'Access token not found. Please login again.']);
-//     }
-
-//     // Validate input
-//     $request->validate([
-//         'organization_name' => 'required|string|max:255',
-//         'description' => 'required|string|max:500',
-//     ]);
-
-//     Log::info('Attempting to add organization with name: ' . $request->organization_name);
-
-//     try {
-//         // Send a request to the API to add the organization
-//         $response = Http::withHeaders([
-//             'Authorization' => 'Bearer ' . $token,
-//             'x-api-key' => self::API_KEY,
-//         ])->post(self::API_URL . '/sso/create_organization.json', [
-//             'organization_name' => $request->organization_name,
-//             'description' => $request->description,
-//         ]);
-
-//         // Retrieve the response data
-//         $data = $response->json();
-//         Log::info('API Response:', $data);
-
-//         if ($response->successful() && isset($data['success']) && $data['success'] === true) {
-//             // Save verification token to session if present
-//             if (isset($data['verification_token'])) {
-//                 session(['verification_token' => $data['verification_token']]);
-//             }
-
-//             session(['organization_name' => $request->organization_name]);
-
-//             Log::info('Organization added successfully: ' . $request->organization_name);
-
-//             // Store a notification in the session
-//             $notifications = session('notifications', []);
-//             $notifications[] = [
-//                 'title' => 'Organization Created Successfully',
-//                 'message' => 'Your organization "' . $request->organization_name . '" has been created successfully. Please verify it using the provided token.',
-//                 'verification_token' => session('verification_token'),
-//             ];
-//             session(['notifications' => $notifications]);
-
-//             Log::info('Notification stored in the session.');
-
-//             // Add success message with access token
-//             return redirect('/organization')->with([
-//                 'success_message' => 'Organization created successfully.',
-//                 'access_token' => $token,
-//             ]);
-//         } else {
-//             // Check if the token has expired and attempt to refresh if possible
-//             if (isset($data['data']) && $data['data'] === 'Token expired' && $refreshToken) {
-//                 Log::warning('Token expired. Attempting to refresh token.');
-
-//                 // Attempt to refresh the token
-//                 $refreshResponse = Http::post(self::API_URL . '/sso/refresh_token.json', [
-//                     'refresh_token' => $refreshToken
-//                 ]);
-
-//                 $refreshData = $refreshResponse->json();
-
-//                 if ($refreshResponse->successful() && isset($refreshData['access_token'])) {
-//                     session(['access_token' => $refreshData['access_token']]);
-//                     session(['refresh_token' => $refreshData['refresh_token']]); // Update the refresh token if provided
-//                     return $this->addorganization($request); // Retry the request
-//                 }
-
-//                 // If unable to refresh, redirect to login
-//                 return redirect()->route('login')->withErrors(['error' => 'Token expired. Please log in again.']);
-//             }
-
-//             Log::error('Failed to add organization. Response: ' . $response->body());
-//             return back()->withErrors(['error_message' => 'Failed to add organization. Please try again.'])->withInput();
-//         }
-//     } catch (\Illuminate\Http\Client\RequestException $e) {
-//         Log::error('HTTP Request failed: ' . $e->getMessage());
-//         return back()->withErrors(['error_message' => 'HTTP Request failed: ' . $e->getMessage()])->withInput();
-//     } catch (\Exception $e) {
-//         Log::error('An error occurred: ' . $e->getMessage());
-//         return back()->withErrors(['error_message' => 'Something went wrong, try again! ' . $e->getMessage()])->withInput();
-//     }
-// }
-
-
-// public function addorganization(Request $request)
-// {
-//     // Validate request data
-//     $request->validate([
-//         'organization_name' => 'required|string|max:255',
-//         'description' => 'required|string|max:500',
-//     ]);
-
-//     Log::info('Attempting to add organization with name: ' . $request->organization_name);
-
-//     try {
-//         // Send API request to create organization
-//         $response = Http::withHeaders([
-//             'Authorization' => 'Bearer ' . session('access_token'),
-//             'x-api-key' => self::API_KEY,
-//         ])->post(self::API_URL . '/sso/create_organization.json', [
-//             'organization_name' => $request->organization_name,
-//             'description' => $request->description,
-//         ]);
-
-//         // Log the response status and body for debugging
-//         Log::info('Response Status: ' . $response->status());
-//         Log::info('Response Body: ' . $response->body());
-
-//         // Handle successful response
-//         if ($response->successful()) {
-//             $data = $response->json(); // Get data from the response
-
-//             // Log the data structure
-//             Log::info('Response Data: ' . print_r($data, true));
-
-//             // Handle response based on actual structure
-//             if (isset($data['success']) && $data['success']) {
-//                 // Prepare notification data
-//                 $notifications = session('notifications', []);
-//                 $notifications[] = [
-//                     'title' => 'Organization Created Successfully',
-//                     'message' => 'Your organization "' . $request->organization_name . '" has been created successfully. Please verify it using the provided token.',
-//                     'verification_token' => session('verification_token'), // Assuming verification_token is available in session
-//                 ];
-//                 session(['notifications' => $notifications]);
-
-//                 // Log successful organization creation
-//                 Log::info('Organization added successfully: ' . $request->organization_name);
-
-//                 // Redirect or return view as needed
-//                 return redirect()->route('organization.index')->with('success', 'Organization created successfully.');
-//             } else {
-//                 Log::error('Unexpected response format. Success flag is not set or false.');
-//                 return back()->with('error', 'Failed to add organization. Please try again.');
-//             }
-//         } else {
-//             // Log and handle error response
-//             Log::error('Failed to add organization. Response: ' . $response->body());
-//             return back()->with('error', 'Failed to add organization. Please try again.');
-//         }
-//     } catch (\Exception $e) {
-//         // Log and handle exception
-//         Log::error('Exception occurred while adding organization: ' . $e->getMessage());
-//         return back()->with('error', $e->getMessage());
-//     }
-// }
-
-public function addorganization(Request $request)
+public function addOrganization(Request $request)
 {
-    // Validasi request data
+    // Validate input
     $request->validate([
         'organization_name' => 'required|string|max:255',
         'description' => 'required|string|max:500',
     ]);
 
-    // Ambil access token dari session
-    $token = session('access_token');
-
-    // Periksa apakah token ada
-    if (!$token) {
-        return redirect()->route('login')->withErrors(['error' => 'Access token not found. Please login again.']);
-    }
-
     Log::info('Attempting to add organization with name: ' . $request->organization_name);
-    Log::info('Access Token Status: Token Available');
 
     try {
-        // Kirim permintaan API untuk membuat organisasi
+        // Send a request to the API to add the organization
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $token, // Gunakan format Bearer untuk Authorization
+            'Authorization' => session('access_token'),
             'x-api-key' => self::API_KEY,
         ])->post(self::API_URL . '/sso/create_organization.json', [
             'organization_name' => $request->organization_name,
             'description' => $request->description,
         ]);
 
-        // Log status respons dan body untuk debugging
-        Log::info('Response Status: ' . $response->status());
-        Log::info('Response Body: ' . $response->body());
+        // Retrieve the response data
+        $data = $response->json();
+        Log::info('API Response:', $data);
 
-        // Tangani respons yang sukses
-        if ($response->successful()) {
-            $data = $response->json(); // Ambil data dari respons
+        // Check if the response is successful
+        if ($response->successful() && isset($data['success']) && $data['success'] === true) {
+            Log::info('Organization added successfully: ' . $request->organization_name);
 
-            // Log struktur data
-            Log::info('Response Data: ' . print_r($data, true));
-
-            // Tangani respons berdasarkan struktur yang sebenarnya
-            if (isset($data['success']) && $data['success']) {
-                // Siapkan data notifikasi
-                $notifications = session('notifications', []);
-                $notifications[] = [
-                    'title' => 'Organization Created Successfully',
-                    'message' => 'Your organization "' . $request->organization_name . '" has been created successfully. Please verify it using the provided token.',
-                    'verification_token' => session('verification_token'), // Mengasumsikan verification_token tersedia di sesi
-                ];
-                session(['notifications' => $notifications]);
-
-                // Log pembuatan organisasi yang sukses
-                Log::info('Organization added successfully: ' . $request->organization_name);
-
-                // Redirect atau kembalikan view sesuai kebutuhan
-                return redirect()->route('organization.index')->with('success', 'Organization created successfully.');
+            // Check for activation key
+            if (isset($data['activation_key'])) {
+                // Save verification token in session
+                session(['activation_key' => $data['activation_key']]);
+                Log::info('Activation key: ' . $data['activation_key']);
             } else {
-                Log::error('Unexpected response format. Success flag is not set or false.');
-                return back()->with('error', 'Failed to add organization. Please try again.');
+                Log::warning('No activation key provided in the response.');
             }
+
+            // Save organization name in session
+            session(['organization_name' => $request->organization_name]);
+
+            // Send notification email
+            Log::info('Preparing to send organization creation email');
+            Mail::send('emails.verify-organization', [
+                'organization' => $request->organization_name,
+                'token' => session('activation_key') ?? 'No token available' // Fallback if activation_key is missing
+            ], function ($message) use ($request) {
+                $message->to(session('email'));
+                $message->subject('Organization Created Successfully');
+            });
+            Log::info('Organization creation email sent.');
+
+            return redirect('/organization')->with('success_message', 'Organization created successfully.');
         } else {
-            // Log dan tangani respons kesalahan
+            // Log error and show error message
             Log::error('Failed to add organization. Response: ' . $response->body());
-            return back()->with('error', 'Failed to add organization. Please try again.');
+            return back()->withErrors(['error_message' => 'Failed to add organization. Please try again.'])->withInput();
         }
+    } catch (\Illuminate\Http\Client\RequestException $e) {
+        Log::error('HTTP Request failed: ' . $e->getMessage());
+        return back()->withErrors(['error_message' => 'HTTP Request failed: ' . $e->getMessage()])->withInput();
     } catch (\Exception $e) {
-        // Log dan tangani pengecualian
-        Log::error('Exception occurred while adding organization: ' . $e->getMessage());
-        return back()->with('error', $e->getMessage());
+        Log::error('An error occurred: ' . $e->getMessage());
+        return back()->withErrors(['error_message' => 'Something went wrong, try again! ' . $e->getMessage()])->withInput();
     }
 }
-
-
-    public function showvieworganization($organization_name)
+    public function showAddMember($id)
     {
-        Log::info('Attempting to view organization with name: ' . $organization_name);
+        return view('addmember', ['organization_id' => $id]);
+    }
 
+    // Add member to the organization
+    public function addMember(Request $request, $id)
+    {
+        // Validate the request input (search term)
+        $request->validate([
+            'search' => 'required|string',
+        ]);
+
+        // API request to search for users
         try {
             $response = Http::withHeaders([
                 'Authorization' => session('access_token'),
                 'x-api-key' => self::API_KEY,
-            ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
+            ])->post(self::API_URL . '/sso/list_user.json', [
+                'find' => $request->input('search'),
+            ]);
 
+            $data = $response->json();
+
+            // Log the response for debugging
+            Log::info('List User API Response:', ['response' => $data]);
+
+            // Check if API response is successful
             if ($response->successful()) {
-                $data = $response->json(); // Mengambil seluruh data dari respons
-                $organizations = $data['data']['organizations']; // Mengambil data organisasi dari respons
-
-                // Cari organisasi yang sesuai dengan nama yang diberikan
-                foreach ($organizations as $org) {
-                    if ($org['organization_name'] === $organization_name) {
-                        $organization = [
-                            'organization_name' => $organization_name,
-                            'description' => $org['description']
-                        ];
-                        Log::info('Organization found: ' . $organization_name);
-                        return view('vieworganization', compact('organization'));
-                    }
-                }
-
-                Log::warning('Organization not found: ' . $organization_name);
-                return back()->with('error', 'Organization not found');
+                // Return view with search results
+                return view('organization.add_member', [
+                    'organization_id' => $id,
+                    'users' => $data['users'] ?? [],
+                ]);
             } else {
-                Log::error('Failed to get organization list. Response: ' . $response->body());
-                return back()->with('error', 'Failed to get organization list. Please try again.');
+                return back()->withErrors('Failed to fetch users. Please try again.');
             }
         } catch (\Exception $e) {
-            Log::error('Exception occurred while viewing organization: ' . $e->getMessage());
-            return back()->with('error', $e->getMessage());
+            Log::error('Error fetching users:', ['message' => $e->getMessage()]);
+            return back()->withErrors('An error occurred while fetching users.');
         }
     }
+
+    // Add selected member to the organization
+    public function addMemberToOrganization(Request $request, $id)
+    {
+        // Validate the input
+        $request->validate([
+            'user_id' => 'required|integer',
+        ]);
+
+        // API request to add a member
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => session('access_token'),
+                'x-api-key' => self::API_KEY,
+            ])->post(self::API_URL . '/sso/add_member_organization.json', [
+                'organization_id' => $id,
+                'user_ids' => $request->input('user_id'),
+            ]);
+
+            $data = $response->json();
+
+            // Log the response for debugging
+            Log::info('Add Member API Response:', ['response' => $data]);
+
+            if ($response->successful()) {
+                return redirect()->route('showvieworganization', $id)
+                    ->with('success', 'Member added successfully.');
+            } else {
+                return back()->withErrors('Failed to add member. Please try again.');
+            }
+        } catch (\Exception $e) {
+            Log::error('Error adding member to organization:', ['message' => $e->getMessage()]);
+            return back()->withErrors('An error occurred while adding the member.');
+        }
+    }
+
+public function organizationVerify(Request $request, $token)
+{
+    // Log for debugging
+    Log::info('Route accessed with token: ' . $token);
+
+    try {
+        // Send request to the API for organization verification
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),  // Use access token from session
+            'x-api-key' => self::API_KEY,
+        ])->post(self::API_URL . '/sso/organization_verify.json', [
+            'activation_key' => $token,  // Use token from the URL
+        ]);
+
+        // Retrieve the response data
+        $data = $response->json();
+        Log::info('Activation API Response:', $data);
+
+        // Check if the response is successful
+        if ($response->successful() && $data['success']) {
+            // Organization activated successfully
+            return redirect('/organization')->with('success_message', 'Your organization has been activated successfully.');
+        } else {
+            // Log error and show error message
+            Log::error('Failed to activate organization. Response: ' . $response->body());
+            return back()->withErrors(['error_message' => 'Failed to activate your organization. Please try again.'])->withInput();
+        }
+    } catch (\Illuminate\Http\Client\RequestException $e) {
+        Log::error('HTTP Request failed: ' . $e->getMessage());
+        return back()->withErrors(['error_message' => 'HTTP Request failed: ' . $e->getMessage()])->withInput();
+    } catch (\Exception $e) {
+        Log::error('An error occurred: ' . $e->getMessage());
+        return back()->withErrors(['error_message' => 'Something went wrong, try again! ' . $e->getMessage()])->withInput();
+    }
+}
+
+
+
+
+    // public function showvieworganization($organization_name)
+    // {
+    //     Log::info('Attempting to view organization with name: ' . $organization_name);
+
+    //     try {
+    //         $response = Http::withHeaders([
+    //             'Authorization' => session('access_token'),
+    //             'x-api-key' => self::API_KEY,
+    //         ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
+
+    //         if ($response->successful()) {
+    //             $data = $response->json(); // Mengambil seluruh data dari respons
+    //             $organizations = $data['data']['organizations']; // Mengambil data organisasi dari respons
+
+    //             // Cari organisasi yang sesuai dengan nama yang diberikan
+    //             foreach ($organizations as $org) {
+    //                 if ($org['organization_name'] === $organization_name) {
+    //                     $organization = [
+    //                         'organization_id' => $org['id'],
+    //                         'organization_name' => $organization_name,
+    //                         'description' => $org['description'],
+    //                         'members_count' => $org['members_count'] ?? 0
+    //                     ];
+    //                     Log::info('Organization found: ' . $organization_name);
+    //                     return view('vieworganization', compact('organization'));
+    //                 }
+    //             }
+
+    //             Log::warning('Organization not found: ' . $organization_name);
+    //             return back()->with('error', 'Organization not found');
+    //         } else {
+    //             Log::error('Failed to get organization list. Response: ' . $response->body());
+    //             return back()->with('error', 'Failed to get organization list. Please try again.');
+    //         }
+    //     } catch (\Exception $e) {
+    //         Log::error('Exception occurred while viewing organization: ' . $e->getMessage());
+    //         return back()->with('error', $e->getMessage());
+    //     }
+    // }
+
+    public function showvieworganization($organization_name)
+{
+    Log::info('Attempting to view organization with name: ' . $organization_name);
+
+    try {
+        // API call to list organizations by owner
+        $ownerResponse = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
+
+        // API call to list organizations by member
+        $memberResponse = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => '5af97cb7eed7a5a4cff3ed91698d2ffb',
+        ])->post(self::API_URL . '/sso/list_organization_by_member.json');
+
+        // Check if both API responses are successful
+        if ($ownerResponse->successful() && $memberResponse->successful()) {
+            // Parse the responses
+            $ownerData = $ownerResponse->json();
+            $memberData = $memberResponse->json();
+
+            // Get the organizations from both responses
+            $ownerOrganizations = $ownerData['data']['organizations'] ?? [];
+            $memberOrganizations = $memberData['data']['organizations'] ?? [];
+
+            // Combine both organizations
+            $organizations = array_merge($ownerOrganizations, $memberOrganizations);
+
+            // Search for the organization by name
+            foreach ($organizations as $org) {
+                Log::info('Organization data being processed:', $org); // Log the entire organization data
+
+                if ($org['organization_name'] === $organization_name) {
+                    // Log the organization name we're attempting to view
+                    Log::info('Attempting to view organization with name: ' . $organization_name);
+
+                    // Organization found, prepare data for the view
+                    $organization = [
+                        'organization_id' => $org['id'],
+                        'organization_name' => $organization_name,
+                        'description' => $org['description'],
+                        'members_count' => $org['members_count'] ?? 0,
+                    ];
+
+                    // Log the prepared organization data
+                    Log::info('Prepared organization data:', $organization);
+
+                    return view('vieworganization', compact('organization'));
+                }
+            }
+
+
+
+            // If no matching organization is found
+            Log::warning('Organization not found: ' . $organization_name);
+            return back()->with('error', 'Organization not found');
+        } else {
+            // Log error if either API fails
+            Log::error('Failed to get organization list. Owner Response: ' . $ownerResponse->body() . ', Member Response: ' . $memberResponse->body());
+            return back()->with('error', 'Failed to get organization list. Please try again.');
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred while viewing organization: ' . $e->getMessage());
+        return back()->with('error', $e->getMessage());
+    }
+}
+
     public function showmoredetails($organization_name)
     {
         Log::info('Attempting to show more details for organization: ' . $organization_name);
@@ -931,9 +781,44 @@ public function addorganization(Request $request)
 
 
     public function editorganization(Request $request)
-    {
+{
+    // Validate input
+    $request->validate([
+        'organization_id' => 'required|integer',
+        'organization_name' => 'required|string|max:255',
+        'description' => 'nullable|string|max:500',
+    ]);
 
+    Log::info('Attempting to update organization ID: ' . $request->organization_id);
+
+    try {
+        // Send a request to update the organization
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->post(self::API_URL . '/sso/update_organization.json', [
+            'organization_id' => $request->organization_id,
+            'parent_id' => null, // Adjust as necessary
+            'organization_name' => $request->organization_name,
+            'description' => $request->description,
+        ]);
+
+        // Check the response
+        if ($response->successful() && $response->json('success')) {
+            Log::info('Organization updated successfully: ' . $request->organization_id);
+            return redirect('/organization')->with('success_message', 'Organization updated successfully.');
+        } else {
+            Log::error('Failed to update organization. Response: ' . $response->body());
+            return back()->withErrors(['error_message' => 'Failed to update organization. Please try again.'])->withInput();
+        }
+    } catch (\Illuminate\Http\Client\RequestException $e) {
+        Log::error('HTTP Request failed: ' . $e->getMessage());
+        return back()->withErrors(['error_message' => 'HTTP Request failed: ' . $e->getMessage()])->withInput();
+    } catch (\Exception $e) {
+        Log::error('An error occurred: ' . $e->getMessage());
+        return back()->withErrors(['error_message' => 'Something went wrong, try again! ' . $e->getMessage()])->withInput();
     }
+}
 
 
     public function personal()
@@ -1220,50 +1105,267 @@ public function addorganization(Request $request)
 
     }
 
+    public function searchUsers(Request $request)
+{
+    // Log the incoming request data
+    Log::info('Request Data:', $request->all());
+
+    // Extract the email from the request
+    $email = $request->input('email');
+    Log::info('Searching for email', ['email' => $email]); // Corrected to ensure array context
+
+    // Check if the email is null or empty
+    if (empty($email)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'The email field is required.',
+        ], 400);
+    }
+
+    // Prepare the payload for the API (simplified version)
+    $payload = [
+        'find' => $email // Directly send the email without wrapping it in 'body'
+    ];
+    Log::info('Payload being sent to API', ['payload' => $payload]); // Ensure payload is logged as array
+
+    // Log the access token and API key for comparison
+    Log::info('Access Token:', ['token' => session('access_token')]);
+    Log::info('API Key:', ['api_key' => self::API_KEY]);
+
+    // Call the external API using the full URL
+    $response = Http::withHeaders([
+            'Authorization' => session('access_token'), // Using the access token from session
+            'x-api-key' => self::API_KEY, // Using the API key
+        ])->post(self::API_URL . '/sso/list_user.json', $payload);
+
+    // Log the entire response for debugging
+    Log::info('API Response:', [
+        'status' => $response->status(),
+        'body' => $response->body(),
+        'headers' => $response->headers(),
+    ]);
+
+    // Handle API response
+    if ($response->successful()) {
+        $data = $response->json();
+        Log::info('API Parsed Response:', ['data' => $data]); // Log the parsed API response as array
+
+        // Check if the response indicates success
+        if (isset($data['success']) && $data['success']) {
+            return response()->json([
+                'success' => true,
+                'data' => $data['data'], // List of users
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => $data['data'] ?? 'Unknown error.', // Error from the API
+            ], 400);
+        }
+    } else {
+        // Log the failure details
+        Log::error('Failed API request. Status: ' . $response->status());
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to connect to the API.',
+        ], 500);
+    }
+}
+public function sendAddMemberEmail(Request $request)
+{
+    // Validate input
+    $request->validate([
+        'organization_id' => 'required|string',  // organization_id validation
+        'emails' => 'required|array',
+        'emails.*' => 'email',  // validate each email
+    ]);
+    
+    $organizationId = $request->input('organization_id');
+    $emails = $request->input('emails');
+
+    try {
+        // Logging the emails for debugging
+        Log::info('Received request to send emails:', ['emails' => $emails]);
+
+        // Get member tokens for the emails
+        $tokenResponse = $this->getMemberToken(new Request([
+            'organization_id' => $organizationId,
+            'user_emails' => $emails
+        ]));
+
+        // Check if the token response is successful
+        if ($tokenResponse->status() !== 200) {
+            return response()->json(['success' => false, 'message' => 'Failed to get member tokens.'], 500);
+        }
+
+        $responseData = json_decode($tokenResponse->getContent(), true);
+
+        $tokens = $responseData['tokens'] ?? []; // Get tokens directly
+        $failedEmails = $responseData['failed_emails'] ?? [];
+
+        // Handle failed emails
+        if (!empty($failedEmails)) {
+            foreach ($failedEmails as $failedEmail) {
+                Log::warning('Failed to generate token for email: ' . $failedEmail['email'] . ', Reason: ' . $failedEmail['reason']);
+            }
+        }
+
+        // Proceed only if there are tokens available
+        if (empty($tokens)) {
+            Log::warning('No tokens generated for the provided emails.');
+            return response()->json(['success' => false, 'message' => 'No tokens generated.'], 400);
+        }
+
+        // Store the first token in the session (you can decide how you want to handle this)
+        $firstToken = $tokens[0]['token']; // Ensure this matches your actual API response structure
+        session(['token' => $firstToken]);
+
+        // Log for ensuring the token is stored
+        Log::info('Token stored in session:', ['token' => $firstToken]);
+
+        // Process each token and send emails
+        foreach ($tokens as $tokenData) {
+            $email = $tokenData['email'];
+            $token = $tokenData['token']; // Ensure this matches your actual API response
+
+            Log::info('Attempting to send email to: ' . $email);
+
+            // Send email with the token
+            Log::info('Preparing to send verification email for: ' . $email);
+            Mail::send('emails.verif-addmember', ['token' => $token], function($message) use ($email) {
+                $message->to($email)
+                    ->subject('Add Member Verification');
+            });
+
+            Log::info('Verification email sent to: ' . $email);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Emails sent successfully!']);
+    } catch (\Exception $e) {
+        Log::error('An error occurred: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'Failed to send emails: ' . $e->getMessage()], 500);
+    }
+}
 
 
-//     public function redirectToGoogle()
-//     {
-//         // Redirect pengguna ke halaman autentikasi Google menggunakan Socialite
-//         return Socialite::driver('google')->redirect();
-//     }
 
-//     public function handleGoogleCallback()
-//     {
-//         try {
-//             // Ambil informasi pengguna dari Google setelah autentikasi
-//             $googleUser = Socialite::driver('google')->user();
-//         } catch (\Exception $e) {
-//             // Tangkap dan tampilkan pesan kesalahan jika autentikasi gagal
-//             dd($e->getMessage());
-//         }
+public function confirmJoin(Request $request)
+{
+    $token = $request->input('token'); // Getting the token from the request
 
-//         // Periksa apakah pengguna berhasil diambil dari Google
-//         if ($googleUser) {
-//             // Ambil alamat email pengguna dari data yang diterima dari Google
-//             $email = $googleUser->email;
+    if (empty($token)) {
+        return response()->json(['success' => false, 'message' => 'Token is required.'], 400);
+    }
 
-//             // Kirim permintaan registrasi pengguna ke backend menggunakan HTTP Client
-//             $response = Http::withHeaders([
-//                 'x-api-key' => self::API_KEY, // Header x-api-key untuk otentikasi pada API backend
-//             ])->post(self::API_URL . '/sso/register.json', [
-//                 'email' => $email, // Kirim alamat email pengguna untuk registrasi
-//                 'password' => 'password_default', // Tambahkan kata sandi default untuk registrasi
-//             ]);
+    // Redirecting to the addMemberOrganization route with the token
+    return redirect()->route('addMemberView', ['token' => $token]);
+}
 
-//             // Periksa apakah permintaan registrasi berhasil
-//             if ($response->successful()) {
-//                 // Jika berhasil, arahkan pengguna ke halaman dashboard
-//                 return redirect()->route('dashboard');
-//             } else {
-//                 // Jika gagal, arahkan pengguna kembali ke halaman registrasi dengan pesan kesalahan
-//                 return redirect()->route('register')->with('error', 'Gagal melakukan registrasi. Silakan coba lagi.');
-//             }
+public function addMemberOrganization(Request $request)
+{
+    Log::info('Received add member organization request:', $request->all());
 
-//         } else {
-//             // Jika gagal mengambil informasi pengguna dari Google, tampilkan pesan kesalahan
-//             dd('Failed to retrieve user information from Google.');
-//         }
-//     }
-// }
+    // Retrieve the token from the session
+    $token = session('token');
+    Log::info('Token in session:', ['token' => $token]);
+
+    if (empty($token)) {
+        // Redirect back with an error message if the token is not available
+        return back()->withErrors(['message' => 'Token is required.']);
+    }
+
+    try {
+        // Log the token to ensure it is correct
+        Log::info('Adding member organization for token:', ['token' => $token]);
+
+        // Step 1: Proceed with the API call to add the member organization
+        $response = Http::withHeaders([
+            'x-api-key' => self::API_KEY,
+        ])->post(self::API_URL . '/sso/add_member_organization.json', [
+            'token' => $token,
+        ]);
+
+        // Log the full response
+        Log::info('API Response:', $response->json());
+
+        if ($response->successful()) {
+            // Get success message from the response if available
+            $successMessage = $response->json()['data'] ?? 'Member added successfully.';
+            return back()->with('success', $successMessage);
+        } else {
+            // Extract the error message from the API response
+            $errorMessage = $response->json()['data'] ?? 'Failed to add member organization.';
+            return back()->withErrors(['message' => $errorMessage]);
+        }
+    } catch (\Exception $e) {
+        Log::error('Error adding member organization: ' . $e->getMessage());
+        // Redirect back with an error message in case of an exception
+        return back()->withErrors(['message' => 'Internal server error: ' . $e->getMessage()]);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+public function getMemberToken(Request $request)
+{
+    Log::info('Received get member token request:', $request->all());
+
+    // Validate incoming request
+    $validator = Validator::make($request->all(), [
+        'organization_id' => 'required|string',
+        'user_emails' => 'required|array',
+        'user_emails.*' => 'email',
+    ]);
+
+    if ($validator->fails()) {
+        Log::error('Validation failed:', ['errors' => $validator->errors()]);
+        return response()->json(['success' => false, 'message' => 'Validation failed', 'errors' => $validator->errors()], 422);
+    }
+
+    $organizationId = $request->input('organization_id');
+    $userEmails = $request->input('user_emails');
+
+    try {
+        // Send request to get member tokens
+        $response = Http::withHeaders([
+            'x-api-key' => self::API_KEY,
+        ])->post(self::API_URL . '/sso/get_member_token.json', [
+            'organization_id' => $organizationId,
+            'user_emails' => $userEmails,
+        ]);
+
+        if ($response->successful()) {
+            $responseData = $response->json();
+            Log::info('Successfully received member tokens:', ['data' => $responseData]);
+
+            return response()->json($responseData);
+        }
+
+        // Handle unsuccessful response
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to get member token.',
+            'error' => $response->json(),
+        ], $response->status());
+    } catch (\Exception $e) {
+        Log::error('Error getting member token', [
+            'error' => 'Internal server error: ' . $e->getMessage()
+        ]);
+        return response()->json(['success' => false, 'message' => 'Internal server error'], 500);
+    }
+}
+
+
+
+
+
 }
