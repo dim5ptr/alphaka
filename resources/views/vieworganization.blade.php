@@ -1003,9 +1003,11 @@ function closeModal() {
 }
 
 // Function to send the emails
+// Function to send the emails
 function sendEmails() {
     const addedUsersList = document.getElementById('addedUsersList');
     const emails = [];
+    const organizationId = "{{ $organization['organization_id'] }}"; // Ensure organization_id is passed correctly
 
     // Loop through each email in the list and collect the text content
     addedUsersList.querySelectorAll('p').forEach(emailElement => {
@@ -1020,6 +1022,12 @@ function sendEmails() {
         return;
     }
 
+    // Body of the POST request
+    const body = JSON.stringify({
+        organization_id: organizationId,  // Use organizationId from the template
+        emails: emails                    // Pass collected emails
+    });
+
     // Make an API call to send emails
     fetch('{{ route('sendAddMemberEmail') }}', {
         method: 'POST',
@@ -1027,7 +1035,7 @@ function sendEmails() {
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ emails: emails })
+        body: body
     })
     .then(response => response.json())
     .then(data => {

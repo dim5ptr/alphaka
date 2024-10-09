@@ -1177,11 +1177,12 @@ public function sendAddMemberEmail(Request $request)
 {
     // Validate input
     $request->validate([
-        'organization_id' => 'required|string',
+        'organization_id' => 'required|string',  // organization_id validation
         'emails' => 'required|array',
-        'emails.*' => 'email', // Validate each email in the array
+        'emails.*' => 'email',  // validate each email
     ]);
-
+    
+    
     $organizationId = $request->input('organization_id');
     $emails = $request->input('emails');
 
