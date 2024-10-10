@@ -568,7 +568,7 @@ body {
     box-sizing: border-box;
     overflow-x: auto; /* Tambahkan scroll horizontal jika diperlukan */
     -webkit-overflow-scrolling: touch; /* Untuk smooth scrolling di perangkat iOS */
-    margin: 0 auto; /* Pusatkan kontainer */
+    margin-bottom: 10%;
 }
 
 
@@ -768,13 +768,14 @@ html, body {
 
 /* Responsif untuk layar tablet (max-width: 768px) */
 @media (max-width: 800px) {
+
     .main-content{
-        width:  calc(100% - 170px);
+        width:  auto;
         margin-top: 10%;
     }
     .card-organization {
         padding: 15px 20px; /* Mengurangi padding untuk layar kecil */
-        width: 450%; /* Pastikan card menyesuaikan lebar layar */
+        width: auto; /* Pastikan card menyesuaikan lebar layar */
     }
 
     .info {
@@ -787,7 +788,7 @@ html, body {
         right: 10px; /* Sama untuk kanan */
     }
     .table-container {
-        width: 450%;
+        width: auto;
     }
 
     .mb-side {
@@ -802,7 +803,7 @@ html, body {
     }
 
     .input-group {
-        width: 450%; /* Full width for search input */
+        width: auto; /* Full width for search input */
         margin-top: 1rem; /* Add some space between buttons and search input */
     }
 
@@ -816,9 +817,15 @@ html, body {
 @media (max-width: 500px) {
     .card-organization {
         padding: 10px 15px; /* Padding lebih kecil untuk layar mobile */
-        width: 450%;
+        width: auto;
     }
-
+    .table-container {
+        width: auto;
+    }
+    .input-group {
+        width: auto; /* Full width for search input */
+        margin-top: 1rem; /* Add some space between buttons and search input */
+    }
     .btn-edit {
         bottom: 8px; /* Adjust posisi tombol edit lebih ke atas */
         right: 8px;  /* Sama untuk kanan */
