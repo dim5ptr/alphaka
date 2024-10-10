@@ -173,7 +173,7 @@
             display: flex;
             justify-content: flex-end;
             font-size: 14px;
-            box-shadow: 0 2px 9px rgba(0, 0, 0, 0.2);
+            /* box-shadow: 0 2px 9px rgba(0, 0, 0, 0.2); */
             width: 100%;
             top: 0;
             z-index: 900;
