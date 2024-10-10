@@ -586,7 +586,7 @@
     align-items: center;
     padding: 0;
     margin: 2%;
-    margin-top: 20%;
+    margin-top: 100px;
     list-style: none;
     width: 100%;
 }
