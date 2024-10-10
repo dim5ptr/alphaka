@@ -14,69 +14,150 @@
     /* CSS Enhancements */
 
     /* css modal */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1001;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.5);
-    }
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7); /* Darker overlay */
+}
 
-    .modal-content {
-        background-color: #fefefe;
-        margin: 2% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 600px;
-        border-radius: 10px;
+.modal-content {
+    background-color: #ffffff;
+    margin: 4% auto; /* Higher margin to center more vertically */
+    padding: 20px;
+    border: none; /* Remove border */
+    width: 90%;
+    max-width: 500px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
 
-        /* Pengaturan posisi konten modal */
-        position: relative;
-        top: 30%;
-        transform: translateY(-50%); /* Moves the modal up by 50% of its own height */
-    }
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #365AC2;
+    color: white;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    margin-bottom: 20px; /* Menambah jarak antara header dan konten */
+}
 
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #e5e5e5;
-        background-color: #365AC2;
-        color: white;
-        padding: 10px 20px;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-        margin-bottom: 2.1%;
-    }
+.modal-header h1 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+}
 
-    .modal-header h1 {
-        margin: 0;
-        font-size: 24px;
-    }
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: white;
+}
 
-    .btn-close {
-        background: none;
-        border: none;
-        font-size: 24px;
-        cursor: pointer;
-        color: white;
-    }
+.form-group {
+    margin-bottom: 20px;
+}
 
-    .form-group .form-control{
-    width: 100%; /* Ensures the form group takes full width */
-    box-sizing: border-box; /* Includes padding and border in the element's total width */
-    margin-bottom: 2%;
-    }
+.form-group .form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
 
-    .btn-block {
-    width: 100%; /* Makes the button full width */
-    box-sizing: border-box; /* Includes padding and border in the element's total width */
-    }
+.form-group .form-control:focus {
+    border-color: #365AC2;
+    outline: none;
+    box-shadow: 0 0 5px rgba(54, 90, 194, 0.2);
+}
+
+#responseMessage {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.btn-block {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    background-color: #365AC2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-block:hover {
+    background-color: #2a48a0;
+}
+
+.btn-secondary {
+    background-color: #777;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #666;
+}
+
+h3 {
+    margin-bottom: 20px;
+    color: #365AC2;
+    font-size: 18px;
+}
+
+/* Added Users Modal */
+#addedUsersModal .modal-header {
+    padding-bottom: 10px;
+}
+
+#addedUsersModal .form-group {
+    margin-bottom: 25px;
+}
+
+#addedUsersList {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.btn-remove {
+    background-color: #6c757d; /* Abu-abu */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 10px; /* Jarak dari teks email */
+}
+
+.btn-remove:hover {
+    background-color: #5a6268; /* Abu-abu lebih gelap saat di-hover */
+}
+
+.btn-remove:active {
+    background-color: #4e555b; /* Warna saat tombol di-klik */
+}
 
 
 html, body {
@@ -482,7 +563,7 @@ body {
 }
 
 .input-group {
-    width: 30%;
+    width: 100%;
     display: flex;
 }
 
@@ -622,7 +703,7 @@ html, body {
         background-color: #365AC2;
         color: white;
         border: none;
-        border-radius: 20px;
+        border-radius: 12px;
         font-size: 0.890rem;
         cursor: pointer;
         transition: background-color 0.3s ease, transform 0.3s ease;
@@ -804,7 +885,7 @@ html, body {
         </div>
     </div>
 
-   
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -848,7 +929,7 @@ html, body {
                 <li class="breadcrumb-item" style="color: #3200af;">{{ $organization['organization_name'] }}</a></li>
             </ol>
         </nav>
-       
+
         <!-- Content -->
         <div class="container">
             <!-- Organization Card -->
@@ -924,8 +1005,8 @@ html, body {
             <button type="button" class="btn-close" onclick="closeModal()">×</button>
         </div>
 
-        
-        
+
+
         <form id="searchUsers" action="{{ route('searchUsers') }}" method="POST" onsubmit="return handleSearch(event)">
             @csrf
             <div class="form-group">
@@ -994,7 +1075,7 @@ function handleSearch(event) {
                 const userDiv = document.createElement('div');
                 userDiv.className = 'user-entry';
                 userDiv.innerHTML = `
-                    <p>${user.email} <button onclick="removeUser(this)">Remove</button></p>
+                    <p>${user.email} <button class="btn-remove" onclick="removeUser(this)">Remove</button></p>
                 `;
                 responseMessageDiv.appendChild(userDiv);
             });
