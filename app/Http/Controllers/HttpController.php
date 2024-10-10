@@ -821,7 +821,7 @@ public function organizationVerify(Request $request, $token)
         // API call to list organizations by member
         $memberResponse = Http::withHeaders([
             'Authorization' => session('access_token'),
-            'x-api-key' => '5af97cb7eed7a5a4cff3ed91698d2ffb',
+            'x-api-key' => self::API_KEY,
         ])->post(self::API_URL . '/sso/list_organization_by_member.json');
 
         // Check if both API responses are successful
@@ -850,17 +850,15 @@ public function organizationVerify(Request $request, $token)
                         'organization_id' => $org['id'],
                         'organization_name' => $organization_name,
                         'description' => $org['description'],
-                        'members_count' => $org['members_count'] ?? 0,
+                        'member_count' => $org['member_count'] ?? 0, // Check if member_count exists, default to 0
                     ];
 
-                    // Log the prepared organization data
+                    // Log the prepared organization data with member_count
                     Log::info('Prepared organization data:', $organization);
 
                     return view('vieworganization', compact('organization'));
                 }
             }
-
-
 
             // If no matching organization is found
             Log::warning('Organization not found: ' . $organization_name);
@@ -875,6 +873,7 @@ public function organizationVerify(Request $request, $token)
         return back()->with('error', $e->getMessage());
     }
 }
+
 
     public function showmoredetails($organization_name)
     {
