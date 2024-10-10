@@ -265,7 +265,7 @@ body {
     display: flex;
     justify-content: flex-end;
     font-size: 14px;
-    box-shadow: 0 2px 9px rgba(0, 0, 0, 0.2);
+    /* box-shadow: 0 2px 9px rgba(0, 0, 0, 0.2); */
     width: 100%;
     top: 0;
     z-index: 900;
@@ -300,6 +300,7 @@ body {
 .open-btn:hover {
     color: darkblue;
 }
+
 
 .main-content {
     padding-top: 30px; /* Adjust this value based on the height of your navbar */
@@ -351,6 +352,7 @@ body {
     color: aliceblue;
     font-weight: 700;
 }
+
 
 /* Button Styles */
 .btn-primary {
@@ -623,11 +625,6 @@ body {
     .input-group {
         width: 450%; /* Full width for search input */
         margin-top: 1rem; /* Add some space between buttons and search input */
-    }
-
-    .btn {
-        width: auto; /* Each button takes 48% width to leave some space between them */
-        margin-top: 0; /* Remove top margin for buttons */
     }
 
     /* Ensure the form input and buttons are well-aligned */
