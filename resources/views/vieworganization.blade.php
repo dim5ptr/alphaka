@@ -171,87 +171,90 @@ html, body {
 body {
     transition: margin-left 0.3s;
 }
-
 .sidebar {
-            height: 100%;
-            width: 250px;
-            position: fixed;
-            top: 0;
-            left: -270px;
-            background-color: white;
-            overflow-x: hidden;
-            transition: 0.3s;
-            padding-top: 100px;
-            box-shadow: 1px 0 9px rgba(0, 0, 0, 0.1);
-            z-index: 2;
-        }
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: -270px;
+    background-color: white;
+    overflow-x: hidden;
+    transition: 0.3s;
+    padding-top: 100px;
+    box-shadow: 1px 0 9px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
 
-        .sidebar .sidebar-isi {
-            display: block;
-            padding: 0px;
-            height: 100%;
-        }
+.sidebar.open {
+    left: 0;
+}
 
-        .sidebar-isi .list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+.sidebar .sidebar-isi {
+    display: block;
+    padding: 0;
+    height: 100%;
+}
 
-        .list .nav-link {
-            margin-left: 6%;
-            display: flex;
-            align-items: center;
-            padding: 14px 17px;
-            margin-bottom: 2%;
-            border-radius: 5px;
-            text-decoration: none;
-            width: calc(100% - 40px);
-            box-sizing: border-box;
-            position: relative;
-            justify-content: flex-start;
-            transition: background-color 0.3s, color 0.3s;
-        }
+.sidebar-isi .list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
 
-        .nav-link .link {
-            font-size: 17px;
-            color: #365AC2;
-            font-weight: 400;
-            transition: color 0.3s;
-        }
+.list .nav-link {
+    margin-left: 6%;
+    display: flex;
+    align-items: center;
+    padding: 14px 17px;
+    margin-bottom: 2%;
+    border-radius: 5px;
+    text-decoration: none;
+    width: calc(100% - 40px);
+    box-sizing: border-box;
+    position: relative;
+    justify-content: flex-start;
+    transition: background-color 0.3s, color 0.3s;
+}
 
-        .nav-link .nav-link-act i {
-            padding-right: 10px;
-            font-size: 20px;
-            color: #365AC2;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
+.nav-link .link {
+    font-size: 17px;
+    color: #365AC2;
+    font-weight: 400;
+    transition: color 0.3s;
+}
 
-        .nav-link:hover {
-            background-color: #365AC2;
-        }
+.nav-link .nav-link-act i {
+    padding-right: 10px;
+    font-size: 20px;
+    color: #365AC2;
+    cursor: pointer;
+    transition: color 0.3s;
+}
 
-        .nav-link:hover i,
-        .nav-link:hover .link {
-            color: white;
-        }
+.nav-link:hover {
+    background-color: #365AC2;
+}
 
-        .nav-link-act {
-            margin-left: 6%;
-            display: flex;
-            align-items: center;
-            padding: 14px 17px;
-            margin-bottom: 2%;
-            border-radius: 5px;
-            text-decoration: none;
-            width: calc(100% - 40px);
-            box-sizing: border-box;
-            position: relative;
-            justify-content: flex-start;
-            background-color: #365AC2;
-            color: white;
-        }
+.nav-link:hover i,
+.nav-link:hover .link {
+    color: white;
+}
+
+.nav-link-act {
+    margin-left: 6%;
+    display: flex;
+    align-items: center;
+    padding: 14px 17px;
+    margin-bottom: 2%;
+    border-radius: 5px;
+    text-decoration: none;
+    width: calc(100% - 40px);
+    box-sizing: border-box;
+    position: relative;
+    justify-content: flex-start;
+    background-color: #365AC2;
+    color: white;
+}
 
 .navbar {
     position: fixed;
@@ -298,17 +301,6 @@ body {
 }
 
 
-.main-content {
-    padding-top: 30px; /* Adjust this value based on the height of your navbar */
-    position: relative;
-    box-sizing: border-box;
-    width: calc(100% - 270px);
-    height: auto;
-    flex: 1;
-    margin-top: 5%;
-    margin-left: 10%;
-    transition: margin-left .3s;
-}
 
 .logoutForm {
     list-style: none;
@@ -347,6 +339,18 @@ body {
     background-color: #c23636;
     color: aliceblue;
     font-weight: 700;
+}
+
+.main-content {
+    padding-top: 30px; /* Adjust this value based on the height of your navbar */
+    position: relative;
+    box-sizing: border-box;
+    width: auto;
+    height: auto;
+    flex: 1;
+    margin-top: 2%;
+    margin-left: 10%;
+    transition: margin-left .3s;
 }
 
 
@@ -439,53 +443,6 @@ body {
 .btn-edit:hover {
     background-color: #5a5bd4;
     transform: translateY(-2px);
-}
-
-/* Responsif untuk layar tablet (max-width: 768px) */
-@media (max-width: 768px) {
-    .card-organization {
-        padding: 15px 20px; /* Mengurangi padding untuk layar kecil */
-        margin: 1rem; /* Mengurangi margin untuk lebih pas di layar kecil */
-        width: 100%; /* Pastikan card menyesuaikan lebar layar */
-    }
-
-    .info {
-        width: 100%; /* Info mengambil seluruh lebar di layar kecil */
-        margin-bottom: 1rem; /* Memberikan ruang lebih banyak untuk konten */
-    }
-
-    .btn-edit {
-        bottom: 10px; /* Adjust tombol edit lebih ke atas agar tidak terlalu ke tepi */
-        right: 10px; /* Sama untuk kanan */
-    }
-}
-
-/* Responsif untuk layar mobile (max-width: 480px) */
-@media (max-width: 480px) {
-    .card-organization {
-        padding: 10px 15px; /* Padding lebih kecil untuk layar mobile */
-        margin: 0.5rem; /* Lebih kecil lagi untuk layar sempit */
-        width: 450%;
-    }
-
-    .btn-edit {
-        bottom: 8px; /* Adjust posisi tombol edit lebih ke atas */
-        right: 8px;  /* Sama untuk kanan */
-        width: 35px; /* Lebar tombol edit lebih kecil */
-        height: 35px; /* Tinggi tombol edit lebih kecil */
-    }
-
-    .btn-edit i {
-        font-size: 0.875rem; /* Ukuran ikon lebih kecil untuk menyesuaikan ukuran tombol */
-    }
-
-    .info h1 {
-        font-size: 1.5rem; /* Ukuran font lebih kecil di layar mobile */
-    }
-
-    .info small {
-        font-size: 0.875rem; /* Ukuran font kecil di mobile */
-    }
 }
 
 .member {
@@ -605,29 +562,6 @@ body {
     box-shadow: 0 0 0 0.2rem rgba(119, 115, 212, 0.25);
     outline: none;
 }
-/* Responsive Design for Mobile */
-@media (max-width: 768px) {
-    .mb-side {
-        flex-direction: column; /* Stack buttons and search input vertically */
-
-    }
-
-    .group-btn {
-        width: 100%; /* Full width for buttons */
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .input-group {
-        width: 450%; /* Full width for search input */
-        margin-top: 1rem; /* Add some space between buttons and search input */
-    }
-
-    /* Ensure the form input and buttons are well-aligned */
-    .form-control, .input-group-text {
-        height: auto; /* Ensure height adapts properly */
-    }
-}
 /* Table Styling */
 .table-container {
     width: 100%;
@@ -678,11 +612,6 @@ body {
     color: white;
 }
 
-@media (max-width: 768px) {
-    .table-container {
-    width: 450%;
-}
-}
 /* CSS Responsive Styles */
 
 /* General Responsive Styles */
@@ -837,6 +766,79 @@ html, body {
         color: white;
     }
 
+/* Responsif untuk layar tablet (max-width: 768px) */
+@media (max-width: 800px) {
+    .main-content{
+        width:  calc(100% - 170px);
+        margin-top: 10%;
+    }
+    .card-organization {
+        padding: 15px 20px; /* Mengurangi padding untuk layar kecil */
+        width: 450%; /* Pastikan card menyesuaikan lebar layar */
+    }
+
+    .info {
+        width: 100%; /* Info mengambil seluruh lebar di layar kecil */
+        margin-bottom: 1rem; /* Memberikan ruang lebih banyak untuk konten */
+    }
+
+    .btn-edit {
+        bottom: 10px; /* Adjust tombol edit lebih ke atas agar tidak terlalu ke tepi */
+        right: 10px; /* Sama untuk kanan */
+    }
+    .table-container {
+        width: 450%;
+    }
+
+    .mb-side {
+        flex-direction: column; /* Stack buttons and search input vertically */
+
+    }
+
+    .group-btn {
+        width: 100%; /* Full width for buttons */
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .input-group {
+        width: 450%; /* Full width for search input */
+        margin-top: 1rem; /* Add some space between buttons and search input */
+    }
+
+    /* Ensure the form input and buttons are well-aligned */
+    .form-control, .input-group-text {
+        height: auto; /* Ensure height adapts properly */
+    }
+}
+
+/* Responsif untuk layar mobile (max-width: 480px) */
+@media (max-width: 500px) {
+    .card-organization {
+        padding: 10px 15px; /* Padding lebih kecil untuk layar mobile */
+        width: 450%;
+    }
+
+    .btn-edit {
+        bottom: 8px; /* Adjust posisi tombol edit lebih ke atas */
+        right: 8px;  /* Sama untuk kanan */
+        width: 35px; /* Lebar tombol edit lebih kecil */
+        height: 35px; /* Tinggi tombol edit lebih kecil */
+    }
+
+    .btn-edit i {
+        font-size: 0.875rem; /* Ukuran ikon lebih kecil untuk menyesuaikan ukuran tombol */
+    }
+
+    .info h1 {
+        font-size: 1.5rem; /* Ukuran font lebih kecil di layar mobile */
+    }
+
+    .info small {
+        font-size: 0.875rem; /* Ukuran font kecil di mobile */
+    }
+}
+
     </style>
 </head>
 <body>
@@ -975,7 +977,6 @@ html, body {
                             <!-- Data akan diisi di sini -->
                         </tbody>
                     </table>
-<br><br><br>
                 </div>
 
             </div>
@@ -1352,127 +1353,6 @@ function sendEmails() {
 
     </script>
 
-
-    {{-- <script>
-        var anggotaData = [
-            { id: 1, first: 'John', last: 'Doe', handle: '@john_doe', email: 'john@gmail.com' },
-            { id: 2, first: 'Jane', last: 'Smith', handle: '@jane_smith', email: 'jane@gmail.com' }
-        ];
-
-        var pengurusData = [
-            { id: 1, first: 'Alice', last: 'Johnson', handle: '@alice_johnson', email: 'alice@gmail.com' },
-            { id: 2, first: 'Bob', last: 'Brown', handle: '@bob_brown', email: 'bob@gmail.com' }
-        ];
-
-        function populateTable(data) {
-            var tbody = document.getElementById('dataBody');
-            tbody.innerHTML = '';
-
-            data.forEach(function (item) {
-                var row = document.createElement('tr');
-                row.innerHTML = `
-                    <th scope="row">${item.id}</th>
-                    <td>${item.first}</td>
-                    <td>${item.last}</td>
-                    <td>${item.handle}</td>
-                    <td>${item.email}</td>
-                    <td>
-                        <form action="{{ route('showmoredetails', ['organization_name' => $organization['organization_name']]) }}" method="GET">
-                            @csrf
-                            <button type="submit" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="top" title="More Details" style="background: none; border: none; padding: 0;">
-                                  ㅤ<i class="bi bi-info-circle" style="font-size: 1.8rem; color: #007bff;"></i>
-                            </button>
-                        </form>
-                    </td>
-
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        document.getElementById('anggotaBtn').addEventListener('click', function () {
-            populateTable(anggotaData); // Isi data anggota
-        });
-
-        document.getElementById('pengurusBtn').addEventListener('click', function () {
-            populateTable(pengurusData); // Isi data pengurus
-        });
-
-        document.getElementById('searchInput').addEventListener('input', function () {
-            var searchValue = this.value.toLowerCase();
-            var rows = document.querySelectorAll('#dataTable tbody tr');
-
-            rows.forEach(function (row) {
-                var cells = row.querySelectorAll('td');
-                var found = Array.from(cells).some(function (cell) {
-                    return cell.textContent.toLowerCase().includes(searchValue);
-                });
-
-                row.style.display = found ? '' : 'none';
-            });
-        });
-
-        populateTable(anggotaData); // Default load data anggota saat halaman dimuat
-    </script> --}}
-{{--
-<script>
-    document.getElementById('logoutForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Mencegah form submit secara default
-
-        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        const headers = new Headers();
-        headers.append('X-CSRF-TOKEN', token);
-        headers.append('Content-Type', 'application/json');
-
-        fetch(this.action, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify({})
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Logout berhasil!');
-                window.location.href = data.redirect; // Redirect ke halaman login setelah logout
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat logout!');
-        });
-    });
-
-    document.getElementById('addMemberForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent default form submission
-
-    const emailInput = document.getElementById('email');
-    const email = emailInput.value.trim(); // Get the email input value
-
-    // Call your userSearch function here, passing the email or search value
-    userSearch(email);
-
-    // Optionally, you can also submit the form if needed:
-    // this.submit();
-});
-
-function userSearch(email) {
-    // Implement the user search logic, e.g., fetch from the API and populate the table
-    console.log('Searching for:', email);
-
-    // Add your search logic here, for example:
-    fetch(`http://192.168.1.24:14041/api/search-users?find=${email}`)
-        .then(response => response.json())
-        .then(data => {
-            // Handle the data returned from the search
-            console.log(data); // or update the table with the search results
-        })
-        .catch(error => console.error('Error fetching user:', error));
-}
-
-
-</script> --}}
 </div>
 
 
