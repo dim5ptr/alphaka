@@ -11,21 +11,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
 
 <style>
-    /* CSS Enhancements */
+     /* CSS Anda disini */
+     html, body {
+            height: 70vh;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #d5def7;
+        }
 
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background-color: #d5def7;
-}
+        body {
+            transition: margin-left 0.3s;
+        }
 
-body {
-    transition: margin-left 0.3s;
-}
-
-.sidebar {
+        .sidebar {
     height: 100%;
     width: 250px;
     position: fixed;
@@ -118,7 +117,7 @@ body {
     display: flex;
     justify-content: flex-end;
     font-size: 14px;
-    box-shadow: 0 2px 9px rgba(0, 0, 0, 0.2);
+    /* box-shadow: 0 2px 9px rgba(0, 0, 0, 0.2); */
     width: 100%;
     top: 0;
     z-index: 900;
@@ -154,14 +153,7 @@ body {
     color: darkblue;
 }
 
-.main-content {
-    width: calc(100% - 270px);
-    height: 100%;
-    flex: 1;
-    margin-top: 5%;
-    margin-left: 10%;
-    transition: margin-left .3s;
-}
+
 
 .logoutForm {
     list-style: none;
@@ -202,166 +194,225 @@ body {
     font-weight: 700;
 }
 
-/* Content Header */
-section {
-    max-width: 100%;
-    height: 100%;
-    margin: 5% auto;
-    padding: 20px;
-    justify-content: center;
-    align-items: center;
-}
+        .main-content {
+            width: 80%;
+            height: 40vh;
+            flex: 1;
+            margin-top: 5%;
+            margin-left: 10%;
+            transition: margin-left .3s;
+        }
 
-/* Button Styles */
-.btn-primary {
-    padding: 10px 10px;
-    background-color: #365AC2;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    font-size: 0.890rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
+        .banner {
+            float: right;
+            margin-right: 10%;
+            margin-top: 3%;
+            width: 80%;
+            height: 50vh;
+            margin-left: 4%;
+        }
 
-.btn-primary:hover {
-    background-color: #2e4a8c;
-    transform: scale(1.05);
-}
+        .btn-primary, .btn-danger, .btn-light {
+        padding: 8px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
 
-.btn-primary i {
-    margin-right: 2%;
-    font-size: 2rem;
-}
+    .btn-primary {
+        background-color: #365AC2;
+        color: white;
+    }
 
-.profile {
-    margin-top: 1%;
-    margin-bottom: 1%;
-    margin-right: 2%;
-    padding-right: 2%;
-    align-content: center;
-    width: 5%;
-    border-right: 5px solid #365AC2;
-}
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
 
-img {
-    float: right;
-    width: 50%;
-}
+    .btn-light {
+        background-color: #365AC2;
+        color: white;
+    }
 
-.add {
-    float: right;
-    margin-right: 3%;
-}
+    .btn-light:hover {
+        background-color: #0e4988;
+    }
 
-footer {
-    position: fixed;
-    bottom: 5%;
-    left: 0;
-    width: 100%;
-    z-index: 998;
-}
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
 
-.display {
-    width: 90%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-left: 5%;
-    margin-top: 2%;
-}
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
 
-/* Card styling */
-.card {
-    background: #ffffff;
-    border: 1px solid #dddddd;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: calc(33.333% - 20px);
-    box-sizing: border-box;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1001;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
 
-.card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
+    .modal-content {
+        background-color: #fefefe;
+        margin: 2% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+        border-radius: 10px;
+    }
 
-/* Card body styling */
-.card-body {
-    padding: 20px;
-    background: #ffffff;
-    border: 1px solid #dddddd;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: calc(33.333% - 20px);
-    box-sizing: border-box;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e5e5e5;
+        background-color: #365AC2;
+        color: white;
+        padding: 10px 20px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        margin-bottom: 2.1%;
+    }
 
-.card-id {
-    display: flex;
-    width: 100%;
-}
+    .modal-header h1 {
+        margin: 0;
+        font-size: 24px;
+    }
 
-.card-data {
-    width: 80%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+    .btn-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: white;
+    }
 
-.card-id img {
-    float: right;
-    width: 15%;
-    height: 15%;
-}
+    .form-control {
+        width: 96%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+    }
 
-.card-title {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-    color: #333;
-}
+    .form-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        font-size: 14px;
+    }
 
-.card-description {
-    font-size: 1rem;
-    color: #666;
-}
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        border-top: 1px solid #e5e5e5;
+        padding-top: 10px;
+        margin-top: 20px;
+    }
 
-/* Card footer styling */
-.card-footer {
-    padding: 10px 20px;
-    height: 25%;
-    justify-content: flex-end;
-    border-top: 1.5px solid #dddddd;
-}
+    .alert {
+        padding: 15px;
+        border: 1px solid transparent;
+        text-align: left;
+        position: absolute;
+        width: 40%;
+        height: 3%;
+        margin-left: 20%;
+        font-size: 0.890rem;
+        justify-content: center;
+        z-index: 1001;
+    }
 
-/* Alert styling */
-.alert {
-    margin: 10px auto;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #f2f2f2;
-    color: #333;
-    width: 80%;
-    max-width: 500px;
-    text-align: center;
-}
+    .alert-success {
+        color: white;
+        background-color: #1363DF;
+        border-color: #c3e6cb;
+        font-weight: bold;
+        border-radius: 5px;
+    }
 
-.alert-success {
-    border: 1px solid #4caf50;
-    color: #4caf50;
-    background-color: #d4edda;
-}
+    .alert-info {
+        color: #0c5460;
+        background-color: #d1ecf1;
+        border-color: #bee5eb;
+    }
 
-.alert-error {
-    border: 1px solid #f44336;
-    color: #f44336;
-    background-color: #f8d7da;
-}
-.container-flex {
-        max-width: 80%;
+    .alert-warning {
+        color: #856404;
+        background-color: #fff3cd;
+        border-color: #ffeeba;
+    }
+
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+
+    .modal-image {
+        display: none;
+        position: fixed;
+        z-index: 1001;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-image-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+        border-radius: 10px;
+    }
+
+    .modal-image-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e5e5e5;
+        background-color: #365AC2;
+        color: white;
+        padding: 10px 20px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        margin-bottom: 2.1%;
+    }
+
+    .modal-image-header h1 {
+        margin: 0;
+        font-size: 24px;
+    }
+
+    .btn-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: white;
+    }
+
+    .container-flex {
+        max-width: 100%;
         background-color: white;
         margin: 4% auto;
         border-radius: 15px;
@@ -391,29 +442,64 @@ footer {
     }
 
     .profile-info {
-    display: flex;
-    align-items: center;
-    margin-left: 5%;
-    width: 100%;
-}
+        display: inline-flex;
+        align-items: center;
+        margin-left: 5%;
+        width: 100%;
+    }
 
-.foto {
-    width: 200px; /* Fixed width */
-    height: 200px; /* Fixed height */
-    margin-right: 20px; /* Spacing between image and text */
-    border-radius: 50%; /* Circular shape */
-    overflow: hidden; /* Ensures image fits within the circle */
-    display: flex; /* Center the image within the circle */
-    justify-content: center;
-    align-items: center;
-}
 
-.foto img {
-    width: 100%; /* Ensures image covers the container */
-    height: 100%; /* Ensures image covers the container */
-    object-fit: cover; /* Ensures the image covers the container without distortion */
-}
 
+    .foto {
+        height: 30%;
+        position: relative;
+        margin-left: 3%;
+        margin-right: 3%;
+        border-radius: 100%;
+    }
+
+    .foto img {
+        widows: 100%;
+        display: block;
+        margin: auto;
+        border-radius: 100%;
+    }
+
+    .editfoto{
+        margin-left: 2.5%;
+        margin-top: 2%;
+        width: 95%;
+        height: 95%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 50%;
+        background: #00000039;
+        display: flex;
+        justify-content: center;
+        opacity: 0;
+       transition: 0.3ms ease-out;
+    }
+
+    .editfoto button{
+       background: none;
+       border: none;
+       font-size: 2rem;
+       color: white;
+    }
+
+    .editfoto:hover {
+        opacity: 100%;
+    }
+
+    .editfoto > * {
+        transform: translateY(25px);
+        transition: transform 0.3s;
+    }
+
+    .editfoto:hover > * {
+        transform: translateY(0px);
+    }
 
     .profile-info .data {
         flex: 1;
@@ -421,7 +507,7 @@ footer {
     }
 
     .profile-info .data span {
-        font-size: 16px;
+        font-size: 20px;
         color: #000000;
     }
 
@@ -430,16 +516,77 @@ footer {
         color: rgb(92, 89, 89);
     }
 
-.text-bold {
-    font-weight: bold;
-    color: #365AC2;
+    .btn-container {
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 10px;
+        margin-bottom: 5%;
+    }
+
+   
+
+    .is-invalid {
+    border-color: #dc3545;
 }
-.breadcrumb {
+
+.invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875em;
+}
+
+.profile-upload-link {
+            display: block;
+            text-align: center;
+            outline: none;
+            position: relative;
+        }
+
+        .upload-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: none;
+            z-index: 1;
+        }
+
+        .profile-upload-link:hover .upload-text {
+            display: block;
+        }
+
+        .profile-upload-link:hover .profile-icon {
+            color: #3200af;
+        }
+
+        .profile-icon {
+            transition: color 0.3s ease;
+        }
+
+        .profile-picture {
+            width: 200px; /* Tentukan ukuran yang diinginkan untuk foto profil */
+            height: 200px; /* Tentukan ukuran yang diinginkan untuk foto profil */
+        }
+
+        /* Mengubah warna ikon menjadi abu-abu */
+        .btn-link .fas.fa-user-circle {
+            color: #808080; /* Kode warna abu-abu */
+        }
+
+        .profile-icon {
+            font-size: 280px; /* Mengatur ukuran ikon */
+        }
+
+        .breadcrumb {
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
     padding: 0;
     margin: 2%;
+    margin-top: 100px;
     list-style: none;
     width: 100%;
 }
@@ -468,6 +615,155 @@ footer {
     color: #3200af;
 }
 
+        @media (max-width: 768px) {
+
+.profile-info img {
+    /* Tambahkan jarak bawah antara gambar profil dan teks */
+}
+
+.profile-icon {
+    font-size: 200px;
+    margin-bottom: 20px; /* Jarak bawah antara ikon profil dan konten lainnya */
+}
+
+.modal-content, .modal-image-content {
+    width: 100%;
+    max-width: 80%;
+    margin: 20px auto; /* Tambahkan margin agar modal tidak terlalu dekat dengan tepi viewport */
+}
+
+.btn-primary, .btn-light, .btn-danger {
+    margin: 10px 0; /* Tambahkan margin vertikal pada tombol agar tidak berdempetan dengan elemen lain */
+}
+
+.main-content{
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
+.banner {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0;
+}
+
+.container-flex {
+    margin-top: 50px;
+    width: 100%;
+    }
+
+.editfoto{
+    margin-left: 1%;
+    margin-top: 15%;
+    width: 98%;
+    height: 80%;
+}
+
+    .judul{
+        width: 85%;
+        margin-bottom: 5%;
+        margin-top: 4%;
+    }
+
+    .judul h4{
+    margin: 0;
+    font-size: 20px;
+    text-align: left;
+}
+
+    .profile-info {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-info img {
+        width: 130px;
+        height: auto;
+        margin-bottom: 10px;
+        margin-top: 20px;
+    }
+
+    .profile-info .data span, .profile-info .data p {
+        text-align: left;
+    }
+
+}
+
+        @media (max-width: 768px) {
+
+.profile-info img {
+    /* Tambahkan jarak bawah antara gambar profil dan teks */
+}
+
+.profile-icon {
+    font-size: 200px;
+    margin-bottom: 20px; /* Jarak bawah antara ikon profil dan konten lainnya */
+}
+
+.modal-content, .modal-image-content {
+    width: 100%;
+    max-width: 80%;
+    margin: 20px auto; /* Tambahkan margin agar modal tidak terlalu dekat dengan tepi viewport */
+}
+
+.btn-primary, .btn-light, .btn-danger {
+    margin: 10px 0; /* Tambahkan margin vertikal pada tombol agar tidak berdempetan dengan elemen lain */
+}
+
+.main-content{
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
+.banner {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0;
+}
+
+.container-flex {
+    margin-top: 50px;
+    width: 100%;
+    }
+
+.editfoto{
+    margin-left: 1%;
+    margin-top: 15%;
+    width: 98%;
+    height: 80%;
+}
+
+    .judul{
+        width: 85%;
+        margin-bottom: 5%;
+        margin-top: 4%;
+    }
+
+    .judul h4{
+    margin: 0;
+    font-size: 20px;
+    text-align: left;
+}
+
+    .profile-info {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-info img {
+        width: 130px;
+        height: auto;
+        margin-bottom: 10px;
+        margin-top: 20px;
+    }
+
+    .profile-info .data span, .profile-info .data p {
+        text-align: left;
+    }
+
+}
     </style>
 </head>
 <body>
