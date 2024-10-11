@@ -136,7 +136,7 @@ body {
     font-size: 16px;
 }
 
-.open-btn {
+.open-btn button {
     position: fixed;
     left: 2%;
     top: 2.5%;
@@ -158,7 +158,7 @@ body {
             width: 80%;
             height: auto;
             flex: 1;
-            margin-top: 20vh;
+            margin-top: 10vh;
             margin-left: 10%;
             transition: margin-left .3s;
 
@@ -373,51 +373,156 @@ h3{
 
 
 
+.breadcrumb {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin-bottom: 5%;
+}
 
-        @media (max-width: 768px) {
+.breadcrumb-item:hover{
+    text-decoration: underline solid #365AC2;
+}
 
-            .navbar p {
-        font-size: 0.678rem;
-        margin-right: 5%;
+.breadcrumb-item {
+    position: relative;
+    font-size: 16px;
+}
+
+.breadcrumb-item a {
+    color: #3200af;
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: #3200af;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 3px; /* Adjust the spacing between items */
+    width: 9px;
+    height: 9px;
+    border-top: 2px solid #3200af;
+    border-right: 2px solid #3200af;
+    transform: rotate(45deg) translateY(-50%);
+    z-index: 1;
+}
+
+.breadcrumb-item:not(:first-child) {
+    padding-left: 30px; /* Adjust this value based on diagonal size */
+}
+
+
+    @media (max-width: 768px) {
+
+    .navbar p {
+    font-size: 0.678rem;
+    margin-right: 5%;
     }
 
     .open-btn button{
-        font-size: 0.990rem;
-        width: 100%;
-        display: inline;
+    font-size: 0.990rem;
+    display: inline;
     }
 
     .open-btn {
-        width: 35%;
-        display: inline;
+    display: inline;
     }
 
     .sidebar {
-       font-size: 100%;
-       padding-top: 10%;
+    font-size: 100%;
+    padding-top: 10%;
     }
 
     .sidebar-isi {
-        margin-top: 15%;
+    margin-top: 15%;
     }
 
     .logoutForm {
-        height: 50%;
+    height: 50%;
     }
 
     ul {
-        font-size: 0.876rem;
+    font-size: 0.876rem;
+    }
+
+    /* Form container adjustments */
+    .form-container {
+        width: 90%;
+        margin: 20px auto;
+        padding: 20px;
+        font-size: 1rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 90%;
+        padding: 10px;
+        font-size: 0.8rem;
+    }
+
+    /* Modal adjustments */
+    .modal-content {
+        max-width: 65%;
+        height: auto;
+        padding: 20px;
+        font-size: 0.7rem;
+    }
+
+    .modal-content h3{
+        font-size: 1.5rem;
+        margin-bottom: 10%;
+    }
+
+    .step-number {
+        width: 70px;
+        height: 25px;
+        font-size: 0.8rem;
+    }
+    .steps p {
+        font-size: 0.8rem;
+    }
+
+    .modal {
+        align-items: center;
+        padding-top: 10%;
+    }
+    .how {
+        font-size: 0.7rem;
+    }
+
+    .form-container label {
+        font-size: 0.9rem;
+        margin-top: 2%;
+    }
+    .form-container button[type="submit"] {
+        margin-right: 5%;
+    }
+
+    /* Breadcrumb adjustments */
+    .breadcrumb-item {
+        font-size: 0.6rem;
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        left: 5px;
+        width: 7px;
+        height: 7px;
     }
 
 
-        }
+    }
+
 
     </style>
 </head>
 <body>
     <nav class="navbar">
         <div class="open-btn">
-            <button onclick="toggleSidebar()">&#9776; Dashboard</button>
+            <button onclick="toggleSidebar()">&#9776; Organization</button>
         </div>
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
@@ -426,12 +531,12 @@ h3{
         <div class="sidebar-isi">
             <ul class="list">
                 <li>
-                    <a href="/" class="nav-link-act">
+                    <a href="/" class="nav-link">
                         <span class="link"><i class="fa-solid fa-house-chimney"></i>ㅤDashboard</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/organization" class="nav-link">
+                    <a href="/organization" class="nav-link-act">
                         <span class="link"><i class="nav-icon fas fa-users"></i>ㅤOrganization</span>
                     </a>
                 </li>
@@ -455,6 +560,15 @@ h3{
     </div>
 
     <div id="main-content" class="main-content">
+
+         <!-- Content Header (Page header) -->
+			<br>
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb" style="background-color: transparent;">
+					<li class="breadcrumb-item"><a href="{{ route('organization') }}" style="color: #3200af;">Organization</a></li>
+					<li class="breadcrumb-item active" aria-current="page" style="color: #3200af;">Create Organization</li>
+				</ol>
+			</nav>
           <!-- Form Section -->
           <div class="form-container">
             <!-- Form for creating organization -->

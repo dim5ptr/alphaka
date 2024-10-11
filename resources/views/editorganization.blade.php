@@ -7,7 +7,7 @@
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    
+
     <style>
         /* CSS Enhancements */
 
@@ -136,8 +136,7 @@ body {
     color: #365AC2;
     font-size: 16px;
 }
-
-.open-btn {
+.open-btn button {
     position: fixed;
     left: 2%;
     top: 2.5%;
@@ -145,11 +144,12 @@ body {
     color: #365AC2;
     font-size: 20px;
     font-weight: 600;
+    border: none;
     transition: 0.3s;
     z-index: 1001;
-    border: none;
     background: none;
 }
+
 
 .open-btn:hover {
     color: darkblue;
@@ -415,51 +415,113 @@ h3{
     padding-left: 30px; /* Adjust this value based on diagonal size */
 }
 
+    @media (max-width: 768px) {
 
-        @media (max-width: 768px) {
-
-            .navbar p {
-        font-size: 0.678rem;
-        margin-right: 5%;
+    .navbar p {
+    font-size: 0.678rem;
+    margin-right: 5%;
     }
 
     .open-btn button{
-        font-size: 0.990rem;
-        width: 100%;
-        display: inline;
+    font-size: 0.990rem;
+    display: inline;
     }
 
     .open-btn {
-        width: 35%;
-        display: inline;
+    display: inline;
     }
 
     .sidebar {
-       font-size: 100%;
-       padding-top: 10%;
+    font-size: 100%;
+    padding-top: 10%;
     }
 
     .sidebar-isi {
-        margin-top: 15%;
+    margin-top: 15%;
     }
 
     .logoutForm {
-        height: 50%;
+    height: 50%;
     }
 
     ul {
-        font-size: 0.876rem;
+    font-size: 0.876rem;
+    }
+
+    /* Form container adjustments */
+    .form-container {
+        width: 90%;
+        margin: 20px auto;
+        padding: 20px;
+        font-size: 1rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 90%;
+        padding: 10px;
+        font-size: 0.8rem;
+    }
+
+    /* Modal adjustments */
+    .modal-content {
+        max-width: 65%;
+        height: auto;
+        padding: 20px;
+        font-size: 0.7rem;
+    }
+
+    .modal-content h3{
+        font-size: 1.5rem;
+        margin-bottom: 10%;
+    }
+
+    .step-number {
+        width: 70px;
+        height: 25px;
+        font-size: 0.8rem;
+    }
+    .steps p {
+        font-size: 0.8rem;
+    }
+
+    .modal {
+        align-items: center;
+        padding-top: 10%;
+    }
+    .how {
+        font-size: 0.7rem;
+    }
+
+    .form-container label {
+        font-size: 0.9rem;
+        margin-top: 2%;
+    }
+    .form-container button[type="submit"] {
+        margin-right: 5%;
+    }
+
+    /* Breadcrumb adjustments */
+    .breadcrumb-item {
+        font-size: 0.6rem;
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        left: 5px;
+        width: 7px;
+        height: 7px;
     }
 
 
-        }
+}
+
 
     </style>
 </head>
 <body>
     <nav class="navbar">
         <div class="open-btn">
-            <button onclick="toggleSidebar()">&#9776; Dashboard</button>
+            <button onclick="toggleSidebar()">&#9776; Organization</button>
         </div>
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
@@ -468,12 +530,12 @@ h3{
         <div class="sidebar-isi">
             <ul class="list">
                 <li>
-                    <a href="/" class="nav-link-act">
+                    <a href="/" class="nav-link">
                         <span class="link"><i class="fa-solid fa-house-chimney"></i>ㅤDashboard</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/organization" class="nav-link">
+                    <a href="/organization" class="nav-link-act">
                         <span class="link"><i class="nav-icon fas fa-users"></i>ㅤOrganization</span>
                     </a>
                 </li>
