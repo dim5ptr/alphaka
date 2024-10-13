@@ -396,7 +396,7 @@
 }
 
 .members-count p {
-    margin: 0;
+    margin: 8%;
     padding-top: 3%;
 }
 
@@ -519,6 +519,10 @@
 
     .alert {
         font-size: 70%;
+    }
+
+    .members-count p {
+        margin: 2%;
     }
 }
 
