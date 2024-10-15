@@ -845,6 +845,22 @@
         </div>
     @endif
     </div>
+
+    <div id="updateUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>Update Profile Picture via Gravatar</h1>
+                <button class="btn-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <iframe id="gravatarFrame" src="" width="100%" height="500px" style="border: none;"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function redirectToGravatar() {
             fetch('{{ route("gravatar") }}', {
@@ -854,29 +870,36 @@
                     'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for security
                 },
                 body: JSON.stringify({
-                    // You can include additional data here if necessary
                     email: '{{ session("email") }}' // Example of sending email from session
                 })
             })
             .then(response => {
                 if (response.redirected) {
                     // Handle redirect
-                    window.location.href = response.url; // Redirect to the URL provided in the response
+                    window.location.href = response.url;
                 } else if (response.ok) {
-                    return response.json(); // Parse JSON response if needed
+                    return response.json();
                 } else {
-                    throw new Error('Network response was not ok');
+                    // Redirect to Gravatar if there's any error
+                    window.location.href = 'https://gravatar.com';
                 }
             })
             .then(data => {
-                // Handle successful response if not redirected
-                // Here you can perform any updates to the UI if needed
+                if (data.gravatarUrl) {
+                    window.location.href = data.gravatarUrl; // Redirect to Gravatar URL
+                } else if (data.redirect) {
+                    window.location.href = data.redirect; // Redirect to Gravatar if no profile picture
+                } else {
+                    window.location.href = 'https://gravatar.com'; // Fallback redirect
+                }
             })
             .catch(error => {
-                console.error('There was a problem with the fetch operation:', error);
-                alert('An error occurred while retrieving Gravatar.');
+                console.error('Fetch error:', error);
+                // Always redirect to Gravatar on any fetch error
+                window.location.href = 'https://gravatar.com';
             });
         }
+
         </script>
 
     <script>
