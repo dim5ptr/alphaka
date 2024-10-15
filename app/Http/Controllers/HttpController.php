@@ -1070,6 +1070,74 @@ public function organizationVerify(Request $request, $token)
         }
     }
 
+    public function gravatar(Request $request)
+    {
+        Log::info('Starting Gravatar retrieval process.');
+
+        try {
+            // Ambil email pengguna dari sesi
+            $userEmail = session('email');
+
+            // Periksa apakah email tersedia
+            if (empty($userEmail)) {
+                Log::error('No email found in session.');
+                return redirect()->back()->with('error', 'No email found. Please log in again.');
+            }
+
+            // Mengirim permintaan ke API eksternal untuk mendapatkan Gravatar
+            $response = Http::withHeaders([
+                'Authorization' => session('access_token'),
+                'x-api-key' => self::API_KEY,
+                'Content-Type' => 'application/json',
+            ])->post(self::API_URL . '/sso/gravatar.json', [
+                'email' => $userEmail,
+            ]);
+
+            Log::info('API response received.', ['status' => $response->status()]);
+
+            if ($response->successful()) {
+                // Ambil data dari respons
+                $data = $response->json();
+                Log::info('Response data:', ['data' => $data]);
+
+                // Cek apakah ada pesan 'No profile picture, using Gravatar'
+                if (isset($data['data']['data'])) {
+                    $profileMessage = $data['data']['data'];
+                    Log::info('Profile message:', ['message' => $profileMessage]);
+
+                    // Jika tidak ada foto profil
+                    if (strpos($profileMessage, 'No profile picture, using Gravatar') !== false) {
+                        Log::info('No profile picture found, redirecting to Gravatar upload page.');
+                        return redirect()->away('https://gravatar.com')->with('info', 'You are being redirected to Gravatar to upload your profile picture.');
+                    }
+                }
+
+                // Ambil URL Gravatar dari data
+                $gravatarUrl = $data['data']['gravatar_url'] ?? null;
+
+                // Cek apakah 'gravatar_url' tidak ada
+                if (!$gravatarUrl) {
+                    Log::error('Gravatar URL not found in response data.');
+                    return redirect()->back()->with('error', 'Gravatar URL not found in the response.');
+                }
+
+                Log::info('Gravatar URL retrieved successfully.', ['gravatarUrl' => $gravatarUrl]);
+
+                // Simpan URL Gravatar di sesi atau di database sesuai kebutuhan
+                session(['gravatar_url' => $gravatarUrl]);
+
+                // Redirect dengan pesan sukses
+                return redirect()->route('personal')->with('success', 'Gravatar retrieved successfully.');
+            } else {
+                $errorMessage = $response->json()['message'] ?? 'An error occurred while retrieving Gravatar.';
+                Log::error('API error:', ['message' => $errorMessage]);
+                return redirect()->back()->with('error', $errorMessage);
+            }
+        } catch (\Exception $e) {
+            Log::error('Exception occurred during API request:', ['exception' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'An error occurred during the Gravatar retrieval process.');
+        }
+    }
 
 
 

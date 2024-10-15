@@ -731,7 +731,7 @@
             </div>
 
             <div class="profile-info">
-                <div class="foto">
+                {{-- <div class="foto">
                 @if (session('profile_picture') === '' || session('profile_picture') === null)
                     <img id="profile_picture" src="{{ asset('img/user.png') }}"  alt="Foto Profil" class="profile-picture">
                 @else
@@ -742,7 +742,21 @@
                     <i class="fas fa-image me-2"></i>
                 </button>
                 </div>
+                </div> --}}
+                <div class="foto">
+                    @if (session('profile_picture'))
+                        <img id="profile_picture" src="{{ asset(session('profile_picture')) }}" alt="Foto Profil" class="img-fluid rounded-circle profile-picture">
+                    @else
+                        <img id="profile_picture" src="https://www.gravatar.com/avatar/{{ md5(strtolower(trim(session('email')))) }}?s=200&d=mp" alt="Foto Profil" class="profile-picture">
+                    @endif
+
+                    <div class="editfoto">
+                        <button type="button" onclick="redirectToGravatar()">
+                            <i class="fas fa-image me-2"></i>
+                        </button>
+                    </div>
                 </div>
+
                 <div class="data">
                     <p>
                         <p><span class="text-bold"><strong>User Name:</strong> {{ $personalInfo['username'] }}</span></p>
@@ -831,6 +845,40 @@
         </div>
     @endif
     </div>
+    <script>
+        function redirectToGravatar() {
+            fetch('{{ route("gravatar") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for security
+                },
+                body: JSON.stringify({
+                    // You can include additional data here if necessary
+                    email: '{{ session("email") }}' // Example of sending email from session
+                })
+            })
+            .then(response => {
+                if (response.redirected) {
+                    // Handle redirect
+                    window.location.href = response.url; // Redirect to the URL provided in the response
+                } else if (response.ok) {
+                    return response.json(); // Parse JSON response if needed
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            })
+            .then(data => {
+                // Handle successful response if not redirected
+                // Here you can perform any updates to the UI if needed
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+                alert('An error occurred while retrieving Gravatar.');
+            });
+        }
+        </script>
+
     <script>
         function toggleSidebar() {
             var sidebar = document.getElementById("sidebar");
