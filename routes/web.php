@@ -99,7 +99,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/showcreateorganization', [HttpController::class, 'showcreateorganization'])->name('showcreateorganization');
 
     Route::get('/moredetails/{organization_name}', [HttpController::class, 'showmoredetails'])->name('showmoredetails');
-    Route::post('/moredetails/{organization_name}', [HttpController::class, 'moredetails'])->name('moredetails');
+    // Route::post('/moredetails/{organization_name}', [HttpController::class, 'moredetails'])->name('moredetails');
 
     Route::post('/addorganization', [HttpController::class, 'addorganization'])->name('addorganization');
     Route::get('/vieworganization/{organization_name}', [HttpController::class, 'showvieworganization'])->name('showvieworganization');

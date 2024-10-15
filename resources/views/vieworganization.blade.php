@@ -1305,38 +1305,36 @@ function sendEmails() {
             });
         }
 
-        // Function to populate table with API data or show "No data found"
         function populateTable(data) {
-            var tbody = document.getElementById('dataBody');
-            tbody.innerHTML = ''; // Clear the table body
+    var tbody = document.getElementById('dataBody');
+    tbody.innerHTML = ''; // Clear the table body
 
-            if (data.length === 0) {
-                // If no data, append "No data found" row
-                var row = document.createElement('tr');
-                var noDataCell = `<td colspan="4" class="text-center">No data found</td>`;
-                row.innerHTML = noDataCell;
-                tbody.appendChild(row);
-            } else {
-                // Populate table with user data
-                data.forEach(function(item, index) {
-                    var row = document.createElement('tr');
-                    row.innerHTML = `
-                        <th scope="row">${index + 1}</th>
-                        <td>${item.username ? item.username : 'N/A'}</td> <!-- Use username or N/A if null -->
-                        <td>${item.email}</td>
-                        <td>
-                            <form action="{{ route('showmoredetails', ['organization_name' => $organization['organization_name']]) }}" method="GET">
-                                @csrf
-                                <button type="submit" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="top" title="More Details" style="background: none; border: none; padding: 0;">
-                                    ㅤ<i class="bi bi-info-circle" style="font-size: 1.8rem; color: #007bff;"></i>
-                                </button>
-                            </form>
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            }
-        }
+    if (data.length === 0) {
+        var row = document.createElement('tr');
+        var noDataCell = `<td colspan="4" class="text-center">No data found</td>`;
+        row.innerHTML = noDataCell;
+        tbody.appendChild(row);
+    } else {
+        data.forEach(function(item, index) {
+            var row = document.createElement('tr');
+            row.innerHTML = `
+                <th scope="row">${index + 1}</th>
+                <td>${item.username ? item.username : 'N/A'}</td>
+                <td>${item.email}</td>
+                <td>
+                    <form action="{{ route('showmoredetails', ['organization_name' => $organization['organization_name']]) }}" method="GET">
+                        @csrf
+                        <input type="hidden" name="email" value="${item.email}">
+                        <button type="submit" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="top" title="More Details" style="background: none; border: none; padding: 0;">
+                            <i class="bi bi-info-circle" style="font-size: 1.8rem; color: #007bff;"></i>
+                        </button>
+                    </form> 
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+}
 
         // Call fetchDataFromAPI on page load
         document.addEventListener('DOMContentLoaded', function () {
