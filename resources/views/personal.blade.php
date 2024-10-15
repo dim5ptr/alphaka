@@ -900,7 +900,7 @@
             });
         }
 
-        </script>
+    </script>
 
     <script>
         function toggleSidebar() {
