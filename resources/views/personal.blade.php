@@ -731,7 +731,7 @@
             </div>
 
             <div class="profile-info">
-                <div class="foto">
+                {{-- <div class="foto">
                 @if (session('profile_picture') === '' || session('profile_picture') === null)
                     <img id="profile_picture" src="{{ asset('img/user.png') }}"  alt="Foto Profil" class="profile-picture">
                 @else
@@ -742,7 +742,21 @@
                     <i class="fas fa-image me-2"></i>
                 </button>
                 </div>
+                </div> --}}
+                <div class="foto">
+                    @if (session('profile_picture'))
+                        <img id="profile_picture" src="{{ asset(session('profile_picture')) }}" alt="Foto Profil" class="img-fluid rounded-circle profile-picture">
+                    @else
+                        <img id="profile_picture" src="https://www.gravatar.com/avatar/{{ md5(strtolower(trim(session('email')))) }}?s=200&d=mp" alt="Foto Profil" class="profile-picture">
+                    @endif
+
+                    <div class="editfoto">
+                        <button type="button" onclick="redirectToGravatar()">
+                            <i class="fas fa-image me-2"></i>
+                        </button>
+                    </div>
                 </div>
+
                 <div class="data">
                     <p>
                         <p><span class="text-bold"><strong>User Name:</strong> {{ $personalInfo['username'] }}</span></p>
@@ -831,6 +845,63 @@
         </div>
     @endif
     </div>
+
+    <div id="updateUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>Update Profile Picture via Gravatar</h1>
+                <button class="btn-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <iframe id="gravatarFrame" src="" width="100%" height="500px" style="border: none;"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function redirectToGravatar() {
+            fetch('{{ route("gravatar") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for security
+                },
+                body: JSON.stringify({
+                    email: '{{ session("email") }}' // Example of sending email from session
+                })
+            })
+            .then(response => {
+                if (response.redirected) {
+                    // Handle redirect
+                    window.location.href = response.url;
+                } else if (response.ok) {
+                    return response.json();
+                } else {
+                    // Redirect to Gravatar if there's any error
+                    window.location.href = 'https://gravatar.com';
+                }
+            })
+            .then(data => {
+                if (data.gravatarUrl) {
+                    window.location.href = data.gravatarUrl; // Redirect to Gravatar URL
+                } else if (data.redirect) {
+                    window.location.href = data.redirect; // Redirect to Gravatar if no profile picture
+                } else {
+                    window.location.href = 'https://gravatar.com'; // Fallback redirect
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                // Always redirect to Gravatar on any fetch error
+                window.location.href = 'https://gravatar.com';
+            });
+        }
+
+    </script>
+
     <script>
         function toggleSidebar() {
             var sidebar = document.getElementById("sidebar");

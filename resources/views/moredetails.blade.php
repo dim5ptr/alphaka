@@ -523,7 +523,7 @@
         margin-bottom: 5%;
     }
 
-   
+
 
     .is-invalid {
     border-color: #dc3545;
@@ -820,10 +820,10 @@
                 </div>
                 <div class="profile-info">
                     <div class="foto">
-                        @if(session('profile_picture'))
-                            <img id="profile_picture" src="{{ asset(session('profile_picture')) }}" alt="Profile Picture" class="img-fluid profile-picture">
+                        @if (session('profile_picture'))
+                        <img id="profile_picture" src="{{ asset(session('profile_picture')) }}" alt="Foto Profil" class="img-fluid rounded-circle profile-picture">
                         @else
-                        <img id="profile_picture" src="{{ asset('img/user.png') }}"  alt="Foto Profil" class="profile-picture">
+                            <img id="profile_picture" src="https://www.gravatar.com/avatar/{{ md5(strtolower(trim(session('email')))) }}?s=200&d=mp" alt="Foto Profil" class="profile-picture">
                         @endif
                     </div>
                     <div class="data">

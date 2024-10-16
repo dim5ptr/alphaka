@@ -480,6 +480,7 @@
 
     .navbar p {
         font-size: 0.678rem;
+        margin-right: 5%;
     }
 
     .open-btn button{
@@ -518,60 +519,10 @@
 
     .alert {
         font-size: 70%;
-   }
-
-   .infoo {
-        width: 50%;
-        display: flex;
-        justify-content: flex-end;
-        font-size: 0.780rem;
     }
-
-    .infoo p{
-        width: 50%;
-    }
-
-    .filter {
-        margin-top: 5%; /* Tambahkan margin atas */
-        margin-right: 0;
-        padding-right: 0;
-        width: 20%; /* Ambil lebar penuh */
-        border-right: none; /* Hapus border untuk tampilan lebih sederhana */
-    }
-
-    #filterDropdown {
-        width: 50%; /* Ambil lebar penuh pada layar kecil */
-        padding: 8px 10px;
-        font-size: 0.8rem; /* Font lebih kecil */
-    }
-
-
-
-
 }
 
 @media (max-width: 480px) {
-
-    .navbar {
-        position: fixed;
-    }
-
-    .sidebar {
-    font-size: 100%;
-    padding-top: 10%;
-    }
-
-    .sidebar-isi {
-    margin-top: 15%;
-    }
-
-    .logoutForm {
-    height: 50%;
-    }
-
-    ul {
-    font-size: 0.876rem;
-    }
 
     .main-content {
         margin-top: 15%;
@@ -588,11 +539,35 @@
         font-size: 0.890rem;
     }
 
+}
+
+/* Media Query untuk layar kecil (ponsel) */
+@media (max-width: 768px) {
     .infoo {
-        width: 50%;
-        display: flex;
-        justify-content: flex-end;
+        justify-content: center; /* Sentralisasi di layar kecil */
+    }
+
+    .filter {
+        padding-right: 5%; /* Atur ulang padding agar sesuai dengan layar kecil */
+        margin-right: 5%;
+        border-right: 3px solid #365AC2; /* Kurangi ketebalan border */
+    }
+
+    #filterDropdown {
+        padding: 10px 20px 10px 10px; /* Kurangi padding agar pas di layar kecil */
+        font-size: 0.9rem; /* Sesuaikan font untuk layar kecil */
+        border-radius: 3px;
+    }
+}
+
+/* Media Query untuk layar sangat kecil (di bawah 480px) */
+@media (max-width: 480px) {
+    .infoo {
+        /* Stack elemen secara vertikal */
+        align-items: center; /* Sentralisasi konten */
+        width: 40%;
         font-size: 0.780rem;
+        margin-right: 4%;
     }
 
     .infoo p{
@@ -600,10 +575,11 @@
     }
 
     .filter {
+        padding-left: 15%;
         margin-top: 5%; /* Tambahkan margin atas */
         margin-right: 0;
         padding-right: 0;
-        width: 20%; /* Ambil lebar penuh */
+        width: 30%; /* Ambil lebar penuh */
         border-right: none; /* Hapus border untuk tampilan lebih sederhana */
     }
 
@@ -612,13 +588,7 @@
         padding: 8px 10px;
         font-size: 0.8rem; /* Font lebih kecil */
     }
-
-
-
-
-
 }
-
 
 
 

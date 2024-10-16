@@ -99,7 +99,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/showcreateorganization', [HttpController::class, 'showcreateorganization'])->name('showcreateorganization');
 
     Route::get('/moredetails/{organization_name}', [HttpController::class, 'showmoredetails'])->name('showmoredetails');
-    Route::post('/moredetails/{organization_name}', [HttpController::class, 'moredetails'])->name('moredetails');
+    // Route::post('/moredetails/{organization_name}', [HttpController::class, 'moredetails'])->name('moredetails');
 
     Route::post('/addorganization', [HttpController::class, 'addorganization'])->name('addorganization');
     Route::get('/vieworganization/{organization_name}', [HttpController::class, 'showvieworganization'])->name('showvieworganization');
@@ -115,6 +115,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/personal', [HttpController::class, 'personal'])->name('personal');
     Route::get('/editpersonal',  [HttpController::class, 'showeditpersonal'])->name('showeditpersonal');
     Route::post('/editpersonal', [HttpController::class, 'editpersonal'])->name('editpersonal');
+    Route::post('/gravatar', [HttpController::class, 'gravatar'])->name('gravatar');
     Route::get('/upload-profile-picture', [HttpController::class, 'showuploadProfilePicture'])->name('show.upload.profile.picture');
     Route::post('/upload-profile-picture', [HttpController::class, 'uploadProfilePicture'])->name('upload.profile.picture');
 

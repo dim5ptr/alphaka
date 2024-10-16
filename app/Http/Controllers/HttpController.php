@@ -875,22 +875,81 @@ public function organizationVerify(Request $request, $token)
 }
 
 
-    public function showmoredetails($organization_name)
+    public function showmoredetails(Request $request, $organization_name)
     {
         Log::info('Attempting to show more details for organization: ' . $organization_name);
 
         try {
-            // Memanggil showvieworganization untuk mendapatkan data organisasi
+            // Get the email from the request
+            $email = $request->input('email');
+            Log::info('Email: ' . $email); // Log email value
+
+            // Get organization details using the showvieworganization function
             $organization = $this->showvieworganization($organization_name)->getData()['organization'];
 
-            // Mengirim data organisasi dan nama organisasi ke tampilan moredetails
-            Log::info('Showing more details for organization: ' . $organization_name);
-            return view('moredetails', compact('organization', 'organization_name'));
+            // Prepare the payload for the API request
+            $payload = ['email' => $email];
+
+            // Send the email to the external API to get user details
+            $response = Http::withHeaders([
+                'x-api-key' => self::API_KEY, // Ensure the API key is correct
+            ])->post(self::API_URL . '/sso/get_user_details_by_email.json', $payload); // Verify the endpoint URL
+
+            Log::info('API Request URL: ' . self::API_URL . '/sso/get_user_details_by_email.json');
+            Log::info('API Payload: ' . json_encode($payload));
+
+            // Log the status and body of the API response for further investigation
+            Log::info('API Response Status: ' . $response->status());
+            Log::info('API Response Body: ' . $response->body());
+
+            // Check if the API response is successful
+            if ($response->successful()) {
+                $userData = $response->json();
+
+                // Handle null values in the response by replacing them with 'N/A'
+                $fullname = $userData['full_name'] ?? 'N/A';
+                $dateofbirth = $userData['birthday'] ?? 'N/A';
+                $gender = $userData['gender'] ?? 'N/A';
+                $email = $userData['email'] ?? 'N/A';
+                $phone = $userData['phone'] ?? 'N/A';
+
+                // Handle roles, check for null values and empty array
+                if (isset($userData['roles']) && is_array($userData['roles']) && !empty($userData['roles'])) {
+                    // Filter out null roles and implode the array
+                    $roles = array_filter($userData['roles'], function ($role) {
+                        return $role !== null; // Remove null values
+                    });
+                    $user_role = !empty($roles) ? implode(', ', $roles) : 'N/A';
+                } else {
+                    $user_role = 'N/A'; // Set user_role to 'N/A' if roles array is empty or null
+                }
+
+                // Store user data in the session
+                session([
+                    'fullname' => $fullname,
+                    'dateofbirth' => $dateofbirth,
+                    'gender' => $gender,
+                    'email' => $email,
+                    'phone' => $phone,
+                    'user_role' => $user_role,
+                ]);
+
+                Log::info('User details retrieved successfully for: ' . $email);
+
+                // Return the view with the organization and organization name
+                return view('moredetails', compact('organization', 'organization_name'));
+            } else {
+                // Handle non-200 responses (e.g., 404 or 400)
+                Log::error('Failed to get user details from API. Status: ' . $response->status());
+                return back()->with('error', 'Failed to get user details from API: ' . $response->body());
+            }
         } catch (\Exception $e) {
             Log::error('Exception occurred while showing more details: ' . $e->getMessage());
             return back()->with('error', $e->getMessage());
         }
     }
+
+
 
 
     public function showeditorganization($organization_name)
@@ -1070,7 +1129,74 @@ public function organizationVerify(Request $request, $token)
         }
     }
 
+    public function gravatar(Request $request)
+{
+    Log::info('Starting Gravatar retrieval process.');
 
+    try {
+        // Get user's email from session
+        $userEmail = session('email');
+
+        // Check if the email exists
+        if (empty($userEmail)) {
+            Log::error('No email found in session.');
+            return redirect()->back()->with('error', 'No email found. Please log in again.');
+        }
+
+        // Send request to the external API to get Gravatar
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+            'Content-Type' => 'application/json',
+        ])->post(self::API_URL . '/sso/gravatar.json', [
+            'email' => $userEmail,
+        ]);
+
+        Log::info('API response received.', ['status' => $response->status()]);
+
+        if ($response->successful()) {
+            // Parse response data
+            $data = $response->json();
+            Log::info('Response data:', ['data' => $data]);
+
+            // Check if there's a "No profile picture" message
+            if (isset($data['data']['data']) && strpos($data['data']['data'], 'No profile picture, using Gravatar') !== false) {
+                Log::info('No profile picture found, redirecting to Gravatar upload page.');
+                return response()->json([
+                    'message' => 'No profile picture, using Gravatar',
+                    'redirect' => 'https://gravatar.com'
+                ]);
+            }
+
+            // Get the Gravatar URL from the response
+            $gravatarUrl = $data['data']['gravatar_url'] ?? null;
+
+            if (!$gravatarUrl) {
+                Log::error('Gravatar URL not found in response data.');
+                return response()->json([
+                    'error' => 'Gravatar URL not found'
+                ], 400);
+            }
+
+            Log::info('Gravatar URL retrieved successfully.', ['gravatarUrl' => $gravatarUrl]);
+
+            // Store the Gravatar URL in the session or database if necessary
+            session(['gravatar_url' => $gravatarUrl]);
+
+            return response()->json([
+                'gravatarUrl' => $gravatarUrl,
+                'message' => 'Gravatar retrieved successfully.'
+            ]);
+        } else {
+            $errorMessage = $response->json()['message'] ?? 'An error occurred while retrieving Gravatar.';
+            Log::error('API error:', ['message' => $errorMessage]);
+            return response()->json(['error' => $errorMessage], 400);
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred during API request:', ['exception' => $e->getMessage()]);
+        return response()->json(['error' => 'An error occurred during the Gravatar retrieval process.'], 500);
+    }
+}
 
 
 
