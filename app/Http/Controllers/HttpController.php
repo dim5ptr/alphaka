@@ -1250,52 +1250,70 @@ public function organizationVerify(Request $request, $token)
     }
 }
 
-
-public function activityUser()
+public function showActivityUser()
 {
-    $accessToken = session('access_token');
+    return view('user.activity');
+}
 
-    Log::info('Access token retrieved from session:', ['access_token' => $accessToken]);
+public function activityUser(Request $request)
+{
+    // Validasi input dari request
+    $request->validate([
+        'access_token' => 'required|string', // Validasi token akses
+    ]);
 
+    // Ambil token akses dari input
+    $accessToken = $request->input('access_token');
+    Log::info('Access token retrieved from input:', ['access_token' => $accessToken]);
+
+    // Cek keberadaan token akses
     if (!$accessToken) {
         Log::warning('Unauthorized access attempt: Access token not found.');
         return redirect()->back()->with('error', 'Unauthorized: Access token not found.');
     }
 
+    // Mengirim permintaan POST ke API
     $response = Http::withHeaders([
         'x-api-key' => self::API_KEY,
         'Authorization' => $accessToken,
     ])->post(self::API_URL . '/sso/user_activity.json');
 
+    // Menyimpan log respons API
     Log::info('API response received:', ['response' => $response->json()]);
 
-    if ($response->successful()) {
-        $responseData = $response->json();
+    // Mengambil data dari respons API
+    $responseData = $response->json();
+    Log::info('Complete API response:', ['response' => $responseData]);
 
-        if (isset($responseData['response']) && isset($responseData['response']['data'])) {
-            $sessionData = $responseData['response']['data']; // Ambil data sesi dari respons API
+    // Ambil data sesi dari respons API jika ada
+    $sessionData = [
+        'created_date' => null,
+        'last_update' => null,
+        'user_id' => null,
+    ];
 
-            Log::info('Session data to view:', ['sessions' => $sessionData]);
+    if (isset($responseData['response']) && isset($responseData['response']['data']) && $responseData['response']['success']) {
+        // Ambil data sesi dari respons API
+        $sessionData = $responseData['response']['data'];
+        Log::info('Session data to view:', ['sessions' => $sessionData]);
 
-            // Pastikan data yang diterima adalah array (atau jadikan array jika hanya satu objek)
-            $sessions = is_array($sessionData) ? $sessionData : [$sessionData];
+        // Simpan data sesi ke dalam session
+        session([
+            'created_date' => $sessionData['created_date'],
+            'last_update' => $sessionData['last_update'],
+            'user_id' => $sessionData['user_id'],
+        ]);
 
-            // Kirim data ke view
-            return view('security', ['sessions' => $sessions]);
-        } else {
-            Log::error('No valid session data in API response:', ['response' => $responseData]);
-            return redirect()->back()->with('error', 'No valid session data found.');
-        }
-
+        Log::info('Session data saved:', ['session_data' => session()->all()]);
     } else {
-        Log::error('Failed to retrieve user activity:', ['status' => $response->status(), 'body' => $response->body()]);
-        return redirect()->back()->with('error', 'Failed to retrieve user activity.');
+        Log::error('No valid session data in API response, using default values:', ['response' => $responseData]);
     }
+
+    // Kirim data ke view
+    return view('security', [
+        'sessions' => $sessionData,
+    ]);
 }
-
-
-
-
 
     public function confirmlogout()
     {
