@@ -108,7 +108,7 @@ class HttpController extends Controller
             return redirect()->route('dashboard');
         }
 
-        // If login fails or user is not found, attempt registration
+        // If login fails, attempt registration
         Log::info('Login failed, attempting to register the user: ' . $userData['email']);
         $registerCheckResponse = Http::withHeaders([
             'x-api-key' => self::API_KEY
@@ -119,6 +119,7 @@ class HttpController extends Controller
         $registerCheckData = $registerCheckResponse->json();
         Log::info('Register check API response:', $registerCheckData ?? []);
 
+        // If user is not registered or Google ID needs updating
         if (!$registerCheckResponse->successful() || $registerCheckData['result'] == 'not_registered') {
             Log::info('User not registered, attempting registration for: ' . $userData['email']);
 
@@ -135,23 +136,43 @@ class HttpController extends Controller
             $registerData = $registerResponse->json();
             Log::info('Registration API response:', $registerData ?? []);
 
-            if ($registerResponse->successful() && isset($registerData['activation_key'])) {
-                // Save the verification token in session
-                session([
-                    'verification_token' => $registerData['activation_key'],
-                    'email' => $userData['email'],
+            // If registration successful and Google ID is updated
+            if ($registerResponse->successful() && $registerData['result'] == 1 && $registerData['data'] == "Google ID successfully updated for existing user.") {
+                Log::info('Google ID successfully updated for user, retrying login.');
+
+                // Retry login after successful Google ID update
+                $retryLoginResponse = Http::withHeaders([
+                    'x-api-key' => self::API_KEY
+                ])->post(self::API_URL . '/sso/login.json', [
+                    'username' => $userData['email'],
+                    'google_id' => $userData['google_id'],
                 ]);
-                Log::info('Registration successful, verification token saved in session: ' . $registerData['activation_key']);
 
-                // Sending verification email
-                Log::info('Preparing to send verification email to: ' . $userData['email']);
-                Mail::send('emails.verification', ['token' => session('verification_token')], function($message) use ($userData) {
-                    $message->to($userData['email']);
-                    $message->subject('Email Activation');
-                });
-                Log::info('Verification email sent to: ' . $userData['email']);
+                $retryLoginData = $retryLoginResponse->json();
 
-                return redirect('/verify')->with('success_message', 'Please check your email to activate your account.');
+                // If login is successful after update
+                if ($retryLoginResponse->successful() && isset($retryLoginData['data']['access_token'])) {
+                    session(['access_token' => $retryLoginData['data']['access_token']]);
+                    Log::info('Access token saved in session: ' . $retryLoginData['data']['access_token']);
+
+                    // Store personal information in session
+                    if (isset($retryLoginData['data']['personal_info'])) {
+                        $personalInfo = $retryLoginData['data']['personal_info'];
+                        session([
+                            'birthday' => $personalInfo['birthday'],
+                            'full_name' => $personalInfo['full_name'],
+                            'gender' => $personalInfo['gender'],
+                            'phone' => $personalInfo['phone'],
+                            'username' => $personalInfo['username'],
+                            'email' => $userData['email'],
+                            'profile_picture' => $personalInfo['profile_picture'] ?? $userData['avatar'],
+                        ]);
+                        Log::info('Personal information saved in session:', $personalInfo ?? []);
+                    }
+
+                    Log::info('Login successful for user: ' . $userData['email']);
+                    return redirect()->route('dashboard');
+                }
             } else {
                 Log::warning('Registration failed for user: ' . $userData['email'], [
                     'api_response' => $registerData ?? [],
