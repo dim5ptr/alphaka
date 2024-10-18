@@ -1272,6 +1272,49 @@ public function organizationVerify(Request $request, $token)
 }
 
 
+public function activityUser()
+{
+    $accessToken = session('access_token');
+
+    Log::info('Access token retrieved from session:', ['access_token' => $accessToken]);
+
+    if (!$accessToken) {
+        Log::warning('Unauthorized access attempt: Access token not found.');
+        return redirect()->back()->with('error', 'Unauthorized: Access token not found.');
+    }
+
+    $response = Http::withHeaders([
+        'x-api-key' => self::API_KEY,
+        'Authorization' => $accessToken,
+    ])->post(self::API_URL . '/sso/user_activity.json');
+
+    Log::info('API response received:', ['response' => $response->json()]);
+
+    if ($response->successful()) {
+        $responseData = $response->json();
+
+        if (isset($responseData['response']) && isset($responseData['response']['data'])) {
+            $sessionData = $responseData['response']['data']; // Ambil data sesi dari respons API
+
+            Log::info('Session data to view:', ['sessions' => $sessionData]);
+
+            // Pastikan data yang diterima adalah array (atau jadikan array jika hanya satu objek)
+            $sessions = is_array($sessionData) ? $sessionData : [$sessionData];
+
+            // Kirim data ke view
+            return view('security', ['sessions' => $sessions]);
+        } else {
+            Log::error('No valid session data in API response:', ['response' => $responseData]);
+            return redirect()->back()->with('error', 'No valid session data found.');
+        }
+
+    } else {
+        Log::error('Failed to retrieve user activity:', ['status' => $response->status(), 'body' => $response->body()]);
+        return redirect()->back()->with('error', 'Failed to retrieve user activity.');
+    }
+}
+
+
 
 
 

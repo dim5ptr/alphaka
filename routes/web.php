@@ -123,6 +123,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/editpassword',  [HttpController::class, 'showeditpassword'])->name('showeditpassword');
     Route::post('/editpassword',  [HttpController::class, 'editpassword'])->name('editpassword');
 
+    Route::get('/user-activity',  [HttpController::class, 'activityUser'])->name('user.activity');
+
     // Tambahkan rute untuk halaman Settings
     Route::get('/settings', [HttpController::class, 'settings'])->name('settings');
 

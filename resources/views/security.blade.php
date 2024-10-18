@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Security</title>
 
-    <style>
+<style>
         /* CSS Anda disini */
         html, body {
             height: 100vh;
@@ -246,21 +245,11 @@
             position: relative;
             overflow: hidden;
             transition: box-shadow 0.3s;
+            box-shadow: 0 1px 4px rgba(98, 98, 98, 0.107);
+
         }
 
-        .nav-mini-act {
-            display: block;
-            padding: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.890rem;
-            color: #365AC2;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .nav-mini-act::before {
+        .nav-mini:hover::before {
             content: "";
             position: absolute;
             bottom: 0;
@@ -270,10 +259,17 @@
             background-color: #365AC2;
         }
 
-        .nav-mini:hover::before {
-            left: 0;
+        .nav-mini:hover::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0%;
             width: 100%;
+            height: 2px;
+            background-color: #365AC2;
         }
+
+
 
         .nav-mini:hover {
             box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
@@ -294,24 +290,26 @@
         }
 
         .inpage h3 {
-            margin-bottom: 20px;
-            font-size: 24px;
+            margin-bottom: 10px;
+            font-size: 2rem;
             color: #333;
         }
 
         .inpage p {
-            margin-bottom: 3%;
+            font-size: 1rem;
+            margin-bottom: 5%;
         }
 
         .inpage label {
             margin-top: 50px;
+            margin-bottom: 10px;
         }
 
         .inpage input[type="password"] {
             width: 60%;
             padding: 15px;
-            margin: 10px 0;
-            margin-bottom: 0;
+            margin: 8px 0;
+            margin-bottom: 10px;
             border-radius: 5px;
             border: 1px solid #ccc;
         }
@@ -414,9 +412,6 @@
                 }
 
 
-
-
-
                 .inpage button {
                     float: right;
                     margin-top: 0%;
@@ -502,16 +497,45 @@
                 font-size: 1rem;
                 padding: 0 10px; /* Add padding for click area */
                 height: 100%; /* Match the button's height to the input's height */
-                display: flex;
                 align-items: center; /* Vertically center the icon */
                 justify-content: center; /* Horizontally center the icon */
             }
 
+  /* The Modal (background) */
+  .custom-modal {
+            display: none;
+            position: relative;
+            z-index: 6;
+            width: 90%;
+            height: 100%;
+            overflow: auto;
+        }
+
+        /* Modal Content/Box */
+        .custom-modal-content {
+            margin: 10%;
+            width: 80%;
+            border-radius: 8px;
+        }
+
+        /* Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            cursor: pointer;
+        }
 
     </style>
 </head>
 <body>
-    <nav class="navbar">
+     <nav class="navbar">
         <div class="open-btn">
             <button onclick="toggleSidebar()">&#9776; Security</button>
         </div>
@@ -543,7 +567,7 @@
                 </li>
             </ul>
             <form id="logoutForm" method="GET" class="logoutForm" action="{{ route('confirm-logout') }}">
-                <button type="submit" class="logout-button">ㅤ <i class="fa-solid fa-right-from-bracket"></i>ㅤLogout</button>
+                <button type="submit" class="logout-button">ㅤ<i class="fa-solid fa-right-from-bracket"></i>ㅤLogout</button>
             </form>
         </div>
     </div>
@@ -552,39 +576,31 @@
         <div class="banner">
             <div class="menu">
                 <div class="list2">
-                    <ul>
-                        <li>
-                            <a href="#" class="nav-mini-act" data-target="password">
-                                <span class="link">Password</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="nav-mini" data-target="sessions">
-                                <span class="link">Account Sessions</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="nav-mini" data-target="activity">
-                                <span class="link">Login Activity</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="page">
-                    <div class="inpage">
-                        <div id="password" class="content-section">
+                <ul>
+                    <li>
+                        <a href="#" class="nav-mini" data-target="password">Password</a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-mini" data-target="sessions">Account Sessions</a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-mini" data-target="help">Help Center</a>
+                    </li>
+                </ul>
+            </div>
+
+        <!-- Modal for Password -->
+        <div class="page">
+            <div class="inpage">
+                <div id="password-modal" class="custom-modal">
+                    <div class="custom-modal-content">
                         <h3>Manage Your Password</h3>
                         <p>Your new password must be different from your previous used password.</p>
                         @if (session('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
+                            <div class="alert alert-success">{{ session('success') }}</div>
                         @endif
-
                         @if (session('error'))
-                            <div class="alert alert-danger">
-                                {{ session('error') }}
-                            </div>
+                            <div class="alert alert-danger">{{ session('error') }}</div>
                         @endif
                         <form id="change-password-form" method="POST" action="{{ route('editpassword') }}">
                             @csrf
@@ -593,9 +609,7 @@
                                 <label for="new-password">New Password:</label><br>
                                 <div class="input-group">
                                     <input type="password" id="new-password" name="new_password" required>
-                                    <button type="button" class="btn" id="toggle-new-password">
-                                        <i class="fa fa-eye"></i>
-                                    </button>
+                                    <button type="button" class="btn" id="toggle-new-password"><i class="fa fa-eye"></i></button>
                                 </div>
                                 <span id="new-password-error" class="error-message"></span>
                             </div>
@@ -603,112 +617,190 @@
                                 <label for="confirm-password">Confirm New Password:</label><br>
                                 <div class="input-group">
                                     <input type="password" id="confirm-password" name="confirm_new_password" required>
-                                    <button type="button" class="btn" id="toggle-confirm-password">
-                                        <i class="fa fa-eye"></i>
-                                    </button>
+                                    <button type="button" class="btn" id="toggle-confirm-password"><i class="fa fa-eye"></i></button>
                                 </div>
                                 <span id="confirm-password-error" class="error-message"></span>
                             </div>
                             <button type="submit">Change Password</button>
                         </form>
+                    </div>
+                </div>
+
+               <!-- Modal for Account Sessions -->
+               <div id="sessions-modal" class="custom-modal">
+                    <div class="custom-modal-content">
+                        <h3>Account Sessions</h3>
+                        <p>Manage your active sessions.</p>
+                        <div id="session-list">
+                            @if(isset($sessions) && is_array($sessions))
+                            @foreach($sessions as $session)
+                                <div class="session-item">
+                                    <p>Session ID: {{ $session['user_id'] }}</p>
+                                    <p>Created: {{ \Carbon\Carbon::parse($session['created_date'])->format('Y-m-d H:i:s') }}</p>
+                                    <p>Last Update: {{ \Carbon\Carbon::parse($session['last_update'])->format('Y-m-d H:i:s') }}</p>
+                                </div>
+                            @endforeach
+                        @else
+                            <p>Failed to retrieve session data.</p>
+                        @endif
                         </div>
                     </div>
                 </div>
+
+                <!-- Modal for Login Activity -->
+                <div id="help-modal" class="custom-modal">
+                    <div class="custom-modal-content">
+                        <h3>Help Center</h3>
+                        <p>View your recent login activity.</p>
+                    </div>
+                </div>
+             </div>
             </div>
+         </div>
         </div>
     </div>
 
     <script>
+         // Function to close all modals
+    function closeAllModals() {
+        document.querySelectorAll('.custom-modal').forEach(modal => {
+            modal.style.display = "none";
+        });
+    }
+
+   // Handle menu clicks to show corresponding modals
+document.querySelectorAll('.nav-mini').forEach(link => {
+    link.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('data-target');
+        const modalId = targetId + '-modal';
+
+        closeAllModals();
+        const targetModal = document.getElementById(modalId);
+        if (targetModal) {
+            targetModal.style.display = "block";
+            if (targetId === 'sessions') {
+                // Fetch session data when the 'Account Sessions' modal is opened
+                fetchSessions();
+            }
+        }
+    });
+});
+
+    // Close modal when clicking on the close button
+    document.querySelectorAll('.custom-modal .close').forEach(closeBtn => {
+        closeBtn.addEventListener('click', function () {
+            this.closest('.custom-modal').style.display = "none"; // Hide the modal
+        });
+    });
+
+    // Close modal when clicking outside the modal content
+    window.addEventListener('click', function (event) {
+        document.querySelectorAll('.custom-modal').forEach(modal => {
+            if (event.target == modal) {
+                modal.style.display = "none"; // Hide modal
+            }
+        });
+    });
+
     // Toggle visibility for New Password
-document.getElementById('toggle-new-password').addEventListener('click', function () {
-    const passwordField = document.getElementById('new-password');
-    const passwordIcon = this.querySelector('i');
+    document.getElementById('toggle-new-password').addEventListener('click', function () {
+        const passwordField = document.getElementById('new-password');
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            this.innerHTML = '<i class="fa fa-eye-slash"></i>';
+        } else {
+            passwordField.type = 'password';
+            this.innerHTML = '<i class="fa fa-eye"></i>';
+        }
+    });
 
-    if (passwordField.type === 'password') {
-        passwordField.type = 'text';  // Change to 'text' to show password
-        passwordIcon.classList.remove('fa-eye');
-        passwordIcon.classList.add('fa-eye-slash');
-    } else {
-        passwordField.type = 'password';  // Change back to 'password' to hide
-        passwordIcon.classList.remove('fa-eye-slash');
-        passwordIcon.classList.add('fa-eye');
-    }
-});
+    // Toggle visibility for Confirm New Password
+    document.getElementById('toggle-confirm-password').addEventListener('click', function () {
+        const confirmPasswordField = document.getElementById('confirm-password');
+        if (confirmPasswordField.type === 'password') {
+            confirmPasswordField.type = 'text';
+            this.innerHTML = '<i class="fa fa-eye-slash"></i>';
+        } else {
+            confirmPasswordField.type = 'password';
+            this.innerHTML = '<i class="fa fa-eye"></i>';
+        }
+    });
 
-// Toggle visibility for Confirm New Password
-document.getElementById('toggle-confirm-password').addEventListener('click', function () {
-    const confirmPasswordField = document.getElementById('confirm-password');
-    const confirmPasswordIcon = this.querySelector('i');
 
-    if (confirmPasswordField.type === 'password') {
-        confirmPasswordField.type = 'text';  // Change to 'text' to show password
-        confirmPasswordIcon.classList.remove('fa-eye');
-        confirmPasswordIcon.classList.add('fa-eye-slash');
-    } else {
-        confirmPasswordField.type = 'password';  // Change back to 'password' to hide
-        confirmPasswordIcon.classList.remove('fa-eye-slash');
-        confirmPasswordIcon.classList.add('fa-eye');
-    }
-});
-</script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var newPasswordInput = document.getElementById('new-password');
+        var confirmPasswordInput = document.getElementById('confirm-password');
+        var newPasswordError = document.getElementById('new-password-error');
+        var confirmPasswordError = document.getElementById('confirm-password-error');
 
-    <script>
-        // Function to toggle sidebar visibility
-        function toggleSidebar() {
-            var sidebar = document.getElementById("sidebar");
-            var mainContent = document.getElementById("main-content");
-            if (sidebar.style.left === "0px") {
-                sidebar.style.left = "-270px";
-                mainContent.style.marginLeft = "10%";
-            } else {
-                sidebar.style.left = "0px";
-                mainContent.style.marginLeft = "19%";
+        // Real-time validation function
+        function validatePasswords() {
+            var newPasswordValue = newPasswordInput.value;
+            var confirmPasswordValue = confirmPasswordInput.value;
+
+            // Clear previous error messages
+            newPasswordError.textContent = '';
+            confirmPasswordError.textContent = '';
+
+            // Password length check
+            if (newPasswordValue.length < 8) {
+                newPasswordError.textContent = 'Password must be at least 8 characters.';
+            }
+
+            // Match check
+            if (newPasswordValue !== confirmPasswordValue) {
+                confirmPasswordError.textContent = 'Passwords do not match.';
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            var newPasswordInput = document.getElementById('new-password');
-            var confirmPasswordInput = document.getElementById('confirm-password');
-            var newPasswordError = document.getElementById('new-password-error');
-            var confirmPasswordError = document.getElementById('confirm-password-error');
+        newPasswordInput.addEventListener('input', validatePasswords);
+        confirmPasswordInput.addEventListener('input', validatePasswords);
+    });
 
-            // Real-time validation function
-            function validatePasswords() {
-                var newPasswordValue = newPasswordInput.value;
-                var confirmPasswordValue = confirmPasswordInput.value;
+    // Fetch session data
+    fetch('{{ route('user.activity') }}', {
+    headers: {
+        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+    }
+})
+.then(response => response.json())
+.then(data => {
+    const sessionList = document.getElementById('session-list');
+    sessionList.innerHTML = ''; // Clear previous data
 
-                // Clear previous error messages
-                newPasswordError.textContent = '';
-                confirmPasswordError.textContent = '';
-                newPasswordInput.classList.remove('error');
-                confirmPasswordInput.classList.remove('error');
-
-                if (newPasswordValue.length < 8) {
-                    newPasswordError.textContent = 'Password must be at least 8 characters long.';
-                    newPasswordInput.classList.add('error');
-                }
-
-                if (newPasswordValue !== confirmPasswordValue) {
-                    confirmPasswordError.textContent = 'Passwords do not match.';
-                    confirmPasswordInput.classList.add('error');
-                }
-            }
-
-            // Add event listeners for real-time validation
-            newPasswordInput.addEventListener('input', validatePasswords);
-            confirmPasswordInput.addEventListener('input', validatePasswords);
-
-            // Handle form submission
-            var form = document.getElementById('change-password-form');
-            form.addEventListener('submit', function(event) {
-                validatePasswords();
-
-                // Prevent form submission if there are errors
-                if (newPasswordError.textContent || confirmPasswordError.textContent) {
-                    event.preventDefault();
-                }
-            });
+    if (data.sessions && data.sessions.length > 0) {
+        data.sessions.forEach(session => {
+            const sessionItem = document.createElement('div');
+            sessionItem.innerHTML = `Session: ${session.user_id}, Created: ${session.created_date}, Last Update: ${session.last_update}`;
+            sessionList.appendChild(sessionItem);
         });
+    } else {
+        sessionList.textContent = 'No active sessions found.';
+    }
+})
+.catch(error => {
+    console.error('Error fetching sessions:', error);
+    document.getElementById('session-list').textContent = 'Failed to retrieve session data.';
+});
+
+
     </script>
+
+
+<script>
+    function toggleSidebar() {
+        var sidebar = document.getElementById("sidebar");
+        var mainContent = document.getElementById("main-content");
+
+        if (sidebar.style.left === "0px") {
+            sidebar.style.left = "-270px";
+            mainContent.style.marginLeft = "10%";
+        } else {
+            sidebar.style.left = "0px";
+            mainContent.style.marginLeft = "19%";
+        }
+    }
+</script>
 </body>
 </html>
