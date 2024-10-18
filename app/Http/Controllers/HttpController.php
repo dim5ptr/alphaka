@@ -158,41 +158,41 @@ class HttpController extends Controller
 
           // Handle case where Google ID is updated for an existing user
           } elseif ($registerCheckResponse->successful() && $registerCheckData['result'] == 1 && $registerCheckData['data'] == "Google ID successfully updated for existing user.") {
-              Log::info('Google ID successfully updated for user, retrying login.');
+            Log::info('Google ID successfully updated for user, retrying login.');
 
-              // Retry login after successful Google ID update
-              $retryLoginResponse = Http::withHeaders([
-                  'x-api-key' => self::API_KEY
-              ])->post(self::API_URL . '/sso/login.json', [
-                  'username' => $userData['email'],
-                  'google_id' => $userData['google_id'],
-              ]);
+                            // Retry login after successful Google ID update
+                            $retryLoginResponse = Http::withHeaders([
+                                'x-api-key' => self::API_KEY
+                            ])->post(self::API_URL . '/sso/login.json', [
+                                'username' => $userData['email'],
+                                'google_id' => $userData['google_id'],
+                            ]);
 
-              $retryLoginData = $retryLoginResponse->json();
+                            $retryLoginData = $retryLoginResponse->json();
 
-              // If login is successful after update
-              if ($retryLoginResponse->successful() && isset($retryLoginData['data']['access_token'])) {
-                  session(['access_token' => $retryLoginData['data']['access_token']]);
-                  Log::info('Access token saved in session: ' . $retryLoginData['data']['access_token']);
+                            // If login is successful after update
+                            if ($retryLoginResponse->successful() && isset($retryLoginData['data']['access_token'])) {
+                                session(['access_token' => $retryLoginData['data']['access_token']]);
+                                Log::info('Access token saved in session: ' . $retryLoginData['data']['access_token']);
 
-                  // Store personal information in session
-                  if (isset($retryLoginData['data']['personal_info'])) {
-                      $personalInfo = $retryLoginData['data']['personal_info'];
-                      session([
-                          'birthday' => $personalInfo['birthday'],
-                          'full_name' => $personalInfo['full_name'],
-                          'gender' => $personalInfo['gender'],
-                          'phone' => $personalInfo['phone'],
-                          'username' => $personalInfo['username'],
-                          'email' => $userData['email'],
-                          'profile_picture' => $personalInfo['profile_picture'] ?? $userData['avatar'],
-                      ]);
-                      Log::info('Personal information saved in session:', $personalInfo ?? []);
-                  }
+                                // Store personal information in session
+                                if (isset($retryLoginData['data']['personal_info'])) {
+                                    $personalInfo = $retryLoginData['data']['personal_info'];
+                                    session([
+                                        'birthday' => $personalInfo['birthday'],
+                                        'full_name' => $personalInfo['full_name'],
+                                        'gender' => $personalInfo['gender'],
+                                        'phone' => $personalInfo['phone'],
+                                        'username' => $personalInfo['username'],
+                                        'email' => $userData['email'],
+                                        'profile_picture' => $personalInfo['profile_picture'] ?? $userData['avatar'],
+                                    ]);
+                                    Log::info('Personal information saved in session:', $personalInfo ?? []);
+                                }
 
-                  Log::info('Login successful after Google ID update for user: ' . $userData['email']);
-                  return redirect()->route('dashboard');
-              }
+                                Log::info('Login successful for user: ' . $userData['email']);
+                                return redirect()->route('dashboard');
+                            }
 
           } else {
               Log::info('User is already registered, but login failed.');
