@@ -732,7 +732,7 @@
                 <!-- Modal for Login Activity -->
                 <div id="help-modal" class="custom-modal">
                     <div class="custom-modal-content">
-                        <h3>Help Center <a href="projekfedweb2@gmail.com"><i class="fa-regular fa-comments"></i>Service Center</a></h3>
+                        <h3>Help Center <a href="mailto:projekfedweb2@gmail.com"><i class="fa-regular fa-comments"></i>Service Center</a></h3>
                         <div class="inform">
                             <h4>Tentang Kami</h4>
                             <P></P>
