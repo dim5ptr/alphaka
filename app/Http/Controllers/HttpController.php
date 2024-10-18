@@ -56,149 +56,303 @@ class HttpController extends Controller
   {
       return Socialite::driver('google')->redirect();
   }
-
   public function handleGoogleCallback()
-{
-    try {
-        Log::info('Attempting to get user from Google...');
-        $user = Socialite::driver('google')->user();
+  {
+      try {
+          Log::info('Attempting to get user from Google...');
+          $user = Socialite::driver('google')->user();
 
-        $userData = [
-            'google_id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'avatar' => $user->avatar,
-        ];
+          $userData = [
+              'google_id' => $user->id,
+              'name' => $user->name,
+              'email' => $user->email,
+              'avatar' => $user->avatar,
+          ];
 
-        Log::info('User data received from Google:', $userData ?? []);
+          Log::info('User data received from Google:', $userData ?? []);
 
-        // Try to log in with Google ID and email first
-        Log::info('Attempting to log in with Google ID: ' . $userData['google_id']);
-        $loginResponse = Http::withHeaders([
-            'x-api-key' => self::API_KEY
-        ])->post(self::API_URL . '/sso/login.json', [
-            'username' => $userData['email'],
-            'google_id' => $userData['google_id'],
-        ]);
+          // Try to log in with Google ID and email first
+          Log::info('Attempting to log in with Google ID: ' . $userData['google_id']);
+          $loginResponse = Http::withHeaders([
+              'x-api-key' => self::API_KEY
+          ])->post(self::API_URL . '/sso/login.json', [
+              'username' => $userData['email'],
+              'google_id' => $userData['google_id'],
+          ]);
 
-        $loginData = $loginResponse->json();
-        Log::info('Login API response:', $loginData ?? []);
+          $loginData = $loginResponse->json();
+          Log::info('Login API response:', $loginData ?? []);
 
-        // If login is successful
-        if ($loginResponse->successful() && isset($loginData['data']['access_token'])) {
-            session(['access_token' => $loginData['data']['access_token']]);
-            Log::info('Access token saved in session: ' . $loginData['data']['access_token']);
+          // If login is successful
+          if ($loginResponse->successful() && isset($loginData['data']['access_token'])) {
+              session(['access_token' => $loginData['data']['access_token']]);
+              Log::info('Access token saved in session: ' . $loginData['data']['access_token']);
 
-            // Storing personal information in session
-            if (isset($loginData['data']['personal_info'])) {
-                $personalInfo = $loginData['data']['personal_info'];
-                session([
-                    'birthday' => $personalInfo['birthday'],
-                    'full_name' => $personalInfo['full_name'],
-                    'gender' => $personalInfo['gender'],
-                    'phone' => $personalInfo['phone'],
-                    'username' => $personalInfo['username'],
-                    'email' => $userData['email'],
-                    'profile_picture' => $personalInfo['profile_picture'] ?? $userData['avatar'],
-                ]);
-                Log::info('Personal information saved in session:', $personalInfo ?? []);
-            }
+              // Storing personal information in session
+              if (isset($loginData['data']['personal_info'])) {
+                  $personalInfo = $loginData['data']['personal_info'];
+                  session([
+                      'birthday' => $personalInfo['birthday'],
+                      'full_name' => $personalInfo['full_name'],
+                      'gender' => $personalInfo['gender'],
+                      'phone' => $personalInfo['phone'],
+                      'username' => $personalInfo['username'],
+                      'email' => $userData['email'],
+                      'profile_picture' => $personalInfo['profile_picture'] ?? $userData['avatar'],
+                  ]);
+                  Log::info('Personal information saved in session:', $personalInfo ?? []);
+              }
 
-            Log::info('Login successful for user: ' . $userData['email']);
-            return redirect()->route('dashboard');
-        }
+              Log::info('Login successful for user: ' . $userData['email']);
+              return redirect()->route('dashboard');
+          }
 
-        // If login fails, attempt registration
-        Log::info('Login failed, attempting to register the user: ' . $userData['email']);
-        $registerCheckResponse = Http::withHeaders([
-            'x-api-key' => self::API_KEY
-        ])->post(self::API_URL . '/sso/register-check.json', [
-            'email' => $userData['email'],
-        ]);
+          // If login fails, attempt registration
+          Log::info('Login failed, attempting to register the user: ' . $userData['email']);
+          $registerCheckResponse = Http::withHeaders([
+              'x-api-key' => self::API_KEY
+          ])->post(self::API_URL . '/sso/register-check.json', [
+              'email' => $userData['email'],
+          ]);
 
-        $registerCheckData = $registerCheckResponse->json();
-        Log::info('Register check API response:', $registerCheckData ?? []);
+          $registerCheckData = $registerCheckResponse->json();
+          Log::info('Register check API response:', $registerCheckData ?? []);
 
-        // If user is not registered or Google ID needs updating
-        if (!$registerCheckResponse->successful() || $registerCheckData['result'] == 'not_registered') {
-            Log::info('User not registered, attempting registration for: ' . $userData['email']);
+          // If user is not registered or Google ID needs updating
+          if (!$registerCheckResponse->successful() || $registerCheckData['result'] == 'not_registered') {
+              Log::info('User not registered, attempting registration for: ' . $userData['email']);
 
-            // Registering the user
-            $registerResponse = Http::withHeaders([
-                'x-api-key' => self::API_KEY
-            ])->post(self::API_URL . '/sso/register.json', [
-                'email' => $userData['email'],
-                'google_id' => $userData['google_id'],
-                'name' => $userData['name'],
-                'password' => bcrypt(Str::random(10)), // Generate a random password
-            ]);
+              // Registering the user
+              $registerResponse = Http::withHeaders([
+                  'x-api-key' => self::API_KEY
+              ])->post(self::API_URL . '/sso/register.json', [
+                  'email' => $userData['email'],
+                  'google_id' => $userData['google_id'],
+                  'name' => $userData['name'],
+                  'password' => bcrypt(Str::random(10)), // Generate a random password
+              ]);
 
-            $registerData = $registerResponse->json();
-            Log::info('Registration API response:', $registerData ?? []);
+              $registerData = $registerResponse->json();
+              Log::info('Registration API response:', $registerData ?? []);
 
-            // If registration successful and Google ID is updated
-            if ($registerResponse->successful() && $registerData['result'] == 1 && $registerData['data'] == "Google ID successfully updated for existing user.") {
-                Log::info('Google ID successfully updated for user, retrying login.');
+              // Handle case where user needs to activate their account
+              if ($registerResponse->successful() && isset($registerData['activation_key'])) {
+                  Log::info('Registration successful, activation required for: ' . $userData['email']);
 
-                // Retry login after successful Google ID update
-                $retryLoginResponse = Http::withHeaders([
-                    'x-api-key' => self::API_KEY
-                ])->post(self::API_URL . '/sso/login.json', [
-                    'username' => $userData['email'],
-                    'google_id' => $userData['google_id'],
-                ]);
+                  // Save the verification token in session
+                  session([
+                      'verification_token' => $registerData['activation_key'],
+                      'email' => $userData['email'],
+                  ]);
 
-                $retryLoginData = $retryLoginResponse->json();
+                  // Sending verification email
+                  Log::info('Sending verification email to: ' . $userData['email']);
+                  Mail::send('emails.verification', ['token' => session('verification_token')], function($message) use ($userData) {
+                      $message->to($userData['email']);
+                      $message->subject('Email Activation');
+                  });
+                  Log::info('Verification email sent to: ' . $userData['email']);
 
-                // If login is successful after update
-                if ($retryLoginResponse->successful() && isset($retryLoginData['data']['access_token'])) {
-                    session(['access_token' => $retryLoginData['data']['access_token']]);
-                    Log::info('Access token saved in session: ' . $retryLoginData['data']['access_token']);
+                  return redirect('/verify')->with('success_message', 'Please check your email to activate your account.');
+              }
 
-                    // Store personal information in session
-                    if (isset($retryLoginData['data']['personal_info'])) {
-                        $personalInfo = $retryLoginData['data']['personal_info'];
-                        session([
-                            'birthday' => $personalInfo['birthday'],
-                            'full_name' => $personalInfo['full_name'],
-                            'gender' => $personalInfo['gender'],
-                            'phone' => $personalInfo['phone'],
-                            'username' => $personalInfo['username'],
-                            'email' => $userData['email'],
-                            'profile_picture' => $personalInfo['profile_picture'] ?? $userData['avatar'],
-                        ]);
-                        Log::info('Personal information saved in session:', $personalInfo ?? []);
-                    }
+          // Handle case where Google ID is updated for an existing user
+          } elseif ($registerCheckResponse->successful() && $registerCheckData['result'] == 1 && $registerCheckData['data'] == "Google ID successfully updated for existing user.") {
+              Log::info('Google ID successfully updated for user, retrying login.');
 
-                    Log::info('Login successful for user: ' . $userData['email']);
-                    return redirect()->route('dashboard');
-                }
-            } else {
-                Log::warning('Registration failed for user: ' . $userData['email'], [
-                    'api_response' => $registerData ?? [],
-                    'status' => $registerResponse->status(),
-                ]);
+              // Retry login after successful Google ID update
+              $retryLoginResponse = Http::withHeaders([
+                  'x-api-key' => self::API_KEY
+              ])->post(self::API_URL . '/sso/login.json', [
+                  'username' => $userData['email'],
+                  'google_id' => $userData['google_id'],
+              ]);
 
-                return back()->withErrors([
-                    'error_message' => $registerData['data'] ?? 'Registration failed, please try again.',
-                ])->withInput();
-            }
-        } else {
-            Log::info('User is already registered, but login failed.');
-            return back()->withErrors([
-                'error_message' => 'Login failed, please try again.',
-            ])->withInput();
-        }
+              $retryLoginData = $retryLoginResponse->json();
 
-    } catch (\Exception $e) {
-        Log::error('An error occurred during Google login/registration: ' . $e->getMessage());
-        Log::error('Stack trace: ' . $e->getTraceAsString());
+              // If login is successful after update
+              if ($retryLoginResponse->successful() && isset($retryLoginData['data']['access_token'])) {
+                  session(['access_token' => $retryLoginData['data']['access_token']]);
+                  Log::info('Access token saved in session: ' . $retryLoginData['data']['access_token']);
 
-        return redirect('/login')->withErrors([
-            'error_message' => 'Something went wrong, please try again.'
-        ]);
-    }
-}
+                  // Store personal information in session
+                  if (isset($retryLoginData['data']['personal_info'])) {
+                      $personalInfo = $retryLoginData['data']['personal_info'];
+                      session([
+                          'birthday' => $personalInfo['birthday'],
+                          'full_name' => $personalInfo['full_name'],
+                          'gender' => $personalInfo['gender'],
+                          'phone' => $personalInfo['phone'],
+                          'username' => $personalInfo['username'],
+                          'email' => $userData['email'],
+                          'profile_picture' => $personalInfo['profile_picture'] ?? $userData['avatar'],
+                      ]);
+                      Log::info('Personal information saved in session:', $personalInfo ?? []);
+                  }
+
+                  Log::info('Login successful after Google ID update for user: ' . $userData['email']);
+                  return redirect()->route('dashboard');
+              }
+
+          } else {
+              Log::info('User is already registered, but login failed.');
+              return back()->withErrors([
+                  'error_message' => 'Login failed, please try again.',
+              ])->withInput();
+          }
+
+      } catch (\Exception $e) {
+          Log::error('An error occurred during Google login/registration: ' . $e->getMessage());
+          Log::error('Stack trace: ' . $e->getTraceAsString());
+
+          return redirect('/login')->withErrors([
+              'error_message' => 'Something went wrong, please try again.'
+          ]);
+      }
+  }
+
+//   public function handleGoogleCallback()
+// {
+//     try {
+//         Log::info('Attempting to get user from Google...');
+//         $user = Socialite::driver('google')->user();
+
+//         $userData = [
+//             'google_id' => $user->id,
+//             'name' => $user->name,
+//             'email' => $user->email,
+//             'avatar' => $user->avatar,
+//         ];
+
+//         Log::info('User data received from Google:', $userData ?? []);
+
+//         // Try to log in with Google ID and email first
+//         Log::info('Attempting to log in with Google ID: ' . $userData['google_id']);
+//         $loginResponse = Http::withHeaders([
+//             'x-api-key' => self::API_KEY
+//         ])->post(self::API_URL . '/sso/login.json', [
+//             'username' => $userData['email'],
+//             'google_id' => $userData['google_id'],
+//         ]);
+
+//         $loginData = $loginResponse->json();
+//         Log::info('Login API response:', $loginData ?? []);
+
+//         // If login is successful
+//         if ($loginResponse->successful() && isset($loginData['data']['access_token'])) {
+//             session(['access_token' => $loginData['data']['access_token']]);
+//             Log::info('Access token saved in session: ' . $loginData['data']['access_token']);
+
+//             // Storing personal information in session
+//             if (isset($loginData['data']['personal_info'])) {
+//                 $personalInfo = $loginData['data']['personal_info'];
+//                 session([
+//                     'birthday' => $personalInfo['birthday'],
+//                     'full_name' => $personalInfo['full_name'],
+//                     'gender' => $personalInfo['gender'],
+//                     'phone' => $personalInfo['phone'],
+//                     'username' => $personalInfo['username'],
+//                     'email' => $userData['email'],
+//                     'profile_picture' => $personalInfo['profile_picture'] ?? $userData['avatar'],
+//                 ]);
+//                 Log::info('Personal information saved in session:', $personalInfo ?? []);
+//             }
+
+//             Log::info('Login successful for user: ' . $userData['email']);
+//             return redirect()->route('dashboard');
+//         }
+
+//         // If login fails, attempt registration
+//         Log::info('Login failed, attempting to register the user: ' . $userData['email']);
+//         $registerCheckResponse = Http::withHeaders([
+//             'x-api-key' => self::API_KEY
+//         ])->post(self::API_URL . '/sso/register-check.json', [
+//             'email' => $userData['email'],
+//         ]);
+
+//         $registerCheckData = $registerCheckResponse->json();
+//         Log::info('Register check API response:', $registerCheckData ?? []);
+
+//         // If user is not registered or Google ID needs updating
+//         if (!$registerCheckResponse->successful() || $registerCheckData['result'] == 'not_registered') {
+//             Log::info('User not registered, attempting registration for: ' . $userData['email']);
+
+//             // Registering the user
+//             $registerResponse = Http::withHeaders([
+//                 'x-api-key' => self::API_KEY
+//             ])->post(self::API_URL . '/sso/register.json', [
+//                 'email' => $userData['email'],
+//                 'google_id' => $userData['google_id'],
+//                 'name' => $userData['name'],
+//                 'password' => bcrypt(Str::random(10)), // Generate a random password
+//             ]);
+
+//             $registerData = $registerResponse->json();
+//             Log::info('Registration API response:', $registerData ?? []);
+
+//             // If registration successful and Google ID is updated
+//             if ($registerResponse->successful() && $registerData['result'] == 1 && $registerData['data'] == "Google ID successfully updated for existing user.") {
+//                 Log::info('Google ID successfully updated for user, retrying login.');
+
+//                 // Retry login after successful Google ID update
+//                 $retryLoginResponse = Http::withHeaders([
+//                     'x-api-key' => self::API_KEY
+//                 ])->post(self::API_URL . '/sso/login.json', [
+//                     'username' => $userData['email'],
+//                     'google_id' => $userData['google_id'],
+//                 ]);
+
+//                 $retryLoginData = $retryLoginResponse->json();
+
+//                 // If login is successful after update
+//                 if ($retryLoginResponse->successful() && isset($retryLoginData['data']['access_token'])) {
+//                     session(['access_token' => $retryLoginData['data']['access_token']]);
+//                     Log::info('Access token saved in session: ' . $retryLoginData['data']['access_token']);
+
+//                     // Store personal information in session
+//                     if (isset($retryLoginData['data']['personal_info'])) {
+//                         $personalInfo = $retryLoginData['data']['personal_info'];
+//                         session([
+//                             'birthday' => $personalInfo['birthday'],
+//                             'full_name' => $personalInfo['full_name'],
+//                             'gender' => $personalInfo['gender'],
+//                             'phone' => $personalInfo['phone'],
+//                             'username' => $personalInfo['username'],
+//                             'email' => $userData['email'],
+//                             'profile_picture' => $personalInfo['profile_picture'] ?? $userData['avatar'],
+//                         ]);
+//                         Log::info('Personal information saved in session:', $personalInfo ?? []);
+//                     }
+
+//                     Log::info('Login successful for user: ' . $userData['email']);
+//                     return redirect()->route('dashboard');
+//                 }
+//             } else {
+//                 Log::warning('Registration failed for user: ' . $userData['email'], [
+//                     'api_response' => $registerData ?? [],
+//                     'status' => $registerResponse->status(),
+//                 ]);
+
+//                 return back()->withErrors([
+//                     'error_message' => $registerData['data'] ?? 'Registration failed, please try again.',
+//                 ])->withInput();
+//             }
+//         } else {
+//             Log::info('User is already registered, but login failed.');
+//             return back()->withErrors([
+//                 'error_message' => 'Login failed, please try again.',
+//             ])->withInput();
+//         }
+
+//     } catch (\Exception $e) {
+//         Log::error('An error occurred during Google login/registration: ' . $e->getMessage());
+//         Log::error('Stack trace: ' . $e->getTraceAsString());
+
+//         return redirect('/login')->withErrors([
+//             'error_message' => 'Something went wrong, please try again.'
+//         ]);
+//     }
+// }
 
 
 
