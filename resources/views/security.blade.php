@@ -525,8 +525,21 @@
         .custom-modal-content {
            margin-left: 0%;
             width: 100%;
+            max-width: 600px; /* Atur batas maksimal lebar modal */
+            max-height: 80%; /* Agar modal tidak terlalu tinggi */
+            overflow: hidden; /* Agar tidak ada overflow pada modal secara keseluruhan */
             border-radius: 8px;
             padding-bottom: 5%;
+        }
+
+        .custom-modal-content i{
+            padding-right: 1%;
+        }
+
+        .custom-modal-content a{
+            font-weight: 500;
+            font-size: 0.890rem;
+            margin-left: 2%;
         }
 
         /* Close Button */
@@ -587,6 +600,24 @@
             font-size: 0.870rem;
             width: 40%;
         }
+
+        .inform {
+            max-height: 320px; /* Batas maksimal tinggi konten inform */
+            overflow-y: auto; /* Aktifkan scroll vertikal jika konten terlalu panjang */
+            padding-right: 10px; /* Tambahkan sedikit padding agar scroll tidak terlalu rapat dengan teks */
+            margin-top: 4%;
+            }
+
+        .inform h4{
+            font-size: 1.5rem;
+            color: #365AA3;
+        }
+
+            .lineS {
+            border-bottom: 2px solid #ccc;
+            height: 2px;
+            margin: 15px 0;
+            }
     </style>
 </head>
 <body>
@@ -701,8 +732,126 @@
                 <!-- Modal for Login Activity -->
                 <div id="help-modal" class="custom-modal">
                     <div class="custom-modal-content">
-                        <h3>Help Center</h3>
-                        <p>View your recent login activity.</p>
+                        <h3>Help Center <a href="projekfedweb2@gmail.com"><i class="fa-regular fa-comments"></i>Service Center</a></h3>
+                        <div class="inform">
+                            <h4>Tentang Kami</h4>
+                            <P></P>
+                            <h4>Pendaftaran Akun</h4>
+                            <strong>Pendaftaran Manual</strong>
+                            <ul>
+                               <li> Klik tombol "Daftar" di halaman utama.</li>
+                               <li>Isi formulir pendaftaran dengan detail yang diperlukan:
+                                <br/>Nama lengkap<br/>Username<br/>Email<br/>Password</li>
+                               <li> Setelah pendaftaran, Anda akan menerima email aktivasi untuk memverifikasi akun. Klik tautan yang dikirim ke email Anda untuk mengaktifkan akun.</li>
+                               <li> Setelah akun diaktifkan, Anda dapat login ke website.</li>
+                            </ul>
+                            <strong>Pendaftaran Menggunakan Google</strong>
+                            <ul>
+                                <li> Klik tombol "Masuk dengan Google" di halaman pendaftaran.</li>
+                               <li> Masukkan kredensial Google Anda dan beri izin jika diminta.</li>
+                                <li>Setelah pendaftaran selesai, Anda juga akan menerima email aktivasi untuk memverifikasi akun Anda.</li>
+                               <li> Klik tautan verifikasi untuk menyelesaikan proses aktivasi dan mulai menggunakan akun Anda.</li>
+                            </ul>
+                            <div class="lineS"></div>
+                            <h4>Login ke Website</h4>
+                            <strong>Manual</strong>
+                            <ul>
+                               <li>Masukkan email dan password yang Anda daftarkan.</li>
+                               <li>Jika akun sudah terverifikasi, Anda akan bisa masuk ke dashboard.</li>
+                            </ul>
+                            <strong>Dengan Akun Google</strong>
+                            <ul>
+                                <li>Klik "Masuk dengan Google".</li>
+                                <li>Pilih akun Google yang terkait dengan akun Anda di website.</li>
+                                <li>Anda akan diarahkan ke dashboard jika login berhasil.</li>
+                            </ul>
+                            <h4>Verifikasi Email</h4>
+                            <p>Setelah mendaftar baik secara manual atau menggunakan akun Google, Anda harus memverifikasi email terlebih dahulu sebelum bisa login.
+                                Email verifikasi akan dikirimkan ke alamat email yang Anda daftarkan. Jika Anda tidak melihat email tersebut, cek folder spam atau kotak masuk promosi.</p>
+                            <div class="lineS"></div>
+                                <h4>Lupa Password (Forgot Password)</h4>
+                                <p>Jika Anda lupa password, ikuti langkah-langkah berikut:</p>
+                                <ul>
+                                    <li>Di halaman login, klik "Lupa Password?".</li>
+                                    <li>Masukkan alamat email Anda.</li>
+                                    <li>Anda akan menerima email dengan tautan untuk mereset password.</li>
+                                    <li>Klik tautan tersebut, Anda akan diarahkan ke halaman reset password.</li>
+                                    <li>Masukkan password baru Anda. Link reset password akan kedaluwarsa dalam 10 menit.</li>
+                                    <li>Setelah reset password berhasil, gunakan password baru untuk login.</li>
+                                </ul>
+                                <div class="lineS"></div>
+                            <h4>Mengelola Profil</h4>
+                            <p>Anda dapat mengedit profil Anda kapan saja melalui menu Pengaturan Profil.</p>
+                                <strong>Info yang dapat diubah:</strong>
+                                   <ul>
+                                        <li>Username</li>
+                                        <li>Nama Lengkap</li>
+                                        <li>Jenis Kelamin</li>
+                                        <li>Tanggal Lahir</li>
+                                        <li>Nomor Telepon</li>
+                                        <li>Foto Profil (Menggunakan Gravatar)</li>
+                                   </ul>
+
+                                <strong>Langkah-langkah mengedit profil:</strong>
+                                <ul>
+                                    <li>Klik menu Profil di dashboard.</li>
+                                    <li>Ubah informasi yang ingin diperbarui.</li>
+                                    <li>Klik Simpan Perubahan.</li>
+                                </ul>
+                                <strong>Mengedit Foto Profil:</strong>
+                                <p>Kami menggunakan layanan Gravatar untuk foto profil. Anda dapat mengganti foto profil dengan memperbarui foto di akun Gravatar yang terhubung dengan email Anda.</p>
+
+                                <div class="lineS"></div>
+
+                            <h4>Mengelola Organisasi</h4>
+                            <p>Website ini memungkinkan Anda untuk membuat dan mengelola organisasi. Anda juga dapat menambahkan anggota ke dalam organisasi.</p>
+
+                            <strong>Membuat Organisasi</strong>
+                              <ul>
+                                <li>Buka halaman Organisasi di dashboard.</li>
+                                <li>Klik tombol "Buat Organisasi".</li>
+                                <li>Isi detail organisasi seperti nama dan deskripsi.</li>
+                                <li>Klik Simpan untuk membuat organisasi baru.</li>
+                                <li>Sistem akan mengirim email verifikasi organisasi.</li>
+                                <li>Klik tautan verifikasi untuk menyelesaikan proses aktivasi organisasi Anda.</li>
+                              </ul>
+
+                            <strong>Menambahkan Anggota ke Organisasi</strong>
+                            <ul>
+                                <li>Setelah organisasi dibuat, klik nama organisasi tersebut di daftar organisasi Anda.</li>
+                                <li>Klik tombol di pojok kanan bawah "+".</li>
+                                <li>Masukkan email anggota yang ingin ditambahkan, lalu klik Tambahkan.</li>
+                                <li>User terkait akan mendapat email invitation organization member.</li>
+                            </ul>
+
+                            <strong>Organisasi</strong>
+                            <ul>
+                                <li>Semua (All): Menampilkan semua organisasi yang Anda buat atau yang Anda tergabung di dalamnya.</li>
+                                <li>Milik Saya: Menampilkan organisasi yang Anda buat sendiri.</li>
+                                <li>Added By: Menampilkan organisasi di mana Anda ditambahkan sebagai anggota.</li>
+                            </ul>
+
+                            <div class="lineS"></div>
+
+                            <h4>Mengubah Password</h4>
+                            <p>Jika Anda ingin mengubah password, lakukan langkah berikut:</p>
+                                <ul>
+                                    <li>Buka Pengaturan Akun di dashboard.</li>
+                                    <li>Klik menu "Password".</li>
+                                    <li>Masukkan password baru dan konfirmasi ulang password baru Anda.</li>
+                                    <li>Klik Simpan untuk memperbarui password.</li>
+                                    <li>Setelah berhasil mengubah password, gunakan password baru untuk login.</li>
+                                </ul>
+
+                                <div class="lineS"></div>
+
+                            <h4>Keamanan dan Privasi</h4>
+                            <strong>Kami sangat peduli dengan keamanan dan privasi akun Anda. Pastikan untuk:</strong>
+                                <li>Menggunakan password yang kuat dan sulit ditebak.</li>
+                                <li>Tidak membagikan password dengan orang lain.</li>
+                                <li>Selalu logout setelah menggunakan akun, terutama di perangkat publik.</li>
+                            <p>Jika Anda mengalami masalah keamanan atau menemukan aktivitas mencurigakan, segera hubungi tim dukungan kami.</p>
+                        </div>
                     </div>
                 </div>
              </div>
