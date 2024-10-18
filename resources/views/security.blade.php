@@ -279,9 +279,10 @@
             width: 80%;
             height: 100%;
             border-radius: 5px;
-            margin-right: 20;
             box-shadow: 0 2px 5px 2px rgba(0, 0, 0, 0.1);
             z-index: 3;
+            display: table-column;
+            gap: 0px;
         }
 
         .inpage {
@@ -360,20 +361,20 @@
             @media (max-width: 768px) {
 
                 .navbar p {
-        font-size: 0.678rem;
-        margin-right: 5%;
-    }
+                    font-size: 0.678rem;
+                    margin-right: 5%;
+                }
 
-    .open-btn button{
-        font-size: 0.990rem;
-        width: 100%;
-        display: inline;
-    }
+                .open-btn button{
+                    font-size: 0.990rem;
+                    width: 100%;
+                    display: inline;
+                }
 
-    .open-btn {
-        width: 35%;
-        display: inline;
-    }
+                .open-btn {
+                    width: 35%;
+                    display: inline;
+                }
                 .menu {
                     flex-direction: column; /* Stack menu items vertically */
                     margin-top: 10vh;
@@ -396,6 +397,8 @@
                     width: 100%;
                 }
                 .page {
+                    display: flex;
+                    flex-direction: column;
                     width: 95%; /* Full width on mobile */
                     margin: 0 auto; /* Center horizontally */
                     padding: 10px; /* Add padding inside page */
@@ -404,7 +407,7 @@
                 .input-group input[type="password"] {
                     width: 100%; /* Full width on mobile */
                     padding-bottom: 3%; /* Add space at the bottom of input fields */
-                    font-size: 1rem; /* Adjust the font size of input fields */
+                    font-size: 0.890rem; /* Adjust the font size of input fields */
                     border: 1px solid #ccc; /* Add border for input fields */
                     border-radius: 4px; /* Rounded corners */
                     padding: 10px; /* Add some internal padding */
@@ -427,7 +430,6 @@
 
                 .inpage h3 {
                     margin-bottom: 5px;
-                    margin-top: 2%;
                     font-size: 1.3rem;
                     color: #333;
                 }
@@ -449,6 +451,11 @@
                     color: #365AC2; /* Set error message color */
                 }
 
+                .custom-modal {
+                    width: 100%;
+                }
+
+
                 /* Optional: Add responsive styling for smaller screens */
                 @media screen and (max-width: 768px) {
                     .inpage input[type="password"] {
@@ -467,9 +474,10 @@
                 margin-bottom: 3%;
             }
 
-            .inpage .input-group {
+             .input-group {
                 position: relative;
                 width: 90%;
+                display: flex;
             }
 
             .inpage .input-group input {
@@ -506,16 +514,32 @@
             display: none;
             position: relative;
             z-index: 6;
+            padding: 0px;
             width: 90%;
-            height: 100%;
+            height: 90%;
             overflow: auto;
+            background-color: white;
         }
 
         /* Modal Content/Box */
         .custom-modal-content {
-            margin: 10%;
-            width: 80%;
+           margin-left: 0%;
+            width: 100%;
+            max-width: 600px; /* Atur batas maksimal lebar modal */
+            max-height: 80%; /* Agar modal tidak terlalu tinggi */
+            overflow: hidden; /* Agar tidak ada overflow pada modal secara keseluruhan */
             border-radius: 8px;
+            padding-bottom: 5%;
+        }
+
+        .custom-modal-content i{
+            padding-right: 1%;
+        }
+
+        .custom-modal-content a{
+            font-weight: 500;
+            font-size: 0.890rem;
+            margin-left: 2%;
         }
 
         /* Close Button */
@@ -532,6 +556,68 @@
             cursor: pointer;
         }
 
+        .data p {
+            padding: 6px 12px;
+            border-radius: 50px;
+            background-color: #afd6ffc8;
+            font-size: 0.870rem;
+            width: 40%;
+        }
+
+        .acc p{
+            font-size: 0.90rem;
+            line-height: 25px;
+        }
+
+        .acc span{
+            font-size: 1.2rem;
+            font-weight: bolder;
+            color: #365AA3;
+        }
+
+        .session-list p{
+            font-size: 0.90rem;
+            line-height: 25px;
+        }
+
+        .session-list span{
+            font-size: 1.2rem;
+            font-weight: bolder;
+            color: #365AA3;
+        }
+
+        .greet {
+            margin-left: 3%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .greet h4{
+            padding: 10px 15px;
+            border-radius: 40px;
+            background-color: #2a69accd;
+            color: white;
+            font-size: 0.870rem;
+            width: 40%;
+        }
+
+        .inform {
+            max-height: 320px; /* Batas maksimal tinggi konten inform */
+            overflow-y: auto; /* Aktifkan scroll vertikal jika konten terlalu panjang */
+            padding-right: 10px; /* Tambahkan sedikit padding agar scroll tidak terlalu rapat dengan teks */
+            margin-top: 4%;
+            }
+
+        .inform h4{
+            font-size: 1.5rem;
+            color: #365AA3;
+        }
+
+            .lineS {
+            border-bottom: 2px solid #ccc;
+            height: 2px;
+            margin: 15px 0;
+            }
     </style>
 </head>
 <body>
@@ -591,6 +677,9 @@
 
         <!-- Modal for Password -->
         <div class="page">
+            <div class="greet">
+                <h4>Hi, {{ session('username') ?? session('full_name') ?? session('email') }}!</h4>
+            </div>
             <div class="inpage">
                 <div id="password-modal" class="custom-modal">
                     <div class="custom-modal-content">
@@ -626,32 +715,143 @@
                     </div>
                 </div>
 
-               <!-- Modal for Account Sessions -->
-               <div id="sessions-modal" class="custom-modal">
-                    <div class="custom-modal-content">
-                        <h3>Account Sessions</h3>
-                        <p>Manage your active sessions.</p>
-                        <div id="session-list">
-                            @if(isset($sessions) && is_array($sessions))
-                            @foreach($sessions as $session)
-                                <div class="session-item">
-                                    <p>Session ID: {{ $session['user_id'] }}</p>
-                                    <p>Created: {{ \Carbon\Carbon::parse($session['created_date'])->format('Y-m-d H:i:s') }}</p>
-                                    <p>Last Update: {{ \Carbon\Carbon::parse($session['last_update'])->format('Y-m-d H:i:s') }}</p>
-                                </div>
-                            @endforeach
-                        @else
-                            <p>Failed to retrieve session data.</p>
-                        @endif
-                        </div>
-                    </div>
+           <!-- Modal for Account Sessions -->
+           <div id="sessions-modal" class="custom-modal">
+            <div class="custom-modal-content">
+                <h3>Account Sessions</h3>
+                <p>Know your last activity here! Make sure the activity session is by yourself</p>
+                <div class="acc">
+                    <p>loged as</br><span>{{session('email') }}</span> </p>
                 </div>
+                <div id="session-list" class="session-list">
+
+                </div>
+            </div>
+        </div>
 
                 <!-- Modal for Login Activity -->
                 <div id="help-modal" class="custom-modal">
                     <div class="custom-modal-content">
-                        <h3>Help Center</h3>
-                        <p>View your recent login activity.</p>
+                        <h3>Help Center <a href="projekfedweb2@gmail.com"><i class="fa-regular fa-comments"></i>Service Center</a></h3>
+                        <div class="inform">
+                            <h4>Tentang Kami</h4>
+                            <P></P>
+                            <h4>Pendaftaran Akun</h4>
+                            <strong>Pendaftaran Manual</strong>
+                            <ul>
+                               <li> Klik tombol "Daftar" di halaman utama.</li>
+                               <li>Isi formulir pendaftaran dengan detail yang diperlukan:
+                                <br/>Nama lengkap<br/>Username<br/>Email<br/>Password</li>
+                               <li> Setelah pendaftaran, Anda akan menerima email aktivasi untuk memverifikasi akun. Klik tautan yang dikirim ke email Anda untuk mengaktifkan akun.</li>
+                               <li> Setelah akun diaktifkan, Anda dapat login ke website.</li>
+                            </ul>
+                            <strong>Pendaftaran Menggunakan Google</strong>
+                            <ul>
+                                <li> Klik tombol "Masuk dengan Google" di halaman pendaftaran.</li>
+                               <li> Masukkan kredensial Google Anda dan beri izin jika diminta.</li>
+                                <li>Setelah pendaftaran selesai, Anda juga akan menerima email aktivasi untuk memverifikasi akun Anda.</li>
+                               <li> Klik tautan verifikasi untuk menyelesaikan proses aktivasi dan mulai menggunakan akun Anda.</li>
+                            </ul>
+                            <div class="lineS"></div>
+                            <h4>Login ke Website</h4>
+                            <strong>Manual</strong>
+                            <ul>
+                               <li>Masukkan email dan password yang Anda daftarkan.</li>
+                               <li>Jika akun sudah terverifikasi, Anda akan bisa masuk ke dashboard.</li>
+                            </ul>
+                            <strong>Dengan Akun Google</strong>
+                            <ul>
+                                <li>Klik "Masuk dengan Google".</li>
+                                <li>Pilih akun Google yang terkait dengan akun Anda di website.</li>
+                                <li>Anda akan diarahkan ke dashboard jika login berhasil.</li>
+                            </ul>
+                            <h4>Verifikasi Email</h4>
+                            <p>Setelah mendaftar baik secara manual atau menggunakan akun Google, Anda harus memverifikasi email terlebih dahulu sebelum bisa login.
+                                Email verifikasi akan dikirimkan ke alamat email yang Anda daftarkan. Jika Anda tidak melihat email tersebut, cek folder spam atau kotak masuk promosi.</p>
+                            <div class="lineS"></div>
+                                <h4>Lupa Password (Forgot Password)</h4>
+                                <p>Jika Anda lupa password, ikuti langkah-langkah berikut:</p>
+                                <ul>
+                                    <li>Di halaman login, klik "Lupa Password?".</li>
+                                    <li>Masukkan alamat email Anda.</li>
+                                    <li>Anda akan menerima email dengan tautan untuk mereset password.</li>
+                                    <li>Klik tautan tersebut, Anda akan diarahkan ke halaman reset password.</li>
+                                    <li>Masukkan password baru Anda. Link reset password akan kedaluwarsa dalam 10 menit.</li>
+                                    <li>Setelah reset password berhasil, gunakan password baru untuk login.</li>
+                                </ul>
+                                <div class="lineS"></div>
+                            <h4>Mengelola Profil</h4>
+                            <p>Anda dapat mengedit profil Anda kapan saja melalui menu Pengaturan Profil.</p>
+                                <strong>Info yang dapat diubah:</strong>
+                                   <ul>
+                                        <li>Username</li>
+                                        <li>Nama Lengkap</li>
+                                        <li>Jenis Kelamin</li>
+                                        <li>Tanggal Lahir</li>
+                                        <li>Nomor Telepon</li>
+                                        <li>Foto Profil (Menggunakan Gravatar)</li>
+                                   </ul>
+
+                                <strong>Langkah-langkah mengedit profil:</strong>
+                                <ul>
+                                    <li>Klik menu Profil di dashboard.</li>
+                                    <li>Ubah informasi yang ingin diperbarui.</li>
+                                    <li>Klik Simpan Perubahan.</li>
+                                </ul>
+                                <strong>Mengedit Foto Profil:</strong>
+                                <p>Kami menggunakan layanan Gravatar untuk foto profil. Anda dapat mengganti foto profil dengan memperbarui foto di akun Gravatar yang terhubung dengan email Anda.</p>
+
+                                <div class="lineS"></div>
+
+                            <h4>Mengelola Organisasi</h4>
+                            <p>Website ini memungkinkan Anda untuk membuat dan mengelola organisasi. Anda juga dapat menambahkan anggota ke dalam organisasi.</p>
+
+                            <strong>Membuat Organisasi</strong>
+                              <ul>
+                                <li>Buka halaman Organisasi di dashboard.</li>
+                                <li>Klik tombol "Buat Organisasi".</li>
+                                <li>Isi detail organisasi seperti nama dan deskripsi.</li>
+                                <li>Klik Simpan untuk membuat organisasi baru.</li>
+                                <li>Sistem akan mengirim email verifikasi organisasi.</li>
+                                <li>Klik tautan verifikasi untuk menyelesaikan proses aktivasi organisasi Anda.</li>
+                              </ul>
+
+                            <strong>Menambahkan Anggota ke Organisasi</strong>
+                            <ul>
+                                <li>Setelah organisasi dibuat, klik nama organisasi tersebut di daftar organisasi Anda.</li>
+                                <li>Klik tombol di pojok kanan bawah "+".</li>
+                                <li>Masukkan email anggota yang ingin ditambahkan, lalu klik Tambahkan.</li>
+                                <li>User terkait akan mendapat email invitation organization member.</li>
+                            </ul>
+
+                            <strong>Organisasi</strong>
+                            <ul>
+                                <li>Semua (All): Menampilkan semua organisasi yang Anda buat atau yang Anda tergabung di dalamnya.</li>
+                                <li>Milik Saya: Menampilkan organisasi yang Anda buat sendiri.</li>
+                                <li>Added By: Menampilkan organisasi di mana Anda ditambahkan sebagai anggota.</li>
+                            </ul>
+
+                            <div class="lineS"></div>
+
+                            <h4>Mengubah Password</h4>
+                            <p>Jika Anda ingin mengubah password, lakukan langkah berikut:</p>
+                                <ul>
+                                    <li>Buka Pengaturan Akun di dashboard.</li>
+                                    <li>Klik menu "Password".</li>
+                                    <li>Masukkan password baru dan konfirmasi ulang password baru Anda.</li>
+                                    <li>Klik Simpan untuk memperbarui password.</li>
+                                    <li>Setelah berhasil mengubah password, gunakan password baru untuk login.</li>
+                                </ul>
+
+                                <div class="lineS"></div>
+
+                            <h4>Keamanan dan Privasi</h4>
+                            <strong>Kami sangat peduli dengan keamanan dan privasi akun Anda. Pastikan untuk:</strong>
+                                <li>Menggunakan password yang kuat dan sulit ditebak.</li>
+                                <li>Tidak membagikan password dengan orang lain.</li>
+                                <li>Selalu logout setelah menggunakan akun, terutama di perangkat publik.</li>
+                            <p>Jika Anda mengalami masalah keamanan atau menemukan aktivitas mencurigakan, segera hubungi tim dukungan kami.</p>
+                        </div>
                     </div>
                 </div>
              </div>
@@ -659,46 +859,81 @@
          </div>
         </div>
     </div>
-
     <script>
-         // Function to close all modals
+        const baseUrl = "http://192.168.1.24:14041/api"; // Replace with your actual base URL
+        const apiKey = "5af97cb7eed7a5a4cff3ed91698d2ffb"; // Replace with your actual API key
+        const accessToken = "{{ session('access_token') }}"; // Server-side token
+
+        async function fetchUserActivity() {
+            try {
+                const response = await fetch(`${baseUrl}/sso/user_activity.json`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `${accessToken}`,
+                        'x-api-key': apiKey
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const result = await response.json();
+                if (result.success) {
+                    displayUserActivity(result.data);
+                } else {
+                    displayNoData();
+                }
+            } catch (error) {
+                console.error('There has been a problem with your fetch operation:', error);
+            }
+        }
+
+        function displayUserActivity(data) {
+            const sessionListDiv = document.getElementById('session-list');
+            sessionListDiv.innerHTML = `
+                <div>
+                    <p>last login activity</br><span>${new Date(data.created_date).toLocaleString()}</span> </p>
+                </div>
+            `;
+        }
+
+        function displayNoData() {
+            const sessionListDiv = document.getElementById('session-list');
+            sessionListDiv.innerHTML = '<p>No session data available.</p>';
+        }
+
+        // Fetch user activity when the page loads
+        fetchUserActivity();
+    </script>
+    <script>
+        // Function to close all modals
     function closeAllModals() {
         document.querySelectorAll('.custom-modal').forEach(modal => {
             modal.style.display = "none";
         });
     }
 
-   // Handle menu clicks to show corresponding modals
-document.querySelectorAll('.nav-mini').forEach(link => {
-    link.addEventListener('click', function (e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('data-target');
-        const modalId = targetId + '-modal';
-
-        closeAllModals();
-        const targetModal = document.getElementById(modalId);
-        if (targetModal) {
-            targetModal.style.display = "block";
-            if (targetId === 'sessions') {
-                // Fetch session data when the 'Account Sessions' modal is opened
-                fetchSessions();
-            }
+    // Show Change Password modal when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        closeAllModals(); // Close any open modals
+        const passwordModal = document.getElementById('password-modal');
+        if (passwordModal) {
+            passwordModal.style.display = 'block'; // Open Change Password modal
         }
     });
-});
 
-    // Close modal when clicking on the close button
-    document.querySelectorAll('.custom-modal .close').forEach(closeBtn => {
-        closeBtn.addEventListener('click', function () {
-            this.closest('.custom-modal').style.display = "none"; // Hide the modal
-        });
-    });
+    // Handle menu clicks to show corresponding modals
+    document.querySelectorAll('.nav-mini').forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('data-target');
+            const modalId = targetId + '-modal';
 
-    // Close modal when clicking outside the modal content
-    window.addEventListener('click', function (event) {
-        document.querySelectorAll('.custom-modal').forEach(modal => {
-            if (event.target == modal) {
-                modal.style.display = "none"; // Hide modal
+            closeAllModals(); // Close all modals before opening a new one
+            const targetModal = document.getElementById(modalId);
+            if (targetModal) {
+                targetModal.style.display = "block";
             }
         });
     });
@@ -758,34 +993,8 @@ document.querySelectorAll('.nav-mini').forEach(link => {
         confirmPasswordInput.addEventListener('input', validatePasswords);
     });
 
-    // Fetch session data
-    fetch('{{ route('user.activity') }}', {
-    headers: {
-        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-    }
-})
-.then(response => response.json())
-.then(data => {
-    const sessionList = document.getElementById('session-list');
-    sessionList.innerHTML = ''; // Clear previous data
 
-    if (data.sessions && data.sessions.length > 0) {
-        data.sessions.forEach(session => {
-            const sessionItem = document.createElement('div');
-            sessionItem.innerHTML = `Session: ${session.user_id}, Created: ${session.created_date}, Last Update: ${session.last_update}`;
-            sessionList.appendChild(sessionItem);
-        });
-    } else {
-        sessionList.textContent = 'No active sessions found.';
-    }
-})
-.catch(error => {
-    console.error('Error fetching sessions:', error);
-    document.getElementById('session-list').textContent = 'Failed to retrieve session data.';
-});
-
-
-    </script>
+</script>
 
 
 <script>
