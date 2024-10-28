@@ -671,7 +671,7 @@ public function submitResetPasswordForm(Request $request)
 
     public function showdashboardadm()
     {
-        return view('admin.dashboardadm');
+        return view('admin.dashboardadmin');
     }
 
     public function dashboardadm()
