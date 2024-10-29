@@ -72,7 +72,9 @@ Route::post('/formforgetpassword', [HttpController::class, 'submitResetPasswordF
 
 Route::get('/auth/google', [HttpController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [HttpController::class, 'handleGoogleCallback']);
-
+Route::get('/data-usage', function () {
+    return view('data-usage');
+});
 });
 
 // Rute-rute yang memerlukan autentikasi

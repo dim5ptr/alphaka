@@ -56,160 +56,344 @@ class HttpController extends Controller
   {
       return Socialite::driver('google')->redirect();
   }
+
   public function handleGoogleCallback()
-  {
-      try {
-          Log::info('Attempting to get user from Google...');
-          $user = Socialite::driver('google')->user();
+{
+    try {
+        Log::info('Attempting to get user from Google...');
+        $user = Socialite::driver('google')->user();
 
-          $userData = [
-              'google_id' => $user->id,
-              'name' => $user->name,
-              'email' => $user->email,
-              'avatar' => $user->avatar,
-          ];
+        $userData = [
+            'google_id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'avatar' => $user->avatar,
+        ];
 
-          Log::info('User data received from Google:', $userData ?? []);
+        Log::info('User data received from Google:', $userData ?? []);
 
-          // Try to log in with Google ID and email first
-          Log::info('Attempting to log in with Google ID: ' . $userData['google_id']);
-          $loginResponse = Http::withHeaders([
-              'x-api-key' => self::API_KEY
-          ])->post(self::API_URL . '/sso/login.json', [
-              'username' => $userData['email'],
-              'google_id' => $userData['google_id'],
-          ]);
+        // Try to log in with Google ID and email first
+        Log::info('Attempting to log in with Google ID: ' . $userData['google_id']);
+        $loginResponse = Http::withHeaders([
+            'x-api-key' => self::API_KEY
+        ])->post(self::API_URL . '/sso/login.json', [
+            'username' => $userData['email'],
+            'google_id' => $userData['google_id'],
+        ]);
 
-          $loginData = $loginResponse->json();
-          Log::info('Login API response:', $loginData ?? []);
+        $loginData = $loginResponse->json();
+        Log::info('Login API response:', $loginData ?? []);
 
-          // If login is successful
-          if ($loginResponse->successful() && isset($loginData['data']['access_token'])) {
-              session(['access_token' => $loginData['data']['access_token']]);
-              Log::info('Access token saved in session: ' . $loginData['data']['access_token']);
+        // If login is successful
+        if ($loginResponse->successful() && isset($loginData['data']['access_token'])) {
+            session(['access_token' => $loginData['data']['access_token']]);
+            Log::info('Access token saved in session: ' . $loginData['data']['access_token']);
 
-              // Storing personal information in session
-              if (isset($loginData['data']['personal_info'])) {
-                  $personalInfo = $loginData['data']['personal_info'];
-                  session([
-                      'birthday' => $personalInfo['birthday'],
-                      'full_name' => $personalInfo['full_name'],
-                      'gender' => $personalInfo['gender'],
-                      'phone' => $personalInfo['phone'],
-                      'username' => $personalInfo['username'],
-                      'email' => $userData['email'],
-                      'profile_picture' => $personalInfo['profile_picture'] ?? $userData['avatar'],
-                  ]);
-                  Log::info('Personal information saved in session:', $personalInfo ?? []);
-              }
+            // Storing personal information in session
+            if (isset($loginData['data']['personal_info'])) {
+                $personalInfo = $loginData['data']['personal_info'];
+                session([
+                    'birthday' => $personalInfo['birthday'],
+                    'full_name' => $personalInfo['full_name'],
+                    'gender' => $personalInfo['gender'],
+                    'phone' => $personalInfo['phone'],
+                    'username' => $personalInfo['username'],
+                    'email' => $userData['email'],
+                    'profile_picture' => $personalInfo['profile_picture'] ?? $userData['avatar'],
+                    'role_id' => $loginData['data']['role_id'] ?? null, // Store role_id in session
+                ]);
+                Log::info('Personal information saved in session:', $personalInfo ?? []);
+            }
 
-              Log::info('Login successful for user: ' . $userData['email']);
-              return redirect()->route('dashboard');
-          }
+            Log::info('Login successful for user: ' . $userData['email']);
+            // Redirect based on role_id
+            $roleId = session('role_id');
+            if ($roleId == 2) {
+                return redirect()->route('showdashboardadm'); // Redirect to admin dashboard
+            } elseif ($roleId == 1) {
+                return redirect()->route('dashboard'); // Redirect to user dashboard
+            } else {
+                return back()->withErrors(['error' => 'Role not recognized.']);
+            }
+        }
 
-          // If login fails, attempt registration
-          Log::info('Login failed, attempting to register the user: ' . $userData['email']);
-          $registerCheckResponse = Http::withHeaders([
-              'x-api-key' => self::API_KEY
-          ])->post(self::API_URL . '/sso/register-check.json', [
-              'email' => $userData['email'],
-          ]);
+        // If login fails, attempt registration
+        Log::info('Login failed, attempting to register the user: ' . $userData['email']);
+        $registerCheckResponse = Http::withHeaders([
+            'x-api-key' => self::API_KEY
+        ])->post(self::API_URL . '/sso/register-check.json', [
+            'email' => $userData['email'],
+        ]);
 
-          $registerCheckData = $registerCheckResponse->json();
-          Log::info('Register check API response:', $registerCheckData ?? []);
+        $registerCheckData = $registerCheckResponse->json();
+        Log::info('Register check API response:', $registerCheckData ?? []);
 
-          // If user is not registered or Google ID needs updating
-          if (!$registerCheckResponse->successful() || $registerCheckData['result'] == 'not_registered') {
-              Log::info('User not registered, attempting registration for: ' . $userData['email']);
+        // If user is not registered or Google ID needs updating
+        if (!$registerCheckResponse->successful() || $registerCheckData['result'] == 'not_registered') {
+            Log::info('User not registered, attempting registration for: ' . $userData['email']);
 
-              // Registering the user
-              $registerResponse = Http::withHeaders([
-                  'x-api-key' => self::API_KEY
-              ])->post(self::API_URL . '/sso/register.json', [
-                  'email' => $userData['email'],
-                  'google_id' => $userData['google_id'],
-                  'name' => $userData['name'],
-                  'password' => bcrypt(Str::random(10)), // Generate a random password
-              ]);
+            // Registering the user
+            $registerResponse = Http::withHeaders([
+                'x-api-key' => self::API_KEY
+            ])->post(self::API_URL . '/sso/register.json', [
+                'email' => $userData['email'],
+                'google_id' => $userData['google_id'],
+                'name' => $userData['name'],
+                'password' => bcrypt(Str::random(10)), // Generate a random password
+            ]);
 
-              $registerData = $registerResponse->json();
-              Log::info('Registration API response:', $registerData ?? []);
+            $registerData = $registerResponse->json();
+            Log::info('Registration API response:', $registerData ?? []);
 
-              // Handle case where user needs to activate their account
-              if ($registerResponse->successful() && isset($registerData['activation_key'])) {
-                  Log::info('Registration successful, activation required for: ' . $userData['email']);
+            // Handle case where user needs to activate their account
+            if ($registerResponse->successful() && isset($registerData['activation_key'])) {
+                Log::info('Registration successful, activation required for: ' . $userData['email']);
 
-                  // Save the verification token in session
-                  session([
-                      'verification_token' => $registerData['activation_key'],
-                      'email' => $userData['email'],
-                  ]);
+                // Save the verification token in session
+                session([
+                    'verification_token' => $registerData['activation_key'],
+                    'email' => $userData['email'],
+                ]);
 
-                  // Sending verification email
-                  Log::info('Sending verification email to: ' . $userData['email']);
-                  Mail::send('emails.verification', ['token' => session('verification_token')], function($message) use ($userData) {
-                      $message->to($userData['email']);
-                      $message->subject('Email Activation');
-                  });
-                  Log::info('Verification email sent to: ' . $userData['email']);
+                // Sending verification email
+                Log::info('Sending verification email to: ' . $userData['email']);
+                Mail::send('emails.verification', ['token' => session('verification_token')], function($message) use ($userData) {
+                    $message->to($userData['email']);
+                    $message->subject('Email Activation');
+                });
+                Log::info('Verification email sent to: ' . $userData['email']);
 
-                  return redirect('/verify')->with('success_message', 'Please check your email to activate your account.');
-              }
+                return redirect('/verify')->with('success_message', 'Please check your email to activate your account.');
+            }
 
-          // Handle case where Google ID is updated for an existing user
-          } elseif ($registerCheckResponse->successful() && $registerCheckData['result'] == 1 && $registerCheckData['data'] == "Google ID successfully updated for existing user.") {
+        // Handle case where Google ID is updated for an existing user
+        } elseif ($registerCheckResponse->successful() && $registerCheckData['result'] == 1 && $registerCheckData['data'] == "Google ID successfully updated for existing user.") {
             Log::info('Google ID successfully updated for user, retrying login.');
 
-                            // Retry login after successful Google ID update
-                            $retryLoginResponse = Http::withHeaders([
-                                'x-api-key' => self::API_KEY
-                            ])->post(self::API_URL . '/sso/login.json', [
-                                'username' => $userData['email'],
-                                'google_id' => $userData['google_id'],
-                            ]);
+            // Retry login after successful Google ID update
+            $retryLoginResponse = Http::withHeaders([
+                'x-api-key' => self::API_KEY
+            ])->post(self::API_URL . '/sso/login.json', [
+                'username' => $userData['email'],
+                'google_id' => $userData['google_id'],
+            ]);
 
-                            $retryLoginData = $retryLoginResponse->json();
+            $retryLoginData = $retryLoginResponse->json();
+            Log::info('Retry login API response:', $retryLoginData ?? []);
 
-                            // If login is successful after update
-                            if ($retryLoginResponse->successful() && isset($retryLoginData['data']['access_token'])) {
-                                session(['access_token' => $retryLoginData['data']['access_token']]);
-                                Log::info('Access token saved in session: ' . $retryLoginData['data']['access_token']);
+            // If login is successful after update
+            if ($retryLoginResponse->successful() && isset($retryLoginData['data']['access_token'])) {
+                session(['access_token' => $retryLoginData['data']['access_token']]);
+                Log::info('Access token saved in session: ' . $retryLoginData['data']['access_token']);
 
-                                // Store personal information in session
-                                if (isset($retryLoginData['data']['personal_info'])) {
-                                    $personalInfo = $retryLoginData['data']['personal_info'];
-                                    session([
-                                        'birthday' => $personalInfo['birthday'],
-                                        'full_name' => $personalInfo['full_name'],
-                                        'gender' => $personalInfo['gender'],
-                                        'phone' => $personalInfo['phone'],
-                                        'username' => $personalInfo['username'],
-                                        'email' => $userData['email'],
-                                        'profile_picture' => $personalInfo['profile_picture'] ?? $userData['avatar'],
-                                    ]);
-                                    Log::info('Personal information saved in session:', $personalInfo ?? []);
-                                }
+                // Store personal information in session
+                if (isset($retryLoginData['data']['personal_info'])) {
+                    $personalInfo = $retryLoginData['data']['personal_info'];
+                    session([
+                        'birthday' => $personalInfo['birthday'],
+                        'full_name' => $personalInfo['full_name'],
+                        'gender' => $personalInfo['gender'],
+                        'phone' => $personalInfo['phone'],
+                        'username' => $personalInfo['username'],
+                        'email' => $userData['email'],
+                        'profile_picture' => $personalInfo['profile_picture'] ?? $userData['avatar'],
+                        'role_id' => $retryLoginData['data']['role_id'] ?? null, // Store role_id in session
+                    ]);
+                    Log::info('Personal information saved in session:', $personalInfo ?? []);
+                }
 
-                                Log::info('Login successful for user: ' . $userData['email']);
-                                return redirect()->route('dashboard');
-                            }
+                // Redirect to dashboard after successful login
+                Log::info('Login successful for user: ' . $userData['email']);
+                // Redirect based on role_id
+                $roleId = session('role_id');
+                if ($roleId == 2) {
+                    return redirect()->route('showdashboardadm'); // Redirect to admin dashboard
+                } elseif ($roleId == 1) {
+                    return redirect()->route('dashboard'); // Redirect to user dashboard
+                } else {
+                    return back()->withErrors(['error' => 'Role not recognized.']);
+                }
+            } else {
+                Log::error('Retry login failed for user: ' . $userData['email']);
+                return back()->withErrors(['error_message' => 'Login failed after Google ID update, please try again.']);
+            }
 
-          } else {
-              Log::info('User is already registered, but login failed.');
-              return back()->withErrors([
-                  'error_message' => 'Login failed, please try again.',
-              ])->withInput();
-          }
+        } else {
+            Log::info('User is already registered, but login failed.');
+            return back()->withErrors([
+                'error_message' => 'Login failed, please try again.',
+            ])->withInput();
+        }
 
-      } catch (\Exception $e) {
-          Log::error('An error occurred during Google login/registration: ' . $e->getMessage());
-          Log::error('Stack trace: ' . $e->getTraceAsString());
+    } catch (\Exception $e) {
+        Log::error('An error occurred during Google login/registration: ' . $e->getMessage());
+        Log::error('Stack trace: ' . $e->getTraceAsString());
 
-          return redirect('/login')->withErrors([
-              'error_message' => 'Something went wrong, please try again.'
-          ]);
-      }
-  }
+        return redirect('/login')->withErrors([
+            'error_message' => 'Something went wrong, please try again.'
+        ]);
+    }
+}
+
+//   public function handleGoogleCallback()
+//   {
+//       try {
+//           Log::info('Attempting to get user from Google...');
+//           $user = Socialite::driver('google')->user();
+
+//           $userData = [
+//               'google_id' => $user->id,
+//               'name' => $user->name,
+//               'email' => $user->email,
+//               'avatar' => $user->avatar,
+//           ];
+
+//           Log::info('User data received from Google:', $userData ?? []);
+
+//           // Try to log in with Google ID and email first
+//           Log::info('Attempting to log in with Google ID: ' . $userData['google_id']);
+//           $loginResponse = Http::withHeaders([
+//               'x-api-key' => self::API_KEY
+//           ])->post(self::API_URL . '/sso/login.json', [
+//               'username' => $userData['email'],
+//               'google_id' => $userData['google_id'],
+//           ]);
+
+//           $loginData = $loginResponse->json();
+//           Log::info('Login API response:', $loginData ?? []);
+
+//           // If login is successful
+//           if ($loginResponse->successful() && isset($loginData['data']['access_token'])) {
+//               session(['access_token' => $loginData['data']['access_token']]);
+//               Log::info('Access token saved in session: ' . $loginData['data']['access_token']);
+
+//               // Storing personal information in session
+//               if (isset($loginData['data']['personal_info'])) {
+//                   $personalInfo = $loginData['data']['personal_info'];
+//                   session([
+//                       'birthday' => $personalInfo['birthday'],
+//                       'full_name' => $personalInfo['full_name'],
+//                       'gender' => $personalInfo['gender'],
+//                       'phone' => $personalInfo['phone'],
+//                       'username' => $personalInfo['username'],
+//                       'email' => $userData['email'],
+//                       'profile_picture' => $personalInfo['profile_picture'] ?? $userData['avatar'],
+//                   ]);
+//                   Log::info('Personal information saved in session:', $personalInfo ?? []);
+//               }
+
+//               Log::info('Login successful for user: ' . $userData['email']);
+//               return redirect()->route('dashboard');
+//           }
+
+//           // If login fails, attempt registration
+//           Log::info('Login failed, attempting to register the user: ' . $userData['email']);
+//           $registerCheckResponse = Http::withHeaders([
+//               'x-api-key' => self::API_KEY
+//           ])->post(self::API_URL . '/sso/register-check.json', [
+//               'email' => $userData['email'],
+//           ]);
+
+//           $registerCheckData = $registerCheckResponse->json();
+//           Log::info('Register check API response:', $registerCheckData ?? []);
+
+//           // If user is not registered or Google ID needs updating
+//           if (!$registerCheckResponse->successful() || $registerCheckData['result'] == 'not_registered') {
+//               Log::info('User not registered, attempting registration for: ' . $userData['email']);
+
+//               // Registering the user
+//               $registerResponse = Http::withHeaders([
+//                   'x-api-key' => self::API_KEY
+//               ])->post(self::API_URL . '/sso/register.json', [
+//                   'email' => $userData['email'],
+//                   'google_id' => $userData['google_id'],
+//                   'name' => $userData['name'],
+//                   'password' => bcrypt(Str::random(10)), // Generate a random password
+//               ]);
+
+//               $registerData = $registerResponse->json();
+//               Log::info('Registration API response:', $registerData ?? []);
+
+//               // Handle case where user needs to activate their account
+//               if ($registerResponse->successful() && isset($registerData['activation_key'])) {
+//                   Log::info('Registration successful, activation required for: ' . $userData['email']);
+
+//                   // Save the verification token in session
+//                   session([
+//                       'verification_token' => $registerData['activation_key'],
+//                       'email' => $userData['email'],
+//                   ]);
+
+//                   // Sending verification email
+//                   Log::info('Sending verification email to: ' . $userData['email']);
+//                   Mail::send('emails.verification', ['token' => session('verification_token')], function($message) use ($userData) {
+//                       $message->to($userData['email']);
+//                       $message->subject('Email Activation');
+//                   });
+//                   Log::info('Verification email sent to: ' . $userData['email']);
+
+//                   return redirect('/verify')->with('success_message', 'Please check your email to activate your account.');
+//               }
+
+//           // Handle case where Google ID is updated for an existing user
+//           } elseif ($registerCheckResponse->successful() && $registerCheckData['result'] == 1 && $registerCheckData['data'] == "Google ID successfully updated for existing user.") {
+//             Log::info('Google ID successfully updated for user, retrying login.');
+
+//             // Retry login after successful Google ID update
+//             $retryLoginResponse = Http::withHeaders([
+//                 'x-api-key' => self::API_KEY
+//             ])->post(self::API_URL . '/sso/login.json', [
+//                 'username' => $userData['email'],
+//                 'google_id' => $userData['google_id'],
+//             ]);
+
+//             $retryLoginData = $retryLoginResponse->json();
+//             Log::info('Retry login API response:', $retryLoginData ?? []);
+
+//             // If login is successful after update
+//             if ($retryLoginResponse->successful() && isset($retryLoginData['data']['access_token'])) {
+//                 session(['access_token' => $retryLoginData['data']['access_token']]);
+//                 Log::info('Access token saved in session: ' . $retryLoginData['data']['access_token']);
+
+//                 // Store personal information in session
+//                 if (isset($retryLoginData['data']['personal_info'])) {
+//                     $personalInfo = $retryLoginData['data']['personal_info'];
+//                     session([
+//                         'birthday' => $personalInfo['birthday'],
+//                         'full_name' => $personalInfo['full_name'],
+//                         'gender' => $personalInfo['gender'],
+//                         'phone' => $personalInfo['phone'],
+//                         'username' => $personalInfo['username'],
+//                         'email' => $userData['email'],
+//                         'profile_picture' => $personalInfo['profile_picture'] ?? $userData['avatar'],
+//                     ]);
+//                     Log::info('Personal information saved in session:', $personalInfo ?? []);
+//                 }
+
+//                 // Redirect to dashboard after successful login
+//                 Log::info('Login successful for user: ' . $userData['email']);
+//                 return redirect()->route('dashboard');
+//             } else {
+//                 Log::error('Retry login failed for user: ' . $userData['email']);
+//                 return back()->withErrors(['error_message' => 'Login failed after Google ID update, please try again.']);
+//             }
+
+//           } else {
+//               Log::info('User is already registered, but login failed.');
+//               return back()->withErrors([
+//                   'error_message' => 'Login failed, please try again.',
+//               ])->withInput();
+//           }
+
+//       } catch (\Exception $e) {
+//           Log::error('An error occurred during Google login/registration: ' . $e->getMessage());
+//           Log::error('Stack trace: ' . $e->getTraceAsString());
+
+//           return redirect('/login')->withErrors([
+//               'error_message' => 'Something went wrong, please try again.'
+//           ]);
+//       }
+//   }
 
 //   public function handleGoogleCallback()
 // {
@@ -591,76 +775,152 @@ public function submitResetPasswordForm(Request $request)
 
 
 
+public function login(Request $request)
+{
+    try {
+        $response = Http::withHeaders([
+            'x-api-key' => self::API_KEY
+        ])->post(self::API_URL . '/sso/login.json', [
+            'username' => $request->email,
+            'password' => $request->password,
+        ]);
 
+        Log::info('API request sent.', [
+            'url' => self::API_URL . '/sso/login.json',
+            'response_status' => $response->status(),
+            'response_body' => $response->body()
+        ]);
 
-    public function login(Request $request)
-    {
-        try {
-            $response = Http::withHeaders([
-                'x-api-key' => self::API_KEY
-            ])->post(self::API_URL . '/sso/login.json', [
-                'username' => $request->email,
-                'password' => $request->password,
-            ]);
-            Log::info('API request sent.', [
-                'url' => self::API_URL . '/sso/login.json',
-                'response_status' => $response->status(),
-                'response_body' => $response->body()
-            ]);
-            $responseData = $response->json();
+        $responseData = $response->json();
 
-            if ($response->successful() && isset($responseData['data']['access_token'])) {
+        if ($response->successful() && isset($responseData['data']['access_token'])) {
+            // Simpan access token ke session
+            session(['access_token' => $responseData['data']['access_token']]);
 
-                // Simpan access token ke session
-                session(['access_token' => $responseData['data']['access_token']]);
+            // Jika personal_info tersedia dalam respons, simpan data tersebut ke session juga
+            if (isset($responseData['data']['personal_info'])) {
+                $personalInfo = $responseData['data']['personal_info'];
+                session([
+                    'birthday' => $personalInfo['birthday'],
+                    'full_name' => $personalInfo['full_name'],
+                    'gender' => $personalInfo['gender'],
+                    'phone' => $personalInfo['phone'],
+                    'username' => $personalInfo['username'],
+                    'email' => $request->email,
+                    'profile_picture' => $personalInfo['profile_picture'] ?? null,
+                    'role_id' => $responseData['data']['role_id'] ?? null, // Menyimpan role_id ke session
+                ]);
 
-                // Jika personal_info tersedia dalam respons, simpan data tersebut ke session juga
-                if (isset($responseData['data']['personal_info'])) {
-                    $personalInfo = $responseData['data']['personal_info'];
-                    session([
-                        'birthday' => $personalInfo['birthday'],
-                        'full_name' => $personalInfo['full_name'],
-                        'gender' => $personalInfo['gender'],
-                        'phone' => $personalInfo['phone'],
-                        'username' => $personalInfo['username'],
-                        'email' => $request->email,
-                        'profile_picture' => $personalInfo['profile_picture'] ?? null,// Simpan email ke session
-                    ]);
-
-                    // Simpan URL gambar profil ke session jika tersedia
-                    if (isset($personalInfo['profile_picture'])) {
-                        session(['profile_picture' => $personalInfo['profile_picture']]);
-                    }
-                    Log::info('Session data stored successfully.', [
-                        'session_data' => session()->all()
-                    ]);
-                }
-
-                return redirect()->route('dashboard');
-            } elseif (isset($responseData['data']) && $responseData['result'] === 2) {
-                return back()->withErrors([
-                    'error' => $responseData['data'],
-                ])->withInput();
-            } elseif (isset($responseData['data']) && $responseData['result'] === 3) {
-                return back()->withErrors([
-                    'error' => $responseData['data'],
-                ])->withInput();
-            } elseif (isset($responseData['data']) && $responseData['result'] === 4) {
-                return back()->withErrors([
-                    'error' => $responseData['data'],
-                ])->withInput();
+                Log::info('Session data stored successfully.', [
+                    'session_data' => session()->all()
+                ]);
             }
 
+            // Redirect based on role_id
+            $roleId = session('role_id'); // Mengambil role_id dari session
+            if ($roleId == 2) {
+                return redirect()->route('showdashboardadm'); // Redirect to admin dashboard
+            } elseif ($roleId == 1) {
+                return redirect()->route('dashboard'); // Redirect to user dashboard
+            } else {
+                return back()->withErrors([
+                    'error' => 'Role not recognized.',
+                ])->withInput();
+            }
+        } elseif (isset($responseData['data']) && $responseData['result'] === 2) {
             return back()->withErrors([
-                'email' => 'The provided credentials do not match our records.',
+                'error' => $responseData['data'],
             ])->withInput();
-        } catch (\Exception $e) {
-            // Tangani kesalahan jika terjadi kesalahan dalam melakukan permintaan HTTP
+        } elseif (isset($responseData['data']) && $responseData['result'] === 3) {
             return back()->withErrors([
-                'error' => 'Something went wrong. Please try again later.'
+                'error' => $responseData['data'],
+            ])->withInput();
+        } elseif (isset($responseData['data']) && $responseData['result'] === 4) {
+            return back()->withErrors([
+                'error' => $responseData['data'],
             ])->withInput();
         }
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->withInput();
+    } catch (\Exception $e) {
+        // Tangani kesalahan jika terjadi kesalahan dalam melakukan permintaan HTTP
+        return back()->withErrors([
+            'error' => 'Something went wrong. Please try again later.'
+        ])->withInput();
     }
+}
+
+
+    // public function login(Request $request)
+    // {
+    //     try {
+    //         $response = Http::withHeaders([
+    //             'x-api-key' => self::API_KEY
+    //         ])->post(self::API_URL . '/sso/login.json', [
+    //             'username' => $request->email,
+    //             'password' => $request->password,
+    //         ]);
+    //         Log::info('API request sent.', [
+    //             'url' => self::API_URL . '/sso/login.json',
+    //             'response_status' => $response->status(),
+    //             'response_body' => $response->body()
+    //         ]);
+    //         $responseData = $response->json();
+
+    //         if ($response->successful() && isset($responseData['data']['access_token'])) {
+
+    //             // Simpan access token ke session
+    //             session(['access_token' => $responseData['data']['access_token']]);
+
+    //             // Jika personal_info tersedia dalam respons, simpan data tersebut ke session juga
+    //             if (isset($responseData['data']['personal_info'])) {
+    //                 $personalInfo = $responseData['data']['personal_info'];
+    //                 session([
+    //                     'birthday' => $personalInfo['birthday'],
+    //                     'full_name' => $personalInfo['full_name'],
+    //                     'gender' => $personalInfo['gender'],
+    //                     'phone' => $personalInfo['phone'],
+    //                     'username' => $personalInfo['username'],
+    //                     'email' => $request->email,
+    //                     'profile_picture' => $personalInfo['profile_picture'] ?? null,// Simpan email ke session
+    //                 ]);
+
+    //                 // Simpan URL gambar profil ke session jika tersedia
+    //                 if (isset($personalInfo['profile_picture'])) {
+    //                     session(['profile_picture' => $personalInfo['profile_picture']]);
+    //                 }
+    //                 Log::info('Session data stored successfully.', [
+    //                     'session_data' => session()->all()
+    //                 ]);
+    //             }
+
+    //             return redirect()->route('dashboard');
+    //         } elseif (isset($responseData['data']) && $responseData['result'] === 2) {
+    //             return back()->withErrors([
+    //                 'error' => $responseData['data'],
+    //             ])->withInput();
+    //         } elseif (isset($responseData['data']) && $responseData['result'] === 3) {
+    //             return back()->withErrors([
+    //                 'error' => $responseData['data'],
+    //             ])->withInput();
+    //         } elseif (isset($responseData['data']) && $responseData['result'] === 4) {
+    //             return back()->withErrors([
+    //                 'error' => $responseData['data'],
+    //             ])->withInput();
+    //         }
+
+    //         return back()->withErrors([
+    //             'email' => 'The provided credentials do not match our records.',
+    //         ])->withInput();
+    //     } catch (\Exception $e) {
+    //         // Tangani kesalahan jika terjadi kesalahan dalam melakukan permintaan HTTP
+    //         return back()->withErrors([
+    //             'error' => 'Something went wrong. Please try again later.'
+    //         ])->withInput();
+    //     }
+    // }
 
 
     public function index()
