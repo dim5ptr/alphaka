@@ -2160,5 +2160,9 @@ public function showuserrole()
 }
 
 
+public function showmoredetailsadm()
+{
+    return view ('admin.moredetails');
+}
 
 }
