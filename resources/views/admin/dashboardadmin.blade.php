@@ -6,15 +6,14 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0" style="color: #3200af;">Dashboard</h1>
-            </div><!-- /.col -->
+                <h1 class="m-0" style="color: #0077FF; font-weight: bold;">Dashboard</h1>
+            </div>
             <div class="col-sm-6">
                 <!-- You can add additional header content here if needed -->
-            </div><!-- /.col -->
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
+            </div>
+        </div>
+    </div>
 </div>
-<!-- /.content-header -->
 
 <!-- Main content -->
 <section class="content">
@@ -36,30 +35,82 @@
         @endif
 
         <div class="container">
-        @if(isset($organizations))
-    <div class="display" id="organization-list">
-        @foreach($organizations as $organization)
-            <div class="card-body organization-card" data-type="{{ $organization['type'] ?? 'default_type' }}">
-                <div class="card-id">
-                    <div class="card-data">
-                        <h3 class="card-title">{{ $organization['organization_name'] }}</h3>
-                        <p class="card-description">{{ $organization['description'] }}</p>
+            <div class="row">
+                <!-- Organization Count Card -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-header" style="background-color: #0077FF; color: white;">
+                            Organization Count
+                        </div>
+                        <div class="card-body">
+                            <h3>{{ $organizationCount ?? 0 }}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <a href="" class="btn btn-outline-primary custom-outline-btn">View All Organizations</a>
+                        </div>
                     </div>
-                    <img id="profile_picture" src="{{ asset('img/user.png') }}" alt="Foto Profil" class="profile-picture">
                 </div>
-                <div class="card-footer text-center">
-                    <div class="members-count">
-                        <p><i class="fa-solid fa-user-group"></i>{{ $organization['member_count'] }}</p>
+
+                <!-- User Count Card -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-header" style="background-color: #0077FF; color: white;">
+                            User Count
+                        </div>
+                        <div class="card-body">
+                            <h3>{{ $userCount ?? 0 }}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <a href="" class="btn btn-outline-primary custom-outline-btn">View All Users</a>
+                        </div>
                     </div>
-                    <a href="{{ route('showvieworganization', ['organization_name' => $organization['organization_name']]) }}" class="btn btn-secondary">Lihat</a>
+                </div>
+
+                <!-- Product Available Card -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-header" style="background-color: #0077FF; color: white;">
+                            Product Available
+                        </div>
+                        <div class="card-body">
+                            <h3>{{ $productCount ?? 0 }}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <a href="" class="btn btn-outline-primary custom-outline-btn">View All Products</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction Success Card -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-header" style="background-color: #0077FF; color: white;">
+                            Transaction Success
+                        </div>
+                        <div class="card-body">
+                            <h3>{{ $transactionCount ?? 0 }}</h3>
+                        </div>
+                        <div class="card-footer">
+                            <a href="" class="btn btn-outline-primary custom-outline-btn">View History</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        @endforeach
-    </div>
-@endif
-
         </div>
     </div>
 </section>
-<!-- /.content -->
+@endsection
+
+<!-- Add custom CSS for button hover effect -->
+@section('styles')
+<style>
+    .custom-outline-btn {
+        border-color: #0077FF;
+        color: #0077FF;
+    }
+    .custom-outline-btn:hover {
+        background-color: #0077FF;
+        color: white;
+    }
+</style>
 @endsection
