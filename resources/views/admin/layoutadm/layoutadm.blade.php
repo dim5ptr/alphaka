@@ -17,14 +17,14 @@
   <link rel="stylesheet" href="{{ asset('template/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('template/dist/css/adminlte.min.css') }}">
-  
+
   <style>
 
     body {
       font-family: 'Inter', sans-serif;
       background-color: #f4f6f9;
     }
-    
+
     /* Navbar Style */
     .navbar {
       background-color: #e2e4fb;
@@ -103,7 +103,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="" class="nav-link {{ Request::is('users') ? 'active' : '' }}">
+            <a href="{{ route('showuserdata') }}" class="nav-link {{ Request::is('users') ? 'active' : '' }}">
               <i class="nav-icon fas fa-users"></i>
               <p>Users</p>
             </a>

@@ -2118,6 +2118,46 @@ public function getMemberToken(Request $request)
 }
 
 
+public function showuserdata(Request $request)
+{
+    try {
+        // Make the GET request to the external API
+        $response = Http::withHeaders([
+                    'Authorization' => session('access_token'),
+                    'x-api-key' => self::API_KEY, // Ensure API_KEY is set in your .env file
+                ])->get(self::API_URL .  '/sso/get_user_data.json');
+
+        if ($response->successful()) {
+            return view('admin.datapengguna', [
+                'users' => $response->json()['data']
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to retrieve user data.',
+        ], $response->status());
+
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
+    }
+}
+// public function showuserdata()
+// {
+//     $response = Http::withHeaders([
+//         'Authorization' => session('access_token'),
+//         'x-api-key' => self::API_KEY, // Ensure API_KEY is set in your .env file
+//     ])->get(self::API_URL .  '/sso/get_user_data.json');
+
+//     $users = $response->json();
+
+//     return view ('admin.datapengguna');
+// }
+
+public function showuserrole()
+{
+    return view ('admin.userrole');
+}
 
 
 
