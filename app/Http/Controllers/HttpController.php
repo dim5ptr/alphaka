@@ -932,7 +932,7 @@ public function login(Request $request)
     public function showdashboardadm()
 {
     // Log current session data when accessing the dashboard
-    \Log::info('Accessing dashboard:', [
+    Log::info('Accessing dashboard:', [
         'username' => session('username'),
         'email' => session('email'),
         'admin_user_id' => session('admin_user_id'), // Assuming you store the admin's user ID in the session
@@ -1889,7 +1889,7 @@ public function activityUser(Request $request)
         ];
 
         // Log current session data before the API call
-        \Log::info('Session before edit:', [
+        Log::info('Session before edit:', [
             'username' => session('username'),
             'email' => session('email'),
             'admin_user_id' => session('admin_user_id'), // Assuming you store the admin's user ID in the session
@@ -1910,7 +1910,7 @@ public function activityUser(Request $request)
             }
 
             // Log session data after the edit
-            \Log::info('Session after edit:', [
+            Log::info('Session after edit:', [
                 'username' => session('username'),
                 'email' => session('email'),
             ]);
@@ -1930,7 +1930,7 @@ public function activityUser(Request $request)
         ]);
 
         // Log current session data before the API call
-        \Log::info('Session before retrieving user details:', [
+        Log::info('Session before retrieving user details:', [
             'username' => session('username'),
             'email' => session('email'),
         ]);
@@ -1948,7 +1948,7 @@ public function activityUser(Request $request)
             $userDetails = $response->json()['data'];
 
             // Log the retrieved user details
-            \Log::info('User  details retrieved:', $userDetails);
+            Log::info('User  details retrieved:', $userDetails);
 
             // Render the view with user details without modifying the session
             return view('user.details', compact('userDetails'));
