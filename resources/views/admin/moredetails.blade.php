@@ -12,14 +12,14 @@
                     @if (session('profile_picture'))
                         <img id="profile_picture" src="{{ asset(session('profile_picture')) }}" alt="Profile Picture" class="img-fluid rounded-circle profile-picture">
                     @else
-                        <img id="profile_picture" src="https://www.gravatar.com/avatar/{{ md5(strtolower(trim(session('email')))) }}?s=200&d=mp" alt="Profile Picture" class="profile-picture">
+                        <img id="profile_picture" src="https://www.gravatar.com/avatar/{{ md5(strtolower(trim(session('emails')))) }}?s=200&d=mp" alt="Profile Picture" class="profile-picture">
                     @endif
                 </div>
                 <div class="data">
                     <p><span class="text-bold">Name:</span> {{ session('fullname') ?? 'N/A' }}</p>
                     <p><span class="text-bold">Birthday:</span> {{ session('dateofbirth') ?? 'N/A' }}</p>
                     <p><span class="text-bold">Gender:</span> {{ session('gender') === 0 ? 'Female' : 'Male' }}</p>
-                    <p><span class="text-bold">Email:</span> {{ session('email') ?? 'N/A' }}</p>
+                    <p><span class="text-bold">Email:</span> {{ session('emails') ?? 'N/A' }}</p>
                     <p><span class="text-bold">Phone Number:</span> {{ session('phone') ?? 'N/A' }}</p>
                     <p><span class="text-bold">User Role:</span>
                         {{ (int) session('user_role') === 1 ? 'PENGGUNA' : ((int) session('user_role') === 2 ? 'ADMIN' : 'PENGGUNA') }}

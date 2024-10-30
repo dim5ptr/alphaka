@@ -33,14 +33,14 @@
                     <div class="form-group">
                         <label for="username">Username</label>
                         <input type="text" name="username" id="username" class="form-control"
-                               placeholder="Enter your Username" value="{{ session('username') }}" required>
+                               placeholder="Enter your Username" value="{{ session('user_name') }}" required>
                     </div>
 
                     <!-- Email -->
                     <div class="form-group">
                         <label for="email">Email</label>
                         <input type="email" name="email" id="email" class="form-control"
-                               placeholder="Enter your Email" value="{{ session('email') }}" required>
+                               placeholder="Enter your Email" value="{{ session('emails') }}" required>
                     </div>
 
                     <!-- Phone Number -->

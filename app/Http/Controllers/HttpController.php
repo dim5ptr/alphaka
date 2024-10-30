@@ -930,9 +930,16 @@ public function login(Request $request)
     }
 
     public function showdashboardadm()
-    {
-        return view('admin.dashboardadmin');
-    }
+{
+    // Log current session data when accessing the dashboard
+    \Log::info('Accessing dashboard:', [
+        'username' => session('username'),
+        'email' => session('email'),
+        'admin_user_id' => session('admin_user_id'), // Assuming you store the admin's user ID in the session
+    ]);
+
+    return view('admin.dashboardadmin');
+}
 
     public function dashboardadm()
     {
@@ -1852,48 +1859,103 @@ public function activityUser(Request $request)
     {
         return view ('admin.edituseradm');
     }
+
     public function edituseradm(Request $request)
-{
-    // Validate input fields including user_id
-    $request->validate([
-        'user_id' => 'required|integer', // Remove the database existence check
-        'fullname' => 'required|string|max:255',
-        'username' => 'required|string|max:255|alpha_dash', // Remove unique validation
-        'email' => 'required|email|max:255', // Remove unique validation
-        'phone' => 'required|string|max:20|regex:/^[0-9]+$/',
-        'dateofbirth' => 'required|date|before:today',
-        'gender' => 'required|in:0,1',
-        'role_id' => 'required|integer', // Remove the database existence check
-    ]);
+    {
+        // Validate input fields including user_id
+        $request->validate([
+            'user_id' => 'required|integer', // User ID of the user being edited
+            'fullname' => 'required|string|max:255',
+            'username' => 'required|string|max:255|alpha_dash',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20|regex:/^[0-9]+$/',
+            'dateofbirth' => 'required|date|before:today',
+            'gender' => 'required|in:0,1',
+            'role_id' => 'required|integer',
+        ]);
 
-    // Prepare data for API
-    $data = [
-        'user_id' => $request->user_id,
-        'full_name' => $request->fullname,
-        'username' => $request->username,
-        'email' => $request->email,
-        'phone' => $request->phone,
-        'first_name' => strtok($request->fullname, ' '),
-        'last_name' => substr(strstr($request->fullname, " "), 1) ?: '',
-        'birthday' => $request->dateofbirth,
-        'gender' => $request->gender,
-        'role_id' => $request->role_id,
-    ];
+        // Prepare data for API
+        $data = [
+            'user_id' => $request->user_id,
+            'full_name' => $request->fullname,
+            'username' => $request->username,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'first_name' => strtok($request->fullname, ' '),
+            'last_name' => substr(strstr($request->fullname, " "), 1) ?: '',
+            'birthday' => $request->dateofbirth,
+            'gender' => $request->gender,
+            'role_id' => $request->role_id,
+        ];
 
-    // Send API request
-    $response = Http::withHeaders([
-        'Authorization' => session('access_token'),
-        'x-api-key' => self::API_KEY
-    ])->post(self::API_URL .'/sso/update_user_data.json', $data);
+        // Log current session data before the API call
+        \Log::info('Session before edit:', [
+            'username' => session('username'),
+            'email' => session('email'),
+            'admin_user_id' => session('admin_user_id'), // Assuming you store the admin's user ID in the session
+        ]);
 
-    // Handle response
-    if ($response->successful()) {
-        // Redirect to moredetailsadm instead of showedituseradm
-        return redirect()->route('showmoredetailsadm', ['email' => $request->email])->with('success', 'User data updated successfully.');
-    } else {
-        return redirect()->route('showedituseradm')->with('error', 'Failed to update user data. Please try again.');
+        // Send API request
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY
+        ])->post(self::API_URL . '/update_user_data.json', $data);
+
+        // Handle response
+        if ($response->successful()) {
+            // Check if the edited user is the logged-in admin
+            if ($request->user_id == session('admin_user_id')) { // Assuming you store the admin's user ID in the session
+                // Update session data for the logged-in admin if their own data was edited
+                session(['username' => $request->username, 'email' => $request->email]);
+            }
+
+            // Log session data after the edit
+            \Log::info('Session after edit:', [
+                'username' => session('username'),
+                'email' => session('email'),
+            ]);
+
+            // Redirect to moredetailsadm instead of showedituseradm
+            return redirect()->route('showmoredetailsadm', ['email' => $request->email])->with('success', 'User  data updated successfully.');
+        } else {
+            return redirect()->route('showedituseradm')->with('error', 'Failed to update user data. Please try again.');
+        }
     }
-}
+
+    public function showUserDetails(Request $request)
+    {
+        // Validate the email being requested
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        // Log current session data before the API call
+        \Log::info('Session before retrieving user details:', [
+            'username' => session('username'),
+            'email' => session('email'),
+        ]);
+
+        // Send API request to get user details
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY
+        ])->post(self::API_URL . '/get_user_details_by_email.json', [
+            'email' => $request->email,
+        ]);
+
+        // Handle response
+        if ($response->successful()) {
+            $userDetails = $response->json()['data'];
+
+            // Log the retrieved user details
+            \Log::info('User  details retrieved:', $userDetails);
+
+            // Render the view with user details without modifying the session
+            return view('user.details', compact('userDetails'));
+        } else {
+            return redirect()->back()->with('error', 'Failed to retrieve user details. Please try again.');
+        }
+    }
 
 
 
@@ -2235,9 +2297,10 @@ public function showmoredetailsadm(Request $request)
             $dateofbirth = $userData['birthday'] ?? 'N/A';
             $gender = isset($userData['gender']) && $userData['gender'] === 0 ? 'Female' : 'Male';
             $phone = $userData['phone'] ?? 'N/A';
+            $emails = $userData['email'] ?? 'N/A';
             $roles = !empty($userData['roles']) ? implode(', ', array_filter($userData['roles'])) : 'N/A';
             $userId = $userData['user_id'] ?? null;
-            $user_name = $userData['user_name'] ?? 'N/A'; // Get username from response
+            $user_name = $userData['username'] ?? 'N/A'; // Get username from response
 
             // Store the data in session
             session([
@@ -2245,7 +2308,7 @@ public function showmoredetailsadm(Request $request)
                 'fullname' => $fullname,
                 'dateofbirth' => $dateofbirth,
                 'gender' => $gender,
-                'email' => $email,
+                'emails' => $emails,
                 'phone' => $phone,
                 'user_role' => $roles,
                 'user_name' => $user_name,
