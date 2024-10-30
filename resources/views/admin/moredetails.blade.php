@@ -25,6 +25,9 @@
                         {{ (int) session('user_role') === 1 ? 'PENGGUNA' : ((int) session('user_role') === 2 ? 'ADMIN' : 'PENGGUNA') }}
                     </p>
                 </div>
+                <a href="{{ route('showedituseradm') }}" class="btn btn-primary custom-btn" title="Edit Data">
+                    <i class="fa fa-edit"></i> Edit Data
+                </a>
             </div>
         </div>
     </section>
@@ -51,7 +54,7 @@ html, body {
     padding: 2%;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start; /* Align items to the start (left) */
 }
 
 .judul {
@@ -74,6 +77,7 @@ html, body {
     align-items: center;
     padding: 2% 5%;
     width: 100%;
+    position: relative;
 }
 
 .foto {
@@ -85,7 +89,6 @@ html, body {
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    border: 3px solid #7773d4;
 }
 
 .data {
@@ -100,6 +103,25 @@ html, body {
 
 .text-bold {
     font-weight: bold;
+}
+
+
+.custom-btn {
+    position: absolute; /* Position absolute to place the button */
+    bottom: 10px; /* Distance from the bottom */
+    right: 10px; /* Distance from the right */
+    padding: 10px 15px; /* Adjust padding for better proportions */
+    font-size: 14px; /* Adjust font size */
+    border-radius: 5px; /* Round corners for a modern look */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth hover effect */
+    text-decoration: none; /* Remove underline */
+    display: inline-flex; /* Align icon and text properly */
+    align-items: center; /* Center icon vertically */
+}
+
+.custom-btn:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
 }
 
 @media (max-width: 768px) {
