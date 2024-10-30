@@ -156,9 +156,7 @@
                             <td>{{ \Carbon\Carbon::parse($user['created_date'])->format('d-m-Y H:i') }}</td>
                             <td class="action-buttons text-center">
                                 <div class="btn-group" role="group" aria-label="Action Buttons">
-                                    <a href="{{ route('showedituseradm') }}" class="btn btn-outline-primary btn-sm custom-outline-btn" title="Edit Data">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
+                                   
                                     <form action="{{ route('showmoredetailsadm') }}" method="POST" style="display:inline;">
                                         @csrf
                                         <input type="hidden" name="email" value="{{ $user['email'] }}">

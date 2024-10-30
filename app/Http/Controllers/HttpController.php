@@ -1852,11 +1852,50 @@ public function activityUser(Request $request)
     {
         return view ('admin.edituseradm');
     }
+    public function edituseradm(Request $request)
+{
+    // Validate input fields including user_id
+    $request->validate([
+        'user_id' => 'required|integer', // Remove the database existence check
+        'fullname' => 'required|string|max:255',
+        'username' => 'required|string|max:255|alpha_dash', // Remove unique validation
+        'email' => 'required|email|max:255', // Remove unique validation
+        'phone' => 'required|string|max:20|regex:/^[0-9]+$/',
+        'dateofbirth' => 'required|date|before:today',
+        'gender' => 'required|in:0,1',
+        'role_id' => 'required|integer', // Remove the database existence check
+    ]);
 
-    public function edituseradm()
-    {
+    // Prepare data for API
+    $data = [
+        'user_id' => $request->user_id,
+        'full_name' => $request->fullname,
+        'username' => $request->username,
+        'email' => $request->email,
+        'phone' => $request->phone,
+        'first_name' => strtok($request->fullname, ' '),
+        'last_name' => substr(strstr($request->fullname, " "), 1) ?: '',
+        'birthday' => $request->dateofbirth,
+        'gender' => $request->gender,
+        'role_id' => $request->role_id,
+    ];
 
+    // Send API request
+    $response = Http::withHeaders([
+        'Authorization' => session('access_token'),
+        'x-api-key' => self::API_KEY
+    ])->post(self::API_URL .'/sso/update_user_data.json', $data);
+
+    // Handle response
+    if ($response->successful()) {
+        // Redirect to moredetailsadm instead of showedituseradm
+        return redirect()->route('showmoredetailsadm', ['email' => $request->email])->with('success', 'User data updated successfully.');
+    } else {
+        return redirect()->route('showedituseradm')->with('error', 'Failed to update user data. Please try again.');
     }
+}
+
+
 
     public function searchUsers(Request $request)
 {
@@ -2197,15 +2236,19 @@ public function showmoredetailsadm(Request $request)
             $gender = isset($userData['gender']) && $userData['gender'] === 0 ? 'Female' : 'Male';
             $phone = $userData['phone'] ?? 'N/A';
             $roles = !empty($userData['roles']) ? implode(', ', array_filter($userData['roles'])) : 'N/A';
+            $userId = $userData['user_id'] ?? null;
+            $username = $userData['username'] ?? 'N/A'; // Get username from response
 
             // Store the data in session
             session([
+                'user_id' => $userId,
                 'fullname' => $fullname,
                 'dateofbirth' => $dateofbirth,
                 'gender' => $gender,
                 'email' => $email,
                 'phone' => $phone,
                 'user_role' => $roles,
+                'username' => $username,
             ]);
 
             Log::info('User details retrieved successfully for: ' . $email);
