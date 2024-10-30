@@ -36,24 +36,69 @@
     }
 
     /* Sidebar Style */
-    .main-sidebar {
-      background-color: #e1e5f8;
-    }
-    .nav-sidebar .nav-item .nav-link {
-      color: #3200af;
-      background-color: #e1e5f8;
-    }
-    .nav-sidebar .nav-item .nav-link.active, .nav-sidebar .nav-item:hover > .nav-link {
-      background-color: #7773d4;
-      color: #ffffff;
-    }
-    .nav-sidebar .nav-item .nav-link i {
-      color: #3200af;
-      margin-right: 10px;
-    }
-    .sidebar .nav-item .nav-link p {
-      font-weight: 600;
-    }
+  .main-sidebar {
+    background-color: #e1e5f8;
+  }
+  
+  .nav-sidebar .nav-item .nav-link {
+    color: #3200af; /* Default link color */
+    background-color: #e1e5f8; /* Default background color */
+  }
+
+  .nav-sidebar .nav-item .nav-link.active,
+  .nav-sidebar .nav-item:hover > .nav-link {
+    background-color: #7773d4; /* Background color for active and hovered items */
+    color: #ffffff; /* Text color for active items */
+  }
+
+  /* New Hover Effect for Sidebar */
+  .nav-sidebar .nav-item .nav-link:hover {
+    color: #ffffff !important; /* Change text color to white on hover */
+  }
+
+  .nav-sidebar .nav-item .nav-link:hover i {
+    color: #ffffff !important; /* Change icon color to white on hover */
+  }
+
+  .nav-sidebar .nav-item .nav-link i {
+    color: #3200af; /* Default icon color */
+    margin-right: 10px;
+  }
+  
+  /* Default styles for sidebar links */
+.nav-sidebar .nav-item .nav-link {
+    color: #3200af; /* Default link color */
+    background-color: #e1e5f8; /* Default background color */
+}
+
+/* Active link styles */
+.nav-sidebar .nav-item .nav-link.active {
+    background-color: #7773d4; /* Background color for active items */
+    color: #ffffff; /* Text color for active items */
+}
+
+/* Change icon color when the link is active */
+.nav-sidebar .nav-item .nav-link.active .nav-icon {
+    color: white; /* Change icon color to white when active */
+}
+
+/* Hover effect for sidebar links */
+.nav-sidebar .nav-item:hover > .nav-link {
+    background-color: #7773d4; /* Background color for hovered items */
+    color: #ffffff; /* Text color for hovered items */
+}
+
+/* Change icon color on hover */
+.nav-sidebar .nav-item .nav-link:hover .nav-icon {
+    color: #ffffff; /* Change icon color to white on hover */
+}
+
+/* Default icon color */
+.nav-sidebar .nav-item .nav-link .nav-icon {
+    color: #3200af; /* Default icon color */
+    margin-right: 10px; /* Space between icon and text */
+}
+
   </style>
 </head>
 
@@ -87,43 +132,43 @@
 
   <!-- Sidebar -->
   <aside class="main-sidebar elevation-4">
-    <div class="sidebar">
-      <nav class="mt-4">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
-          <li class="nav-item">
-            <a href="{{ route('dashboardadm') }}" class="nav-link {{ Request::is('dashboardadm') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>Dashboard</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="" class="nav-link {{ Request::is('organization') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-building"></i>
-              <p>Organization List</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('showuserdata') }}" class="nav-link {{ Request::is('users') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-users"></i>
-              <p>Users</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="" class="nav-link {{ Request::is('products') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-gift"></i>
-              <p>Product and Price</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="" class="nav-link {{ Request::is('transaction-history') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-history"></i>
-              <p>Transaction History</p>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </aside>
+  <div class="sidebar">
+    <nav class="mt-4">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+      <li class="nav-item">
+        <a href="{{ route('showdashboardadm') }}" class="nav-link {{ Request::is('dashboardadmin') ? 'active' : '' }}">
+          <i class="nav-icon fas fa-tachometer-alt"></i>
+          <p>Dashboard</p>
+        </a>
+      </li>
+        <li class="nav-item">
+          <a href="{{ route('organization') }}" class="nav-link {{ Request::is('organization') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-building"></i>
+            <p>Organization List</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ route('showuserdata') }}" class="nav-link {{ Request::is('userdata') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-users"></i>
+            <p>Users</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="" class="nav-link {{ Request::is('products') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-gift"></i>
+            <p>Product and Price</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="" class="nav-link {{ Request::is('transaction-history') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-history"></i>
+            <p>Transaction History</p>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</aside>
 
   <!-- Content Wrapper -->
   <div class="content-wrapper">
