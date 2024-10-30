@@ -36,70 +36,64 @@
     }
 
     /* Sidebar Style */
-  .main-sidebar {
-    background-color: #e1e5f8;
-  }
+    .main-sidebar {
+      background-color: #e1e5f8;
+    }
   
-  .nav-sidebar .nav-item .nav-link {
-    color: #3200af; /* Default link color */
-    background-color: #e1e5f8; /* Default background color */
-  }
+    .nav-sidebar .nav-item .nav-link {
+      color: #3200af; /* Default link color */
+      background-color: #e1e5f8; /* Default background color */
+    }
 
-  .nav-sidebar .nav-item .nav-link.active,
-  .nav-sidebar .nav-item:hover > .nav-link {
-    background-color: #7773d4; /* Background color for active and hovered items */
-    color: #ffffff; /* Text color for active items */
-  }
+    .nav-sidebar .nav-item .nav-link.active,
+    .nav-sidebar .nav-item:hover > .nav-link {
+      background-color: #7773d4; /* Background color for active and hovered items */
+      color: #ffffff; /* Text color for active items */
+    }
 
-  /* New Hover Effect for Sidebar */
-  .nav-sidebar .nav-item .nav-link:hover {
-    color: #ffffff !important; /* Change text color to white on hover */
-  }
+    /* New Hover Effect for Sidebar */
+    .nav-sidebar .nav-item .nav-link:hover {
+      color: #ffffff !important; /* Change text color to white on hover */
+    }
 
-  .nav-sidebar .nav-item .nav-link:hover i {
-    color: #ffffff !important; /* Change icon color to white on hover */
-  }
+    .nav-sidebar .nav-item .nav-link:hover i {
+      color: #ffffff !important; /* Change icon color to white on hover */
+    }
 
-  .nav-sidebar .nav-item .nav-link i {
-    color: #3200af; /* Default icon color */
-    margin-right: 10px;
-  }
-  
-  /* Default styles for sidebar links */
-.nav-sidebar .nav-item .nav-link {
-    color: #3200af; /* Default link color */
-    background-color: #e1e5f8; /* Default background color */
-}
+    .nav-sidebar .nav-item .nav-link i {
+      color: #3200af; /* Default icon color */
+      margin-right: 10px;
+    }
 
-/* Active link styles */
-.nav-sidebar .nav-item .nav-link.active {
-    background-color: #7773d4; /* Background color for active items */
-    color: #ffffff; /* Text color for active items */
-}
+    /* Active link styles */
+    .nav-sidebar .nav-item .nav-link.active {
+      background-color: #7773d4; /* Background color for active items */
+      color: #ffffff; /* Text color for active items */
+    }
 
-/* Change icon color when the link is active */
-.nav-sidebar .nav-item .nav-link.active .nav-icon {
-    color: white; /* Change icon color to white when active */
-}
+    /* Change icon color when the link is active */
+    .nav-sidebar .nav-item .nav-link.active .nav-icon {
+      color: white; /* Change icon color to white when active */
+    }
 
-/* Hover effect for sidebar links */
-.nav-sidebar .nav-item:hover > .nav-link {
-    background-color: #7773d4; /* Background color for hovered items */
-    color: #ffffff; /* Text color for hovered items */
-}
+    /* Hover effect for sidebar links */
+    .nav-sidebar .nav-item:hover > .nav-link {
+      background-color: #7773d4; /* Background color for hovered items */
+      color: #ffffff; /* Text color for hovered items */
+    }
 
-/* Change icon color on hover */
-.nav-sidebar .nav-item .nav-link:hover .nav-icon {
-    color: #ffffff; /* Change icon color to white on hover */
-}
+    /* Change icon color on hover */
+    .nav-sidebar .nav-item .nav-link:hover .nav-icon {
+      color: #ffffff; /* Change icon color to white on hover */
+    }
 
-/* Default icon color */
-.nav-sidebar .nav-item .nav-link .nav-icon {
-    color: #3200af; /* Default icon color */
-    margin-right: 10px; /* Space between icon and text */
-}
+    /* Default icon color */
+    .nav-sidebar .nav-item .nav-link .nav-icon {
+      color: #3200af; /* Default icon color */
+      margin-right: 10px; /* Space between icon and text */
+    }
 
-  </style>
+</style>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -119,7 +113,7 @@
           @else
             <i class="fas fa-user-circle"></i>
           @endif
-          <span>{{ session('username') }}</span>
+          <span>{{ session('username') ? session('username') : session('email') }}</span>
         </a>
         <div class="dropdown-menu dropdown-menu-right">
           <a class="dropdown-item" href="{{ route('personaladm') }}">Settings</a>
