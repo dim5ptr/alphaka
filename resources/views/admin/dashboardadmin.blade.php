@@ -61,7 +61,7 @@
                             <h3>{{ $userCount }}</h3>
                         </div>
                         <div class="card-footer">
-                            <a href="" class="btn btn-outline-primary custom-outline-btn">View All Users</a>
+                            <a href="{{ route('showuserdata') }}" class="btn btn-outline-primary custom-outline-btn">View All Users</a>
                         </div>
                     </div>
                 </div>
