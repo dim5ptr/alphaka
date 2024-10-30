@@ -930,16 +930,52 @@ public function login(Request $request)
     }
 
     public function showdashboardadm()
-{
-    // Log current session data when accessing the dashboard
-    Log::info('Accessing dashboard:', [
-        'username' => session('username'),
-        'email' => session('email'),
-        'admin_user_id' => session('admin_user_id'), // Assuming you store the admin's user ID in the session
-    ]);
+    {
+        // Log current session data when accessing the dashboard
+        Log::info('Accessing dashboard:', [
+            'username' => session('username'),
+            'email' => session('email'),
+            'admin_user_id' => session('admin_user_id'), // Assuming you store the admin's user ID in the session
+        ]);
 
-    return view('admin.dashboardadmin');
-}
+        // Ensure the email is available in the session
+        $email = session('email');
+        if (!$email) {
+            return back()->withErrors('User  email not found in session.');
+        }
+
+        // Prepare the API request
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => session('access_token'),
+                'x-api-key' => self::API_KEY,
+            ])->post(self::API_URL . '/product/count_all_entities.json', [
+                'email' => $email,
+            ]);
+
+            // Log the API response for debugging
+            Log::info('Count Entities API Response:', ['response' => $response->json()]);
+
+            // Check if API response is successful
+            if ($response->successful()) {
+                $data = $response->json();
+
+                // Extract counts from the data
+                $organizationCount = $data['data']['verified_organizations'] ?? 0;
+                $userCount = $data['data']['user_count'] ?? 0;
+                $productCount = $data['data']['enabled_products'] ?? 0;
+                $transactionCount = $data['data']['cash_receipt_transactions'] ?? 0;
+
+                // Pass the counts to the view
+                return view('admin.dashboardadmin', compact('organizationCount', 'userCount', 'productCount', 'transactionCount'));
+            } else {
+                return back()->withErrors('Failed to fetch dashboard data. Please try again.');
+            }
+        } catch (\Exception $e) {
+            Log::error('Error fetching dashboard data:', ['message' => $e->getMessage()]);
+            return back()->withErrors('An error occurred while fetching dashboard data.');
+        }
+    }
 
     public function dashboardadm()
     {

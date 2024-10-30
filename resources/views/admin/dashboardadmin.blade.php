@@ -43,7 +43,7 @@
                             Organization Count
                         </div>
                         <div class="card-body">
-                            <h3>{{ $organizationCount ?? 0 }}</h3>
+                            <h3>{{ $organizationCount }}</h3>
                         </div>
                         <div class="card-footer">
                             <a href="" class="btn btn-outline-primary custom-outline-btn">View All Organizations</a>
@@ -58,22 +58,22 @@
                             User Count
                         </div>
                         <div class="card-body">
-                            <h3>{{ $userCount ?? 0 }}</h3>
+                            <h3>{{ $userCount }}</h3>
                         </div>
                         <div class="card-footer">
-                            <a href="" class="btn btn-outline-primary custom-outline-btn">View All Users</a>
+                            <a href="{{ route('showuserdata') }}" class="btn btn-outline-primary custom-outline-btn">View All Users</a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Product Available Card -->
+                <!-- Product Count Card -->
                 <div class="col-lg-3 col-md-6 mb-4">
                     <div class="card text-center shadow-sm">
                         <div class="card-header" style="background-color: #0077FF; color: white;">
-                            Product Available
+                            Product Count
                         </div>
                         <div class="card-body">
-                            <h3>{{ $productCount ?? 0 }}</h3>
+                            <h3>{{ $productCount }}</h3>
                         </div>
                         <div class="card-footer">
                             <a href="" class="btn btn-outline-primary custom-outline-btn">View All Products</a>
@@ -81,17 +81,17 @@
                     </div>
                 </div>
 
-                <!-- Transaction Success Card -->
+                <!-- Transaction Count Card -->
                 <div class="col-lg-3 col-md-6 mb-4">
                     <div class="card text-center shadow-sm">
                         <div class="card-header" style="background-color: #0077FF; color: white;">
-                            Transaction Success
+                            Transaction Count
                         </div>
                         <div class="card-body">
-                            <h3>{{ $transactionCount ?? 0 }}</h3>
+                            <h3>{{ $transactionCount }}</h3>
                         </div>
                         <div class="card-footer">
-                            <a href="" class="btn btn-outline-primary custom-outline-btn">View History</a>
+                            <a href="" class="btn btn-outline-primary custom-outline-btn">View All Transactions</a>
                         </div>
                     </div>
                 </div>
@@ -99,18 +99,4 @@
         </div>
     </div>
 </section>
-@endsection
-
-<!-- Add custom CSS for button hover effect -->
-@section('styles')
-<style>
-    .custom-outline-btn {
-        border-color: #0077FF;
-        color: #0077FF;
-    }
-    .custom-outline-btn:hover {
-        background-color: #0077FF;
-        color: white;
-    }
-</style>
 @endsection
