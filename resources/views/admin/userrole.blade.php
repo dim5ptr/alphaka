@@ -110,6 +110,7 @@
                     <tr>
                         <th scope="col">No</th>
                         <th scope="col">User Role</th>
+                        <th scope="col">Action</th>
                         {{-- <th scope="col">Menu Permission</th> --}}
                     </tr>
                 </thead>
@@ -119,6 +120,12 @@
                             <tr>
                                 <th scope="row">{{ $index + 1 }}</th>
                                 <td>{{ $role['role_name'] }}</td>
+                                <td>
+                                    <!-- Edit icon button -->
+                                    <a href="" class="btn btn-primary btn-sm" title="Edit Role" style="background-color: #0077FF; color: white;">
+                                        <i class="fa fa-edit"></i> <!-- Edit icon -->
+                                    </a>
+                                </td>
                                 {{-- <td>
                                     <a href="{{ route('showaccess', ['role' => $role['role_name']]) }}" class="btn btn-outline-primary btn-sm custom-outline-btn" title="View Permissions">
                                         <i class="fa fa-info-circle"></i>
