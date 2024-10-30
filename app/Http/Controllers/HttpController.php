@@ -2257,9 +2257,48 @@ public function showuserdata(Request $request)
 
 public function showuserrole()
 {
-    return view ('admin.userrole');
-}
+    // Make API request to get role data
+    $response = Http::withHeaders([
+        'x-api-key' => self::API_KEY,
+        'Authorization' => session('access_token'),
+    ])->get(self::API_URL . '/sso/get_role_data.json');
 
+    // Check if the request was successful
+    if ($response->successful()) {
+        // Parse the JSON response and get roles data
+        $roles = $response->json('roles'); // Ensure the response contains a 'roles' key
+        return view('admin.userrole', compact('roles'));
+    } else {
+        // Handle API error
+        return back()->withErrors('Failed to fetch roles data.');
+    }
+}
+public function showcreaterole()
+    {
+        return view('admin.createrole'); // Return the view for creating a role
+    }
+public function createrole(Request $request)
+{
+    // Validate the incoming request
+    $request->validate([
+        'role' => 'required|string|max:255',
+    ]);
+
+    // Prepare API request to create the role
+    $response = Http::withHeaders([
+        'x-api-key' => env('API_KEY'), // Set your API key in the .env file
+        'Authorization' => '0f031be1caef52cfc46ecbb8eee10c77',
+    ])->post(env('BASE_URL') . '/sso/create_role.json', [
+        'role' => $request->input('role'),
+    ]);
+
+    // Check the response status
+    if ($response->successful()) {
+        return redirect()->route('create.role')->with('success', 'Role created successfully!');
+    }
+
+    return redirect()->route('create.role')->with('error', 'Failed to create role.');
+}
 public function showmoredetailsadm(Request $request)
 {
     Log::info('Attempting to show more details.');

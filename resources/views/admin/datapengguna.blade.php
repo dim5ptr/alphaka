@@ -12,6 +12,7 @@
             <div class="col-sm-6">
                 <!-- You can add additional header content here if needed -->
             </div>
+            <br><br>
         </div>
     </div>
 </div>
@@ -20,12 +21,20 @@
 <section class="content">
     <div class="container">
         <div class="row mb-4">
-            <div class="col-md-4 offset-md-8">
+            <!-- Left-aligned button linking to user role page -->
+            <div class="col-md-4">
+                <a href="{{ route('showuserrole') }}" class="btn btn-primary" style="background-color: #0077FF; color: white; font-weight: bold;">
+                    User Role
+                </a>
+            </div>
+
+            <!-- Search bar on the right side -->
+            <div class="col-md-4 offset-md-4">
                 <div class="input-group rounded shadow-sm">
                     <span class="input-group-text" style="background-color: #0077FF; color: white; border: none;">
                         <i class="fa fa-search"></i>
                     </span>
-                    <input type="search" id="searchInput" class="form-control rounded" placeholder="Search..." style="border: none; solid #0077FF; padding: 10px;">
+                    <input type="search" id="searchInput" class="form-control rounded" placeholder="Search..." style="border: none; padding: 10px;">
                 </div>
             </div>
         </div>
@@ -156,7 +165,7 @@
                             <td>{{ \Carbon\Carbon::parse($user['created_date'])->format('d-m-Y H:i') }}</td>
                             <td class="action-buttons text-center">
                                 <div class="btn-group" role="group" aria-label="Action Buttons">
-                                   
+
                                     <form action="{{ route('showmoredetailsadm') }}" method="POST" style="display:inline;">
                                         @csrf
                                         <input type="hidden" name="email" value="{{ $user['email'] }}">
