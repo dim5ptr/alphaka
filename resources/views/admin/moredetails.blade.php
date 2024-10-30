@@ -1,145 +1,131 @@
 @extends('admin.layoutadm.layoutadm')
 
 @section('content')
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-10 offset-1">
-                    <h1 class="m-0 text-center" style="color: #3200af;">More Details</h1>
-                </div>
-            </div>
-        </div>
-    </div>
+<div id="main-content" class="main-content">
     <section class="content">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-5">
-                    <!-- Menampilkan foto profil -->
-                    <div class="card border border-0 shadow-none">
-                        <div class="card-body" style="background-color: #e1e5f8;">
-                            @if(session('profile_picture'))
-                                <img id="profile_picture" src="{{ asset(session('profile_picture')) }}" alt="Foto Profil" class="img-fluid rounded-circle profile-picture">
-                            @else
-                                <i class="fas fa-user-circle fa-5x rounded-circle profile-icon"></i>
-                            @endif
-                        </div>
-                    </div>
+        <div class="container-flex">
+            <div class="judul">
+                <h4>More Details</h4>
+            </div>
+            <div class="profile-info">
+                <div class="foto">
+                    @if (session('profile_picture'))
+                        <img id="profile_picture" src="{{ asset(session('profile_picture')) }}" alt="Profile Picture" class="img-fluid rounded-circle profile-picture">
+                    @else
+                        <img id="profile_picture" src="https://www.gravatar.com/avatar/{{ md5(strtolower(trim(session('email')))) }}?s=200&d=mp" alt="Profile Picture" class="profile-picture">
+                    @endif
                 </div>
-                <div class="card border border-0 shadow-none">
-                </div>
-                    <div class="col-md-7" style="color: #3200af;">
-                        <div class="card">
-                            <div class="card-body">
-                                <p><span class="text-bold">Nama:</span>{{ session('fullname') ?? 'N/A' }}</p>
-                                <p><span class="text-bold">User Name:</span>{{ session('Username') ?? 'N/A' }}</p>
-                                <p><span class="text-bold">Birthday:</span>{{session('dateofbirth') ?? 'N/A' }}</p>
-                                <p><span class="text-bold">Gender:</span>{{ session('gender') === 0 ? 'Female' : 'Male' }}</p>
-                                <p><span class="text-bold">Email:</span>{{ session('email') ?? 'N/A' }}</p>
-                                <p><span class="text-bold">Phone Number:</span>{{  session('phone') ?? 'N/A' }}</p>
-                                <p><span class="text-bold">User Role:</span> {{ session('user_role') ?? 'N/A' }}</p>
-                                <a href="{{ route('showedituseradm') }}">
-                                    <button type="submit" class="btn rounded text-light" style="background-color: #7773d4;">
-                                        edit
-                                    </button>
-                                </a>
-                            </div>
-                        </div>
-                    </div>  
+                <div class="data">
+                    <p><span class="text-bold">Name:</span> {{ session('fullname') ?? 'N/A' }}</p>
+                    <p><span class="text-bold">Birthday:</span> {{ session('dateofbirth') ?? 'N/A' }}</p>
+                    <p><span class="text-bold">Gender:</span> {{ session('gender') === 0 ? 'Female' : 'Male' }}</p>
+                    <p><span class="text-bold">Email:</span> {{ session('email') ?? 'N/A' }}</p>
+                    <p><span class="text-bold">Phone Number:</span> {{ session('phone') ?? 'N/A' }}</p>
+                    <p><span class="text-bold">User Role:</span>
+                        {{ (int) session('user_role') === 1 ? 'PENGGUNA' : ((int) session('user_role') === 2 ? 'ADMIN' : 'PENGGUNA') }}
+                    </p>
                 </div>
             </div>
         </div>
     </section>
+</div>
 
-@endsection
+<style>
+html, body {
+    font-family: Arial, sans-serif;
+    color: #333;
+}
 
-@section('script')
-    @parent {{-- Tambahkan script yang ada di parent --}}
+.main-content {
+    width: 80%;
+    margin: 5% auto;
+    transition: margin-left .3s;
+}
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var menuMoreDetails = document.getElementById('menu-more-details');
+.container-flex {
+    max-width: 100%;
+    background-color: white;
+    margin: 2% auto;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 2%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-            // Tambahkan title pada hover
-            menuMoreDetails.addEventListener('mouseover', function() {
-                menuMoreDetails.setAttribute('title', 'Click to view more details');
-            });
+.judul {
+    width: 100%;
+    background-color: #0056b3;
+    color: white;
+    padding: 20px;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-            // Hapus title saat mouse leave
-            menuMoreDetails.addEventListener('mouseleave', function() {
-                menuMoreDetails.removeAttribute('title');
-            });
+.judul h4 {
+    font-size: 24px;
+    margin: 0;
+}
 
-            // Menambahkan keterangan tooltip saat menu diklik
-            menuMoreDetails.addEventListener('click', function() {
-                if (!menuMoreDetails.classList.contains('menu-active')) {
-                    menuMoreDetails.classList.add('menu-active');
-                    menuMoreDetails.setAttribute('title', 'Details are visible');
-                } else {
-                    menuMoreDetails.classList.remove('menu-active');
-                    menuMoreDetails.removeAttribute('title');
-                }
-            });
+.profile-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 2% 5%;
+    width: 100%;
+}
 
-            // Tambahkan event listener untuk setiap menu action
-            var actionMenus = document.querySelectorAll('.action-menu');
-            actionMenus.forEach(function(menu) {
-                menu.addEventListener('mouseover', function() {
-                    var menuAction = menu.getAttribute('data-menu-action');
-                    menu.setAttribute('title', menuAction);
-                });
+.foto {
+    flex-shrink: 0;
+    margin-right: 20px;
+}
 
-                menu.addEventListener('mouseleave', function() {
-                    menu.removeAttribute('title');
-                });
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 3px solid #7773d4;
+}
 
-                menu.addEventListener('click', function() {
-                    if (!menu.classList.contains('menu-active')) {
-                        menu.classList.add('menu-active');
-                        var menuAction = menu.getAttribute('data-menu-action');
-                        menu.setAttribute('title', menuAction);
-                    } else {
-                        menu.classList.remove('menu-active');
-                        menu.removeAttribute('title');
-                    }
-                });
-            });
-        });
-    </script>
+.data {
+    flex: 1;
+}
 
-    <style>
-        .profile-picture {
-            width: 280px; /* Ukuran foto profil */
-            height: 280px;
-        }
+.data p {
+    font-size: 16px;
+    margin: 8px 0;
+    color: #555;
+}
 
-        .profile-icon {
-            font-size: 240px; /* Ukuran ikon */
-        }
+.text-bold {
+    font-weight: bold;
+}
 
-        /* Gaya untuk hover pada menu */
-        .card {
-            transition: all 0.3s ease;
-        }
+@media (max-width: 768px) {
+    .main-content {
+        width: 95%;
+    }
 
-        .card:hover {
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            transform: translateY(-5px);
-        }
+    .profile-info {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
 
-        /* Nama menu saat diklik */
-        .menu-name {
-            color: #3200af;
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
+    .foto {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
 
-        /* Efek hover saat menu diklik */
-        .menu-active {
-            background-color: #f0f0f0;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            transform: translateY(-5px);
-        }
-    </style>
+    .profile-picture {
+        width: 120px;
+        height: 120px;
+    }
+
+    .data p {
+        font-size: 14px;
+    }
+}
+</style>
 @endsection

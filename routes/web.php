@@ -96,8 +96,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/userdata', [HttpController::class, 'showuserdata'])->name('showuserdata');
         Route::post('/userdata', [HttpController::class, 'userdata'])->name('userdata');
 
-        Route::get('/moredetailsadm', [HttpController::class, 'showmoredetailsadm'])->name('showmoredetailsadm');
-        Route::post('/moredetailsadm', [HttpController::class, 'moredetailsadm'])->name('moredetailsadm');
+        Route::post('/moredetailsadm', [HttpController::class, 'showmoredetailsadm'])->name('showmoredetailsadm');
+
 
         Route::get('/userrole', [HttpController::class, 'showuserrole'])->name('showuserrole');
         Route::post('/userrole', [HttpController::class, 'userrole'])->name('userrole');

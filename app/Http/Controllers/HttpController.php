@@ -2159,10 +2159,67 @@ public function showuserrole()
     return view ('admin.userrole');
 }
 
-
-public function showmoredetailsadm()
+public function showmoredetailsadm(Request $request)
 {
-    return view ('admin.moredetails');
+    Log::info('Attempting to show more details.');
+
+    // Validate email input to ensure it's provided and is a valid email format
+    $request->validate([
+        'email' => 'required|email'
+    ]);
+
+    $email = $request->input('email');
+    Log::info('Email: ' . $email);
+
+    try {
+        // Prepare the payload for the API request
+        $payload = ['email' => $email];
+
+        // Send the email to the external API to get user details
+        $response = Http::withHeaders([
+            'x-api-key' => self::API_KEY // Ensure API key is accurate
+        ])->post(self::API_URL  . '/sso/get_user_details_by_email.json', $payload);
+
+        Log::info('API Request URL: ' . env('API_URL') . '/sso/get_user_details_by_email.json');
+        Log::info('API Payload: ' . json_encode($payload));
+
+        // Log the status and body of the API response
+        Log::info('API Response Status: ' . $response->status());
+        Log::info('API Response Body: ' . $response->body());
+
+        // Check if the API response is successful
+        if ($response->successful()) {
+            $userData = $response->json();
+
+            // Extract user details, handling null values with 'N/A'
+            $fullname = $userData['full_name'] ?? 'N/A';
+            $dateofbirth = $userData['birthday'] ?? 'N/A';
+            $gender = isset($userData['gender']) && $userData['gender'] === 0 ? 'Female' : 'Male';
+            $phone = $userData['phone'] ?? 'N/A';
+            $roles = !empty($userData['roles']) ? implode(', ', array_filter($userData['roles'])) : 'N/A';
+
+            // Store the data in session
+            session([
+                'fullname' => $fullname,
+                'dateofbirth' => $dateofbirth,
+                'gender' => $gender,
+                'email' => $email,
+                'phone' => $phone,
+                'user_role' => $roles,
+            ]);
+
+            Log::info('User details retrieved successfully for: ' . $email);
+
+            return view('admin.moredetails');
+        } else {
+            // Handle non-200 responses
+            Log::error('Failed to get user details from API. Status: ' . $response->status());
+            return back()->with('error', 'Failed to get user details from API: ' . $response->body());
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred while showing more details: ' . $e->getMessage());
+        return back()->with('error', 'An error occurred: ' . $e->getMessage());
+    }
 }
 
 }

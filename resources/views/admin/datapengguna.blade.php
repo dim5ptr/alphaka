@@ -98,6 +98,36 @@
             .table tbody tr.selected td {
                 color: white;
             }
+
+            .action-buttons {
+                padding: 10px; /* Adds padding around the action buttons */
+            }
+
+            .btn-group {
+                display: flex;
+                justify-content: center; /* Center align the buttons */
+            }
+
+            .custom-outline-btn {
+                margin: 0 5px; /* Add space between buttons */
+                border: 2px solid transparent; /* Default border style */
+                transition: border-color 0.3s ease; /* Smooth transition for border color */
+            }
+
+            .custom-outline-btn:hover {
+                border-color: #365AC2; /* Change border color on hover */
+            }
+
+            /* Optional: style for buttons */
+            .btn-outline-primary {
+                color: #365AC2; /* Set text color */
+            }
+
+            .btn-outline-primary:hover {
+                background-color: #365AC2; /* Background color on hover */
+                color: white; /* Change text color on hover */
+            }
+
         </style>
 
         <div class="table-container">
@@ -124,14 +154,21 @@
                                 {{ $user['id_role'] == 1 ? 'PENGGUNA' : ($user['id_role'] == 2 ? 'ADMIN' : 'PENGGUNA') }}
                             </td>
                             <td>{{ \Carbon\Carbon::parse($user['created_date'])->format('d-m-Y H:i') }}</td>
-                            <td class="action-buttons">
-                                <a href="{{ route('showedituseradm') }}" class="btn btn-outline-primary btn-sm custom-outline-btn" title="More details">
-                                    <i class="fa fa-edit"></i>
-                                </a>
-                                <a href="{{ route('showmoredetailsadm') }}" class="btn btn-outline-primary btn-sm custom-outline-btn" title="More details">
-                                    <i class="fa fa-info-circle"></i>
-                                </a>
+                            <td class="action-buttons text-center">
+                                <div class="btn-group" role="group" aria-label="Action Buttons">
+                                    <a href="{{ route('showedituseradm') }}" class="btn btn-outline-primary btn-sm custom-outline-btn" title="Edit Data">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('showmoredetailsadm') }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        <input type="hidden" name="email" value="{{ $user['email'] }}">
+                                        <button type="submit" class="btn btn-outline-primary btn-sm custom-outline-btn" title="More details">
+                                            <i class="fa fa-info-circle"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
+
                         </tr>
                     @endforeach
                 </tbody>
@@ -144,25 +181,31 @@
 @section('script')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var searchInput = document.getElementById('searchInput');
+    var searchInput = document.getElementById('searchInput');
 
-        searchInput.addEventListener('keyup', function(event) {
-            var searchText = event.target.value.toLowerCase();
-            var rows = document.querySelectorAll('.custom-table tbody tr');
+    searchInput.addEventListener('keyup', function(event) {
+        var searchText = event.target.value.toLowerCase();
+        var rows = document.querySelectorAll('.custom-table tbody tr');
 
-            rows.forEach(function(row) {
-                var name = row.cells[1].textContent.toLowerCase();
-                var email = row.cells[2].textContent.toLowerCase();
-                var username = row.cells[3].textContent.toLowerCase();
+        rows.forEach(function(row) {
+            // Initialize a variable to check if the row should be displayed
+            var shouldDisplay = false;
 
-                if (name.includes(searchText) || email.includes(searchText) || username.includes(searchText)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
+            // Loop through all cells in the current row
+            for (var i = 0; i < row.cells.length; i++) {
+                var cellText = row.cells[i].textContent.toLowerCase();
+                // Check if the search text is found in the current cell
+                if (cellText.includes(searchText)) {
+                    shouldDisplay = true;
+                    break; // No need to check further, we found a match
                 }
-            });
+            }
+
+            // Display the row if there's a match, otherwise hide it
+            row.style.display = shouldDisplay ? '' : 'none';
         });
     });
+});
 
     function editUser(userId) {
         window.location.href = '/users/edit/' + userId;
