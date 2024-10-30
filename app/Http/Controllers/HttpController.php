@@ -2237,7 +2237,7 @@ public function showmoredetailsadm(Request $request)
             $phone = $userData['phone'] ?? 'N/A';
             $roles = !empty($userData['roles']) ? implode(', ', array_filter($userData['roles'])) : 'N/A';
             $userId = $userData['user_id'] ?? null;
-            $username = $userData['username'] ?? 'N/A'; // Get username from response
+            $user_name = $userData['user_name'] ?? 'N/A'; // Get username from response
 
             // Store the data in session
             session([
@@ -2248,7 +2248,7 @@ public function showmoredetailsadm(Request $request)
                 'email' => $email,
                 'phone' => $phone,
                 'user_role' => $roles,
-                'username' => $username,
+                'user_name' => $user_name,
             ]);
 
             Log::info('User details retrieved successfully for: ' . $email);
