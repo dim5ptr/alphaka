@@ -106,6 +106,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/userrole/createrole', [HttpController::class, 'showcreaterole'])->name('showcreaterole');
         Route::post('/userrole/createrole', [HttpController::class, 'createrole'])->name('createrole');
 
+        Route::get('/userrole/updaterole/{idrole}', [App\Http\Controllers\HttpController::class, 'showupdaterole'])->name('showupdaterole');
+
+        Route::post('/userrole/updaterole', [HttpController::class, 'updaterole'])->name('updaterole');
+
         Route::get('/access/{role}', [HttpController::class, 'showaccess'])->name('showaccess');
         Route::post('/access/{role}', [HttpController::class, 'access'])->name('access');
 

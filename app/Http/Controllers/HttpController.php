@@ -2322,19 +2322,74 @@ public function createrole(Request $request)
 
     // Prepare API request to create the role
     $response = Http::withHeaders([
-        'x-api-key' => env('API_KEY'), // Set your API key in the .env file
-        'Authorization' => '0f031be1caef52cfc46ecbb8eee10c77',
-    ])->post(env('BASE_URL') . '/sso/create_role.json', [
+        'x-api-key' => self::API_KEY, // Set your API key in the .env file
+        'Authorization' => session('access_token'),
+    ])->post(self::API_URL . '/sso/create_role.json', [
         'role' => $request->input('role'),
     ]);
 
     // Check the response status
     if ($response->successful()) {
-        return redirect()->route('create.role')->with('success', 'Role created successfully!');
+        return redirect()->route('showuserrole')->with('success', 'Role created successfully!');
     }
 
-    return redirect()->route('create.role')->with('error', 'Failed to create role.');
+    return redirect()->route('showcreaterole')->with('error', 'Failed to create role.');
 }
+public function showupdaterole($idrole)
+{
+    // Fetch the role data from the API
+    $response = Http::withHeaders([
+        'x-api-key' => self::API_KEY,
+        'Authorization' => session('access_token'),
+    ])->get(self::API_URL . '/sso/get_role_by_id.json', ['id' => $idrole]);
+
+    // Check if the response was successful
+    if ($response->successful()) {
+        $role = $response->json();
+
+        // Log the response for debugging
+        Log::info('Role data:', $role);
+
+        return view('admin.editrole', ['role' => $role]);
+    }
+
+    return redirect()->route('showuserrole')->with('error', 'Failed to fetch role data.');
+}
+
+public function updateRole(Request $request)
+{
+    // Validate the incoming request
+    $request->validate([
+        'id' => 'required|integer',
+        'role_name' => 'required|string|max:255',
+    ]);
+
+    // Prepare data for API
+    $data = [
+        'id' => $request->id,
+        'role_name' => $request->role_name,
+    ];
+
+    // Log current session data before the API call
+    Log::info('Session before role update:', [
+        'role_id' => $request->id,
+        'role_name' => $request->role_name,
+    ]);
+
+    // Send API request
+    $response = Http::withHeaders([
+        'Authorization' => session('access_token'),
+        'x-api-key' => self::API_KEY,
+    ])->post(self::API_URL . '/sso/update_role.json', $data);
+
+    // Handle response
+    if ($response->successful()) {
+        return redirect()->route('showuserrole')->with('success', 'Role updated successfully!');
+    }
+
+    return redirect()->route('showupdaterole', ['idrole' => $request->id])->with('error', 'Failed to update role.');
+}
+
 public function showmoredetailsadm(Request $request)
 {
     Log::info('Attempting to show more details.');

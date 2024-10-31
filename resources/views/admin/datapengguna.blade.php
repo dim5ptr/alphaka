@@ -20,16 +20,16 @@
 <!-- Table and Search -->
 <section class="content">
     <div class="container">
-        <div class="row mb-4">
+        <div class="row mb-4 align-items-center">
             <!-- Left-aligned button linking to user role page -->
-            <div class="col-md-4">
+            <div class="col-6 col-md-4">
                 <a href="{{ route('showuserrole') }}" class="btn btn-primary" style="background-color: #0077FF; color: white; font-weight: bold;">
                     User Role
                 </a>
             </div>
 
             <!-- Search bar on the right side -->
-            <div class="col-md-4 offset-md-4">
+            <div class="col-6 col-md-4 offset-md-4">
                 <div class="input-group rounded shadow-sm">
                     <span class="input-group-text" style="background-color: #0077FF; color: white; border: none;">
                         <i class="fa fa-search"></i>
@@ -136,7 +136,23 @@
                 background-color: #365AC2; /* Background color on hover */
                 color: white; /* Change text color on hover */
             }
+            .action-icon {
+                font-size: 1.2em; /* Adjust to your desired size */
+            }
+ /* Responsive Layout for Mobile */
+        @media (max-width: 768px) {
+                .col-6 {
+                    padding: 5px;
+                }
 
+                .row.mb-4.align-items-center > .col-6 {
+                    flex: 1 1 auto;
+                }
+
+                .btn, .input-group {
+                    width: 100%;
+                }
+            }
         </style>
 
         <div class="table-container">
@@ -170,7 +186,7 @@
                                         @csrf
                                         <input type="hidden" name="email" value="{{ $user['email'] }}">
                                         <button type="submit" class="btn btn-outline-primary btn-sm custom-outline-btn" title="More details">
-                                            <i class="fa fa-info-circle"></i>
+                                            <i class="fa fa-info-circle action-icon"></i>
                                         </button>
                                     </form>
                                 </div>
