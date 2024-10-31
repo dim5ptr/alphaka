@@ -99,6 +99,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/moredetailsadm', [HttpController::class, 'showmoredetailsadm'])->name('showmoredetailsadm');
         Route::get('/moredetailsadm', [HttpController::class, 'showmoredetailsadm'])->name('showmoredetailsadm');
 
+        Route::get('/products', [HttpController::class, 'showProducts'])->name('showProducts');
+
 
         Route::get('/userrole', [HttpController::class, 'showuserrole'])->name('showuserrole');
         Route::post('/userrole', [HttpController::class, 'userrole'])->name('userrole');

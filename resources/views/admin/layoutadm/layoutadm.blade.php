@@ -157,7 +157,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a href="" class="nav-link {{ Request::is('products') ? 'active' : '' }}">
+          <a href="{{ route('showProducts') }}" class="nav-link {{ Request::is('products') ? 'active' : '' }}">
             <i class="nav-icon fas fa-gift"></i>
             <p>Product and Price</p>
           </a>

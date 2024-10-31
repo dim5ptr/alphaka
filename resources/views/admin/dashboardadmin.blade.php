@@ -76,7 +76,7 @@
                             <h3>{{ $productCount }}</h3>
                         </div>
                         <div class="card-footer">
-                            <a href="" class="btn btn-outline-primary custom-outline-btn">View All Products</a>
+                            <a href="{{ route('showProducts') }}" class="btn btn-outline-primary custom-outline-btn">View All Products</a>
                         </div>
                     </div>
                 </div>
