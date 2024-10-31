@@ -15,16 +15,16 @@
 <!-- Table and Search -->
 <section class="content">
     <div class="container">
-        <div class="row mb-4">
+        <div class="row mb-4 align-items-center">
             <!-- Left-aligned button linking to user list page -->
-            <div class="col-md-4">
+            <div class="col-6 col-md-4">
                 <a href="{{ route('showcreaterole') }}" class="btn btn-primary" style="background-color: #0077FF; color: white; font-weight: bold;">
                     Create New Role
                 </a>
             </div>
 
             <!-- Search bar on the right side -->
-            <div class="col-md-4 offset-md-4">
+            <div class="col-6 col-md-4 offset-md-4">
                 <div class="input-group rounded shadow-sm">
                     <span class="input-group-text" style="background-color: #0077FF; color: white; border: none;">
                         <i class="fa fa-search"></i>
@@ -36,8 +36,8 @@
 
         <!-- Custom CSS for smoother table design and search bar -->
         <style>
-            /* Search Bar */
-            .input-group-text {
+             /* Search Bar */
+             .input-group-text {
                 display: flex;
                 align-items: center;
                 background-color: #0077FF;
@@ -101,6 +101,20 @@
                 vertical-align: middle;
                 font-weight: 500;
             }
+             /* Responsive Layout for Mobile */
+             @media (max-width: 768px) {
+                .col-6 {
+                    padding: 5px;
+                }
+
+                .row.mb-4.align-items-center > .col-6 {
+                    flex: 1 1 auto;
+                }
+
+                .btn, .input-group {
+                    width: 100%;
+                }
+            }
         </style>
 
         <!-- Table Content -->
@@ -122,8 +136,8 @@
                                 <td>{{ $role['role_name'] }}</td>
                                 <td>
                                     <!-- Edit icon button -->
-                                    <a href="" class="btn btn-primary btn-sm" title="Edit Role" style="background-color: #0077FF; color: white;">
-                                        <i class="fa fa-edit"></i> <!-- Edit icon -->
+                                    <a href="{{ route('showupdaterole', ['idrole' => $role['id']]) }}" class="btn btn-primary btn-sm" title="Edit Role" style="background-color: #0077FF; color: white;">
+                                        <i class="fa fa-edit"></i>
                                     </a>
                                 </td>
                                 {{-- <td>
