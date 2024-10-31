@@ -39,7 +39,7 @@
     .main-sidebar {
       background-color: #e1e5f8;
     }
-  
+
     .nav-sidebar .nav-item .nav-link {
       color: #3200af; /* Default link color */
       background-color: #e1e5f8; /* Default background color */
@@ -154,7 +154,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a href="" class="nav-link {{ Request::is('transaction-history') ? 'active' : '' }}">
+          <a href="{{ route('showtransaction') }}" class="nav-link {{ Request::is('transaction-history') ? 'active' : '' }}">
             <i class="nav-icon fas fa-history"></i>
             <p>Transaction History</p>
           </a>

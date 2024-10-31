@@ -91,7 +91,7 @@
                             <h3>{{ $transactionCount }}</h3>
                         </div>
                         <div class="card-footer">
-                            <a href="" class="btn btn-outline-primary custom-outline-btn">View All Transactions</a>
+                            <a href="{{route ('showtransaction')}}" class="btn btn-outline-primary custom-outline-btn">View All Transactions</a>
                         </div>
                     </div>
                 </div>

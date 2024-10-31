@@ -2277,7 +2277,7 @@ public function showuserdata(Request $request)
 
     } catch (\Exception $e) {
         return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
-    }
+    }               
 }
 // public function showuserdata()
 // {
@@ -2402,5 +2402,31 @@ public function showmoredetailsadm(Request $request)
         return back()->with('error', 'An error occurred: ' . $e->getMessage());
     }
 }
+
+public function showTransaction(Request $request)
+{
+    try {
+        // Make the GET request to the external API
+        $response = Http::withHeaders([
+                    'Authorization' => session('access_token'),
+                    'x-api-key' => self::API_KEY, // Ensure API_KEY is set in your .env file
+                ])->get(self::API_URL .  '/finance/receipt_show.json');
+
+        if ($response->successful()) {
+            return view('admin.datatransaksi', [
+                'transactions' => $response->json()['data'] // Mengubah 'users' menjadi 'transactions'
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to retrieve transaction data.',
+        ], $response->status());
+
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
+    }
+}
+
 
 }
