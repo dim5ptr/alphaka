@@ -112,7 +112,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0" style="color: #0077FF; font-weight: bold;">Transaction List</h1>
+                <h1 class="m-0" style="color: #0077FF; font-weight: bold;">Transaction History  </h1>
             </div>
         </div>
     </div>
