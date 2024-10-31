@@ -19,7 +19,6 @@
   <link rel="stylesheet" href="{{ asset('template/dist/css/adminlte.min.css') }}">
 
   <style>
-
     body {
       font-family: 'Inter', sans-serif;
       background-color: #f4f6f9;
@@ -29,17 +28,28 @@
     .navbar {
       background-color: #e2e4fb;
       color: #3200af;
+      position: fixed; /* Make the navbar fixed */
+      top: 0; /* Align it to the top */
+      left: 0;
+      right: 0;
+      z-index: 1000; /* Ensure it is above other elements */
     }
+
     .navbar .nav-link, .navbar .nav-item .dropdown-toggle {
       color: #7773d4;
       font-size: 16px;
+    }
+
+    /* Adjust content wrapper to avoid overlap with navbar */
+    .content-wrapper {
+      margin-top: 56px; /* Adjust this based on your navbar height */
     }
 
     /* Sidebar Style */
     .main-sidebar {
       background-color: #e1e5f8;
     }
-  
+
     .nav-sidebar .nav-item .nav-link {
       color: #3200af; /* Default link color */
       background-color: #e1e5f8; /* Default background color */
@@ -92,8 +102,7 @@
       color: #3200af; /* Default icon color */
       margin-right: 10px; /* Space between icon and text */
     }
-
-</style>
+  </style>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
