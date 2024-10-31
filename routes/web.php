@@ -125,6 +125,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/edituseradm',  [HttpController::class, 'showedituseradm'])->name('showedituseradm');
         Route::post('/edituseradm', [HttpController::class, 'edituseradm'])->name('edituseradm');
+
+        Route::get('/transactionhistory', [HttpController::class, 'showtransaction'])->name('showtransaction');
     });
 
     Route::middleware(['role:1'])->group(function () {

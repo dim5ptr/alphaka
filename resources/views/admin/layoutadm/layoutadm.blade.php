@@ -163,7 +163,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a href="" class="nav-link {{ Request::is('transaction-history') ? 'active' : '' }}">
+          <a href="{{ route('showtransaction') }}" class="nav-link {{ Request::is('transaction-history') ? 'active' : '' }}">
             <i class="nav-icon fas fa-history"></i>
             <p>Transaction History</p>
           </a>
