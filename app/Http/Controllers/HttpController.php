@@ -2458,4 +2458,56 @@ public function showmoredetailsadm(Request $request)
     }
 }
 
+public function showProducts(Request $request)
+{
+    try {
+        // Make the GET request to the external API using the constants
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->get(self::API_URL . '/product/product_show.json');
+
+        // Log the API response for debugging
+        Log::info('API Response: ' . $response->body());
+
+        // Check if the response was successful
+        if ($response->successful()) {
+            $products = $response->json()['data'] ?? []; // Default to an empty array if 'data' is not set
+            return view('admin.products', ['products' => $products]);
+        }
+
+        Log::error('API request failed: ' . $response->body());
+        return response()->json(['success' => false, 'message' => 'Failed to retrieve product data.'], $response->status());
+
+    } catch (\Exception $e) {
+        Log::error('Error retrieving data: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
+    }
+}
+
+public function showTransaction(Request $request)
+{
+    try {
+        // Make the GET request to the external API
+        $response = Http::withHeaders([
+                    'Authorization' => session('access_token'),
+                    'x-api-key' => self::API_KEY, // Ensure API_KEY is set in your .env file
+                ])->get(self::API_URL .  '/finance/receipt_show.json');
+
+        if ($response->successful()) {
+            return view('admin.datatransaksi', [
+                'transactions' => $response->json()['data'] // Mengubah 'users' menjadi 'transactions'
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to retrieve transaction data.',
+        ], $response->status());
+
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
+    }
+}
+
 }
