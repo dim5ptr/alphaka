@@ -121,19 +121,22 @@
 <!-- Table and Search -->
 <section class="content">
     <div class="container">
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="input-group rounded shadow-sm">
-                    <span class="input-group-text" style="background-color: #0077FF; color: white; border: none;">
-                        <i class="fa fa-search"></i>
-                    </span>
-                    <input type="search" id="searchInput" class="form-control rounded" placeholder="Search..." style="border: none; padding: 10px;">
-                </div>
+        <!-- Search bar aligned to the right and below links -->
+        <div class="col-12 mt-3 d-flex justify-content-start" style="margin-bottom: 3%;">
+            <div class="input-group rounded shadow-sm" style="max-width: 90%; width: 100%;">
+                <span class="input-group-text" style="background-color: #0077FF; color: white; border: none;">
+                    <i class="fa fa-search"></i>
+                </span>
+                <input type="search" id="searchInput" class="form-control rounded" placeholder="Search..." style="border: none; padding: 10px;">
             </div>
-        </div>
+                <!-- Button to Create New Input -->
+                <button class="btn btn-primary ms-2" style="background-color: #2175d5; font-weight: bold;  margin-left: 3%;">
+                    <i class="fas fa-plus"></i>
+                </button>
+          </div>
 
         <div class="table-container">
-            <table class="table custom-table mt-4">
+            <table class="table custom-table mt-0">
                 <thead>
                     <tr>
                         <th scope="col">No</th>

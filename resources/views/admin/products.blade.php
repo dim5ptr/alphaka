@@ -20,33 +20,39 @@
 <!-- Table and Search -->
 <section class="content">
     <div class="container">
-        <div class="row mb-4 align-items-center">
-            <!-- Left-aligned button linking to user role page -->
-            <div class="col-6 col-md-4">
-                <a href="{{route ('showProducts')}}" class="btn btn-primary" style="background-color: #0077FF; color: white; font-weight: bold;">
-                    Produk List
+         <!-- Search bar aligned to the right and below links -->
+         <div class="col-12 mt-3 d-flex justify-content-start" style="margin-bottom: 3%;">
+            <div class="input-group rounded shadow-sm" style="max-width: 90%; width: 100%;">
+                <span class="input-group-text" style="background-color: #0077FF; color: white; border: none;">
+                    <i class="fa fa-search"></i>
+                </span>
+                <input type="search" id="searchInput" class="form-control rounded" placeholder="Search..." style="border: none; padding: 10px;">
+            </div>
+                <!-- Button to Create New Input -->
+                <button class="btn btn-primary ms-2" style="background-color: #2175d5; font-weight: bold;  margin-left: 3%;">
+                    <i class="fas fa-plus"></i>
+                </button>
+        </div>
+        
+        <div class="row mb-4">
+            <!-- Section for links aligned to the left -->
+            <div class="col-12 d-flex flex-wrap justify-content-start align-items-center">
+                <a href="{{ route('showProducts') }}" class="btn btn-primary me-2" style="background-color: #1c65b9; color: white; font-weight: bold; margin-right: 3%; margin-bottom: 1%;">
+                    Product List
                 </a>
-                <a href="{{route ('showProductsFolder')}}" class="btn btn-primary" style="background-color: #0077FF; color: white; font-weight: bold;">
-                    Produk Folder
+                <a href="{{ route('showProductsFolder') }}" class="btn btn-primary me-2" style="background-color: #0077FF; color: white; font-weight: bold; margin-right: 3%; margin-bottom: 1%;">
+                    Product Folder
                 </a>
-                <a href="{{route ('showProductsFeatures')}}" class="btn btn-primary" style="background-color: #0077FF; color: white; font-weight: bold;">
-                    Produk Features
+                <a href="{{ route('showProductsFeatures') }}" class="btn btn-primary me-2" style="background-color: #0077FF; color: white; font-weight: bold; margin-right: 3%; margin-bottom: 1%;">
+                    Product Features
                 </a>
-                <a href="{{route ('showProductsRelease')}}" class="btn btn-primary" style="background-color: #0077FF; color: white; font-weight: bold;">
-                    Produk Release
+                <a href="{{ route('showProductsRelease') }}" class="btn btn-primary" style="background-color: #0077FF; color: white; font-weight: bold; margin-right: 3%; margin-bottom: 1%;">
+                    Product Release
                 </a>
             </div>
 
-            <!-- Search bar on the right side -->
-            <div class="col-6 col-md-4 offset-md-4">
-                <div class="input-group rounded shadow-sm">
-                    <span class="input-group-text" style="background-color: #0077FF; color: white; border: none;">
-                        <i class="fa fa-search"></i>
-                    </span>
-                    <input type="search" id="searchInput" class="form-control rounded" placeholder="Search..." style="border: none; padding: 10px;">
-                </div>
-            </div>
         </div>
+        
 
         <!-- Custom CSS for smoother table design and search bar -->
         <style>
@@ -165,10 +171,7 @@
         </style>
 
         <div class="table-container">
-            <table class="table custom-table mt-4">
-
-        <div class="table-container">
-            <table class="table custom-table mt-4">
+            <table class="table custom-table mt-0">
                 <thead>
                     <tr>
                         <th scope="col">No</th>
@@ -177,6 +180,7 @@
                         <th scope="col">Description</th>
                         <th scope="col">Created By</th>
                         <th scope="col">Created Date</th>
+                        <th scope="col">Price</th>
                         <th scope="col">Enabled</th>
                         <th scope="col">Action</th>
                     </tr>
@@ -190,6 +194,7 @@
                             <td>{{ $product['description'] ?? 'N/A' }}</td>
                             <td>{{ $product['created_by'] ?? 'N/A' }}</td>
                             <td>{{ \Carbon\Carbon::parse($product['created_date'])->format('d-m-Y H:i') }}</td>
+                            <td>Rp.{{ $product['price'] ?? '0' }}</td>
                             <td>{{ $product['enabled'] ? 'Yes' : 'No' }}</td>
                             <td class="action-buttons text-center">
                                 <div class="btn-group" role="group" aria-label="Action Buttons">

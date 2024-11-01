@@ -2277,7 +2277,7 @@ public function showuserdata(Request $request)
 
     } catch (\Exception $e) {
         return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
-    }               
+    }
 }
 // public function showuserdata()
 // {
@@ -2484,6 +2484,88 @@ public function showProducts(Request $request)
         return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
     }
 }
+
+public function showProductsFolder(Request $request)
+{
+    try {
+        // Make the GET request to the external API using the constants
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->get(self::API_URL . '/product/product_folder_show.json');
+
+        // Log the API response for debugging
+        Log::info('API Response: ' . $response->body());
+
+        // Check if the response was successful
+        if ($response->successful()) {
+            $productF = $response->json()['data'] ?? []; // Default to an empty array if 'data' is not set
+            return view('admin.productFolder', ['products' => $productF]);
+        }
+
+        Log::error('API request failed: ' . $response->body());
+        return response()->json(['success' => false, 'message' => 'Failed to retrieve product data.'], $response->status());
+
+    } catch (\Exception $e) {
+        Log::error('Error retrieving data: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
+    }
+}
+
+public function showProductsFeatures(Request $request)
+{
+    try {
+        // Make the GET request to the external API using the constants
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->get(self::API_URL . '/product/product_features_show.json');
+
+        // Log the API response for debugging
+        Log::info('API Response: ' . $response->body());
+
+        // Check if the response was successful
+        if ($response->successful()) {
+            $productFr = $response->json()['data'] ?? []; // Default to an empty array if 'data' is not set
+            return view('admin.productFeature', ['products' => $productFr]);
+        }
+
+        Log::error('API request failed: ' . $response->body());
+        return response()->json(['success' => false, 'message' => 'Failed to retrieve product data.'], $response->status());
+
+    } catch (\Exception $e) {
+        Log::error('Error retrieving data: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
+    }
+}
+
+public function showProductsRelease(Request $request)
+{
+    try {
+        // Make the GET request to the external API using the constants
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->get(self::API_URL . '/product/product_release_show.json');
+
+        // Log the API response for debugging
+        Log::info('API Response: ' . $response->body());
+
+        // Check if the response was successful
+        if ($response->successful()) {
+            $productR = $response->json()['data'] ?? []; // Default to an empty array if 'data' is not set
+            return view('admin.productRelease', ['products' => $productR]);
+        }
+
+        Log::error('API request failed: ' . $response->body());
+        return response()->json(['success' => false, 'message' => 'Failed to retrieve product data.'], $response->status());
+
+    } catch (\Exception $e) {
+        Log::error('Error retrieving data: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
+    }
+}
+
 
 public function showTransaction(Request $request)
 {
