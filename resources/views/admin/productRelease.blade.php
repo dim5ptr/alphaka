@@ -172,12 +172,11 @@
                 <thead>
                     <tr>
                         <th scope="col">No</th>
-                        <th scope="col">Product Name</th>
-                        <th scope="col">Product Code</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Created By</th>
                         <th scope="col">Created Date</th>
-                        <th scope="col">Enabled</th>
+                        <th scope="col">Created By</th>
+                        <th scope="col">Product Id</th>
+                        <th scope="col">Product Version</th>
+                        <th scope="col">Notes</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -185,12 +184,11 @@
                   @foreach($products as $no => $product)
                         <tr>
                         <th scope="row">{{ $no + 1 }}</th> <!-- Displaying the no + 1 -->
-                        <td>{{ $product['product_name'] ?? 'N/A' }}</td>
-                            <td>{{ $product['product_code'] ?? 'N/A' }}</td>
-                            <td>{{ $product['description'] ?? 'N/A' }}</td>
-                            <td>{{ $product['created_by'] ?? 'N/A' }}</td>
-                            <td>{{ \Carbon\Carbon::parse($product['created_date'])->format('d-m-Y H:i') }}</td>
-                            <td>{{ $product['enabled'] ? 'Yes' : 'No' }}</td>
+                        <td>{{ \Carbon\Carbon::parse($product['created_date'])->format('d-m-Y H:i') }}</td>
+                        <td>{{ $product['created_by'] ?? 'N/A' }}</td>
+                        <td>{{ $product['product_id'] ?? 'N/A' }}</td>
+                            <td>{{ $product['product_version'] ?? 'N/A' }}</td>
+                            <td>{{ $product['notes'] ?? 'N/A' }}</td>
                             <td class="action-buttons text-center">
                                 <div class="btn-group" role="group" aria-label="Action Buttons">
                                     <form action="{{ route('showmoredetailsadm') }}" method="POST" style="display:inline;">
