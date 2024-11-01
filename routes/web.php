@@ -100,6 +100,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/moredetailsadm', [HttpController::class, 'showmoredetailsadm'])->name('showmoredetailsadm');
 
         Route::get('/products', [HttpController::class, 'showProducts'])->name('showProducts');
+        Route::get('/productFolder', [HttpController::class, 'showProductsFolder'])->name('showProductsFolder');
+        Route::get('/productsFeatures', [HttpController::class, 'showProductsFeatures'])->name('showProductsFeatures');
+        Route::get('/productsRelease', [HttpController::class, 'showProductsRelease'])->name('showProductsRelease');
+
 
 
         Route::get('/userrole', [HttpController::class, 'showuserrole'])->name('showuserrole');
