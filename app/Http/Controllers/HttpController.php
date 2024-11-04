@@ -2592,4 +2592,50 @@ public function showTransaction(Request $request)
     }
 }
 
+public function showOrganizations()
+{
+    Log::info('Attempting to fetch organizations for admin view.');
+
+    try {
+        // API call to list organizations by owner
+        $ownerResponse = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
+
+        // API call to list organizations by member
+        $memberResponse = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->post(self::API_URL . '/sso/list_all_organizations.json');
+
+        // Check if both API responses are successful
+        if ($ownerResponse->successful() && $memberResponse->successful()) {
+            // Parse the responses
+            $ownerData = $ownerResponse->json();
+            $memberData = $memberResponse->json();
+
+            // Get the organizations from both responses
+            $ownerOrganizations = $ownerData['data']['organizations'] ?? [];
+            $memberOrganizations = $memberData['data']['organizations'] ?? [];
+
+            // Combine both organizations
+            $organizations = array_merge($ownerOrganizations, $memberOrganizations);
+
+            // Log the number of organizations fetched
+            Log::info('Fetched organizations count: ' . count($organizations));
+
+            // Prepare the data for the view
+            return view('admin.organizations', compact('organizations'));
+        } else {
+            // Log error if either API fails
+            Log::error('Failed to get organization list. Owner Response: ' . $ownerResponse->body() . ', Member Response: ' . $memberResponse->body());
+            return back()->with('error', 'Failed to get organization list. Please try again.');
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred while fetching organizations: ' . $e->getMessage());
+        return back()->with('error', $e->getMessage());
+    }
+}
+
 }

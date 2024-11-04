@@ -46,7 +46,7 @@
                             <h3>{{ $organizationCount }}</h3>
                         </div>
                         <div class="card-footer">
-                            <a href="" class="btn btn-outline-primary custom-outline-btn">View All Organizations</a>
+                            <a href="{{ route('admin.organizations') }}" class="btn btn-outline-primary custom-outline-btn">View All Organizations</a>
                         </div>
                     </div>
                     <canvas id="orgChart" width="400" height="200"></canvas>

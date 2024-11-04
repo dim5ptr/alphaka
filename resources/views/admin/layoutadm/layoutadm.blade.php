@@ -144,11 +144,12 @@
           <p>Dashboard</p>
         </a>
       </li>
-        <li class="nav-item">
-          <a href="{{ route('organization') }}" class="nav-link {{ Request::is('organization') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-building"></i>
-            <p>Organization List</p>
+      <li class="nav-item">
+          <a href="{{ route('admin.organizations') }}" class="nav-link {{ Request::is('admin/organizations*') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-building"></i>
+              <p>Organization List</p>
           </a>
+      </li>
         </li>
         <li class="nav-item">
           <a href="{{ route('showuserdata') }}" class="nav-link {{ Request::is('userdata') ? 'active' : '' }}">
