@@ -2258,171 +2258,160 @@ public function getMemberToken(Request $request)
 public function showuserdata(Request $request)
 {
     try {
-        // Make the GET request to the external API
+        Log::info('Attempting to fetch user data.');
+
         $response = Http::withHeaders([
-                    'Authorization' => session('access_token'),
-                    'x-api-key' => self::API_KEY, // Ensure API_KEY is set in your .env file
-                ])->get(self::API_URL .  '/sso/get_user_data.json');
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->get(self::API_URL . '/sso/get_user_data.json');
+
+        Log::info('API Response Status: ' . $response->status());
 
         if ($response->successful()) {
-            return view('admin.datapengguna', [
-                'users' => $response->json()['data']
-            ]);
+            Log::info('User data retrieved successfully.');
+            return view('admin.datapengguna', ['users' => $response->json()['data']]);
         }
 
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to retrieve user data.',
-        ], $response->status());
+        Log::error('Failed to retrieve user data.');
+        return response()->json(['success' => false, 'message' => 'Failed to retrieve user data.'], $response->status());
 
     } catch (\Exception $e) {
+        Log::error('Error retrieving user data: ' . $e->getMessage());
         return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
     }
 }
-// public function showuserdata()
-// {
-//     $response = Http::withHeaders([
-//         'Authorization' => session('access_token'),
-//         'x-api-key' => self::API_KEY, // Ensure API_KEY is set in your .env file
-//     ])->get(self::API_URL .  '/sso/get_user_data.json');
-
-//     $users = $response->json();
-
-//     return view ('admin.datapengguna');
-// }
 
 public function showuserrole()
 {
-    // Make API request to get role data
+    Log::info('Fetching user roles data.');
+
     $response = Http::withHeaders([
         'x-api-key' => self::API_KEY,
         'Authorization' => session('access_token'),
     ])->get(self::API_URL . '/sso/get_role_data.json');
 
-    // Check if the request was successful
+    Log::info('API Response Status: ' . $response->status());
+
     if ($response->successful()) {
-        // Parse the JSON response and get roles data
-        $roles = $response->json('roles'); // Ensure the response contains a 'roles' key
+        Log::info('User roles data retrieved successfully.');
+        $roles = $response->json('roles');
         return view('admin.userrole', compact('roles'));
     } else {
-        // Handle API error
+        Log::error('Failed to fetch roles data.');
         return back()->withErrors('Failed to fetch roles data.');
     }
 }
+
 public function showcreaterole()
-    {
-        return view('admin.createrole'); // Return the view for creating a role
-    }
+{
+    Log::info('Showing create role view.');
+    return view('admin.createrole');
+}
+
 public function createrole(Request $request)
 {
-    // Validate the incoming request
+    Log::info('Attempting to create a new role.');
+
     $request->validate([
         'role' => 'required|string|max:255',
     ]);
 
-    // Prepare API request to create the role
     $response = Http::withHeaders([
-        'x-api-key' => self::API_KEY, // Set your API key in the .env file
+        'x-api-key' => self::API_KEY,
         'Authorization' => session('access_token'),
     ])->post(self::API_URL . '/sso/create_role.json', [
         'role' => $request->input('role'),
     ]);
 
-    // Check the response status
+    Log::info('API Response Status: ' . $response->status());
+
     if ($response->successful()) {
+        Log::info('Role created successfully.');
         return redirect()->route('showuserrole')->with('success', 'Role created successfully!');
     }
 
+    Log::error('Failed to create role.');
     return redirect()->route('showcreaterole')->with('error', 'Failed to create role.');
 }
+
 public function showupdaterole($idrole)
 {
-    // Fetch the role data from the API
+    Log::info('Fetching role data for editing. Role ID: ' . $idrole);
+
     $response = Http::withHeaders([
         'x-api-key' => self::API_KEY,
         'Authorization' => session('access_token'),
     ])->get(self::API_URL . '/sso/get_role_by_id.json', ['id' => $idrole]);
 
-    // Check if the response was successful
+    Log::info('API Response Status: ' . $response->status());
+
     if ($response->successful()) {
+        Log::info('Role data retrieved successfully for Role ID: ' . $idrole);
         $role = $response->json();
-
-        // Log the response for debugging
-        Log::info('Role data:', $role);
-
         return view('admin.editrole', ['role' => $role]);
     }
 
+    Log::error('Failed to fetch role data for Role ID: ' . $idrole);
     return redirect()->route('showuserrole')->with('error', 'Failed to fetch role data.');
 }
 
 public function updateRole(Request $request)
 {
-    // Validate the incoming request
+    Log::info('Attempting to update role.');
+
     $request->validate([
         'id' => 'required|integer',
         'role_name' => 'required|string|max:255',
     ]);
 
-    // Prepare data for API
     $data = [
         'id' => $request->id,
         'role_name' => $request->role_name,
     ];
 
-    // Log current session data before the API call
-    Log::info('Session before role update:', [
-        'role_id' => $request->id,
-        'role_name' => $request->role_name,
-    ]);
+    Log::info('Updating role with data:', $data);
 
-    // Send API request
     $response = Http::withHeaders([
         'Authorization' => session('access_token'),
         'x-api-key' => self::API_KEY,
     ])->post(self::API_URL . '/sso/update_role.json', $data);
 
-    // Handle response
+    Log::info('API Response Status: ' . $response->status());
+
     if ($response->successful()) {
+        Log::info('Role updated successfully.');
         return redirect()->route('showuserrole')->with('success', 'Role updated successfully!');
     }
 
+    Log::error('Failed to update role.');
     return redirect()->route('showupdaterole', ['idrole' => $request->id])->with('error', 'Failed to update role.');
 }
 
 public function showmoredetailsadm(Request $request)
 {
-    Log::info('Attempting to show more details.');
+    Log::info('Attempting to show more user details.');
 
-    // Validate email input to ensure it's provided and is a valid email format
     $request->validate([
         'email' => 'required|email'
     ]);
 
     $email = $request->input('email');
-    Log::info('Email: ' . $email);
+    Log::info('Retrieving details for email: ' . $email);
 
     try {
-        // Prepare the payload for the API request
         $payload = ['email' => $email];
 
-        // Send the email to the external API to get user details
         $response = Http::withHeaders([
-            'x-api-key' => self::API_KEY // Ensure API key is accurate
+            'x-api-key' => self::API_KEY
         ])->post(self::API_URL  . '/sso/get_user_details_by_email.json', $payload);
 
-        Log::info('API Request URL: ' . env('API_URL') . '/sso/get_user_details_by_email.json');
-        Log::info('API Payload: ' . json_encode($payload));
-
-        // Log the status and body of the API response
         Log::info('API Response Status: ' . $response->status());
         Log::info('API Response Body: ' . $response->body());
 
-        // Check if the API response is successful
         if ($response->successful()) {
-            $userData = $response->json();
+            $userData = $response->json()['data'];
+            Log::info('User details retrieved successfully for: ' . $email);
 
-            // Extract user details, handling null values with 'N/A'
             $fullname = $userData['full_name'] ?? 'N/A';
             $dateofbirth = $userData['birthday'] ?? 'N/A';
             $gender = isset($userData['gender']) && $userData['gender'] === 0 ? 'Female' : 'Male';
@@ -2430,9 +2419,8 @@ public function showmoredetailsadm(Request $request)
             $emails = $userData['email'] ?? 'N/A';
             $roles = !empty($userData['roles']) ? implode(', ', array_filter($userData['roles'])) : 'N/A';
             $userId = $userData['user_id'] ?? null;
-            $user_name = $userData['username'] ?? 'N/A'; // Get username from response
+            $user_name = $userData['username'] ?? 'N/A';
 
-            // Store the data in session
             session([
                 'user_id' => $userId,
                 'fullname' => $fullname,
@@ -2444,20 +2432,16 @@ public function showmoredetailsadm(Request $request)
                 'user_name' => $user_name,
             ]);
 
-            Log::info('User details retrieved successfully for: ' . $email);
-
-            return view('admin.moredetails');
+            return view('admin.moredetails', compact('fullname', 'dateofbirth', 'gender', 'phone', 'emails', 'roles', 'user_name'));
         } else {
-            // Handle non-200 responses
-            Log::error('Failed to get user details from API. Status: ' . $response->status());
+            Log::error('Failed to get user details from API for email: ' . $email);
             return back()->with('error', 'Failed to get user details from API: ' . $response->body());
         }
     } catch (\Exception $e) {
-        Log::error('Exception occurred while showing more details: ' . $e->getMessage());
+        Log::error('Exception occurred while retrieving user details: ' . $e->getMessage());
         return back()->with('error', 'An error occurred: ' . $e->getMessage());
     }
 }
-
 public function showProducts(Request $request)
 {
     try {
