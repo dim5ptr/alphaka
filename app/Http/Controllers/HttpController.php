@@ -2576,4 +2576,38 @@ public function showTransaction(Request $request)
     }
 }
 
+public function deactivateUser(Request $request)
+{
+    $userId = session('user_id'); // Get the user_id directly from session
+
+    if (!$userId) {
+        return response()->json(['success' => false, 'message' => 'User ID not found in session.']);
+    }
+
+    try {
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->post(self::API_URL . '/sso/deactive_user.json', [
+            'user_id' => $userId,
+        ]);
+
+        Log::info('Deactivation API Response: ' . $response->body());
+
+        if ($response->successful()) {
+            return response()->json([
+                'success' => true,
+                'redirect_url' => route('showuserdata'), // Return redirect URL
+                'message' => 'User deactivated successfully.'
+            ]);
+        } else {
+            return back()->with('error', 'Failed to deactivate user. ' . $response->body());
+        }
+    } catch (\Exception $e) {
+        Log::error('Error deactivating user: ' . $e->getMessage());
+        return back()->with('error', 'An error occurred: ' . $e->getMessage());
+    }
+}
+
+
 }
