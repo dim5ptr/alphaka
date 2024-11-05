@@ -134,6 +134,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/edituseradm', [HttpController::class, 'edituseradm'])->name('edituseradm');
 
         Route::get('/transactionhistory', [HttpController::class, 'showtransaction'])->name('showtransaction');
+        // web.php
+        Route::get('/licenses', [HttpController::class, 'getLicenseData'])->name('showLicense');
+        Route::get('/licenses/activity', [HttpController::class, 'getActivityData'])->name('getActivityData');
+        Route::get('/licenses/hooks', [HttpController::class, 'getHooksData'])->name('getHooksData');
+        Route::get('/licenses/orders', [HttpController::class, 'getLicenseOrderData'])->name('getLicenseOrderData');
+        Route::get('/licenses/serial-numbers', [HttpController::class, 'getSerialNumberData'])->name('getSerialNumberData');
+
     });
 
     Route::middleware(['role:1'])->group(function () {

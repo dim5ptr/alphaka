@@ -2734,5 +2734,69 @@ public function deactivateUser(Request $request)
     }
 }
 
+    public function getLicenseData(Request $request)
+    {
+        return $this->fetchData('license/get_license_data.json', 'admin.license_data');
+    }
 
+    /**
+     * Fetch and display Activity Data.
+     */
+    public function getActivityData(Request $request)
+    {
+        return $this->fetchData('license/get_activity_data.json', 'admin.activity_data');
+    }
+
+    /**
+     * Fetch and display Hooks Data.
+     */
+    public function getHooksData(Request $request)
+    {
+        return $this->fetchData('license/get_hooks_data.json', 'admin.hooks_data');
+    }
+
+    /**
+     * Fetch and display License Order Data.
+     */
+    public function getLicenseOrderData(Request $request)
+    {
+        return $this->fetchData('license/get_license_order_data.json', 'admin.license_order_data');
+    }
+
+    /**
+     * Fetch and display Serial Number Data.
+     */
+    public function getSerialNumberData(Request $request)
+    {
+        return $this->fetchData('license/get_serial_number_data.json', 'admin.serial_number_data');
+    }
+
+    public function fetchData($endpoint, $viewName)
+    {
+        try {
+            // Make the GET request to the external API
+            $response = Http::withHeaders([
+                'Authorization' => '0f031be1caef52cfc46ecbb8eee10c77', // API token if needed
+                'x-api-key' => self::API_KEY,
+            ])->get(self::API_URL . '/' . $endpoint);
+
+            // Log the API response for debugging
+            Log::info('API Response for ' . $endpoint . ': ' . $response->body());
+
+            // Check if the response was successful
+            if ($response->successful()) {
+                $data = $response->json()['data'] ?? [];
+                return view($viewName, ['data' => $data]);
+            }
+
+            // Log and return an error response if the API request failed
+            Log::error('API request failed: ' . $response->body());
+            return response()->json(['success' => false, 'message' => 'Failed to retrieve data.'], $response->status());
+
+        } catch (\Exception $e) {
+            // Log and return an error response if an exception occurred
+            Log::error('Error retrieving data: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
+        }
+    }
 }

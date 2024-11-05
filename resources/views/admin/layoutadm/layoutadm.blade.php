@@ -164,6 +164,12 @@
           </a>
         </li>
         <li class="nav-item">
+            <a href="{{ route('showLicense') }}" class="nav-link {{ Request::is('license') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-file-contract"></i>
+              <p>License</p>
+            </a>
+        </li>
+        <li class="nav-item">
           <a href="{{ route('showtransaction') }}" class="nav-link {{ Request::is('transaction-history') ? 'active' : '' }}">
             <i class="nav-icon fas fa-history"></i>
             <p>Transaction History</p>
