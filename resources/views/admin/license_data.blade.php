@@ -180,8 +180,11 @@
                 <th scope="col">No</th>
                 <th scope="col">License Key</th>
                 <th scope="col">Status</th>
-                <th scope="col">Created By</th>
+                <th scope="col">Type</th>
+                <th scope="col">Total Used</th>
                 <th scope="col">Created Date</th>
+                <th scope="col">Activated Date</th>
+                <th scope="col">Expired Date</th>
                 <th scope="col">Action</th>
             </tr>
         </thead>
@@ -190,10 +193,12 @@
                 <tr>
                 <th scope="row">{{ $no + 1 }}</th>
                 <td>{{ isset($license['license_key']) ? '****' . substr($license['license_key'], -4) : 'N/A' }}</td>
-                {{-- <td>{{ $license['license_key'] ?? 'N/A' }}</td> --}}
                 <td>{{ $license['status'] ?? 'N/A' }}</td>
-                <td>{{ $license['created_by'] ?? 'N/A' }}</td>
+                <td>{{ $license['type'] ?? 'N/A' }}</td>
+                <td>{{ $license['total_used'] ?? '0' }}</td>
                 <td>{{ \Carbon\Carbon::parse($license['created_date'])->format('d-m-Y H:i') ?? 'N/A' }}</td>
+                <td>{{ isset($license['activated_date']) ? \Carbon\Carbon::parse($license['activated_date'])->format('d-m-Y H:i') : 'N/A' }}</td>
+                <td>{{ isset($license['expired_date']) ? \Carbon\Carbon::parse($license['expired_date'])->format('d-m-Y H:i') : 'N/A' }}</td>
                 <td class="action-buttons text-center">
                     <div class="btn-group" role="group" aria-label="Action Buttons">
                         <form action="{{ route('showmoredetailsadm', ['license_key' => $license['license_key']]) }}" method="POST" style="display:inline;">
