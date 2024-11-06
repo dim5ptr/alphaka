@@ -139,11 +139,20 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/transactionhistory', [HttpController::class, 'showtransaction'])->name('showtransaction');
         // web.php
         Route::get('/licenses', [HttpController::class, 'getLicenseData'])->name('showLicense');
+        Route::post('/licenses/details', [HttpController::class, 'licensedetails'])->name('licensedetails');
+        Route::get('/licenses/details', [HttpController::class, 'licensedetails'])->name('licensedetails');
         Route::get('/licenses/activity', [HttpController::class, 'getActivityData'])->name('getActivityData');
+        Route::post('/licenses/activity/details', [HttpController::class, 'activitydetails'])->name('activitydetails');
+        Route::get('/licenses/activity/details', [HttpController::class, 'activitydetails'])->name('activitydetails');
         Route::get('/licenses/hooks', [HttpController::class, 'getHooksData'])->name('getHooksData');
+        Route::post('/licenses/hooks/details', [HttpController::class, 'hooksdetails'])->name('hooksdetails');
+        Route::get('/licenses/hooks/details', [HttpController::class, 'hooksdetails'])->name('hooksdetails');
         Route::get('/licenses/orders', [HttpController::class, 'getLicenseOrderData'])->name('getLicenseOrderData');
+        Route::post('/licenses/orders/details', [HttpController::class, 'orderlicensedetails'])->name('orderlicensedetails');
+        Route::get('/licenses/orders/details', [HttpController::class, 'orderlicensedetails'])->name('orderlicensedetails');
         Route::get('/licenses/serial-numbers', [HttpController::class, 'getSerialNumberData'])->name('getSerialNumberData');
-
+        Route::post('/licenses/serial-numbers/details', [HttpController::class, 'serialnumberdetails'])->name('serialnumberdetails');
+        Route::get('/licenses/serial-numbers/details', [HttpController::class, 'serialnumberdetails'])->name('serialnumberdetails');
     });
 
     Route::middleware(['role:1'])->group(function () {

@@ -2813,7 +2813,7 @@ public function deactivateUser(Request $request)
         try {
             // Make the GET request to the external API
             $response = Http::withHeaders([
-                'Authorization' => '0f031be1caef52cfc46ecbb8eee10c77', // API token if needed
+                'Authorization' => session('access_token'), // API token if needed
                 'x-api-key' => self::API_KEY,
             ])->get(self::API_URL . '/' . $endpoint);
 
@@ -2836,4 +2836,337 @@ public function deactivateUser(Request $request)
             return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
         }
     }
+
+    public function licensedetails(Request $request)
+{
+    Log::info('Attempting to show more license details.');
+
+    // Validate the request to ensure an 'id' is provided
+    $request->validate([
+        'id' => 'required|integer'
+    ]);
+
+    $id = $request->input('id');  // Get the license ID from the request
+    Log::info('Retrieving details for license ID: ' . $id);
+
+    try {
+        // Prepare the payload for the API request
+        $payload = [
+            'id' => $id
+        ];
+
+        // Send the POST request to the new API endpoint
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),  // Static authorization token
+            'x-api-key' => self::API_KEY  // API key from config
+        ])->post(self::API_URL . '/license/get_license_data_by_id.json', $payload);
+
+        Log::info('API Response Status: ' . $response->status());
+        Log::info('API Response Body: ' . $response->body());
+
+        if ($response->successful()) {
+            // Assuming the API response contains a 'data' field with license details
+            $licenseData = $response->json()['data'] ?? null;
+
+            // For debugging purposes
+            dd($licenseData);  // Dump the raw API response for testing
+
+            if ($licenseData) {
+                Log::info('License details retrieved successfully for ID: ' . $id);
+
+                // Extract license details
+                $licenseKey = $licenseData['license_key'] ?? 'N/A';
+                $licenseType = $licenseData['license_type'] ?? 'N/A';
+                $createdDate = $licenseData['created_date'] ?? 'N/A';
+                $activatedDate = $licenseData['activated_date'] ?? 'N/A';
+                $expiredDate = $licenseData['expired_date'] ?? 'N/A';
+                $notes = $licenseData['notes'] ?? 'N/A';
+
+                // Store license details in the session (if necessary)
+                session([
+                    'license_key' => $licenseKey,
+                    'license_type' => $licenseType,
+                    'created_date' => $createdDate,
+                    'activated_date' => $activatedDate,
+                    'expired_date' => $expiredDate,
+                    'notes' => $notes,
+                ]);
+
+                // Return the view with license details
+                return view('admin.license_data', compact('licenseKey', 'licenseType', 'createdDate', 'activatedDate', 'expiredDate', 'notes'));
+            } else {
+                Log::error('No license data found for ID: ' . $id);
+                return back()->with('error', 'No license data found for the provided ID.');
+            }
+        } else {
+            Log::error('Failed to get license details from API for ID: ' . $id);
+            return back()->with('error', 'Failed to get license details from API: ' . $response->body());
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred while retrieving license details: ' . $e->getMessage());
+        return back()->with('error', 'An error occurred: ' . $e->getMessage());
+    }
+}
+
+
+public function activitydetails(Request $request)
+{
+    Log::info('Attempting to show more activity details.');
+
+    // Validate the request to ensure an 'id' is provided
+    $request->validate([
+        'id' => 'required|integer'
+    ]);
+
+    $id = $request->input('id');  // Get the activity ID from the request
+    Log::info('Retrieving details for activity ID: ' . $id);
+
+    try {
+        // Prepare the payload for the API request
+        $payload = [
+            'id' => $id
+        ];
+
+        // Send the POST request to the new API endpoint
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),  // Static authorization token
+            'x-api-key' => self::API_KEY  // API key from config
+        ])->post(self::API_URL . '/license/get_activity_data_by_id.json', $payload);
+
+        Log::info('API Response Status: ' . $response->status());
+        Log::info('API Response Body: ' . $response->body());
+
+        if ($response->successful()) {
+            // Assuming the API response contains a 'data' field with activity details
+            $activityData = $response->json()['data'] ?? null;
+            if ($activityData) {
+                Log::info('Activity details retrieved successfully for ID: ' . $id);
+
+                // Extract activity details
+                $activityName = $activityData['activity_name'] ?? 'N/A';
+                $activityType = $activityData['activity_type'] ?? 'N/A';
+                $startDate = $activityData['start_date'] ?? 'N/A';
+                $endDate = $activityData['end_date'] ?? 'N/A';
+                $description = $activityData['description'] ?? 'N/A';
+
+                // Store activity details in the session (if necessary)
+                session([
+                    'activity_name' => $activityName,
+                    'activity_type' => $activityType,
+                    'start_date' => $startDate,
+                    'end_date' => $endDate,
+                    'description' => $description,
+                ]);
+
+                // Return the view with activity details
+                return view('admin.activity_data', compact('activityName', 'activityType', 'startDate', 'endDate', 'description'));
+            } else {
+                Log::error('No activity data found for ID: ' . $id);
+                return back()->with('error', 'No activity data found for the provided ID.');
+            }
+        } else {
+            Log::error('Failed to get activity details from API for ID: ' . $id);
+            return back()->with('error', 'Failed to get activity details from API: ' . $response->body());
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred while retrieving activity details: ' . $e->getMessage());
+        return back()->with('error', 'An error occurred: ' . $e->getMessage());
+    }
+}
+
+public function hooksdetails(Request $request)
+{
+    Log::info('Attempting to show more hooks data.');
+
+    // Validate the request to ensure an 'id' is provided
+    $request->validate([
+        'id' => 'required|integer'
+    ]);
+
+    $id = $request->input('id');  // Get the hooks data ID from the request
+    Log::info('Retrieving details for hooks data ID: ' . $id);
+
+    try {
+        // Prepare the payload for the API request
+        $payload = [
+            'id' => $id
+        ];
+
+        // Send the POST request to the new API endpoint
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),  // Static authorization token
+            'x-api-key' => self::API_KEY  // API key from config
+        ])->post(self::API_URL . '/license/get_hooks_data_by_id.json', $payload);
+
+        Log::info('API Response Status: ' . $response->status());
+        Log::info('API Response Body: ' . $response->body());
+
+        if ($response->successful()) {
+            // Assuming the API response contains a 'data' field with hooks details
+            $hooksData = $response->json()['data'] ?? null;
+            if ($hooksData) {
+                Log::info('Hooks data retrieved successfully for ID: ' . $id);
+
+                // Extract hooks data details
+                $hookName = $hooksData['hook_name'] ?? 'N/A';
+                $hookType = $hooksData['hook_type'] ?? 'N/A';
+                $hookStatus = $hooksData['hook_status'] ?? 'N/A';
+                $createdAt = $hooksData['created_at'] ?? 'N/A';
+                $updatedAt = $hooksData['updated_at'] ?? 'N/A';
+
+                // Store hooks data details in the session (if necessary)
+                session([
+                    'hook_name' => $hookName,
+                    'hook_type' => $hookType,
+                    'hook_status' => $hookStatus,
+                    'created_at' => $createdAt,
+                    'updated_at' => $updatedAt,
+                ]);
+
+                // Return the view with hooks data details
+                return view('admin.hooks_data', compact('hookName', 'hookType', 'hookStatus', 'createdAt', 'updatedAt'));
+            } else {
+                Log::error('No hooks data found for ID: ' . $id);
+                return back()->with('error', 'No hooks data found for the provided ID.');
+            }
+        } else {
+            Log::error('Failed to get hooks data from API for ID: ' . $id);
+            return back()->with('error', 'Failed to get hooks data from API: ' . $response->body());
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred while retrieving hooks data: ' . $e->getMessage());
+        return back()->with('error', 'An error occurred: ' . $e->getMessage());
+    }
+}
+
+public function orderlicensedetails(Request $request)
+{
+    Log::info('Attempting to show more license order data.');
+
+    // Validate the request to ensure an 'id' is provided
+    $request->validate([
+        'id' => 'required|integer'
+    ]);
+
+    $id = $request->input('id');  // Get the license order ID from the request
+    Log::info('Retrieving license order data for ID: ' . $id);
+
+    try {
+        // Prepare the payload for the API request
+        $payload = [
+            'id' => $id
+        ];
+
+        // Send the POST request to the new API endpoint
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),  // Static authorization token
+            'x-api-key' => self::API_KEY  // API key from config
+        ])->post(self::API_URL . '/license/get_license_order_data_by_id.json', $payload);
+
+        Log::info('API Response Status: ' . $response->status());
+        Log::info('API Response Body: ' . $response->body());
+
+        if ($response->successful()) {
+            // Assuming the API response contains a 'data' field with license order details
+            $licenseOrderData = $response->json()['data'] ?? null;
+            if ($licenseOrderData) {
+                Log::info('License order data retrieved successfully for ID: ' . $id);
+
+                // Extract relevant license order data details
+                $orderNumber = $licenseOrderData['order_number'] ?? 'N/A';
+                $licenseKey = $licenseOrderData['license_key'] ?? 'N/A';
+                $orderStatus = $licenseOrderData['order_status'] ?? 'N/A';
+                $purchaseDate = $licenseOrderData['purchase_date'] ?? 'N/A';
+                $expirationDate = $licenseOrderData['expiration_date'] ?? 'N/A';
+
+                // Store license order data in the session (if necessary)
+                session([
+                    'order_number' => $orderNumber,
+                    'license_key' => $licenseKey,
+                    'order_status' => $orderStatus,
+                    'purchase_date' => $purchaseDate,
+                    'expiration_date' => $expirationDate,
+                ]);
+
+                // Return the view with license order data details
+                return view('admin.license_order_data', compact('orderNumber', 'licenseKey', 'orderStatus', 'purchaseDate', 'expirationDate'));
+            } else {
+                Log::error('No license order data found for ID: ' . $id);
+                return back()->with('error', 'No license order data found for the provided ID.');
+            }
+        } else {
+            Log::error('Failed to get license order data from API for ID: ' . $id);
+            return back()->with('error', 'Failed to get license order data from API: ' . $response->body());
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred while retrieving license order data: ' . $e->getMessage());
+        return back()->with('error', 'An error occurred: ' . $e->getMessage());
+    }
+}
+
+public function serialnumberdetails(Request $request)
+{
+    Log::info('Attempting to show more serial number data.');
+
+    // Validate the request to ensure an 'id' is provided
+    $request->validate([
+        'id' => 'required|integer'
+    ]);
+
+    $id = $request->input('id');  // Get the serial number ID from the request
+    Log::info('Retrieving serial number data for ID: ' . $id);
+
+    try {
+        // Prepare the payload for the API request
+        $payload = [
+            'id' => $id
+        ];
+
+        // Send the POST request to the new API endpoint
+        $response = Http::withHeaders([
+            'Authorization' => '0f031be1caef52cfc46ecbb8eee10c77',  // Static authorization token
+            'x-api-key' => self::API_KEY  // API key from config
+        ])->post(self::API_URL . '/license/get_serial_number_data_by_id.json', $payload);
+
+        Log::info('API Response Status: ' . $response->status());
+        Log::info('API Response Body: ' . $response->body());
+
+        if ($response->successful()) {
+            // Assuming the API response contains a 'data' field with serial number details
+            $serialNumberData = $response->json()['data'] ?? null;
+            if ($serialNumberData) {
+                Log::info('Serial number data retrieved successfully for ID: ' . $id);
+
+                // Extract relevant serial number data details
+                $serialNumber = $serialNumberData['serial_number'] ?? 'N/A';
+                $licenseKey = $serialNumberData['license_key'] ?? 'N/A';
+                $status = $serialNumberData['status'] ?? 'N/A';
+                $assignedDate = $serialNumberData['assigned_date'] ?? 'N/A';
+                $expirationDate = $serialNumberData['expiration_date'] ?? 'N/A';
+
+                // Store serial number data in the session (if necessary)
+                session([
+                    'serial_number' => $serialNumber,
+                    'license_key' => $licenseKey,
+                    'status' => $status,
+                    'assigned_date' => $assignedDate,
+                    'expiration_date' => $expirationDate,
+                ]);
+
+                // Return the view with serial number data details
+                return view('admin.serial_number_data', compact('serialNumber', 'licenseKey', 'status', 'assignedDate', 'expirationDate'));
+            } else {
+                Log::error('No serial number data found for ID: ' . $id);
+                return back()->with('error', 'No serial number data found for the provided ID.');
+            }
+        } else {
+            Log::error('Failed to get serial number data from API for ID: ' . $id);
+            return back()->with('error', 'Failed to get serial number data from API: ' . $response->body());
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred while retrieving serial number data: ' . $e->getMessage());
+        return back()->with('error', 'An error occurred: ' . $e->getMessage());
+    }
+}
+
 }

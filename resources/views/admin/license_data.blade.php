@@ -157,9 +157,64 @@
             .action-icon {
                 font-size: 1.2em; /* Adjust to your desired size */
             }
+            .modal {
+                display: none; /* Hidden by default */
+                position: fixed;
+                z-index: 1;
+                left: 0;
+                top: 1%;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+            }
+            .modal-backdrop {
+                display: none; /* Hides backdrop when modal is closed */
+            }
+
+            .modal-content {
+                background-color: white;
+                margin: 15% auto;
+                padding: 20px;
+                border: 1px solid #888;
+                width: 80%;
+                border-radius: 8px;
+            }
+            .modal-header .btn-close {
+                font-size: 1.5rem; /* Adjust icon size */
+                color: #0077FF;    /* Change the color of the icon */
+            }
+
+            .modal-header .btn-close:hover {
+                color: #ff0000; /* Change color on hover */
+            }
+
+            .close-btn {
+                color: #aaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+            }
+
+            .close-btn:hover,
+            .close-btn:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
  /* Responsive Layout for Mobile */
         @media (max-width: 768px) {
-                .col-6 {
+            .modal-content {
+                width: 80%; /* Ensure the modal takes up more space on smaller screens */
+                margin-top: 30% auto; /* Adjust the top margin */
+                padding: 15px; /* Reduce padding for mobile */
+            }
+
+            .modal-header .btn-close {
+                font-size: 1.2rem; /* Smaller close icon size for mobile */
+            }
+
+            .col-6 {
                     padding: 5px;
                 }
 
@@ -169,6 +224,18 @@
 
                 .btn, .input-group {
                     width: 100%;
+                }
+            }
+
+            @media screen and (max-width: 480px) {
+                .modal-content {
+                    width: 90%; /* Make modal even wider on very small screens */
+                    margin-top: 25% auto; /* Adjust margin */
+                    padding: 10px; /* Reduce padding further */
+                }
+
+                .modal-header .btn-close {
+                    font-size: 1rem; /* Further reduce the close button size */
                 }
             }
         </style>
@@ -201,8 +268,7 @@
                 <td>{{ isset($license['expired_date']) ? \Carbon\Carbon::parse($license['expired_date'])->format('d-m-Y H:i') : 'N/A' }}</td>
                 <td class="action-buttons text-center">
                     <div class="btn-group" role="group" aria-label="Action Buttons">
-                        <form action="{{ route('showmoredetailsadm', ['license_key' => $license['license_key']]) }}" method="POST" style="display:inline;">
-                            @csrf
+                        <form action="javascript:void(0);" onsubmit="showLicenseDetails('{{ $license['license_id'] }}')">
                             <button type="submit" class="btn btn-outline-primary btn-sm custom-outline-btn" title="More details">
                                 <i class="fa fa-info-circle action-icon"></i>
                             </button>
@@ -216,10 +282,139 @@
 </div>
     </div>
 </section>
+
+<!-- Modal for License Details -->
+<div class="modal fade" id="licenseDetailsModal" tabindex="-1" aria-labelledby="licenseDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="licenseDetailsModalLabel">License Details</h5>
+                {{-- <button type="button" id="closeModalBtn" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-times"></i>  <!-- Use 'X' icon instead of the minus -->
+                </button> --}}
+
+            </div>
+            <div class="modal-body">
+                <div id="licenseDetailsContent">
+                    <!-- Dynamic license details will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @endsection
 
 @section('script')
 <script>
+//    function showLicenseDetails(licenseId) {
+//     // Open the modal
+//     var myModal = new bootstrap.Modal(document.getElementById('licenseDetailsModal'), {
+//         keyboard: false
+//     });
+//     myModal.show();
+
+//     // Send an AJAX request to fetch the license details by ID
+//     fetch('/licenses/details', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'X-CSRF-TOKEN': '{{ csrf_token() }}'
+//         },
+//         body: JSON.stringify({ id: licenseId })
+//     })
+//     .then(response => response.json()) // Parse response as JSON
+//     .then(data => {
+//         // Log the full JSON response from the API
+//         console.log("API Response:", JSON.stringify(data, null, 2));
+
+//         if (data.success && data.data.length > 0) {
+//             // Access the first license in the data array
+//             const license = data.data[0];
+
+//             // Populate the modal with the license details
+//             document.getElementById('licenseDetailsContent').innerHTML = `
+//                 <p><strong>License Key:</strong> ****${license.license_key.slice(-4)}</p>
+//                 <p><strong>License Type:</strong> ${license.type ?? 'N/A'}</p>
+//                 <p><strong>Status:</strong> ${license.status ?? 'N/A'}</p>
+//                 <p><strong>Total Used:</strong> ${license.total_used ?? '0'}</p>
+//                 <p><strong>Created Date:</strong> ${new Date(license.created_date).toLocaleString()}</p>
+//                 <p><strong>Activated Date:</strong> ${license.activated_date ? new Date(license.activated_date).toLocaleString() : 'N/A'}</p>
+//                 <p><strong>Expired Date:</strong> ${license.expired_date ? new Date(license.expired_date).toLocaleString() : 'N/A'}</p>
+//             `;
+//         } else {
+//             // Display error if the license details are not found
+//             document.getElementById('licenseDetailsContent').innerHTML = `
+//                 <p class="text-danger">License details not found or unavailable.</p>
+//             `;
+//         }
+//     })
+//     .catch(error => {
+//         // Handle network or JavaScript errors
+//         console.error('Error fetching license details:', error);
+//         document.getElementById('licenseDetailsContent').innerHTML = `
+//             <p class="text-danger">An error occurred while fetching the details: ${error.message}</p>
+//         `;
+//     });
+// }
+function showLicenseDetails(licenseId) {
+    // Open the modal
+    var myModal = new bootstrap.Modal(document.getElementById('licenseDetailsModal'), {
+        keyboard: false
+    });
+    myModal.show(); // Show the modal
+
+    const apiUrl = 'http://192.168.1.24:14041/api/license/get_license_data_by_id.json';
+    const accessToken = '{{ session('access_token') }}'; // Access token from Blade session
+
+    // Send an AJAX request to fetch license details
+    fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Authorization': accessToken,
+            'x-api-key': '5af97cb7eed7a5a4cff3ed91698d2ffb',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: licenseId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data && data.data.length > 0) {
+            const license = data.data[0];
+
+            // Populate the modal with the license details
+            document.getElementById('licenseDetailsContent').innerHTML = `
+                <p><strong>License Key:</strong> ${license.license_key}</p>
+                <p><strong>License Type:</strong> ${license.type ?? 'N/A'}</p>
+                <p><strong>Status:</strong> ${license.status ?? 'N/A'}</p>
+                <p><strong>Total Used:</strong> ${license.total_used ?? '0'}</p>
+                <p><strong>Created Date:</strong> ${new Date(license.created_date).toLocaleString()}</p>
+                <p><strong>Activated Date:</strong> ${license.activated_date ? new Date(license.activated_date).toLocaleString() : 'N/A'}</p>
+                <p><strong>Expired Date:</strong> ${license.expired_date ? new Date(license.expired_date).toLocaleString() : 'N/A'}</p>
+            `;
+        } else {
+            document.getElementById('licenseDetailsContent').innerHTML = `
+                <p class="text-danger">License details not found or unavailable.</p>
+            `;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching license details:', error);
+        document.getElementById('licenseDetailsContent').innerHTML = `
+            <p class="text-danger">An error occurred while fetching the details: ${error.message}</p>
+        `;
+    });
+}
+
+// Close modal functionality (No need to refresh the page)
+document.getElementById('closeModalBtn').addEventListener('click', function() {
+    var myModal = new bootstrap.Modal(document.getElementById('licenseDetailsModal'));
+    myModal.hide(); // This will hide the modal
+});
+
+
+
     document.addEventListener('DOMContentLoaded', function() {
     var searchInput = document.getElementById('searchInput');
 
