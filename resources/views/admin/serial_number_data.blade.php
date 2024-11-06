@@ -157,9 +157,64 @@
             .action-icon {
                 font-size: 1.2em; /* Adjust to your desired size */
             }
+            .modal {
+                display: none; /* Hidden by default */
+                position: fixed;
+                z-index: 1;
+                left: 0;
+                top: 1%;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+            }
+            .modal-backdrop {
+                display: none; /* Hides backdrop when modal is closed */
+            }
+
+            .modal-content {
+                background-color: white;
+                margin: 15% auto;
+                padding: 20px;
+                border: 1px solid #888;
+                width: 80%;
+                border-radius: 8px;
+            }
+            .modal-header .btn-close {
+                font-size: 1.5rem; /* Adjust icon size */
+                color: #0077FF;    /* Change the color of the icon */
+            }
+
+            .modal-header .btn-close:hover {
+                color: #ff0000; /* Change color on hover */
+            }
+
+            .close-btn {
+                color: #aaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+            }
+
+            .close-btn:hover,
+            .close-btn:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
  /* Responsive Layout for Mobile */
         @media (max-width: 768px) {
-                .col-6 {
+            .modal-content {
+                width: 80%; /* Ensure the modal takes up more space on smaller screens */
+                margin-top: 30% auto; /* Adjust the top margin */
+                padding: 15px; /* Reduce padding for mobile */
+            }
+
+            .modal-header .btn-close {
+                font-size: 1.2rem; /* Smaller close icon size for mobile */
+            }
+
+            .col-6 {
                     padding: 5px;
                 }
 
@@ -169,6 +224,18 @@
 
                 .btn, .input-group {
                     width: 100%;
+                }
+            }
+
+            @media screen and (max-width: 480px) {
+                .modal-content {
+                    width: 90%; /* Make modal even wider on very small screens */
+                    margin-top: 25% auto; /* Adjust margin */
+                    padding: 10px; /* Reduce padding further */
+                }
+
+                .modal-header .btn-close {
+                    font-size: 1rem; /* Further reduce the close button size */
                 }
             }
         </style>
@@ -200,7 +267,7 @@
                         <div class="btn-group" role="group" aria-label="Action Buttons">
                             <form action="{{ route('showmoredetailsadm', ['serial_id' => $serialNumber['serial_id']]) }}" method="POST" style="display:inline;">
                                 @csrf
-                                <button type="submit" class="btn btn-outline-primary btn-sm custom-outline-btn" title="More details">
+                                <button type="button" class="btn btn-outline-primary btn-sm custom-outline-btn" title="More details" onclick="showActivityDetails('{{ $serialNumber['serial_id'] }}')">
                                     <i class="fa fa-info-circle action-icon"></i>
                                 </button>
                             </form>
@@ -213,10 +280,81 @@
 </div>
     </div>
 </section>
+<div class="modal fade" id="licenseDetailsModal" tabindex="-1" aria-labelledby="licenseDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="licenseDetailsModalLabel">Order Details</h5>
+                {{-- <button type="button" id="closeModalBtn" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-times"></i>  <!-- Use 'X' icon instead of the minus -->
+                </button> --}}
+
+            </div>
+            <div class="modal-body">
+                <div id="licenseDetailsContent">
+                    <!-- Dynamic license details will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('script')
 <script>
+    function showActivityDetails(serialId) {
+    // Open the modal
+    var myModal = new bootstrap.Modal(document.getElementById('licenseDetailsModal'), {
+        keyboard: false
+    });
+    myModal.show(); // Show the modal
+
+    const apiUrl = 'http://192.168.1.24:14041/api/license/get_serial_number_data_by_id.json';
+    const accessToken = '{{ session('access_token') }}'; // Access token from Blade session
+
+    // Send an AJAX request to fetch serial number details by serialId
+    fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Authorization': accessToken,
+            'x-api-key': '5af97cb7eed7a5a4cff3ed91698d2ffb',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: serialId }) // Passing serialId
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data && data.data.length > 0) {
+            const serial = data.data[0];
+
+            // Populate the modal with the serial number details
+            document.getElementById('licenseDetailsContent').innerHTML = `
+                <p><strong>Serial ID:</strong> ${serial.serial_id ?? 'N/A'}</p>
+                <p><strong>License ID:</strong> ${serial.license_id ?? 'N/A'}</p>
+                <p><strong>Activation Key:</strong> ${serial.activation_key ?? 'N/A'}</p>
+                <p><strong>Is Used:</strong> ${serial.is_used ? 'Yes' : 'No'}</p>
+                <p><strong>Activated Date:</strong> ${serial.activated_date ? new Date(serial.activated_date).toLocaleString() : 'N/A'}</p>
+                <p><strong>Created Date:</strong> ${serial.created_date ? new Date(serial.created_date).toLocaleString() : 'N/A'}</p>
+            `;
+        } else {
+            document.getElementById('licenseDetailsContent').innerHTML = `
+                <p class="text-danger">Serial number details not found or unavailable.</p>
+            `;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching serial number details:', error);
+        document.getElementById('licenseDetailsContent').innerHTML = `
+            <p class="text-danger">An error occurred while fetching the details: ${error.message}</p>
+        `;
+    });
+}
+
+// Close modal functionality (No need to refresh the page)
+document.getElementById('closeModalBtn').addEventListener('click', function() {
+    var myModal = new bootstrap.Modal(document.getElementById('licenseDetailsModal'));
+    myModal.hide(); // This will hide the modal
+});
     document.addEventListener('DOMContentLoaded', function() {
     var searchInput = document.getElementById('searchInput');
 
