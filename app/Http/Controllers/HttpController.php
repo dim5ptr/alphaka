@@ -2701,6 +2701,43 @@ public function showOrganizations()
     }
 }
 
+public function showDetailOrganization($id)
+{
+    // Call the external API to get the organization details
+    try {
+        // Fetch organization details and members
+        $organizationResponse = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->get(self::API_URL . '/sso/get_organization_detail.json', [
+            'id' => $id,
+        ]);
+
+        // Log the response for debugging
+        Log::info('Organization Response: ' . $organizationResponse->body());
+
+        // Check if the API response is successful
+        if ($organizationResponse->successful()) {
+            $data = $organizationResponse->json()['data']; // Get the organization data
+            $organization = [
+                'id' => $data['id'],
+                'organization_name' => $data['organization_name'],
+                'description' => $data['description'],
+            ];
+            $members = $data['members'] ?? []; // Get the members data, default to empty array if not found
+        } else {
+            Log::error('Failed to fetch organization ID ' . $id . ': ' . $organizationResponse->body());
+            return redirect()->back()->with('error', 'Organization not found.');
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred while fetching organization ID ' . $id . ': ' . $e->getMessage());
+        return redirect()->back()->with('error', 'An error occurred while fetching organization details.');
+    }
+
+    // Pass the organization and members data to the view
+    return view('admin.detailorganization', compact('organization', 'members'));
+}
+
 public function deactivateUser(Request $request)
 {
     $userId = session('user_id'); // Get the user_id directly from session

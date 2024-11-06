@@ -108,6 +108,9 @@ Route::middleware(['auth'])->group(function () {
 
         // Route to view organizations for admin
         Route::get('/admin/organizations', [HttpController::class, 'showOrganizations'])->name('admin.organizations');
+        // Route to view detail organization for admin
+        Route::get('/admin/detailorganization/{id}', [HttpController::class, 'showDetailOrganization'])->name('admin.detailorganizations');
+
 
         Route::get('/userrole', [HttpController::class, 'showuserrole'])->name('showuserrole');
         Route::post('/userrole', [HttpController::class, 'userrole'])->name('userrole');

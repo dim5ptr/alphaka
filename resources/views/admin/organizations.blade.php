@@ -1,8 +1,18 @@
 @extends('admin.layoutadm.layoutadm')
 
 @section('content')
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0" style="color: #0077FF; font-weight: bold;">Organization List</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container mt-4">
-    <pre class="mb-4 text-center"> </pre>
     <div class="row" id="organization-list">
         @foreach($organizations as $organization)
             <div class="col-md-4 mb-4">
@@ -20,7 +30,7 @@
                         <div class="members-count mb-2">
                             <p><i class="fa-solid fa-user-group"></i> {{ $organization['member_count'] }} Members</p>
                         </div>
-                        <a href="{{ route('showvieworganization', ['organization_name' => $organization['organization_name']]) }}" class="btn btn-primary">View Details</a>
+                        <a href="{{ route('admin.detailorganizations', ['id' => $organization['id'], 'organization_name' => $organization['organization_name']]) }}" class="btn btn-primary">View Details</a>
                     </div>
                 </div>
             </div>
