@@ -2521,6 +2521,7 @@ public function showmoredetailsadm(Request $request)
         return back()->with('error', 'An error occurred: ' . $e->getMessage());
     }
 }
+
 public function showProducts(Request $request)
 {
     try {
