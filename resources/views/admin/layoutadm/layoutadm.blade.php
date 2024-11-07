@@ -164,13 +164,13 @@
           </a>
         </li>
         <li class="nav-item">
-            <a href="{{ route('showLicense') }}" class="nav-link {{ Request::is('license') ? 'active' : '' }}">
+            <a href="{{ route('showLicense') }}" class="nav-link {{ Request::is('licenses') ? 'active' : '' }}">
               <i class="nav-icon fas fa-file-contract"></i>
               <p>License</p>
             </a>
         </li>
         <li class="nav-item">
-          <a href="{{ route('showtransaction') }}" class="nav-link {{ Request::is('transaction-history') ? 'active' : '' }}">
+          <a href="{{ route('showtransaction') }}" class="nav-link {{ Request::is('transactionhistory') ? 'active' : '' }}">
             <i class="nav-icon fas fa-history"></i>
             <p>Transaction History</p>
           </a>
@@ -195,6 +195,40 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
   $(document).ready(function() {
+    $('#logout').click(function() {
+      Swal.fire({
+        title: 'Logout',
+        text: 'Are you sure you want to logout?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, logout!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "{{ route('logout') }}";
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(function() {
+    // Check the stored state and set the sidebar accordingly
+    const sidebarState = localStorage.getItem('sidebarState');
+    if (sidebarState === 'closed') {
+      $('body').addClass('sidebar-collapse'); // Collapse the sidebar
+    }
+
+    // Toggle sidebar and save state
+    $('[data-widget="pushmenu"]').on('click', function() {
+      if ($('body').hasClass('sidebar-collapse')) {
+        localStorage.setItem('sidebarState', 'open');
+      } else {
+        localStorage.setItem('sidebarState', 'closed');
+      }
+    });
+
+    // Handle logout confirmation
     $('#logout').click(function() {
       Swal.fire({
         title: 'Logout',

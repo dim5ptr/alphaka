@@ -46,9 +46,14 @@
             overflow: hidden;
         }
 
+        .table-responsive {
+            overflow-x: auto; /* Enable horizontal scrolling */
+        }
+
         .table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 600px; /* Set a minimum width for the table */
         }
 
         .table thead {
@@ -62,7 +67,7 @@
             border-bottom: 1px solid #f0f0f0;
         }
 
-        .table tr:hover {
+        .table tbody tr:hover {
             background-color: #f1f1f1;
         }
 
@@ -76,6 +81,7 @@
             font-size: 0.9rem;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.3s ease;
+            margin-top: 2%;
         }
 
         .btn-primary:hover {
@@ -121,8 +127,8 @@
             border-radius: 8px;
             width: 90%;
             max-width: 500px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            animation: fadeIn 0.3s ;
+            box-shadow: 0  4px 10px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.3s;
         }
 
         @keyframes fadeIn {
@@ -164,26 +170,28 @@
     </div>
 
     <div class="table-container">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>User ID</th>
-                    <th>Full Name</th>
-                    <th>Email</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($members as $index => $member)
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
                     <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $member['user_id'] ?? 'N/A' }}</td>
-                        <td>{{ $member['full_name'] ?? 'N/A' }}</td>
-                        <td>{{ $member['email'] ?? 'N/A' }}</td>
+                        <th>No</th>
+                        <th>User ID</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach($members as $index => $member)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $member['user_id'] ?? 'N/A' }}</td>
+                            <td>{{ $member['full_name'] ?? 'N/A' }}</td>
+                            <td>{{ $member['email'] ?? 'N/A' }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <footer>
