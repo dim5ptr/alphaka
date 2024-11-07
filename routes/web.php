@@ -130,6 +130,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/editpersonaladm', [HttpController::class, 'editpersonaladm'])->name('editpersonaladm');
 
         Route::get('/securityadm', [HttpController::class, 'showsecurityadm'])->name('showsecurityadm');
+        Route::get('/editpassword',  [HttpController::class, 'showeditpassword'])->name('showeditpassword');
+        Route::post('/editpassword',  [HttpController::class, 'editpassword'])->name('editpassword');
+
         Route::get('/changepwadm',  [HttpController::class, 'showchangepwadm'])->name('showchangepwadm');
         Route::post('/changepwadm',  [HttpController::class, 'changepwadm'])->name('changepwadm');
 

@@ -18,12 +18,12 @@
                 </div>
                 <div class="data">
                     <p><span class="text-bold">Name:</span> {{ session('fullname') ?? 'N/A' }}</p>
-                    <p><span class="text-bold">Birthday:</span> {{ session('dateofbirth') ?? 'N/A' }}</p>
-                    <p><span class="text-bold">Gender:</span> {{ session('gender') === 0 ? 'Female' : 'Male' }}</p>
+                    <p><span class="text-bold">Birthday:</span> {{ session('dateofbirths') ?? 'N/A' }}</p>
+                    <p><span class="text-bold">Gender:</span> {{ session('genders') === 0 ? 'Female' : 'Male' }}</p>
                     <p><span class="text-bold">Email:</span> {{ session('emails') ?? 'N/A' }}</p>
-                    <p><span class="text-bold">Phone Number:</span> {{ session('phone') ?? 'N/A' }}</p>
+                    <p><span class="text-bold">Phone Number:</span> {{ session('phones') ?? 'N/A' }}</p>
                     <p><span class="text-bold">User Role:</span>
-                        {{ (int) session('user_role') === 1 ? 'PENGGUNA' : ((int) session('user_role') === 2 ? 'ADMIN' : 'PENGGUNA') }}
+                        {{ (int) session('user_role') === 1 ? 'PENGGUNA' : ((int) session('user_roles') === 2 ? 'ADMIN' : 'PENGGUNA') }}
                     </p>
                 </div>
                 <div class="button-group">

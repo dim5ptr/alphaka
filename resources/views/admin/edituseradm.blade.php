@@ -47,22 +47,22 @@
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
                         <input type="text" name="phone" id="phone" placeholder="Enter your Phone Number"
-                               class="form-control" value="{{ session('phone') }}" required>
+                               class="form-control" value="{{ session('phones') }}" required>
                     </div>
 
                     <!-- Date of Birth -->
                     <div class="form-group">
                         <label for="dateofbirth">Date of Birth</label>
                         <input type="date" name="dateofbirth" id="dateofbirth" class="form-control"
-                               value="{{ session('dateofbirth') }}" required>
+                               value="{{ session('dateofbirths') }}" required>
                     </div>
 
                     <!-- Gender -->
                     <div class="form-group">
                         <label for="gender">Gender</label>
                         <select id="gender" name="gender" class="form-control" required>
-                            <option value="0" {{ session('gender') == 0 ? 'selected' : '' }}>Female</option>
-                            <option value="1" {{ session('gender') == 1 ? 'selected' : '' }}>Male</option>
+                            <option value="0" {{ session('genders') == 0 ? 'selected' : '' }}>Female</option>
+                            <option value="1" {{ session('genders') == 1 ? 'selected' : '' }}>Male</option>
                         </select>
                     </div>
 

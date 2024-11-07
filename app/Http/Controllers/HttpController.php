@@ -1955,9 +1955,42 @@ public function activityUser(Request $request)
         return view ('admin.editpersonaladm');
     }
 
-    public function editpersonaladm()
+    public function editpersonaladm(Request $request)
     {
+ // Mengirim data ke endpoint menggunakan HTTP Client
+ $response = Http::withHeaders([
+    'x-api-key' => self::API_KEY,
+    'Authorization' => session('access_token'),
+])->post(self::API_URL . '/sso/update_personal_info.json', [
+    'fullname' => $request->fullname,
+    'username' => $request->username,
+    'birthday' => $request->dateofbirth,
+    'phone' => $request->phone,
+    'gender' => $request->gender == 0 ? 0 : 1,
+]);
 
+// Log the response status and body
+Log::info('API Response:', [
+    'status' => $response->status(),
+    'body' => $response->body()
+]);
+
+// Cek respon dari endpoint dan sesuaikan tindakan berikutnya
+if ($response->successful()) {
+    // Jika response berhasil, perbarui session dengan data yang baru
+    session([
+        'full_name' => $request->fullname,
+        'username' => $request->username,
+        'birthday' => $request->dateofbirth,
+        'gender' => $request->gender,
+        'phone' => $request->phone,
+    ]);
+
+    return redirect('/personaladm')->with('success', 'Data has been saved!');
+} else {
+    // Jika gagal, kembalikan pengguna dengan pesan error
+    return redirect()->back()->with('error', 'Failed to save data! Please try again.');
+}
     }
 
     public function showsecurityadm()
@@ -2503,11 +2536,11 @@ public function showmoredetailsadm(Request $request)
             session([
                 'user_id' => $userId,
                 'fullname' => $fullname,
-                'dateofbirth' => $dateofbirth,
-                'gender' => $gender,
+                'dateofbirths' => $dateofbirth,
+                'genders' => $gender,
                 'emails' => $emails,
-                'phone' => $phone,
-                'user_role' => $roles,
+                'phones' => $phone,
+                'user_roles' => $roles,
                 'user_name' => $user_name,
             ]);
 

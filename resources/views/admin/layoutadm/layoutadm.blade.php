@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
   <title>Management Organization</title>
 
   @yield('head')
@@ -117,10 +117,11 @@
     <ul class="navbar-nav ml-auto">
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
-          @if(session('profile_picture'))
-            <img src="{{ session('profile_picture') }}" class="rounded-circle" style="width: 30px; height: 30px;">
+
+          @if (session('profile_picture'))
+            <img id="profile_picture" src="{{ asset(session('profile_picture')) }}" alt="Foto Profil" class="rounded-circle" style="width: 30px; height: 30px;">
           @else
-            <i class="fas fa-user-circle"></i>
+            <img id="profile_picture" src="https://www.gravatar.com/avatar/{{ md5(strtolower(trim(session('email')))) }}?s=200&d=mp" alt="Foto Profil" class="rounded-circle" style="width: 30px; height: 30px;">
           @endif
           <span>{{ session('username') ? session('username') : session('email') }}</span>
         </a>
