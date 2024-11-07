@@ -145,7 +145,7 @@
         </a>
       </li>
       <li class="nav-item">
-          <a href="{{ route('admin.organizations') }}" class="nav-link {{ Request::is('admin/organizations*') ? 'active' : '' }}">
+          <a href="{{ route('admin.organizations') }}" class="nav-link {{ Request::is('admin/organizations*') || Request::is('admin/detailorganization/*') ? 'active' : '' }}">
               <i class="nav-icon fas fa-building"></i>
               <p>Organization List</p>
           </a>
