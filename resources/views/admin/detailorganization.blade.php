@@ -115,7 +115,7 @@
             left: 0;
             top: 0;
             width: 100%;
-            height: 100%;
+            height:  100%;
             overflow: auto;
             background-color: rgba(0, 0, 0, 0.7);
         }
@@ -127,7 +127,7 @@
             border-radius: 8px;
             width: 90%;
             max-width: 500px;
-            box-shadow: 0  4px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             animation: fadeIn 0.3s;
         }
 
@@ -178,6 +178,7 @@
                         <th>User ID</th>
                         <th>Full Name</th>
                         <th>Email</th>
+                        <th>Actions</th> <!-- New Action Column -->
                     </tr>
                 </thead>
                 <tbody>
@@ -187,6 +188,11 @@
                             <td>{{ $member['user_id'] ?? 'N/A' }}</td>
                             <td>{{ $member['full_name'] ?? 'N/A' }}</td>
                             <td>{{ $member['email'] ?? 'N/A' }}</td>
+                            <td>
+                            <a href="{{ route('showmoredetailsadm', ['email' => $member['email']]) }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
