@@ -2529,7 +2529,7 @@ public function showmoredetailsadm(Request $request)
             $gender = isset($userData['gender']) && $userData['gender'] === 0 ? 'Female' : 'Male';
             $phone = $userData['phone'] ?? 'N/A';
             $emails = $userData['email'] ?? 'N/A';
-            $roles = !empty($userData['roles']) ? implode(', ', array_filter($userData['roles'])) : 'N/A';
+            $roles = !empty($userData['role']['id_role']) ? $userData['role']['id_role'] : 'N/A';
             $userId = $userData['user_id'] ?? null;
             $user_name = $userData['username'] ?? 'N/A';
 
