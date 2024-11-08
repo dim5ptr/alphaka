@@ -98,14 +98,19 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('/moredetailsadm', [HttpController::class, 'showmoredetailsadm'])->name('showmoredetailsadm');
         Route::get('/moredetailsadm', [HttpController::class, 'showmoredetailsadm'])->name('showmoredetailsadm');
+        Route::post('/deactivateuser', [HttpController::class, 'deactivateUser'])->name('deactivateUser');
+
 
         Route::get('/products', [HttpController::class, 'showProducts'])->name('showProducts');
         Route::get('/productFolder', [HttpController::class, 'showProductsFolder'])->name('showProductsFolder');
         Route::get('/productsFeatures', [HttpController::class, 'showProductsFeatures'])->name('showProductsFeatures');
         Route::get('/productsRelease', [HttpController::class, 'showProductsRelease'])->name('showProductsRelease');
 
-        Route::get('/products/edit/{id}', [HttpController::class, 'showEditProductForm'])->name('showproductsedit');
-        Route::post('/products/update', [HttpController::class, 'updateProduct'])->name('updateProduct');
+        // Route to view organizations for admin
+        Route::get('/admin/organizations', [HttpController::class, 'showOrganizations'])->name('admin.organizations');
+        // Route to view detail organization for admin
+        Route::get('/admin/detailorganization/{id}', [HttpController::class, 'showDetailOrganization'])->name('admin.detailorganizations');
+
 
         Route::get('/userrole', [HttpController::class, 'showuserrole'])->name('showuserrole');
         Route::post('/userrole', [HttpController::class, 'userrole'])->name('userrole');
@@ -125,6 +130,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/editpersonaladm', [HttpController::class, 'editpersonaladm'])->name('editpersonaladm');
 
         Route::get('/securityadm', [HttpController::class, 'showsecurityadm'])->name('showsecurityadm');
+        Route::get('/editpassword',  [HttpController::class, 'showeditpassword'])->name('showeditpassword');
+        Route::post('/editpassword',  [HttpController::class, 'editpassword'])->name('editpassword');
+
         Route::get('/changepwadm',  [HttpController::class, 'showchangepwadm'])->name('showchangepwadm');
         Route::post('/changepwadm',  [HttpController::class, 'changepwadm'])->name('changepwadm');
 
@@ -132,6 +140,22 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/edituseradm', [HttpController::class, 'edituseradm'])->name('edituseradm');
 
         Route::get('/transactionhistory', [HttpController::class, 'showtransaction'])->name('showtransaction');
+        // web.php
+        Route::get('/licenses', [HttpController::class, 'getLicenseData'])->name('showLicense');
+        Route::post('/licenses/details', [HttpController::class, 'licensedetails'])->name('licensedetails');
+        Route::get('/licenses/details', [HttpController::class, 'licensedetails'])->name('licensedetails');
+        Route::get('/licenses/activity', [HttpController::class, 'getActivityData'])->name('getActivityData');
+        Route::post('/licenses/activity/details', [HttpController::class, 'activitydetails'])->name('activitydetails');
+        Route::get('/licenses/activity/details', [HttpController::class, 'activitydetails'])->name('activitydetails');
+        Route::get('/licenses/hooks', [HttpController::class, 'getHooksData'])->name('getHooksData');
+        Route::post('/licenses/hooks/details', [HttpController::class, 'hooksdetails'])->name('hooksdetails');
+        Route::get('/licenses/hooks/details', [HttpController::class, 'hooksdetails'])->name('hooksdetails');
+        Route::get('/licenses/orders', [HttpController::class, 'getLicenseOrderData'])->name('getLicenseOrderData');
+        Route::post('/licenses/orders/details', [HttpController::class, 'orderlicensedetails'])->name('orderlicensedetails');
+        Route::get('/licenses/orders/details', [HttpController::class, 'orderlicensedetails'])->name('orderlicensedetails');
+        Route::get('/licenses/serial-numbers', [HttpController::class, 'getSerialNumberData'])->name('getSerialNumberData');
+        Route::post('/licenses/serial-numbers/details', [HttpController::class, 'serialnumberdetails'])->name('serialnumberdetails');
+        Route::get('/licenses/serial-numbers/details', [HttpController::class, 'serialnumberdetails'])->name('serialnumberdetails');
     });
 
     Route::middleware(['role:1'])->group(function () {

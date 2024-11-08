@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
   <title>Management Organization</title>
 
   @yield('head')
@@ -117,10 +117,11 @@
     <ul class="navbar-nav ml-auto">
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
-          @if(session('profile_picture'))
-            <img src="{{ session('profile_picture') }}" class="rounded-circle" style="width: 30px; height: 30px;">
+
+          @if (session('profile_picture'))
+            <img id="profile_picture" src="{{ asset(session('profile_picture')) }}" alt="Foto Profil" class="rounded-circle" style="width: 30px; height: 30px;">
           @else
-            <i class="fas fa-user-circle"></i>
+            <img id="profile_picture" src="https://www.gravatar.com/avatar/{{ md5(strtolower(trim(session('email')))) }}?s=200&d=mp" alt="Foto Profil" class="rounded-circle" style="width: 30px; height: 30px;">
           @endif
           <span>{{ session('username') ? session('username') : session('email') }}</span>
         </a>
@@ -144,11 +145,12 @@
           <p>Dashboard</p>
         </a>
       </li>
-        <li class="nav-item">
-          <a href="{{ route('organization') }}" class="nav-link {{ Request::is('organization') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-building"></i>
-            <p>Organization List</p>
+      <li class="nav-item">
+          <a href="{{ route('admin.organizations') }}" class="nav-link {{ Request::is('admin/organizations*') || Request::is('admin/detailorganization/*') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-building"></i>
+              <p>Organization List</p>
           </a>
+      </li>
         </li>
         <li class="nav-item">
           <a href="{{ route('showuserdata') }}" class="nav-link {{ Request::is('userdata') ? 'active' : '' }}">
@@ -163,7 +165,13 @@
           </a>
         </li>
         <li class="nav-item">
-          <a href="{{ route('showtransaction') }}" class="nav-link {{ Request::is('transaction-history') ? 'active' : '' }}">
+            <a href="{{ route('showLicense') }}" class="nav-link {{ Request::is('licenses') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-file-contract"></i>
+              <p>License</p>
+            </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ route('showtransaction') }}" class="nav-link {{ Request::is('transactionhistory') ? 'active' : '' }}">
             <i class="nav-icon fas fa-history"></i>
             <p>Transaction History</p>
           </a>
@@ -180,6 +188,7 @@
 </div>
 
 <!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{{ asset('template/plugins/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('template/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
@@ -187,6 +196,40 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
   $(document).ready(function() {
+    $('#logout').click(function() {
+      Swal.fire({
+        title: 'Logout',
+        text: 'Are you sure you want to logout?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, logout!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "{{ route('logout') }}";
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(function() {
+    // Check the stored state and set the sidebar accordingly
+    const sidebarState = localStorage.getItem('sidebarState');
+    if (sidebarState === 'closed') {
+      $('body').addClass('sidebar-collapse'); // Collapse the sidebar
+    }
+
+    // Toggle sidebar and save state
+    $('[data-widget="pushmenu"]').on('click', function() {
+      if ($('body').hasClass('sidebar-collapse')) {
+        localStorage.setItem('sidebarState', 'open');
+      } else {
+        localStorage.setItem('sidebarState', 'closed');
+      }
+    });
+
+    // Handle logout confirmation
     $('#logout').click(function() {
       Swal.fire({
         title: 'Logout',

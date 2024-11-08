@@ -1,141 +1,217 @@
 @extends('admin.layoutadm.settingsadm')
-
 @section('content')
-    <!-- Header Konten (Header Halaman) -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <a href="{{ route('dashboardadm') }}">
-                <i class="fa-solid fa-house fa-xl" style="color: #7773d4;"></i>
-            </a>
-
-            <h1 class="m-0 text-center" style="color: #3200af;">Profile Admin</h1>
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
-
-    <!-- Konten Utama -->
+<div id="main-content" class="main-content">
     <section class="content">
-        <div class="container" style="margin-right: 20px;">
-            <div class="row">
-                <div class="col-md-5">
-                    <!-- Menampilkan foto profil -->
-                    <div class="card border border-0 shadow-none" >
-                        <div class="card-body"  style="background-color: #e1e5f8;">
-                            @if(session('profile_picture'))
-                                <form method="GET" action="{{ route('show.upload.profile.picture') }}" enctype="multipart/form-data" class="profile-upload-link">
-                                    @csrf
-                                    <button type="submit" class="btn btn-link">
-                                        <img id="profile_picture" src="{{ session('profile_picture') ? asset(session('profile_picture')) : '' }}" alt="Foto Profil" class="img-fluid rounded-circle profile-picture">
-                                        <div class="upload-text">Upload New Profile</div>
-                                    </button>
-                                </form>
-                            @else
-                                <form method="GET" action="{{ route('show.upload.profile.picture') }}" enctype="multipart/form-data" class="profile-upload-link">
-                                    @csrf
-                                    <button type="submit" class="btn btn-link">
-                                        <i class="fas fa-user-circle fa-5x rounded-circle profile-icon"></i>
-                                        <div class="upload-text"><small>Upload New Profile</small></div>
-                                    </button>
-                                </form>
-                            @endif
-
-                        </div>
-                    </div>
+        <div class="container-flex">
+            <div class="judul">
+                <h4>Account Details</h4>
+            </div>
+            <div class="profile-info">
+                <div class="foto">
+                    @if (session('profile_picture'))
+                        <img id="profile_picture" src="{{ asset(session('profile_picture')) }}" alt="Profile Picture" class="img-fluid rounded-circle profile-picture">
+                    @else
+                        <img id="profile_picture" src="https://www.gravatar.com/avatar/{{ md5(strtolower(trim(session('email')))) }}?s=200&d=mp" alt="Profile Picture" class="profile-picture">
+                    @endif
                 </div>
-                <div class="col-md-7" style="color: #3200af;">
-                    <div class="card">
-                        <div class="card-body">
-                            <p><span class="text-bold">Nama:</span></p>
-                            <p><span class="text-bold">User Name:</span></p>
-                            <p><span class="text-bold">Birthday:</span></p>
-                            <p><span class="text-bold">Gender:</span></p>
-                            <p><span class="text-bold">Email:</span></p>
-                            <p><span class="text-bold">Phone Number:</span></p>
-                            <a href="{{ route('showeditpersonaladm') }}">
-                                <button type="submit" class="btn rounded text-light" style="background-color: #7773d4;">
-                                    edit
-                                </button>
-                            </a>
-                        </div>
-                    </div>
+                <div class="data">
+                    <p><span class="text-bold">Name:</span> {{ session('full_name') ?? 'N/A' }}</p>
+                    <p><span class="text-bold">Birthday:</span> {{ session('dateofbirth') ?? 'N/A' }}</p>
+                    <p><span class="text-bold">Gender:</span> {{ session('gender') === 0 ? 'Female' : 'Male' }}</p>
+                    <p><span class="text-bold">Email:</span> {{ session('email') ?? 'N/A' }}</p>
+                    <p><span class="text-bold">Phone Number:</span> {{ session('phone') ?? 'N/A' }}</p>
+                    <p><span class="text-bold">User Role:</span>
+                        {{ (int) session('user_role') === 1 ? 'PENGGUNA' : ((int) session('user_role') === 2 ? 'ADMIN' : 'PENGGUNA') }}
+                    </p>
+                </div>
+                <div class="button-group">
+                    <a href="{{ route('showeditpersonaladm') }}" class="btn btn-primary custom-btn edit-btn" title="Edit Data">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    <button class="btn btn-danger custom-btn logout-btn" onclick="confirmLogout()">
+                        <i class="fa fa-sign-out-alt"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </section>
-    <!-- /.content -->
-@endsection
+</div>
 
-@section('script')
-    @parent {{-- Ini akan menambahkan script yang ada di parent --}}
+<style>
+html, body {
+    font-family: Arial, sans-serif;
+    color: #333;
+}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+.main-content {
+    width: 80%;
+    margin: 10% auto;
+    transition: margin-left .3s;
+}
 
-    <script>
-        // Check if there's a success message in the session, then show Toastr
-        $(document).ready(function() {
-            @if(session('success'))
-                toastr.success('{{ session('success') }}');
-            @endif
-            @if(session('error'))
-                toastr.success('{{ session('error') }}');
-            @endif
+.container-flex {
+    max-width: 100%;
+    background-color: white;
+    margin: 2% auto;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 2%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
 
-            var profilePictureFilename = localStorage.getItem('profile_picture');
-            // Jika ada nama file gambar, tambahkan path ke gambar dan atur sebagai sumber gambar
-            if (profilePictureFilename) {
-                var profilePicturePath = '{{ asset('profile_pictures') }}/' + profilePictureFilename;
-                document.getElementById('profile_picture').src = profilePicturePath;
-            }
-        });
-    </script>
+.judul {
+    width: 100%;
+    background-color: #0056b3;
+    color: white;
+    padding: 20px;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-    <style>
-        .profile-upload-link {
-            display: block;
-            text-align: center;
-            color: #808080;
-            position: relative;
+.judul h4 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 2% 5%;
+    width: 100%;
+    position: relative;
+}
+
+.foto {
+    flex-shrink: 0;
+    margin-right: 20px;
+}
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}
+
+.data {
+    flex: 1;
+}
+
+.data p {
+    font-size: 16px;
+    margin: 8px 0;
+    color: #555;
+}
+
+.text-bold {
+    font-weight: bold;
+}
+
+.button-group {
+    position: absolute; /* Position absolute to place the button */
+    bottom: 10px; /* Distance from the bottom */
+    right: 10px; /* Distance from the right */
+    display: flex;
+    gap: 10px; /* Add space between buttons */
+    margin-top: 15px; /* Add margin above buttons */
+}
+
+.custom-btn {
+    padding: 10px 15px; /* Consistent padding */
+    font-size: 14px; /* Adjust font size */
+    border-radius: 5px; /* Rounded corners */
+    display: inline-flex; /* Align icon and text properly */
+    align-items: center; /* Center icon vertically */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth hover effect */
+}
+
+.edit-btn {
+    background-color: #007bff; /* Primary color */
+    color: white;
+}
+
+.deactivate-btn {
+    background-color: #dc3545; /* Danger color */
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+.deactivate-btn:hover {
+    background-color: #c82333; /* Darker shade on hover */
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        width: 95%;
+    }
+
+    .profile-info {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .foto {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+
+    .profile-picture {
+        width: 120px;
+        height: 120px;
+    }
+
+    .data p {
+        font-size: 14px;
+    }
+}
+</style>
+<script>
+function confirmLogout() {
+    Swal.fire({
+        title: 'Logout',
+        text: 'Are you sure you want to log out?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, log out',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch("{{ route('logout') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Logged out successfully!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.href = "{{ route('login') }}"; // Redirect to login page
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Logout failed',
+                        text: 'An error occurred during logout.'
+                    });
+                }
+            })
+            .catch(error => console.error('Error:', error));
         }
-
-        .upload-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            display: none;
-            z-index: 1;
-        }
-
-        .profile-upload-link:hover .upload-text {
-            display: block;
-        }
-
-        .profile-upload-link:hover .profile-icon {
-            color: #3200af;
-        }
-
-        .profile-icon {
-            transition: color 0.3s ease;
-        }
-
-        .profile-picture {
-            width: 240px; /* Tentukan ukuran yang diinginkan untuk foto profil */
-            height: 240px; /* Tentukan ukuran yang diinginkan untuk foto profil */
-        }
-
-        /* Mengubah warna ikon menjadi abu-abu */
-        .btn-link .fas.fa-user-circle {
-            color: #808080; /* Kode warna abu-abu */
-        }
-        
-        .profile-icon {
-            font-size: 280px; /* Mengatur ukuran ikon */
-        }
-
-    </style>
+    });
+}
+</script>
 @endsection

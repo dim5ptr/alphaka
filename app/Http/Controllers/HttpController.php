@@ -1353,6 +1353,79 @@ public function organizationVerify(Request $request, $token)
 }
 
 
+    // public function showmoredetails(Request $request, $organization_name)
+    // {
+    //     Log::info('Attempting to show more details for organization: ' . $organization_name);
+
+    //     try {
+    //         // Get the email from the request
+    //         $email = $request->input('email');
+    //         Log::info('Email: ' . $email); // Log email value
+
+    //         // Get organization details using the showvieworganization function
+    //         $organization = $this->showvieworganization($organization_name)->getData()['organization'];
+
+    //         // Prepare the payload for the API request
+    //         $payload = ['email' => $email];
+
+    //         // Send the email to the external API to get user details
+    //         $response = Http::withHeaders([
+    //             'x-api-key' => self::API_KEY, // Ensure the API key is correct
+    //         ])->post(self::API_URL . '/sso/get_user_details_by_email.json', $payload); // Verify the endpoint URL
+
+    //         Log::info('API Request URL: ' . self::API_URL . '/sso/get_user_details_by_email.json');
+    //         Log::info('API Payload: ' . json_encode($payload));
+
+    //         // Log the status and body of the API response for further investigation
+    //         Log::info('API Response Status: ' . $response->status());
+    //         Log::info('API Response Body: ' . $response->body());
+
+    //         // Check if the API response is successful
+    //         if ($response->successful()) {
+    //             $userData = $response->json();
+
+    //             // Handle null values in the response by replacing them with 'N/A'
+    //             $fullname = $userData['full_name'] ?? 'N/A';
+    //             $dateofbirth = $userData['birthday'] ?? 'N/A';
+    //             $gender = $userData['gender'] ?? 'N/A';
+    //             $email = $userData['email'] ?? 'N/A';
+    //             $phone = $userData['phone'] ?? 'N/A';
+
+    //             // Handle roles, check for null values and empty array
+    //             if (isset($userData['roles']) && is_array($userData['roles']) && !empty($userData['roles'])) {
+    //                 // Filter out null roles and implode the array
+    //                 $roles = array_filter($userData['roles'], function ($role) {
+    //                     return $role !== null; // Remove null values
+    //                 });
+    //                 $user_role = !empty($roles) ? implode(', ', $roles) : 'N/A';
+    //             } else {
+    //                 $user_role = 'N/A'; // Set user_role to 'N/A' if roles array is empty or null
+    //             }
+
+    //             // Store user data in the session
+    //             session([
+    //                 'fullname' => $fullname,
+    //                 'dateofbirth' => $dateofbirth,
+    //                 'gender' => $gender,
+    //                 'email' => $email,
+    //                 'phone' => $phone,
+    //                 'user_role' => $user_role,
+    //             ]);
+
+    //             Log::info('User details retrieved successfully for: ' . $email);
+
+    //             // Return the view with the organization and organization name
+    //             return view('moredetails', compact('organization', 'organization_name'));
+    //         } else {
+    //             // Handle non-200 responses (e.g., 404 or 400)
+    //             Log::error('Failed to get user details from API. Status: ' . $response->status());
+    //             return back()->with('error', 'Failed to get user details from API: ' . $response->body());
+    //         }
+    //     } catch (\Exception $e) {
+    //         Log::error('Exception occurred while showing more details: ' . $e->getMessage());
+    //         return back()->with('error', $e->getMessage());
+    //     }
+    // }
     public function showmoredetails(Request $request, $organization_name)
     {
         Log::info('Attempting to show more details for organization: ' . $organization_name);
@@ -1360,7 +1433,7 @@ public function organizationVerify(Request $request, $token)
         try {
             // Get the email from the request
             $email = $request->input('email');
-            Log::info('Email: ' . $email); // Log email value
+            Log::info('Email from request: ' . $email); // Log email value from request
 
             // Get organization details using the showvieworganization function
             $organization = $this->showvieworganization($organization_name)->getData()['organization'];
@@ -1382,13 +1455,16 @@ public function organizationVerify(Request $request, $token)
 
             // Check if the API response is successful
             if ($response->successful()) {
-                $userData = $response->json();
+                $userData = $response->json()['data']; // Access data correctly
+
+                // Log the user data retrieved
+                Log::info('User data from API:', $userData);
 
                 // Handle null values in the response by replacing them with 'N/A'
                 $fullname = $userData['full_name'] ?? 'N/A';
                 $dateofbirth = $userData['birthday'] ?? 'N/A';
                 $gender = $userData['gender'] ?? 'N/A';
-                $email = $userData['email'] ?? 'N/A';
+                $email = $userData['email'] ?? 'N/A'; // Update email from API response
                 $phone = $userData['phone'] ?? 'N/A';
 
                 // Handle roles, check for null values and empty array
@@ -1401,6 +1477,9 @@ public function organizationVerify(Request $request, $token)
                 } else {
                     $user_role = 'N/A'; // Set user_role to 'N/A' if roles array is empty or null
                 }
+
+                // Log each value before storing it in the session
+                Log::info("Extracted values - Fullname: {$fullname}, Email: {$email}, Date of Birth: {$dateofbirth}, Gender: {$gender}, Phone: {$phone}, Roles: {$user_role}");
 
                 // Store user data in the session
                 session([
@@ -1876,9 +1955,42 @@ public function activityUser(Request $request)
         return view ('admin.editpersonaladm');
     }
 
-    public function editpersonaladm()
+    public function editpersonaladm(Request $request)
     {
+ // Mengirim data ke endpoint menggunakan HTTP Client
+ $response = Http::withHeaders([
+    'x-api-key' => self::API_KEY,
+    'Authorization' => session('access_token'),
+])->post(self::API_URL . '/sso/update_personal_info.json', [
+    'fullname' => $request->fullname,
+    'username' => $request->username,
+    'birthday' => $request->dateofbirth,
+    'phone' => $request->phone,
+    'gender' => $request->gender == 0 ? 0 : 1,
+]);
 
+// Log the response status and body
+Log::info('API Response:', [
+    'status' => $response->status(),
+    'body' => $response->body()
+]);
+
+// Cek respon dari endpoint dan sesuaikan tindakan berikutnya
+if ($response->successful()) {
+    // Jika response berhasil, perbarui session dengan data yang baru
+    session([
+        'full_name' => $request->fullname,
+        'username' => $request->username,
+        'birthday' => $request->dateofbirth,
+        'gender' => $request->gender,
+        'phone' => $request->phone,
+    ]);
+
+    return redirect('/personaladm')->with('success', 'Data has been saved!');
+} else {
+    // Jika gagal, kembalikan pengguna dengan pesan error
+    return redirect()->back()->with('error', 'Failed to save data! Please try again.');
+}
     }
 
     public function showsecurityadm()
@@ -2258,171 +2370,160 @@ public function getMemberToken(Request $request)
 public function showuserdata(Request $request)
 {
     try {
-        // Make the GET request to the external API
+        Log::info('Attempting to fetch user data.');
+
         $response = Http::withHeaders([
-                    'Authorization' => session('access_token'),
-                    'x-api-key' => self::API_KEY, // Ensure API_KEY is set in your .env file
-                ])->get(self::API_URL .  '/sso/get_user_data.json');
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->get(self::API_URL . '/sso/get_user_data.json');
+
+        Log::info('API Response Status: ' . $response->status());
 
         if ($response->successful()) {
-            return view('admin.datapengguna', [
-                'users' => $response->json()['data']
-            ]);
+            Log::info('User data retrieved successfully.');
+            return view('admin.datapengguna', ['users' => $response->json()['data']]);
         }
 
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to retrieve user data.',
-        ], $response->status());
+        Log::error('Failed to retrieve user data.');
+        return response()->json(['success' => false, 'message' => 'Failed to retrieve user data.'], $response->status());
 
     } catch (\Exception $e) {
+        Log::error('Error retrieving user data: ' . $e->getMessage());
         return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
     }
 }
-// public function showuserdata()
-// {
-//     $response = Http::withHeaders([
-//         'Authorization' => session('access_token'),
-//         'x-api-key' => self::API_KEY, // Ensure API_KEY is set in your .env file
-//     ])->get(self::API_URL .  '/sso/get_user_data.json');
-
-//     $users = $response->json();
-
-//     return view ('admin.datapengguna');
-// }
 
 public function showuserrole()
 {
-    // Make API request to get role data
+    Log::info('Fetching user roles data.');
+
     $response = Http::withHeaders([
         'x-api-key' => self::API_KEY,
         'Authorization' => session('access_token'),
     ])->get(self::API_URL . '/sso/get_role_data.json');
 
-    // Check if the request was successful
+    Log::info('API Response Status: ' . $response->status());
+
     if ($response->successful()) {
-        // Parse the JSON response and get roles data
-        $roles = $response->json('roles'); // Ensure the response contains a 'roles' key
+        Log::info('User roles data retrieved successfully.');
+        $roles = $response->json('roles');
         return view('admin.userrole', compact('roles'));
     } else {
-        // Handle API error
+        Log::error('Failed to fetch roles data.');
         return back()->withErrors('Failed to fetch roles data.');
     }
 }
+
 public function showcreaterole()
-    {
-        return view('admin.createrole'); // Return the view for creating a role
-    }
+{
+    Log::info('Showing create role view.');
+    return view('admin.createrole');
+}
+
 public function createrole(Request $request)
 {
-    // Validate the incoming request
+    Log::info('Attempting to create a new role.');
+
     $request->validate([
         'role' => 'required|string|max:255',
     ]);
 
-    // Prepare API request to create the role
     $response = Http::withHeaders([
-        'x-api-key' => self::API_KEY, // Set your API key in the .env file
+        'x-api-key' => self::API_KEY,
         'Authorization' => session('access_token'),
     ])->post(self::API_URL . '/sso/create_role.json', [
         'role' => $request->input('role'),
     ]);
 
-    // Check the response status
+    Log::info('API Response Status: ' . $response->status());
+
     if ($response->successful()) {
+        Log::info('Role created successfully.');
         return redirect()->route('showuserrole')->with('success', 'Role created successfully!');
     }
 
+    Log::error('Failed to create role.');
     return redirect()->route('showcreaterole')->with('error', 'Failed to create role.');
 }
+
 public function showupdaterole($idrole)
 {
-    // Fetch the role data from the API
+    Log::info('Fetching role data for editing. Role ID: ' . $idrole);
+
     $response = Http::withHeaders([
         'x-api-key' => self::API_KEY,
         'Authorization' => session('access_token'),
     ])->get(self::API_URL . '/sso/get_role_by_id.json', ['id' => $idrole]);
 
-    // Check if the response was successful
+    Log::info('API Response Status: ' . $response->status());
+
     if ($response->successful()) {
+        Log::info('Role data retrieved successfully for Role ID: ' . $idrole);
         $role = $response->json();
-
-        // Log the response for debugging
-        Log::info('Role data:', $role);
-
         return view('admin.editrole', ['role' => $role]);
     }
 
+    Log::error('Failed to fetch role data for Role ID: ' . $idrole);
     return redirect()->route('showuserrole')->with('error', 'Failed to fetch role data.');
 }
 
 public function updateRole(Request $request)
 {
-    // Validate the incoming request
+    Log::info('Attempting to update role.');
+
     $request->validate([
         'id' => 'required|integer',
         'role_name' => 'required|string|max:255',
     ]);
 
-    // Prepare data for API
     $data = [
         'id' => $request->id,
         'role_name' => $request->role_name,
     ];
 
-    // Log current session data before the API call
-    Log::info('Session before role update:', [
-        'role_id' => $request->id,
-        'role_name' => $request->role_name,
-    ]);
+    Log::info('Updating role with data:', $data);
 
-    // Send API request
     $response = Http::withHeaders([
         'Authorization' => session('access_token'),
         'x-api-key' => self::API_KEY,
     ])->post(self::API_URL . '/sso/update_role.json', $data);
 
-    // Handle response
+    Log::info('API Response Status: ' . $response->status());
+
     if ($response->successful()) {
+        Log::info('Role updated successfully.');
         return redirect()->route('showuserrole')->with('success', 'Role updated successfully!');
     }
 
+    Log::error('Failed to update role.');
     return redirect()->route('showupdaterole', ['idrole' => $request->id])->with('error', 'Failed to update role.');
 }
 
 public function showmoredetailsadm(Request $request)
 {
-    Log::info('Attempting to show more details.');
+    Log::info('Attempting to show more user details.');
 
-    // Validate email input to ensure it's provided and is a valid email format
     $request->validate([
         'email' => 'required|email'
     ]);
 
     $email = $request->input('email');
-    Log::info('Email: ' . $email);
+    Log::info('Retrieving details for email: ' . $email);
 
     try {
-        // Prepare the payload for the API request
         $payload = ['email' => $email];
 
-        // Send the email to the external API to get user details
         $response = Http::withHeaders([
-            'x-api-key' => self::API_KEY // Ensure API key is accurate
+            'x-api-key' => self::API_KEY
         ])->post(self::API_URL  . '/sso/get_user_details_by_email.json', $payload);
 
-        Log::info('API Request URL: ' . env('API_URL') . '/sso/get_user_details_by_email.json');
-        Log::info('API Payload: ' . json_encode($payload));
-
-        // Log the status and body of the API response
         Log::info('API Response Status: ' . $response->status());
         Log::info('API Response Body: ' . $response->body());
 
-        // Check if the API response is successful
         if ($response->successful()) {
-            $userData = $response->json();
+            $userData = $response->json()['data'];
+            Log::info('User details retrieved successfully for: ' . $email);
 
-            // Extract user details, handling null values with 'N/A'
             $fullname = $userData['full_name'] ?? 'N/A';
             $dateofbirth = $userData['birthday'] ?? 'N/A';
             $gender = isset($userData['gender']) && $userData['gender'] === 0 ? 'Female' : 'Male';
@@ -2430,30 +2531,26 @@ public function showmoredetailsadm(Request $request)
             $emails = $userData['email'] ?? 'N/A';
             $roles = !empty($userData['roles']) ? implode(', ', array_filter($userData['roles'])) : 'N/A';
             $userId = $userData['user_id'] ?? null;
-            $user_name = $userData['username'] ?? 'N/A'; // Get username from response
+            $user_name = $userData['username'] ?? 'N/A';
 
-            // Store the data in session
             session([
                 'user_id' => $userId,
                 'fullname' => $fullname,
-                'dateofbirth' => $dateofbirth,
-                'gender' => $gender,
+                'dateofbirths' => $dateofbirth,
+                'genders' => $gender,
                 'emails' => $emails,
-                'phone' => $phone,
-                'user_role' => $roles,
+                'phones' => $phone,
+                'user_roles' => $roles,
                 'user_name' => $user_name,
             ]);
 
-            Log::info('User details retrieved successfully for: ' . $email);
-
-            return view('admin.moredetails');
+            return view('admin.moredetails', compact('fullname', 'dateofbirth', 'gender', 'phone', 'emails', 'roles', 'user_name'));
         } else {
-            // Handle non-200 responses
-            Log::error('Failed to get user details from API. Status: ' . $response->status());
+            Log::error('Failed to get user details from API for email: ' . $email);
             return back()->with('error', 'Failed to get user details from API: ' . $response->body());
         }
     } catch (\Exception $e) {
-        Log::error('Exception occurred while showing more details: ' . $e->getMessage());
+        Log::error('Exception occurred while retrieving user details: ' . $e->getMessage());
         return back()->with('error', 'An error occurred: ' . $e->getMessage());
     }
 }
@@ -2698,6 +2795,520 @@ public function showTransaction(Request $request)
 
     } catch (\Exception $e) {
         return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
+    }
+}
+
+public function showOrganizations()
+{
+    Log::info('Attempting to fetch organizations for admin view.');
+
+    try {
+        // API call to list organizations by owner
+        $ownerResponse = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->get(self::API_URL . '/sso/list_organization_by_owner.json');
+
+        // API call to list organizations by member
+        $memberResponse = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->post(self::API_URL . '/sso/list_all_organizations.json');
+
+        // Check if both API responses are successful
+        if ($ownerResponse->successful() && $memberResponse->successful()) {
+            // Parse the responses
+            $ownerData = $ownerResponse->json();
+            $memberData = $memberResponse->json();
+
+            // Get the organizations from both responses
+            $ownerOrganizations = $ownerData['data']['organizations'] ?? [];
+            $memberOrganizations = $memberData['data']['organizations'] ?? [];
+
+            // Combine both organizations
+            $organizations = array_merge($ownerOrganizations, $memberOrganizations);
+
+            // Log the number of organizations fetched
+            Log::info('Fetched organizations count: ' . count($organizations));
+
+            // Prepare the data for the view
+            return view('admin.organizations', compact('organizations'));
+        } else {
+            // Log error if either API fails
+            Log::error('Failed to get organization list. Owner Response: ' . $ownerResponse->body() . ', Member Response: ' . $memberResponse->body());
+            return back()->with('error', 'Failed to get organization list. Please try again.');
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred while fetching organizations: ' . $e->getMessage());
+        return back()->with('error', $e->getMessage());
+    }
+}
+
+public function showDetailOrganization($id)
+{
+    // Call the external API to get the organization details
+    try {
+        // Fetch organization details and members
+        $organizationResponse = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->get(self::API_URL . '/sso/get_organization_detail.json', [
+            'id' => $id,
+        ]);
+
+        // Log the response for debugging
+        Log::info('Organization Response: ' . $organizationResponse->body());
+
+        // Check if the API response is successful
+        if ($organizationResponse->successful()) {
+            $data = $organizationResponse->json()['data']; // Get the organization data
+            $organization = [
+                'id' => $data['id'],
+                'organization_name' => $data['organization_name'],
+                'description' => $data['description'],
+            ];
+            $members = $data['members'] ?? []; // Get the members data, default to empty array if not found
+        } else {
+            Log::error('Failed to fetch organization ID ' . $id . ': ' . $organizationResponse->body());
+            return redirect()->back()->with('error', 'Organization not found.');
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred while fetching organization ID ' . $id . ': ' . $e->getMessage());
+        return redirect()->back()->with('error', 'An error occurred while fetching organization details.');
+    }
+
+    // Pass the organization and members data to the view
+    return view('admin.detailorganization', compact('organization', 'members'));
+}
+
+public function deactivateUser(Request $request)
+{
+    $userId = session('user_id'); // Get the user_id directly from session
+
+    if (!$userId) {
+        return response()->json(['success' => false, 'message' => 'User ID not found in session.']);
+    }
+
+    try {
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->post(self::API_URL . '/sso/deactive_user.json', [
+            'user_id' => $userId,
+        ]);
+
+        Log::info('Deactivation API Response: ' . $response->body());
+
+        if ($response->successful()) {
+            return response()->json([
+                'success' => true,
+                'redirect_url' => route('showuserdata'), // Return redirect URL
+                'message' => 'User deactivated successfully.'
+            ]);
+        } else {
+            return back()->with('error', 'Failed to deactivate user. ' . $response->body());
+        }
+    } catch (\Exception $e) {
+        Log::error('Error deactivating user: ' . $e->getMessage());
+        return back()->with('error', 'An error occurred: ' . $e->getMessage());
+    }
+}
+
+    public function getLicenseData(Request $request)
+    {
+        return $this->fetchData('license/get_license_data.json', 'admin.license_data');
+    }
+
+    /**
+     * Fetch and display Activity Data.
+     */
+    public function getActivityData(Request $request)
+    {
+        return $this->fetchData('license/get_activity_data.json', 'admin.activity_data');
+    }
+
+    /**
+     * Fetch and display Hooks Data.
+     */
+    public function getHooksData(Request $request)
+    {
+        return $this->fetchData('license/get_hooks_data.json', 'admin.hooks_data');
+    }
+
+    /**
+     * Fetch and display License Order Data.
+     */
+    public function getLicenseOrderData(Request $request)
+    {
+        return $this->fetchData('license/get_license_order_data.json', 'admin.license_order_data');
+    }
+
+    /**
+     * Fetch and display Serial Number Data.
+     */
+    public function getSerialNumberData(Request $request)
+    {
+        return $this->fetchData('license/get_serial_number_data.json', 'admin.serial_number_data');
+    }
+
+    public function fetchData($endpoint, $viewName)
+    {
+        try {
+            // Make the GET request to the external API
+            $response = Http::withHeaders([
+                'Authorization' => session('access_token'), // API token if needed
+                'x-api-key' => self::API_KEY,
+            ])->get(self::API_URL . '/' . $endpoint);
+
+            // Log the API response for debugging
+            Log::info('API Response for ' . $endpoint . ': ' . $response->body());
+
+            // Check if the response was successful
+            if ($response->successful()) {
+                $data = $response->json()['data'] ?? [];
+                return view($viewName, ['data' => $data]);
+            }
+
+            // Log and return an error response if the API request failed
+            Log::error('API request failed: ' . $response->body());
+            return response()->json(['success' => false, 'message' => 'Failed to retrieve data.'], $response->status());
+
+        } catch (\Exception $e) {
+            // Log and return an error response if an exception occurred
+            Log::error('Error retrieving data: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
+        }
+    }
+
+    public function licensedetails(Request $request)
+{
+    Log::info('Attempting to show more license details.');
+
+    // Validate the request to ensure an 'id' is provided
+    $request->validate([
+        'id' => 'required|integer'
+    ]);
+
+    $id = $request->input('id');  // Get the license ID from the request
+    Log::info('Retrieving details for license ID: ' . $id);
+
+    try {
+        // Prepare the payload for the API request
+        $payload = [
+            'id' => $id
+        ];
+
+        // Send the POST request to the new API endpoint
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),  // Static authorization token
+            'x-api-key' => self::API_KEY  // API key from config
+        ])->post(self::API_URL . '/license/get_license_data_by_id.json', $payload);
+
+        Log::info('API Response Status: ' . $response->status());
+        Log::info('API Response Body: ' . $response->body());
+
+        if ($response->successful()) {
+            // Assuming the API response contains a 'data' field with license details
+            $licenseData = $response->json()['data'] ?? null;
+
+            // For debugging purposes
+            dd($licenseData);  // Dump the raw API response for testing
+
+            if ($licenseData) {
+                Log::info('License details retrieved successfully for ID: ' . $id);
+
+                // Extract license details
+                $licenseKey = $licenseData['license_key'] ?? 'N/A';
+                $licenseType = $licenseData['license_type'] ?? 'N/A';
+                $createdDate = $licenseData['created_date'] ?? 'N/A';
+                $activatedDate = $licenseData['activated_date'] ?? 'N/A';
+                $expiredDate = $licenseData['expired_date'] ?? 'N/A';
+                $notes = $licenseData['notes'] ?? 'N/A';
+
+                // Store license details in the session (if necessary)
+                session([
+                    'license_key' => $licenseKey,
+                    'license_type' => $licenseType,
+                    'created_date' => $createdDate,
+                    'activated_date' => $activatedDate,
+                    'expired_date' => $expiredDate,
+                    'notes' => $notes,
+                ]);
+
+                // Return the view with license details
+                return view('admin.license_data', compact('licenseKey', 'licenseType', 'createdDate', 'activatedDate', 'expiredDate', 'notes'));
+            } else {
+                Log::error('No license data found for ID: ' . $id);
+                return back()->with('error', 'No license data found for the provided ID.');
+            }
+        } else {
+            Log::error('Failed to get license details from API for ID: ' . $id);
+            return back()->with('error', 'Failed to get license details from API: ' . $response->body());
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred while retrieving license details: ' . $e->getMessage());
+        return back()->with('error', 'An error occurred: ' . $e->getMessage());
+    }
+}
+
+
+public function activitydetails(Request $request)
+{
+    Log::info('Attempting to show more activity details.');
+
+    // Validate the request to ensure an 'id' is provided
+    $request->validate([
+        'id' => 'required|integer'
+    ]);
+
+    $id = $request->input('id');  // Get the activity ID from the request
+    Log::info('Retrieving details for activity ID: ' . $id);
+
+    try {
+        // Prepare the payload for the API request
+        $payload = [
+            'id' => $id
+        ];
+
+        // Send the POST request to the new API endpoint
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),  // Static authorization token
+            'x-api-key' => self::API_KEY  // API key from config
+        ])->post(self::API_URL . '/license/get_activity_data_by_id.json', $payload);
+
+        Log::info('API Response Status: ' . $response->status());
+        Log::info('API Response Body: ' . $response->body());
+
+        if ($response->successful()) {
+            // Assuming the API response contains a 'data' field with activity details
+            $activityData = $response->json()['data'] ?? null;
+            if ($activityData) {
+                Log::info('Activity details retrieved successfully for ID: ' . $id);
+
+                // Extract activity details
+                $activityName = $activityData['activity_name'] ?? 'N/A';
+                $activityType = $activityData['activity_type'] ?? 'N/A';
+                $startDate = $activityData['start_date'] ?? 'N/A';
+                $endDate = $activityData['end_date'] ?? 'N/A';
+                $description = $activityData['description'] ?? 'N/A';
+
+                // Store activity details in the session (if necessary)
+                session([
+                    'activity_name' => $activityName,
+                    'activity_type' => $activityType,
+                    'start_date' => $startDate,
+                    'end_date' => $endDate,
+                    'description' => $description,
+                ]);
+
+                // Return the view with activity details
+                return view('admin.activity_data', compact('activityName', 'activityType', 'startDate', 'endDate', 'description'));
+            } else {
+                Log::error('No activity data found for ID: ' . $id);
+                return back()->with('error', 'No activity data found for the provided ID.');
+            }
+        } else {
+            Log::error('Failed to get activity details from API for ID: ' . $id);
+            return back()->with('error', 'Failed to get activity details from API: ' . $response->body());
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred while retrieving activity details: ' . $e->getMessage());
+        return back()->with('error', 'An error occurred: ' . $e->getMessage());
+    }
+}
+
+public function hooksdetails(Request $request)
+{
+    Log::info('Attempting to show more hooks data.');
+
+    // Validate the request to ensure an 'id' is provided
+    $request->validate([
+        'id' => 'required|integer'
+    ]);
+
+    $id = $request->input('id');  // Get the hooks data ID from the request
+    Log::info('Retrieving details for hooks data ID: ' . $id);
+
+    try {
+        // Prepare the payload for the API request
+        $payload = [
+            'id' => $id
+        ];
+
+        // Send the POST request to the new API endpoint
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),  // Static authorization token
+            'x-api-key' => self::API_KEY  // API key from config
+        ])->post(self::API_URL . '/license/get_hooks_data_by_id.json', $payload);
+
+        Log::info('API Response Status: ' . $response->status());
+        Log::info('API Response Body: ' . $response->body());
+
+        if ($response->successful()) {
+            // Assuming the API response contains a 'data' field with hooks details
+            $hooksData = $response->json()['data'] ?? null;
+            if ($hooksData) {
+                Log::info('Hooks data retrieved successfully for ID: ' . $id);
+
+                // Extract hooks data details
+                $hookName = $hooksData['hook_name'] ?? 'N/A';
+                $hookType = $hooksData['hook_type'] ?? 'N/A';
+                $hookStatus = $hooksData['hook_status'] ?? 'N/A';
+                $createdAt = $hooksData['created_at'] ?? 'N/A';
+                $updatedAt = $hooksData['updated_at'] ?? 'N/A';
+
+                // Store hooks data details in the session (if necessary)
+                session([
+                    'hook_name' => $hookName,
+                    'hook_type' => $hookType,
+                    'hook_status' => $hookStatus,
+                    'created_at' => $createdAt,
+                    'updated_at' => $updatedAt,
+                ]);
+
+                // Return the view with hooks data details
+                return view('admin.hooks_data', compact('hookName', 'hookType', 'hookStatus', 'createdAt', 'updatedAt'));
+            } else {
+                Log::error('No hooks data found for ID: ' . $id);
+                return back()->with('error', 'No hooks data found for the provided ID.');
+            }
+        } else {
+            Log::error('Failed to get hooks data from API for ID: ' . $id);
+            return back()->with('error', 'Failed to get hooks data from API: ' . $response->body());
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred while retrieving hooks data: ' . $e->getMessage());
+        return back()->with('error', 'An error occurred: ' . $e->getMessage());
+    }
+}
+
+public function orderlicensedetails(Request $request)
+{
+    Log::info('Attempting to show more license order data.');
+
+    // Validate the request to ensure an 'id' is provided
+    $request->validate([
+        'id' => 'required|integer'
+    ]);
+
+    $id = $request->input('id');  // Get the license order ID from the request
+    Log::info('Retrieving license order data for ID: ' . $id);
+
+    try {
+        // Prepare the payload for the API request
+        $payload = [
+            'id' => $id
+        ];
+
+        // Send the POST request to the new API endpoint
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),  // Static authorization token
+            'x-api-key' => self::API_KEY  // API key from config
+        ])->post(self::API_URL . '/license/get_license_order_data_by_id.json', $payload);
+
+        Log::info('API Response Status: ' . $response->status());
+        Log::info('API Response Body: ' . $response->body());
+
+        if ($response->successful()) {
+            // Assuming the API response contains a 'data' field with license order details
+            $licenseOrderData = $response->json()['data'] ?? null;
+            if ($licenseOrderData) {
+                Log::info('License order data retrieved successfully for ID: ' . $id);
+
+                // Extract relevant license order data details
+                $orderNumber = $licenseOrderData['order_number'] ?? 'N/A';
+                $licenseKey = $licenseOrderData['license_key'] ?? 'N/A';
+                $orderStatus = $licenseOrderData['order_status'] ?? 'N/A';
+                $purchaseDate = $licenseOrderData['purchase_date'] ?? 'N/A';
+                $expirationDate = $licenseOrderData['expiration_date'] ?? 'N/A';
+
+                // Store license order data in the session (if necessary)
+                session([
+                    'order_number' => $orderNumber,
+                    'license_key' => $licenseKey,
+                    'order_status' => $orderStatus,
+                    'purchase_date' => $purchaseDate,
+                    'expiration_date' => $expirationDate,
+                ]);
+
+                // Return the view with license order data details
+                return view('admin.license_order_data', compact('orderNumber', 'licenseKey', 'orderStatus', 'purchaseDate', 'expirationDate'));
+            } else {
+                Log::error('No license order data found for ID: ' . $id);
+                return back()->with('error', 'No license order data found for the provided ID.');
+            }
+        } else {
+            Log::error('Failed to get license order data from API for ID: ' . $id);
+            return back()->with('error', 'Failed to get license order data from API: ' . $response->body());
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred while retrieving license order data: ' . $e->getMessage());
+        return back()->with('error', 'An error occurred: ' . $e->getMessage());
+    }
+}
+
+public function serialnumberdetails(Request $request)
+{
+    Log::info('Attempting to show more serial number data.');
+
+    // Validate the request to ensure an 'id' is provided
+    $request->validate([
+        'id' => 'required|integer'
+    ]);
+
+    $id = $request->input('id');  // Get the serial number ID from the request
+    Log::info('Retrieving serial number data for ID: ' . $id);
+
+    try {
+        // Prepare the payload for the API request
+        $payload = [
+            'id' => $id
+        ];
+
+        // Send the POST request to the new API endpoint
+        $response = Http::withHeaders([
+            'Authorization' => '0f031be1caef52cfc46ecbb8eee10c77',  // Static authorization token
+            'x-api-key' => self::API_KEY  // API key from config
+        ])->post(self::API_URL . '/license/get_serial_number_data_by_id.json', $payload);
+
+        Log::info('API Response Status: ' . $response->status());
+        Log::info('API Response Body: ' . $response->body());
+
+        if ($response->successful()) {
+            // Assuming the API response contains a 'data' field with serial number details
+            $serialNumberData = $response->json()['data'] ?? null;
+            if ($serialNumberData) {
+                Log::info('Serial number data retrieved successfully for ID: ' . $id);
+
+                // Extract relevant serial number data details
+                $serialNumber = $serialNumberData['serial_number'] ?? 'N/A';
+                $licenseKey = $serialNumberData['license_key'] ?? 'N/A';
+                $status = $serialNumberData['status'] ?? 'N/A';
+                $assignedDate = $serialNumberData['assigned_date'] ?? 'N/A';
+                $expirationDate = $serialNumberData['expiration_date'] ?? 'N/A';
+
+                // Store serial number data in the session (if necessary)
+                session([
+                    'serial_number' => $serialNumber,
+                    'license_key' => $licenseKey,
+                    'status' => $status,
+                    'assigned_date' => $assignedDate,
+                    'expiration_date' => $expirationDate,
+                ]);
+
+                // Return the view with serial number data details
+                return view('admin.serial_number_data', compact('serialNumber', 'licenseKey', 'status', 'assignedDate', 'expirationDate'));
+            } else {
+                Log::error('No serial number data found for ID: ' . $id);
+                return back()->with('error', 'No serial number data found for the provided ID.');
+            }
+        } else {
+            Log::error('Failed to get serial number data from API for ID: ' . $id);
+            return back()->with('error', 'Failed to get serial number data from API: ' . $response->body());
+        }
+    } catch (\Exception $e) {
+        Log::error('Exception occurred while retrieving serial number data: ' . $e->getMessage());
+        return back()->with('error', 'An error occurred: ' . $e->getMessage());
     }
 }
 

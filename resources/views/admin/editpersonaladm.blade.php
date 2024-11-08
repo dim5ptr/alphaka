@@ -21,31 +21,32 @@
                 <form action="{{ route('editpersonaladm') }}" method="POST">
                     @csrf
                     <!-- Personal information fields -->
-                    <div class="form-group">
+                    @csrf
+                    <!-- Personal information fields -->
+                    <div class="form-group" class="form-label">
                         <label for="name">Full Name</label>
-                        <input type="text" name="fullname" id="name" class="form-control" placeholder="Enter your Full Name" >
+                        <input type="text" name="fullname" id="name" class="form-control" placeholder="Enter your Full Name" value="{{ session('full_name') }}">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" class="form-label">
                         <label for="username">Username</label>
-                        <input type="text" name="username" id="username" class="form-control" placeholder="Enter your Username" >
+                        <input type="text" name="username" id="username" class="form-control" placeholder="Enter your Username" value="{{ session('username') }}">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" class="form-label">
                         <label for="dateofbirth">Date of Birth</label>
-                        <input type="date" name="dateofbirth" id="dateofbirth" class="form-control">
+                        <input type="date" name="dateofbirth" id="dateofbirth" class="form-control" value="{{ session('dateofbirth') }}">
                     </div>
                     <div class="form-group">
-                        <label for="gender">Gender</label>
+                        <label for="gender" class="form-label">Gender</label>
                         <select id="gender" name="gender" class="form-control">
-                            <option value="1" {{ session('gender') == 1 ? 'selected' : '' }}>Male</option>
                             <option value="0" {{ session('gender') == 0 ? 'selected' : '' }}>Female</option>
+                            <option value="1" {{ session('gender') == 1 ? 'selected' : '' }}>Male</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="text" name="phone" id="phone" placeholder="Enter your Phone Number" class="form-control">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="text" name="phone" id="phone" placeholder="Enter your Phone Number" class="form-control" value="{{ session('phone') }}">
                     </div>
-
                     <button type="submit" class="btn rounded text-light" style="background-color: #7773d4;">Save</button>
                 </form>
             </div>
