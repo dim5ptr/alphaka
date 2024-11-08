@@ -2721,11 +2721,11 @@ public function showEditProductForm($id)
         }
 
         Log::error("Failed to retrieve product with status " . $response->status() . ": " . $response->body());
-        return view('admin.products')->with('error', 'Product not found.');
+        return redirect()->route('showProducts')->with('error', 'data not found');
 
     } catch (\Exception $e) {
         Log::error("Exception while retrieving product with ID {$id}: " . $e->getMessage());
-        return view('admin.products')->with('error', 'Error retrieving product data');
+        return redirect()->route('showProducts')->with('error', 'Error retrieving product data');
     }
 }
 
