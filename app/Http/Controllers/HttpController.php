@@ -2697,39 +2697,58 @@ public function showProductsRelease(Request $request)
         return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
     }
 }
+
 public function showEditProductForm($id)
 {
     try {
-        Log::info('Requesting product data from API: ' . self::API_URL . '/product/get_product.json');
+        Log::info('Requesting product data from API: ' . self::API_URL . '/product/get_products.json');
         Log::info("Requesting product data for product ID: {$id}");
 
-        // Menggunakan POST dengan body JSON
+        $accessToken = session('access_token');
+        if (!$accessToken) {
+            Log::error("No access token found in session.");
+            return redirect()->route('showProducts')->with('error', 'Unauthorized access');
+        }
+
         $response = Http::withHeaders([
-            'Authorization' => session('access_token'),
+            'Authorization' => $accessToken,
             'x-api-key' => self::API_KEY,
-        ])->post(self::API_URL . '/product/get_product.json', [
-            'find' => $id,  // Kirimkan data 'find' sebagai body JSON
+        ])->post(self::API_URL . '/product/get_products.json', [
+            'find' => $id,
         ]);
 
         Log::info('API Response for product ID ' . $id . ': ' . $response->body());
 
-        if ($response->successful() && !empty($response->json()['data'])) {
-            $product = $response->json()['data'];
+        if ($response->successful() && isset($response->json()['data'])) {
+            $product = $response->json()['data'][0]; // Assuming 'data' is an array and you want the first product
             Log::info("Product data for ID {$id} retrieved successfully.");
+
+            // Store product details in the session
+            session([
+                'product_id' => $product['product_id'] ?? null,
+                'product_code' => $product['product_code'] ?? 'N/A',
+                'product_name' => $product['product_name'] ?? 'N/A',
+                'product_repository_id' => $product['product_repository_id'] ?? 'N/A',
+                'enabled' => $product['enabled'] ?? false,
+                'created_by' => $product['created_by'] ?? 'N/A',
+                'created_date' => $product['created_date'] ?? null,
+                'last_update' => $product['last_update'] ?? null,
+                'description' => $product['description'] ?? 'N/A',
+                'price' => $product['price'] ?? 0,
+                'product_type' => $product['product_type'] ?? null,
+            ]);
 
             return view('admin.edit_product', compact('product', 'id'));
         }
 
         Log::error("Failed to retrieve product with status " . $response->status() . ": " . $response->body());
-        return redirect()->route('showProducts')->with('error', 'data not found');
+        return redirect()->route('showProducts')->with('error', 'Product not found');
 
     } catch (\Exception $e) {
         Log::error("Exception while retrieving product with ID {$id}: " . $e->getMessage());
         return redirect()->route('showProducts')->with('error', 'Error retrieving product data');
     }
 }
-
-
 
 
 public function updateProduct(Request $request)
