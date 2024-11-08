@@ -33,7 +33,7 @@
                     <i class="fas fa-plus"></i>
                 </button>
         </div>
-        
+
         <div class="row mb-4">
             <!-- Section for links aligned to the left -->
             <div class="col-12 d-flex flex-wrap justify-content-start align-items-center">
@@ -52,7 +52,7 @@
             </div>
 
         </div>
-        
+
 
         <!-- Custom CSS for smoother table design and search bar -->
         <style>
@@ -168,48 +168,147 @@
                     width: 100%;
                 }
             }
+
+              /* Menambahkan efek transisi halus pada modal */
+    .modal.fade .modal-dialog {
+        transform: translate(0, -50%);
+        transition: transform 0.3s ease-out;
+    }
+
+    .modal.fade.show .modal-dialog {
+        transform: translate(0, 0);
+    }
+
+    /* Memastikan modal memiliki tinggi yang cukup besar */
+    .modal-dialog {
+        max-width: 600px;
+        height: auto;
+    }
+
+    .modal-content {
+        border-radius: 8px;
+    }
+
+    /* Gaya tambahan untuk header modal */
+    .modal-header {
+        background-color: #007bff;
+        color: white;
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+
+    /* Gaya untuk tombol di modal */
+    .modal-footer .btn {
+        font-weight: bold;
+    }
+
+    /* Membuat tombol close lebih besar dan lebih terlihat */
+    .btn-close {
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    /* Memberikan margin bawah pada modal body */
+    .modal-body {
+        padding-bottom: 20px;
+    }
         </style>
 
-        <div class="table-container">
-            <table class="table custom-table mt-0">
-                <thead>
+      <div class="table-container">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Product Id</th>
+                <th>Product Name</th>
+                <th>Product Code</th>
+                <th>Description</th>
+                <th>Created By</th>
+                <th>Created Date</th>
+                <th>Price</th>
+                <th>Enabled</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if(isset($products) && count($products) > 0)
+                @foreach($products as $no => $product)
                     <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Product Name</th>
-                        <th scope="col">Product Code</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Created By</th>
-                        <th scope="col">Created Date</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Enabled</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                  @foreach($products as $no => $product)
-                        <tr>
-                        <th scope="row">{{ $no + 1 }}</th> <!-- Displaying the no + 1 -->
+                        <th scope="row">{{ $no + 1 }}</th>
+                        <td>{{ $product['product_id'] ?? 'N/A' }}</td>
                         <td>{{ $product['product_name'] ?? 'N/A' }}</td>
-                            <td>{{ $product['product_code'] ?? 'N/A' }}</td>
-                            <td>{{ $product['description'] ?? 'N/A' }}</td>
-                            <td>{{ $product['created_by'] ?? 'N/A' }}</td>
-                            <td>{{ \Carbon\Carbon::parse($product['created_date'])->format('d-m-Y H:i') }}</td>
-                            <td>Rp.{{ $product['price'] ?? '0' }}</td>
-                            <td>{{ $product['enabled'] ? 'Yes' : 'No' }}</td>
-                            <td class="action-buttons text-center">
-                                <div class="btn-group" role="group" aria-label="Action Buttons">
-                                    <form action="{{ route('showmoredetailsadm') }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        <button type="submit" class="btn btn-outline-primary btn-sm custom-outline-btn" title="More details">
-                                            <i class="fa fa-info-circle action-icon"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                        <td>{{ $product['product_code'] ?? 'N/A' }}</td>
+                        <td>{{ $product['description'] ?? 'N/A' }}</td>
+                        <td>{{ $product['created_by'] ?? 'N/A' }}</td>
+                        <td>{{ \Carbon\Carbon::parse($product['created_date'])->format('d-m-Y H:i') }}</td>
+                        <td>Rp.{{ $product['price'] ?? '0' }}</td>
+                        <td>{{ $product['enabled'] ? 'Yes' : 'No' }}</td>
+                        <td class="text-center">
+                            <a href="{{ route('showproductsedit', ['id' => $product['product_id']]) }}" class="btn btn-outline-primary btn-sm">
+                                <i class="fa fa-edit action-icon"></i>
+                            </a>
+                        </td>
+                    </tr>
+                @endforeach
+            @else
+                <tr>
+                    <td colspan="10" class="text-center">No products available.</td>
+                </tr>
+            @endif
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Edit Product -->
+<div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="updateProductForm" method="POST">
+                @csrf
+                <input type="hidden" name="_method" value="POST"> <!-- Add hidden _method for POST compatibility -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="product_id" id="product_id">
+
+                    <div class="mb-3">
+                        <label for="product_name" class="form-label">Product Name</label>
+                        <input type="text" class="form-control" name="product_name" id="product_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="product_code" class="form-label">Product Code</label>
+                        <input type="text" class="form-control" name="product_code" id="product_code" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" name="description" id="description"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="price" class="form-label">Price</label>
+                        <input type="number" class="form-control" name="price" id="price" step="0.001" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="product_type" class="form-label">Product Type</label>
+                        <input type="number" class="form-control" name="product_type" id="product_type" required>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="enabled" id="enabled">
+                        <label class="form-check-label" for="enabled">Enabled</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
         </div>
     </div>
 </section>
@@ -263,5 +362,52 @@
             }
         });
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    // Attach event listener to all edit buttons to open modal with product data
+    document.querySelectorAll('.edit-product-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.getAttribute('data-product-id');
+            const productName = this.getAttribute('data-product-name');
+            const productCode = this.getAttribute('data-product-code');
+            const description = this.getAttribute('data-description');
+            const price = this.getAttribute('data-price');
+            const productType = this.getAttribute('data-product-type');
+            const enabled = this.getAttribute('data-enabled') === '1';
+
+            // Verify if data attributes are present and not empty
+            if (!productId || !productName || !productCode) {
+                console.error('Missing required product data');
+                return; // Exit if essential data is missing
+            }
+
+            // Set form action to include product_id
+            const form = document.getElementById('updateProductForm');
+            if (form) {
+                form.action = `/products/update/${productId}`;
+            }
+
+            // Set form values
+            document.getElementById('product_id').value = productId;
+            document.getElementById('product_name').value = productName;
+            document.getElementById('product_code').value = productCode;
+            document.getElementById('description').value = description;
+            document.getElementById('price').value = price;
+            document.getElementById('product_type').value = productType;
+            document.getElementById('enabled').checked = enabled;
+
+            // Log data to console
+            console.log(`Opening modal for product ${productId}: ${productName}`);
+            console.log(`Form action set to: ${form.action}`);
+
+            // Show the modal using Bootstrap's modal function
+            $('#editProductModal').modal('show');
+
+            // Log modal opening confirmation
+            console.log('Modal opened successfully.');
+        });
+    });
+});
+
 </script>
 @endsection

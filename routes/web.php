@@ -104,7 +104,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/productsFeatures', [HttpController::class, 'showProductsFeatures'])->name('showProductsFeatures');
         Route::get('/productsRelease', [HttpController::class, 'showProductsRelease'])->name('showProductsRelease');
 
-
+        Route::get('/products/edit/{id}', [HttpController::class, 'showEditProductForm'])->name('showproductsedit');
+        Route::post('/products/update', [HttpController::class, 'updateProduct'])->name('updateProduct');
 
         Route::get('/userrole', [HttpController::class, 'showuserrole'])->name('showuserrole');
         Route::post('/userrole', [HttpController::class, 'userrole'])->name('userrole');

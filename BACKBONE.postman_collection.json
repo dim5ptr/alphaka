@@ -353,6 +353,53 @@
 				},
 				{
 					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+									"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+									"    .tftable tr {background-color:#ffffff;}\r",
+									"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+									"    .tftable tr:hover {background-color:#e0ffff;}\r",
+									"</style>\r",
+									"\r",
+									"<table class=\"tftable\" border=\"1\">\r",
+									"    <tr>\r",
+									"        <th>Access Token</th>\r",
+									"        <th>Email</th>\r",
+									"        <th>Role ID</th>\r",
+									"        <th>Result</th>\r",
+									"        <th>Success</th>\r",
+									"        <th>Timestamp</th>\r",
+									"        <th>User ID</th>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>{{response.data.access_token}}</td>\r",
+									"        <td>{{response.data.email}}</td>\r",
+									"        <td>{{response.data.role_id}}</td>\r",
+									"        <td>{{response.result}}</td>\r",
+									"        <td>{{response.success}}</td>\r",
+									"        <td>{{response.timestamp}}</td>\r",
+									"        <td>{{response.user_id}}</td>\r",
+									"    </tr>\r",
+									"</table>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return { response: pm.response.json() }\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -369,7 +416,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"google_id\": \"104231284403476298715\"\r\n}",
+							"raw": "{\r\n    \"username\": \"gunarno3@retgoo.id\",\r\n    \"password\": \"123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1698,6 +1745,108 @@
 					]
 				},
 				{
+					"name": "Get Organization Detail",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "46837e7ba316033ac15fe35cdbe0a3e2",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "5af97cb7eed7a5a4cff3ed91698d2ffb",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"parent_id\": null,\r\n    \"organization_name\": \"Uji Coba Selasa 08/10/24\",\r\n    \"description\": \"A Perusahaan yang bergerak dibidang pertanian dan peternakan\",\r\n    \"address\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sso/create_organization.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sso",
+								"create_organization.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
 					"name": "Update Organization",
 					"request": {
 						"method": "POST",
@@ -2305,6 +2454,11 @@
 						"method": "POST",
 						"header": [
 							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
 								"key": "x-api-key",
 								"value": "5af97cb7eed7a5a4cff3ed91698d2ffb",
 								"type": "text"
@@ -2312,7 +2466,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"ittozu7@gmail.com\"\r\n}",
+							"raw": "{\r\n    \"email\": \"teting@tapi.re\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2330,7 +2484,71 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
 				}
 			]
 		},
@@ -2874,6 +3092,4147 @@
 			]
 		},
 		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Get User Data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    /* Table Container Styling */\r",
+									"    .table-container {\r",
+									"        width: 100%;\r",
+									"        box-sizing: border-box;\r",
+									"        overflow-x: auto; /* Horizontal scroll if needed */\r",
+									"        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS devices */\r",
+									"        margin-bottom: 10%;\r",
+									"    }\r",
+									"\r",
+									"    /* Table Styling */\r",
+									"    .table {\r",
+									"        width: 100%;\r",
+									"        border-collapse: collapse;\r",
+									"        background-color: white;\r",
+									"        border-radius: 10px;\r",
+									"        overflow: hidden;\r",
+									"        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\r",
+									"    }\r",
+									"\r",
+									"    .table thead {\r",
+									"        background-color: #365AC2;\r",
+									"        color: #ffffff;\r",
+									"    }\r",
+									"\r",
+									"    .table th, .table td {\r",
+									"        padding: 15px;\r",
+									"        text-align: left;\r",
+									"        border-bottom: 1px solid #f0f0f0;\r",
+									"        width: auto; /* Ensure columns do not expand */\r",
+									"    }\r",
+									"\r",
+									"    /* Row Styles */\r",
+									"    .table tbody tr {\r",
+									"        transition: background-color 0.2s;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr:hover {\r",
+									"        background-color: #eef5ff;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected {\r",
+									"        background-color: #0066ff;\r",
+									"        color: white;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected td {\r",
+									"        color: white;\r",
+									"    }\r",
+									"</style>\r",
+									"\r",
+									"<div class=\"table-container\">\r",
+									"    <table class=\"table\">\r",
+									"        <thead>\r",
+									"            <tr>\r",
+									"                <th>Created Date</th>\r",
+									"                <th>Email</th>\r",
+									"                <th>Full Name</th>\r",
+									"                <th>Role ID</th>\r",
+									"                <th>Active</th>\r",
+									"                <th>Verified</th>\r",
+									"                <th>Phone</th>\r",
+									"                <th>User ID</th>\r",
+									"                <th>Username</th>\r",
+									"            </tr>\r",
+									"        </thead>\r",
+									"        <tbody>\r",
+									"            {{#each response.data}}\r",
+									"                <tr>\r",
+									"                    <td>{{created_date}}</td>\r",
+									"                    <td>{{email}}</td>\r",
+									"                    <td>{{full_name}}</td>\r",
+									"                    <td>{{id_role}}</td>\r",
+									"                    <td>{{is_active}}</td>\r",
+									"                    <td>{{is_verified}}</td>\r",
+									"                    <td>{{phone}}</td>\r",
+									"                    <td>{{user_id}}</td>\r",
+									"                    <td>{{username}}</td>\r",
+									"                </tr>\r",
+									"            {{/each}}\r",
+									"        </tbody>\r",
+									"    </table>\r",
+									"</div>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return { response: pm.response.json() };\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sso/get_user_data.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sso",
+								"get_user_data.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update User Data",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "5af97cb7eed7a5a4cff3ed91698d2ffb",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": \"261\",\r\n    \"full_name\": \"John Doe\",\r\n    \"username\": \"johndoe\",\r\n    \"email\": \"dimassetyaputra710@gmail.com\",\r\n    \"phone\": \"1234567890\",\r\n    \"first_name\": \"John\",\r\n    \"last_name\": \"Doe\",\r\n    \"birthday\": \"1990-01-01\",\r\n    \"gender\": 1,\r\n    \"role_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sso/update_user_data.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sso",
+								"update_user_data.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Deactive User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "5af97cb7eed7a5a4cff3ed91698d2ffb",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": \"128\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sso/deactive_user.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sso",
+								"deactive_user.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Process",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "5af97cb7eed7a5a4cff3ed91698d2ffb",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"process_id\": 1,\r\n    \"ip_address\": \"MDX-SSA\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://backbone.sarastya.tech/api/sso/delete_process.json",
+							"protocol": "https",
+							"host": [
+								"backbone",
+								"sarastya",
+								"tech"
+							],
+							"path": [
+								"api",
+								"sso",
+								"delete_process.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Process Folder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "5af97cb7eed7a5a4cff3ed91698d2ffb",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"folder_id\": 1,\r\n    \"ip_address\": \"MDX-SSA\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://backbone.sarastya.tech/api/sso/delete_process_folder.json",
+							"protocol": "https",
+							"host": [
+								"backbone",
+								"sarastya",
+								"tech"
+							],
+							"path": [
+								"api",
+								"sso",
+								"delete_process_folder.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "List All Organizations",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sso/list_all_organizations.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sso",
+								"list_all_organizations.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"role\": \"ADMIN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sso/create_role.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sso",
+								"create_role.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Role",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sso/get_role_data.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sso",
+								"get_role_data.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Role By Id",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sso/get_role_by_id.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sso",
+								"get_role_by_id.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"role_name\": \"USERS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sso/update_role.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sso",
+								"update_role.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "License",
+			"item": [
+				{
+					"name": "Get License Data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    /* Table Container Styling */\r",
+									"    .table-container {\r",
+									"        width: 100%;\r",
+									"        box-sizing: border-box;\r",
+									"        overflow-x: auto; /* Horizontal scroll if needed */\r",
+									"        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS devices */\r",
+									"        margin-bottom: 10%;\r",
+									"    }\r",
+									"\r",
+									"    /* Table Styling */\r",
+									"    .table {\r",
+									"        width: 100%;\r",
+									"        border-collapse: collapse;\r",
+									"        background-color: white;\r",
+									"        border-radius: 10px;\r",
+									"        overflow: hidden;\r",
+									"        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\r",
+									"    }\r",
+									"\r",
+									"    .table thead {\r",
+									"        background-color: #365AC2;\r",
+									"        color: #ffffff;\r",
+									"    }\r",
+									"\r",
+									"    .table th, .table td {\r",
+									"        padding: 15px;\r",
+									"        text-align: left;\r",
+									"        border-bottom: 1px solid #f0f0f0;\r",
+									"        width: auto; /* Ensure columns do not expand */\r",
+									"    }\r",
+									"\r",
+									"    /* Row Styles */\r",
+									"    .table tbody tr {\r",
+									"        transition: background-color 0.2s;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr:hover {\r",
+									"        background-color: #eef5ff;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected {\r",
+									"        background-color: #0066ff;\r",
+									"        color: white;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected td {\r",
+									"        color: white;\r",
+									"    }\r",
+									"</style>\r",
+									"\r",
+									"<div class=\"table-container\">\r",
+									"    <table class=\"table\">\r",
+									"        <thead>\r",
+									"            <tr>\r",
+									"                <th>Created Date</th>\r",
+									"                <th>Email</th>\r",
+									"                <th>Full Name</th>\r",
+									"                <th>Role ID</th>\r",
+									"                <th>Active</th>\r",
+									"                <th>Verified</th>\r",
+									"                <th>Phone</th>\r",
+									"                <th>User ID</th>\r",
+									"                <th>Username</th>\r",
+									"            </tr>\r",
+									"        </thead>\r",
+									"        <tbody>\r",
+									"            {{#each response.data}}\r",
+									"                <tr>\r",
+									"                    <td>{{created_date}}</td>\r",
+									"                    <td>{{email}}</td>\r",
+									"                    <td>{{full_name}}</td>\r",
+									"                    <td>{{id_role}}</td>\r",
+									"                    <td>{{is_active}}</td>\r",
+									"                    <td>{{is_verified}}</td>\r",
+									"                    <td>{{phone}}</td>\r",
+									"                    <td>{{user_id}}</td>\r",
+									"                    <td>{{username}}</td>\r",
+									"                </tr>\r",
+									"            {{/each}}\r",
+									"        </tbody>\r",
+									"    </table>\r",
+									"</div>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return { response: pm.response.json() };\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/license/get_license_data.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"license",
+								"get_license_data.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get License Data By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    /* Table Container Styling */\r",
+									"    .table-container {\r",
+									"        width: 100%;\r",
+									"        box-sizing: border-box;\r",
+									"        overflow-x: auto; /* Horizontal scroll if needed */\r",
+									"        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS devices */\r",
+									"        margin-bottom: 10%;\r",
+									"    }\r",
+									"\r",
+									"    /* Table Styling */\r",
+									"    .table {\r",
+									"        width: 100%;\r",
+									"        border-collapse: collapse;\r",
+									"        background-color: white;\r",
+									"        border-radius: 10px;\r",
+									"        overflow: hidden;\r",
+									"        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\r",
+									"    }\r",
+									"\r",
+									"    .table thead {\r",
+									"        background-color: #365AC2;\r",
+									"        color: #ffffff;\r",
+									"    }\r",
+									"\r",
+									"    .table th, .table td {\r",
+									"        padding: 15px;\r",
+									"        text-align: left;\r",
+									"        border-bottom: 1px solid #f0f0f0;\r",
+									"        width: auto; /* Ensure columns do not expand */\r",
+									"    }\r",
+									"\r",
+									"    /* Row Styles */\r",
+									"    .table tbody tr {\r",
+									"        transition: background-color 0.2s;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr:hover {\r",
+									"        background-color: #eef5ff;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected {\r",
+									"        background-color: #0066ff;\r",
+									"        color: white;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected td {\r",
+									"        color: white;\r",
+									"    }\r",
+									"</style>\r",
+									"\r",
+									"<div class=\"table-container\">\r",
+									"    <table class=\"table\">\r",
+									"        <thead>\r",
+									"            <tr>\r",
+									"                <th>Created Date</th>\r",
+									"                <th>Email</th>\r",
+									"                <th>Full Name</th>\r",
+									"                <th>Role ID</th>\r",
+									"                <th>Active</th>\r",
+									"                <th>Verified</th>\r",
+									"                <th>Phone</th>\r",
+									"                <th>User ID</th>\r",
+									"                <th>Username</th>\r",
+									"            </tr>\r",
+									"        </thead>\r",
+									"        <tbody>\r",
+									"            {{#each response.data}}\r",
+									"                <tr>\r",
+									"                    <td>{{created_date}}</td>\r",
+									"                    <td>{{email}}</td>\r",
+									"                    <td>{{full_name}}</td>\r",
+									"                    <td>{{id_role}}</td>\r",
+									"                    <td>{{is_active}}</td>\r",
+									"                    <td>{{is_verified}}</td>\r",
+									"                    <td>{{phone}}</td>\r",
+									"                    <td>{{user_id}}</td>\r",
+									"                    <td>{{username}}</td>\r",
+									"                </tr>\r",
+									"            {{/each}}\r",
+									"        </tbody>\r",
+									"    </table>\r",
+									"</div>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return { response: pm.response.json() };\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/license/get_license_data_by_id.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"license",
+								"get_license_data_by_id.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Activity Data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    /* Table Container Styling */\r",
+									"    .table-container {\r",
+									"        width: 100%;\r",
+									"        box-sizing: border-box;\r",
+									"        overflow-x: auto; /* Horizontal scroll if needed */\r",
+									"        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS devices */\r",
+									"        margin-bottom: 10%;\r",
+									"    }\r",
+									"\r",
+									"    /* Table Styling */\r",
+									"    .table {\r",
+									"        width: 100%;\r",
+									"        border-collapse: collapse;\r",
+									"        background-color: white;\r",
+									"        border-radius: 10px;\r",
+									"        overflow: hidden;\r",
+									"        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\r",
+									"    }\r",
+									"\r",
+									"    .table thead {\r",
+									"        background-color: #365AC2;\r",
+									"        color: #ffffff;\r",
+									"    }\r",
+									"\r",
+									"    .table th, .table td {\r",
+									"        padding: 15px;\r",
+									"        text-align: left;\r",
+									"        border-bottom: 1px solid #f0f0f0;\r",
+									"        width: auto; /* Ensure columns do not expand */\r",
+									"    }\r",
+									"\r",
+									"    /* Row Styles */\r",
+									"    .table tbody tr {\r",
+									"        transition: background-color 0.2s;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr:hover {\r",
+									"        background-color: #eef5ff;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected {\r",
+									"        background-color: #0066ff;\r",
+									"        color: white;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected td {\r",
+									"        color: white;\r",
+									"    }\r",
+									"</style>\r",
+									"\r",
+									"<div class=\"table-container\">\r",
+									"    <table class=\"table\">\r",
+									"        <thead>\r",
+									"            <tr>\r",
+									"                <th>Created Date</th>\r",
+									"                <th>Email</th>\r",
+									"                <th>Full Name</th>\r",
+									"                <th>Role ID</th>\r",
+									"                <th>Active</th>\r",
+									"                <th>Verified</th>\r",
+									"                <th>Phone</th>\r",
+									"                <th>User ID</th>\r",
+									"                <th>Username</th>\r",
+									"            </tr>\r",
+									"        </thead>\r",
+									"        <tbody>\r",
+									"            {{#each response.data}}\r",
+									"                <tr>\r",
+									"                    <td>{{created_date}}</td>\r",
+									"                    <td>{{email}}</td>\r",
+									"                    <td>{{full_name}}</td>\r",
+									"                    <td>{{id_role}}</td>\r",
+									"                    <td>{{is_active}}</td>\r",
+									"                    <td>{{is_verified}}</td>\r",
+									"                    <td>{{phone}}</td>\r",
+									"                    <td>{{user_id}}</td>\r",
+									"                    <td>{{username}}</td>\r",
+									"                </tr>\r",
+									"            {{/each}}\r",
+									"        </tbody>\r",
+									"    </table>\r",
+									"</div>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return { response: pm.response.json() };\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/license/get_activity_data.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"license",
+								"get_activity_data.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Activity Data By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    /* Table Container Styling */\r",
+									"    .table-container {\r",
+									"        width: 100%;\r",
+									"        box-sizing: border-box;\r",
+									"        overflow-x: auto; /* Horizontal scroll if needed */\r",
+									"        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS devices */\r",
+									"        margin-bottom: 10%;\r",
+									"    }\r",
+									"\r",
+									"    /* Table Styling */\r",
+									"    .table {\r",
+									"        width: 100%;\r",
+									"        border-collapse: collapse;\r",
+									"        background-color: white;\r",
+									"        border-radius: 10px;\r",
+									"        overflow: hidden;\r",
+									"        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\r",
+									"    }\r",
+									"\r",
+									"    .table thead {\r",
+									"        background-color: #365AC2;\r",
+									"        color: #ffffff;\r",
+									"    }\r",
+									"\r",
+									"    .table th, .table td {\r",
+									"        padding: 15px;\r",
+									"        text-align: left;\r",
+									"        border-bottom: 1px solid #f0f0f0;\r",
+									"        width: auto; /* Ensure columns do not expand */\r",
+									"    }\r",
+									"\r",
+									"    /* Row Styles */\r",
+									"    .table tbody tr {\r",
+									"        transition: background-color 0.2s;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr:hover {\r",
+									"        background-color: #eef5ff;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected {\r",
+									"        background-color: #0066ff;\r",
+									"        color: white;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected td {\r",
+									"        color: white;\r",
+									"    }\r",
+									"</style>\r",
+									"\r",
+									"<div class=\"table-container\">\r",
+									"    <table class=\"table\">\r",
+									"        <thead>\r",
+									"            <tr>\r",
+									"                <th>Created Date</th>\r",
+									"                <th>Email</th>\r",
+									"                <th>Full Name</th>\r",
+									"                <th>Role ID</th>\r",
+									"                <th>Active</th>\r",
+									"                <th>Verified</th>\r",
+									"                <th>Phone</th>\r",
+									"                <th>User ID</th>\r",
+									"                <th>Username</th>\r",
+									"            </tr>\r",
+									"        </thead>\r",
+									"        <tbody>\r",
+									"            {{#each response.data}}\r",
+									"                <tr>\r",
+									"                    <td>{{created_date}}</td>\r",
+									"                    <td>{{email}}</td>\r",
+									"                    <td>{{full_name}}</td>\r",
+									"                    <td>{{id_role}}</td>\r",
+									"                    <td>{{is_active}}</td>\r",
+									"                    <td>{{is_verified}}</td>\r",
+									"                    <td>{{phone}}</td>\r",
+									"                    <td>{{user_id}}</td>\r",
+									"                    <td>{{username}}</td>\r",
+									"                </tr>\r",
+									"            {{/each}}\r",
+									"        </tbody>\r",
+									"    </table>\r",
+									"</div>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return { response: pm.response.json() };\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/license/get_activity_data_by_id.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"license",
+								"get_activity_data_by_id.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Hooks Data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    /* Table Container Styling */\r",
+									"    .table-container {\r",
+									"        width: 100%;\r",
+									"        box-sizing: border-box;\r",
+									"        overflow-x: auto; /* Horizontal scroll if needed */\r",
+									"        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS devices */\r",
+									"        margin-bottom: 10%;\r",
+									"    }\r",
+									"\r",
+									"    /* Table Styling */\r",
+									"    .table {\r",
+									"        width: 100%;\r",
+									"        border-collapse: collapse;\r",
+									"        background-color: white;\r",
+									"        border-radius: 10px;\r",
+									"        overflow: hidden;\r",
+									"        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\r",
+									"    }\r",
+									"\r",
+									"    .table thead {\r",
+									"        background-color: #365AC2;\r",
+									"        color: #ffffff;\r",
+									"    }\r",
+									"\r",
+									"    .table th, .table td {\r",
+									"        padding: 15px;\r",
+									"        text-align: left;\r",
+									"        border-bottom: 1px solid #f0f0f0;\r",
+									"        width: auto; /* Ensure columns do not expand */\r",
+									"    }\r",
+									"\r",
+									"    /* Row Styles */\r",
+									"    .table tbody tr {\r",
+									"        transition: background-color 0.2s;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr:hover {\r",
+									"        background-color: #eef5ff;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected {\r",
+									"        background-color: #0066ff;\r",
+									"        color: white;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected td {\r",
+									"        color: white;\r",
+									"    }\r",
+									"</style>\r",
+									"\r",
+									"<div class=\"table-container\">\r",
+									"    <table class=\"table\">\r",
+									"        <thead>\r",
+									"            <tr>\r",
+									"                <th>Created Date</th>\r",
+									"                <th>Email</th>\r",
+									"                <th>Full Name</th>\r",
+									"                <th>Role ID</th>\r",
+									"                <th>Active</th>\r",
+									"                <th>Verified</th>\r",
+									"                <th>Phone</th>\r",
+									"                <th>User ID</th>\r",
+									"                <th>Username</th>\r",
+									"            </tr>\r",
+									"        </thead>\r",
+									"        <tbody>\r",
+									"            {{#each response.data}}\r",
+									"                <tr>\r",
+									"                    <td>{{created_date}}</td>\r",
+									"                    <td>{{email}}</td>\r",
+									"                    <td>{{full_name}}</td>\r",
+									"                    <td>{{id_role}}</td>\r",
+									"                    <td>{{is_active}}</td>\r",
+									"                    <td>{{is_verified}}</td>\r",
+									"                    <td>{{phone}}</td>\r",
+									"                    <td>{{user_id}}</td>\r",
+									"                    <td>{{username}}</td>\r",
+									"                </tr>\r",
+									"            {{/each}}\r",
+									"        </tbody>\r",
+									"    </table>\r",
+									"</div>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return { response: pm.response.json() };\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/license/get_hooks_data.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"license",
+								"get_hooks_data.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Hooks Data By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    /* Table Container Styling */\r",
+									"    .table-container {\r",
+									"        width: 100%;\r",
+									"        box-sizing: border-box;\r",
+									"        overflow-x: auto; /* Horizontal scroll if needed */\r",
+									"        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS devices */\r",
+									"        margin-bottom: 10%;\r",
+									"    }\r",
+									"\r",
+									"    /* Table Styling */\r",
+									"    .table {\r",
+									"        width: 100%;\r",
+									"        border-collapse: collapse;\r",
+									"        background-color: white;\r",
+									"        border-radius: 10px;\r",
+									"        overflow: hidden;\r",
+									"        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\r",
+									"    }\r",
+									"\r",
+									"    .table thead {\r",
+									"        background-color: #365AC2;\r",
+									"        color: #ffffff;\r",
+									"    }\r",
+									"\r",
+									"    .table th, .table td {\r",
+									"        padding: 15px;\r",
+									"        text-align: left;\r",
+									"        border-bottom: 1px solid #f0f0f0;\r",
+									"        width: auto; /* Ensure columns do not expand */\r",
+									"    }\r",
+									"\r",
+									"    /* Row Styles */\r",
+									"    .table tbody tr {\r",
+									"        transition: background-color 0.2s;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr:hover {\r",
+									"        background-color: #eef5ff;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected {\r",
+									"        background-color: #0066ff;\r",
+									"        color: white;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected td {\r",
+									"        color: white;\r",
+									"    }\r",
+									"</style>\r",
+									"\r",
+									"<div class=\"table-container\">\r",
+									"    <table class=\"table\">\r",
+									"        <thead>\r",
+									"            <tr>\r",
+									"                <th>Created Date</th>\r",
+									"                <th>Email</th>\r",
+									"                <th>Full Name</th>\r",
+									"                <th>Role ID</th>\r",
+									"                <th>Active</th>\r",
+									"                <th>Verified</th>\r",
+									"                <th>Phone</th>\r",
+									"                <th>User ID</th>\r",
+									"                <th>Username</th>\r",
+									"            </tr>\r",
+									"        </thead>\r",
+									"        <tbody>\r",
+									"            {{#each response.data}}\r",
+									"                <tr>\r",
+									"                    <td>{{created_date}}</td>\r",
+									"                    <td>{{email}}</td>\r",
+									"                    <td>{{full_name}}</td>\r",
+									"                    <td>{{id_role}}</td>\r",
+									"                    <td>{{is_active}}</td>\r",
+									"                    <td>{{is_verified}}</td>\r",
+									"                    <td>{{phone}}</td>\r",
+									"                    <td>{{user_id}}</td>\r",
+									"                    <td>{{username}}</td>\r",
+									"                </tr>\r",
+									"            {{/each}}\r",
+									"        </tbody>\r",
+									"    </table>\r",
+									"</div>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return { response: pm.response.json() };\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/license/get_hooks_data_by_id.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"license",
+								"get_hooks_data_by_id.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get License Order Data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    /* Table Container Styling */\r",
+									"    .table-container {\r",
+									"        width: 100%;\r",
+									"        box-sizing: border-box;\r",
+									"        overflow-x: auto; /* Horizontal scroll if needed */\r",
+									"        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS devices */\r",
+									"        margin-bottom: 10%;\r",
+									"    }\r",
+									"\r",
+									"    /* Table Styling */\r",
+									"    .table {\r",
+									"        width: 100%;\r",
+									"        border-collapse: collapse;\r",
+									"        background-color: white;\r",
+									"        border-radius: 10px;\r",
+									"        overflow: hidden;\r",
+									"        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\r",
+									"    }\r",
+									"\r",
+									"    .table thead {\r",
+									"        background-color: #365AC2;\r",
+									"        color: #ffffff;\r",
+									"    }\r",
+									"\r",
+									"    .table th, .table td {\r",
+									"        padding: 15px;\r",
+									"        text-align: left;\r",
+									"        border-bottom: 1px solid #f0f0f0;\r",
+									"        width: auto; /* Ensure columns do not expand */\r",
+									"    }\r",
+									"\r",
+									"    /* Row Styles */\r",
+									"    .table tbody tr {\r",
+									"        transition: background-color 0.2s;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr:hover {\r",
+									"        background-color: #eef5ff;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected {\r",
+									"        background-color: #0066ff;\r",
+									"        color: white;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected td {\r",
+									"        color: white;\r",
+									"    }\r",
+									"</style>\r",
+									"\r",
+									"<div class=\"table-container\">\r",
+									"    <table class=\"table\">\r",
+									"        <thead>\r",
+									"            <tr>\r",
+									"                <th>Created Date</th>\r",
+									"                <th>Email</th>\r",
+									"                <th>Full Name</th>\r",
+									"                <th>Role ID</th>\r",
+									"                <th>Active</th>\r",
+									"                <th>Verified</th>\r",
+									"                <th>Phone</th>\r",
+									"                <th>User ID</th>\r",
+									"                <th>Username</th>\r",
+									"            </tr>\r",
+									"        </thead>\r",
+									"        <tbody>\r",
+									"            {{#each response.data}}\r",
+									"                <tr>\r",
+									"                    <td>{{created_date}}</td>\r",
+									"                    <td>{{email}}</td>\r",
+									"                    <td>{{full_name}}</td>\r",
+									"                    <td>{{id_role}}</td>\r",
+									"                    <td>{{is_active}}</td>\r",
+									"                    <td>{{is_verified}}</td>\r",
+									"                    <td>{{phone}}</td>\r",
+									"                    <td>{{user_id}}</td>\r",
+									"                    <td>{{username}}</td>\r",
+									"                </tr>\r",
+									"            {{/each}}\r",
+									"        </tbody>\r",
+									"    </table>\r",
+									"</div>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return { response: pm.response.json() };\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/license/get_license_order_data.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"license",
+								"get_license_order_data.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get License Order Data By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    /* Table Container Styling */\r",
+									"    .table-container {\r",
+									"        width: 100%;\r",
+									"        box-sizing: border-box;\r",
+									"        overflow-x: auto; /* Horizontal scroll if needed */\r",
+									"        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS devices */\r",
+									"        margin-bottom: 10%;\r",
+									"    }\r",
+									"\r",
+									"    /* Table Styling */\r",
+									"    .table {\r",
+									"        width: 100%;\r",
+									"        border-collapse: collapse;\r",
+									"        background-color: white;\r",
+									"        border-radius: 10px;\r",
+									"        overflow: hidden;\r",
+									"        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\r",
+									"    }\r",
+									"\r",
+									"    .table thead {\r",
+									"        background-color: #365AC2;\r",
+									"        color: #ffffff;\r",
+									"    }\r",
+									"\r",
+									"    .table th, .table td {\r",
+									"        padding: 15px;\r",
+									"        text-align: left;\r",
+									"        border-bottom: 1px solid #f0f0f0;\r",
+									"        width: auto; /* Ensure columns do not expand */\r",
+									"    }\r",
+									"\r",
+									"    /* Row Styles */\r",
+									"    .table tbody tr {\r",
+									"        transition: background-color 0.2s;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr:hover {\r",
+									"        background-color: #eef5ff;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected {\r",
+									"        background-color: #0066ff;\r",
+									"        color: white;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected td {\r",
+									"        color: white;\r",
+									"    }\r",
+									"</style>\r",
+									"\r",
+									"<div class=\"table-container\">\r",
+									"    <table class=\"table\">\r",
+									"        <thead>\r",
+									"            <tr>\r",
+									"                <th>Created Date</th>\r",
+									"                <th>Email</th>\r",
+									"                <th>Full Name</th>\r",
+									"                <th>Role ID</th>\r",
+									"                <th>Active</th>\r",
+									"                <th>Verified</th>\r",
+									"                <th>Phone</th>\r",
+									"                <th>User ID</th>\r",
+									"                <th>Username</th>\r",
+									"            </tr>\r",
+									"        </thead>\r",
+									"        <tbody>\r",
+									"            {{#each response.data}}\r",
+									"                <tr>\r",
+									"                    <td>{{created_date}}</td>\r",
+									"                    <td>{{email}}</td>\r",
+									"                    <td>{{full_name}}</td>\r",
+									"                    <td>{{id_role}}</td>\r",
+									"                    <td>{{is_active}}</td>\r",
+									"                    <td>{{is_verified}}</td>\r",
+									"                    <td>{{phone}}</td>\r",
+									"                    <td>{{user_id}}</td>\r",
+									"                    <td>{{username}}</td>\r",
+									"                </tr>\r",
+									"            {{/each}}\r",
+									"        </tbody>\r",
+									"    </table>\r",
+									"</div>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return { response: pm.response.json() };\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/license/get_license_order_data_by_id.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"license",
+								"get_license_order_data_by_id.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Serial Number Data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    /* Table Container Styling */\r",
+									"    .table-container {\r",
+									"        width: 100%;\r",
+									"        box-sizing: border-box;\r",
+									"        overflow-x: auto; /* Horizontal scroll if needed */\r",
+									"        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS devices */\r",
+									"        margin-bottom: 10%;\r",
+									"    }\r",
+									"\r",
+									"    /* Table Styling */\r",
+									"    .table {\r",
+									"        width: 100%;\r",
+									"        border-collapse: collapse;\r",
+									"        background-color: white;\r",
+									"        border-radius: 10px;\r",
+									"        overflow: hidden;\r",
+									"        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\r",
+									"    }\r",
+									"\r",
+									"    .table thead {\r",
+									"        background-color: #365AC2;\r",
+									"        color: #ffffff;\r",
+									"    }\r",
+									"\r",
+									"    .table th, .table td {\r",
+									"        padding: 15px;\r",
+									"        text-align: left;\r",
+									"        border-bottom: 1px solid #f0f0f0;\r",
+									"        width: auto; /* Ensure columns do not expand */\r",
+									"    }\r",
+									"\r",
+									"    /* Row Styles */\r",
+									"    .table tbody tr {\r",
+									"        transition: background-color 0.2s;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr:hover {\r",
+									"        background-color: #eef5ff;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected {\r",
+									"        background-color: #0066ff;\r",
+									"        color: white;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected td {\r",
+									"        color: white;\r",
+									"    }\r",
+									"</style>\r",
+									"\r",
+									"<div class=\"table-container\">\r",
+									"    <table class=\"table\">\r",
+									"        <thead>\r",
+									"            <tr>\r",
+									"                <th>Created Date</th>\r",
+									"                <th>Email</th>\r",
+									"                <th>Full Name</th>\r",
+									"                <th>Role ID</th>\r",
+									"                <th>Active</th>\r",
+									"                <th>Verified</th>\r",
+									"                <th>Phone</th>\r",
+									"                <th>User ID</th>\r",
+									"                <th>Username</th>\r",
+									"            </tr>\r",
+									"        </thead>\r",
+									"        <tbody>\r",
+									"            {{#each response.data}}\r",
+									"                <tr>\r",
+									"                    <td>{{created_date}}</td>\r",
+									"                    <td>{{email}}</td>\r",
+									"                    <td>{{full_name}}</td>\r",
+									"                    <td>{{id_role}}</td>\r",
+									"                    <td>{{is_active}}</td>\r",
+									"                    <td>{{is_verified}}</td>\r",
+									"                    <td>{{phone}}</td>\r",
+									"                    <td>{{user_id}}</td>\r",
+									"                    <td>{{username}}</td>\r",
+									"                </tr>\r",
+									"            {{/each}}\r",
+									"        </tbody>\r",
+									"    </table>\r",
+									"</div>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return { response: pm.response.json() };\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/license/get_serial_number_data.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"license",
+								"get_serial_number_data.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Serial Number Data By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    /* Table Container Styling */\r",
+									"    .table-container {\r",
+									"        width: 100%;\r",
+									"        box-sizing: border-box;\r",
+									"        overflow-x: auto; /* Horizontal scroll if needed */\r",
+									"        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS devices */\r",
+									"        margin-bottom: 10%;\r",
+									"    }\r",
+									"\r",
+									"    /* Table Styling */\r",
+									"    .table {\r",
+									"        width: 100%;\r",
+									"        border-collapse: collapse;\r",
+									"        background-color: white;\r",
+									"        border-radius: 10px;\r",
+									"        overflow: hidden;\r",
+									"        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\r",
+									"    }\r",
+									"\r",
+									"    .table thead {\r",
+									"        background-color: #365AC2;\r",
+									"        color: #ffffff;\r",
+									"    }\r",
+									"\r",
+									"    .table th, .table td {\r",
+									"        padding: 15px;\r",
+									"        text-align: left;\r",
+									"        border-bottom: 1px solid #f0f0f0;\r",
+									"        width: auto; /* Ensure columns do not expand */\r",
+									"    }\r",
+									"\r",
+									"    /* Row Styles */\r",
+									"    .table tbody tr {\r",
+									"        transition: background-color 0.2s;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr:hover {\r",
+									"        background-color: #eef5ff;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected {\r",
+									"        background-color: #0066ff;\r",
+									"        color: white;\r",
+									"    }\r",
+									"\r",
+									"    .table tbody tr.selected td {\r",
+									"        color: white;\r",
+									"    }\r",
+									"</style>\r",
+									"\r",
+									"<div class=\"table-container\">\r",
+									"    <table class=\"table\">\r",
+									"        <thead>\r",
+									"            <tr>\r",
+									"                <th>Created Date</th>\r",
+									"                <th>Email</th>\r",
+									"                <th>Full Name</th>\r",
+									"                <th>Role ID</th>\r",
+									"                <th>Active</th>\r",
+									"                <th>Verified</th>\r",
+									"                <th>Phone</th>\r",
+									"                <th>User ID</th>\r",
+									"                <th>Username</th>\r",
+									"            </tr>\r",
+									"        </thead>\r",
+									"        <tbody>\r",
+									"            {{#each response.data}}\r",
+									"                <tr>\r",
+									"                    <td>{{created_date}}</td>\r",
+									"                    <td>{{email}}</td>\r",
+									"                    <td>{{full_name}}</td>\r",
+									"                    <td>{{id_role}}</td>\r",
+									"                    <td>{{is_active}}</td>\r",
+									"                    <td>{{is_verified}}</td>\r",
+									"                    <td>{{phone}}</td>\r",
+									"                    <td>{{user_id}}</td>\r",
+									"                    <td>{{username}}</td>\r",
+									"                </tr>\r",
+									"            {{/each}}\r",
+									"        </tbody>\r",
+									"    </table>\r",
+									"</div>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return { response: pm.response.json() };\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":\"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/license/get_serial_number_data_by_id.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"license",
+								"get_serial_number_data_by_id.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update User Data",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "5af97cb7eed7a5a4cff3ed91698d2ffb",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": \"261\",\r\n    \"full_name\": \"John Doe\",\r\n    \"username\": \"johndoe\",\r\n    \"email\": \"dimassetyaputra710@gmail.com\",\r\n    \"phone\": \"1234567890\",\r\n    \"first_name\": \"John\",\r\n    \"last_name\": \"Doe\",\r\n    \"birthday\": \"1990-01-01\",\r\n    \"gender\": 1,\r\n    \"role_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sso/update_user_data.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sso",
+								"update_user_data.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Deactive User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "5af97cb7eed7a5a4cff3ed91698d2ffb",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": \"128\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sso/deactive_user.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sso",
+								"deactive_user.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Process",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "5af97cb7eed7a5a4cff3ed91698d2ffb",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"process_id\": 1,\r\n    \"ip_address\": \"MDX-SSA\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://backbone.sarastya.tech/api/sso/delete_process.json",
+							"protocol": "https",
+							"host": [
+								"backbone",
+								"sarastya",
+								"tech"
+							],
+							"path": [
+								"api",
+								"sso",
+								"delete_process.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Process Folder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "5af97cb7eed7a5a4cff3ed91698d2ffb",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"folder_id\": 1,\r\n    \"ip_address\": \"MDX-SSA\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://backbone.sarastya.tech/api/sso/delete_process_folder.json",
+							"protocol": "https",
+							"host": [
+								"backbone",
+								"sarastya",
+								"tech"
+							],
+							"path": [
+								"api",
+								"sso",
+								"delete_process_folder.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "List All Organizations",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sso/list_all_organizations.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sso",
+								"list_all_organizations.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"role\": \"ADMIN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sso/create_role.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sso",
+								"create_role.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Role",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sso/get_role_data.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sso",
+								"get_role_data.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Role By Id",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sso/get_role_by_id.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sso",
+								"get_role_by_id.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"role_name\": \"USERS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sso/update_role.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sso",
+								"update_role.json"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "https://api.mobile.bangbana.com/api/wsm/login.json",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "RG-01-200601-00000003",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.mobile.bangbana.com/api/wsm/login.json",
+									"protocol": "https",
+									"host": [
+										"api",
+										"mobile",
+										"bangbana",
+										"com"
+									],
+									"path": [
+										"api",
+										"wsm",
+										"login.json"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "X-Server",
+									"value": "RetGoo WSM 2.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ARR/3.0"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 26 Apr 2022 03:02:34 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "576"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"body\": {},\n    \"headers\": {\n        \"Accept\": [\n            \"*/*\"\n        ],\n        \"Accept-Encoding\": [\n            \"gzip, deflate, br\"\n        ],\n        \"Authorization\": [\n            \"RG-01-200601-00000003\"\n        ],\n        \"Cache-Control\": [\n            \"no-cache\"\n        ],\n        \"Connection\": [\n            \"Keep-Alive\"\n        ],\n        \"Content-Length\": [\n            \"45\"\n        ],\n        \"Content-Type\": [\n            \"application/json\"\n        ],\n        \"Max-Forwards\": [\n            \"10\"\n        ],\n        \"Postman-Token\": [\n            \"76ac2054-aa48-43f0-8a1e-2eab0b564c81\"\n        ],\n        \"User-Agent\": [\n            \"PostmanRuntime/7.29.0\"\n        ],\n        \"X-Arr-Log-Id\": [\n            \"54be2145-120a-481d-bf82-41ba998d8d68\"\n        ],\n        \"X-Arr-Ssl\": [\n            \"2048|256|C=US, O=Let's Encrypt, CN=R3|CN=api.mobile.bangbana.com\"\n        ],\n        \"X-Forwarded-For\": [\n            \"66.96.237.12:58718\"\n        ],\n        \"X-Original-Url\": [\n            \"/api/wsm/login.json\"\n        ]\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
 			"name": "Product",
 			"item": [
 				{
@@ -2909,6 +7268,44 @@
 							"path": [
 								"product",
 								"get_product_type.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "COUNT Dashboard",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "0f031be1caef52cfc46ecbb8eee10c77",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"ittozu7@gmail.com\"  // Replace with the actual email if needed\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/product/count_all_entities.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"product",
+								"count_all_entities.json"
 							]
 						}
 					},
@@ -3050,7 +7447,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"find\": \"\"\r\n}",
+							"raw": "{\r\n    \"find\": \"24\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3065,6 +7462,208 @@
 							"path": [
 								"product",
 								"get_products.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product Show",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+									"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+									"    .tftable tr {background-color:#ffffff;}\r",
+									"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+									"    .tftable tr:hover {background-color:#e0ffff;}\r",
+									"</style>\r",
+									"\r",
+									"<table class=\"tftable\" border=\"1\">\r",
+									"    <tr>\r",
+									"        <th>Product ID</th>\r",
+									"        <th>Product Name</th>\r",
+									"        <th>Product Code</th>\r",
+									"        <th>Product Type</th>\r",
+									"        <th>Created By</th>\r",
+									"        <th>Created Date</th>\r",
+									"        <th>Description</th>\r",
+									"        <th>Enabled</th>\r",
+									"    </tr>\r",
+									"    \r",
+									"    {{#each response.data}}\r",
+									"        <tr>\r",
+									"            <td>{{product_id}}</td>\r",
+									"            <td>{{product_name}}</td>\r",
+									"            <td>{{product_code}}</td>\r",
+									"            <td>{{product_type}}</td>\r",
+									"            <td>{{created_by}}</td>\r",
+									"            <td>{{created_date}}</td>\r",
+									"            <td>{{description}}</td>\r",
+									"            <td>{{#if enabled}}Yes{{else}}No{{/if}}</td>\r",
+									"        </tr>\r",
+									"    {{/each}}\r",
+									"</table>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return { response: pm.response.json() }\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "df4c0a967118597b6c2e8be04b332779",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/product/product_show.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"product",
+								"product_show.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product Folder Show",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "63ede335f059d3a98a5b0f53385e97b4",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/product/product_folder_show.json?Authorization=df4c0a967118597b6c2e8be04b332779&x-api-key={{api-key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"product",
+								"product_folder_show.json"
+							],
+							"query": [
+								{
+									"key": "Authorization",
+									"value": "df4c0a967118597b6c2e8be04b332779"
+								},
+								{
+									"key": "x-api-key",
+									"value": "{{api-key}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product Release Show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "63ede335f059d3a98a5b0f53385e97b4",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/product/product_release_show.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"product",
+								"product_release_show.json"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product Features Show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b84f5c7bdae43966378cfc88589eed5c",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api-key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/product/product_features_show.json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"product",
+								"product_features_show.json"
 							]
 						}
 					},
@@ -5531,6 +10130,10 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Finance",
+			"item": []
 		}
 	]
 }

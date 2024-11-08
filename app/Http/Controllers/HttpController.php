@@ -2458,32 +2458,67 @@ public function showmoredetailsadm(Request $request)
     }
 }
 
+// public function showProducts(Request $request)
+// {
+//     try {
+//         // Lakukan permintaan GET ke API eksternal
+//         Log::info('Requesting product data from API: ' . self::API_URL . '/product/product_show.json');
+
+//         $response = Http::withHeaders([
+//             'Authorization' => session('access_token'),
+//             'x-api-key' => self::API_KEY,
+//         ])->get(self::API_URL . '/product/product_show.json');
+
+//         // Log response untuk debugging
+//         Log::info('API Response: ' . $response->body());
+
+//         // Periksa jika response berhasil
+//         if ($response->successful()) {
+//             $products = $response->json()['data'] ?? [];
+//             Log::info('Product data retrieved successfully, total products: ' . count($products));
+
+//             // Kirim data ke view `products`
+//             return view('admin.products', ['products' => $products]);
+//         }
+
+//         Log::error('API request failed with status ' . $response->status() . ': ' . $response->body());
+//         return redirect()->back()->with('error', 'Failed to retrieve product data.');
+
+//     } catch (\Exception $e) {
+//         Log::error('Exception while retrieving product data: ' . $e->getMessage());
+//         return redirect()->back()->with('error', 'Error retrieving data');
+//     }
+// }
+
 public function showProducts(Request $request)
 {
     try {
-        // Make the GET request to the external API using the constants
+        Log::info('Requesting product data from API: ' . self::API_URL . '/product/product_show.json');
+
         $response = Http::withHeaders([
             'Authorization' => session('access_token'),
             'x-api-key' => self::API_KEY,
         ])->get(self::API_URL . '/product/product_show.json');
 
-        // Log the API response for debugging
         Log::info('API Response: ' . $response->body());
 
-        // Check if the response was successful
         if ($response->successful()) {
-            $products = $response->json()['data'] ?? []; // Default to an empty array if 'data' is not set
+            $products = $response->json()['data'] ?? [];
+            Log::info('Product data retrieved successfully, total products: ' . count($products));
+
+            // Mengirimkan data produk ke view `admin.products`
             return view('admin.products', ['products' => $products]);
         }
 
-        Log::error('API request failed: ' . $response->body());
-        return response()->json(['success' => false, 'message' => 'Failed to retrieve product data.'], $response->status());
+        Log::error('API request failed with status ' . $response->status() . ': ' . $response->body());
+        return redirect()->back()->with('error', 'Failed to retrieve product data.');
 
     } catch (\Exception $e) {
-        Log::error('Error retrieving data: ' . $e->getMessage());
-        return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
+        Log::error('Exception while retrieving product data: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Error retrieving data');
     }
 }
+
 
 public function showProductsFolder(Request $request)
 {
@@ -2565,6 +2600,80 @@ public function showProductsRelease(Request $request)
         return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
     }
 }
+public function showEditProductForm($id)
+{
+    try {
+        Log::info('Requesting product data from API: ' . self::API_URL . '/product/get_product.json');
+        Log::info("Requesting product data for product ID: {$id}");
+
+        // Menggunakan POST dengan body JSON
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->post(self::API_URL . '/product/get_product.json', [
+            'find' => $id,  // Kirimkan data 'find' sebagai body JSON
+        ]);
+
+        Log::info('API Response for product ID ' . $id . ': ' . $response->body());
+
+        if ($response->successful() && !empty($response->json()['data'])) {
+            $product = $response->json()['data'];
+            Log::info("Product data for ID {$id} retrieved successfully.");
+
+            return view('admin.edit_product', compact('product', 'id'));
+        }
+
+        Log::error("Failed to retrieve product with status " . $response->status() . ": " . $response->body());
+        return view('admin.products')->with('error', 'Product not found.');
+
+    } catch (\Exception $e) {
+        Log::error("Exception while retrieving product with ID {$id}: " . $e->getMessage());
+        return view('admin.products')->with('error', 'Error retrieving product data');
+    }
+}
+
+
+
+
+public function updateProduct(Request $request)
+{
+    $request->validate([
+        'product_id' => 'required|integer',
+        'product_name' => 'required|string|max:255',
+        'product_code' => 'required|string|max:50|alpha_dash',
+        'description' => 'nullable|string',
+        'price' => 'nullable|numeric|min:0|max:99999999.999',
+        'product_type' => 'required|integer',
+        'enabled' => 'required|boolean',
+    ]);
+
+    $price = $request->price;
+    if (!is_null($price)) {
+        $price = number_format((float)str_replace('.', '', $price), 3, '.', '');
+    }
+
+    $data = [
+        'product_id' => $request->product_id,
+        'product_name' => $request->product_name,
+        'product_code' => $request->product_code,
+        'description' => $request->description,
+        'price' => $price,
+        'product_type' => $request->product_type,
+        'enabled' => $request->enabled,
+    ];
+
+    $response = Http::withHeaders([
+        'Authorization' => session('access_token'),
+        'x-api-key' => self::API_KEY,
+    ])->post(self::API_URL . '/product/update_product.json', $data);
+
+    if ($response->successful()) {
+        return view('admin.products')->with('success', 'Product updated successfully.');
+    } else {
+        return redirect()->back()->with('error', 'Failed to update product. Please try again.');
+    }
+}
+
 
 
 public function showTransaction(Request $request)
