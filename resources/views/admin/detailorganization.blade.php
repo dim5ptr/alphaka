@@ -71,6 +71,14 @@
             background-color: #f1f1f1;
         }
 
+        /* No Members Message Styles */
+        .no-members {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 1.2rem;
+        }
+
         /* Button Styles */
         .btn-primary {
             padding: 10px 15px;
@@ -107,56 +115,22 @@
             transform: scale(1.05);
         }
 
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1001;
-            left: 0;
-            top: 0;
+        /* Search Bar Styles */
+        .search-bar {
+            margin-bottom: 20px;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 1px solid #ccc;
             width: 100%;
-            height:  100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.7);
+            max-width: 400px; /* Optional: set a max width for the search bar */
+            background-color: #f9f9f9; /* Light background color */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            transition: border-color 0.3s ease; /* Smooth transition for focus effect */
         }
 
-        .modal-content {
-            background-color: #ffffff;
-            margin: 10% auto;
-            padding: 20px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        /* Notification Styles */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1050;
-            transition: opacity 0.5s ease;
+        .search-bar:focus {
+            border-color: #365AC2; /* Change border color on focus */
+            outline: none; /* Remove default outline */
         }
     </style>
 @endsection
@@ -169,6 +143,8 @@
         <small>{{ $organization['description'] }}</small>
     </div>
 
+    <input type="text" id="member-search" class="search-bar" placeholder="Search members by name, ID, or email..." onkeyup="filterMembers()">
+
     <div class="table-container">
         <div class="table-responsive">
             <table class="table">
@@ -178,60 +154,50 @@
                         <th>User ID</th>
                         <th>Full Name</th>
                         <th>Email</th>
-                        <th>Actions</th> <!-- New Action Column -->
+                        <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach($members as $index => $member)
+                <tbody id="member-list">
+                    @if(count($members) === 0)
                         <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $member['user_id'] ?? 'N/A' }}</td>
-                            <td>{{ $member['full_name'] ?? 'N/A' }}</td>
-                            <td>{{ $member['email'] ?? 'N/A' }}</td>
-                            <td>
-                            <a href="{{ route('showmoredetailsadm', ['email' => $member['email']]) }}" class="btn btn-primary btn-sm">
-                                <i class="fas fa-edit"></i> Edit
-                            </a>
-                            </td>
+                            <td colspan="5" class="no-members">No members found.</td>
                         </tr>
-                    @endforeach
+                    @else
+                        @foreach($members as $index => $member)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $member['user_id'] ?? 'N/A' }}</td>
+                                <td>{{ $member['full_name'] ?? 'N/A' }}</td>
+                                <td>{{ $member['email'] ?? 'N/A' }}</td>
+                                <td>
+                                    <a href="{{ route('showmoredetailsadm', ['email' => $member['email']]) }}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>
     </div>
 
-    <footer>
-        <button class="btn-primary" onclick="openModal()">Add Member</button>
-    </footer>
-
-    <div class="modal" id="addMemberModal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Add New Member</h2>
-            <form action="#" method="POST">
-                @csrf
-                <input type="text" name="member_name" placeholder="Member Name" required>
-                <input type="email" name="member_email" placeholder="Email" required>
-                <button type="submit" class="btn-primary">Add Member</button>
-            </form>
-        </div>
-    </div>
-
     <script>
-        function openModal() {
-            document.getElementById('addMemberModal').style.display = 'block';
-        }
+        function filterMembers() {
+            const searchInput = document.getElementById('member-search').value.toLowerCase();
+            const memberRows = document.querySelectorAll('#member-list tr');
 
-        function closeModal() {
-            document.getElementById('addMemberModal').style.display = 'none';
-        }
+            memberRows.forEach(row => {
+                const userId = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                const fullName = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                const email = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
 
-        // Close modal when clicking outside of it
-        window.onclick = function(event) {
-            const modal = document.getElementById('addMemberModal');
-            if (event.target === modal) {
-                closeModal();
-            }
+                if (userId.includes(searchInput) || fullName.includes(searchInput) || email.includes(searchInput)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         }
     </script>
 @endsection
