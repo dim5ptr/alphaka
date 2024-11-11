@@ -108,11 +108,11 @@
 </style>
 
 <!-- Main content -->
-<div class="content-header">
+<div class="content-header bg-light p-4 shadow-sm rounded" style="margin-bottom: 2%;">
     <div class="container-fluid">
-        <div class="row mb-2">
+        <div class="row mb-2 align-items-center">
             <div class="col-sm-6">
-                <h1 class="m-0" style="color: #0077FF; font-weight: bold;">Transaction History  </h1>
+                <h1 class="m-0" style="color: #0077FF; font-weight: bold; font-size: 2rem;">Transaction History</h1>
             </div>
         </div>
     </div>
