@@ -2,17 +2,15 @@
 
 @section('content')
     <!-- Content Header (Page header) -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <!-- Title for the page -->
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0" style="color: #3200af;">Edit Profile</h1>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
+    <div class="content-header bg-light p-4 shadow-sm rounded" style="margin-bottom: 2%;">
+    <div class="container-fluid">
+        <div class="row mb-2 align-items-center">
+            <div class="col-sm-6">
+                <h1 class="m-0" style="color: #0077FF; font-weight: bold; font-size: 2rem;">Edit Profile</h1>
+            </div>
+        </div>
     </div>
-    <!-- /.content-header -->
+</div>
 
     <!-- Main content -->
     <section class="content">
