@@ -121,21 +121,23 @@
 <!-- Table and Search -->
 <section class="content">
     <div class="container">
-        <!-- Search bar aligned to the right and below links -->
-        <div class="col-12 mt-3 d-flex justify-content-start" style="margin-bottom: 3%;">
+          <!-- Search bar aligned to the right and below links -->
+          <div class="col-12 mt-3 d-flex justify-content-start" style="margin-bottom: 3%;">
             <div class="input-group rounded shadow-sm" style="max-width: 90%; width: 100%;">
                 <span class="input-group-text" style="background-color: #0077FF; color: white; border: none;">
                     <i class="fa fa-search"></i>
                 </span>
-                <input type="search" id="searchInput" class="form-control rounded" placeholder="Search..." style="border: none; padding: 10px;">
+                <input type="search" id="searchInput" class="form-control rounded shadow-sm" placeholder="Search..." style="border: none; padding: 10px;">
             </div>
-                <!-- Button to Create New Input -->
-                <button class="btn btn-primary ms-2" style="background-color: #2175d5; font-weight: bold;  margin-left: 3%;">
+                <!-- Tombol Create Product -->
+            <a href="{{ route('createProductForm') }}">
+                <button class="btn btn-primary ms-2" style="background-color: #2175d5; font-weight: bold; margin-left: 20%;">
                     <i class="fas fa-plus"></i>
                 </button>
-          </div>
+            </a>
+        </div>
 
-        <div class="table-container">
+          <div class="table-container">
             <table class="table custom-table mt-0">
                 <thead>
                     <tr>
@@ -149,7 +151,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($transactions as $index => $transaction)
+                    @forelse ($transactions as $index => $transaction)
                         <tr>
                             <th scope="row">{{ $index + 1 }}</th>
                             <td>{{ \Carbon\Carbon::parse($transaction['transaction_date'])->format('d-m-Y') }}</td>
@@ -169,7 +171,15 @@
                                 </div>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="7" class="text-center">No transactions available.</td>
+                        </tr>
+                    @endforelse
+                    <!-- Baris pesan "no match data found" -->
+                    <tr id="noMatchRow" style="display: none;">
+                        <td colspan="7" class="text-center">No match data found.</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -179,23 +189,32 @@
 
 @section('script')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('keyup', function(event) {
-            var searchText = event.target.value.toLowerCase();
-            var rows = document.querySelectorAll('.custom-table tbody tr');
-            rows.forEach(function(row) {
-                var shouldDisplay = false;
-                for (var i = 0; i < row.cells.length; i++) {
-                    var cellText = row.cells[i].textContent.toLowerCase();
-                    if (cellText.includes(searchText)) {
-                        shouldDisplay = true;
-                        break;
-                    }
-                }
-                row.style.display = shouldDisplay ? '' : 'none';
-            });
-        });
+ document.getElementById('searchInput').addEventListener('keyup', function() {
+    const query = this.value.toLowerCase();
+    const rows = document.querySelectorAll('.table-container tbody tr:not(#noMatchRow)');
+    let matchFound = false;
+
+    rows.forEach(row => {
+        const transactionDate = row.cells[1]?.textContent.toLowerCase() || "";
+        const transactionNumber = row.cells[2]?.textContent.toLowerCase() || "";
+        const createdDate = row.cells[3]?.textContent.toLowerCase() || "";
+        const notes = row.cells[5]?.textContent.toLowerCase() || "";
+
+        if (
+            transactionDate.includes(query) ||
+            transactionNumber.includes(query) ||
+            createdDate.includes(query) ||
+            notes.includes(query)
+        ) {
+            row.style.display = ''; // Tampilkan baris yang cocok
+            matchFound = true;
+        } else {
+            row.style.display = 'none'; // Sembunyikan baris yang tidak cocok
+        }
     });
+
+    // Tampilkan "no match data found" jika tidak ada data yang cocok
+    document.getElementById('noMatchRow').style.display = matchFound ? 'none' : '';
+});
 </script>
 @endsection

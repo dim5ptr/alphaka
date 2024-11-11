@@ -26,12 +26,14 @@
                 <span class="input-group-text" style="background-color: #0077FF; color: white; border: none;">
                     <i class="fa fa-search"></i>
                 </span>
-                <input type="search" id="searchInput" class="form-control rounded" placeholder="Search..." style="border: none; padding: 10px;">
+                <input type="search" id="searchInput" class="form-control rounded shadow-sm" placeholder="Search..." style="border: none; padding: 10px;">
             </div>
-                <!-- Button to Create New Input -->
-                <button class="btn btn-primary ms-2" style="background-color: #2175d5; font-weight: bold;  margin-left: 3%;">
+                <!-- Tombol Create Product -->
+            <a href="{{ route('createProductForm') }}">
+                <button class="btn btn-primary ms-2" style="background-color: #2175d5; font-weight: bold; margin-left: 20%;">
                     <i class="fas fa-plus"></i>
                 </button>
+            </a>
         </div>
         <div class="row mb-4">
             <!-- Section for links aligned to the left -->
@@ -180,7 +182,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                  @foreach($products as $no => $product)
+                  @forelse($products as $no => $product)
                         <tr>
                         <th scope="row">{{ $no + 1 }}</th> <!-- Displaying the no + 1 -->
                         <td>{{ $productFr['product_release_id'] ?? 'N/A' }}</td>
@@ -197,7 +199,16 @@
                                 </div>
                             </td>
                         </tr>
-                    @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="7" class="text-center">No products available.</td>
+                        </tr>
+                    @endforelse
+                    <!-- Baris pesan "no match data found" -->
+                    <tr id="noMatchRow" style="display: none;">
+                        <td colspan="7" class="text-center">No match data found.</td>
+                    </tr>
+                </tbody>
                 </tbody>
             </table>
         </div>
@@ -207,31 +218,30 @@
 
 @section('script')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    var searchInput = document.getElementById('searchInput');
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+    const query = this.value.toLowerCase();
+    const rows = document.querySelectorAll('.table-container tbody tr');
+    let matchFound = false;
 
-    searchInput.addEventListener('keyup', function(event) {
-        var searchText = event.target.value.toLowerCase();
-        var rows = document.querySelectorAll('.custom-table tbody tr');
+    rows.forEach(row => {
+        // Skip baris "no match data found" saat pengecekan
+        if (row.id === 'noMatchRow') return;
 
-        rows.forEach(function(row) {
-            // Initialize a variable to check if the row should be displayed
-            var shouldDisplay = false;
+        const productId = row.cells[1].textContent.toLowerCase();
+        const productName = row.cells[2].textContent.toLowerCase();
+        const productCode = row.cells[3].textContent.toLowerCase();
+        const createdBy = row.cells[5].textContent.toLowerCase();
 
-            // Loop through all cells in the current row
-            for (var i = 0; i < row.cells.length; i++) {
-                var cellText = row.cells[i].textContent.toLowerCase();
-                // Check if the search text is found in the current cell
-                if (cellText.includes(searchText)) {
-                    shouldDisplay = true;
-                    break; // No need to check further, we found a match
-                }
-            }
-
-            // Display the row if there's a match, otherwise hide it
-            row.style.display = shouldDisplay ? '' : 'none';
-        });
+        if (productId.includes(query) || productName.includes(query) || productCode.includes(query) || createdBy.includes(query)) {
+            row.style.display = ''; // Tampilkan baris yang cocok
+            matchFound = true;
+        } else {
+            row.style.display = 'none'; // Sembunyikan baris yang tidak cocok
+        }
     });
+
+    // Tampilkan "no match data found" jika tidak ada data yang cocok
+    document.getElementById('noMatchRow').style.display = matchFound ? 'none' : '';
 });
 
     function editUser(userId) {
