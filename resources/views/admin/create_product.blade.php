@@ -27,19 +27,6 @@
 
         @extends('admin.layoutadm.layoutadm')
 
-        <section class="content">
-            <div class="container">
-                @if(session('success'))
-                    <div class="alert alert-success shadow-sm">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                @if(session('error'))
-                    <div class="alert alert-danger shadow-sm">
-                        {{ session('error') }}
-                    </div>
-                @endif
 
                 <form action="{{ route('storeProduct') }}" method="POST">
                     @csrf
@@ -81,7 +68,6 @@
                 </form>
             </div>
         </section>
-        @endsection
 
         <style>
             /* Custom Styles */

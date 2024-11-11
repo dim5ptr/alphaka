@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0" style="color: #0077FF; font-weight: bold;">Create Product</h1>
+                <h1 class="m-0" style="color: #0077FF; font-weight: bold;">Update Product</h1>
             </div>
         </div>
     </div>
@@ -82,7 +82,7 @@
                 </form>
             </div>
         </section>
-        @endsection
+
 
         <style>
             /* Custom Styles */
