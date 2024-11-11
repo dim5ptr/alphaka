@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0" style="color: #0077FF; font-weight: bold;">Create Role</h1>
+                <h1 class="m-0" style="color: #0077FF; font-weight: bold;">New Product</h1>
             </div>
         </div>
     </div>
@@ -26,17 +26,6 @@
         @endif
 
         @extends('admin.layoutadm.layoutadm')
-
-        @section('content')
-        <div class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1 class="m-0" style="color: #0077FF; font-weight: bold;">New Product</h1>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <section class="content">
             <div class="container">
