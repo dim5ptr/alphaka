@@ -26,13 +26,15 @@
                 <span class="input-group-text" style="background-color: #0077FF; color: white; border: none;">
                     <i class="fa fa-search"></i>
                 </span>
-                <input type="search" id="searchInput" class="form-control rounded" placeholder="Search..." style="border: none; padding: 10px;">
+                <input type="search" id="searchInput" class="form-control rounded shadow-sm" placeholder="Search..." style="border: none; padding: 10px;">
             </div>
-                <!-- Button to Create New Input -->
-                <button class="btn btn-primary ms-2" style="background-color: #2175d5; font-weight: bold;  margin-left: 3%;">
+                <!-- Tombol Create Product -->
+            <a href="{{ route('createProductForm') }}">
+                <button class="btn btn-primary ms-2" style="background-color: #2175d5; font-weight: bold; margin-left: 20%;">
                     <i class="fas fa-plus"></i>
                 </button>
-          </div>
+            </a>
+        </div>
         <div class="row mb-4">
             <!-- Section for links aligned to the left -->
             <div class="col-12 d-flex flex-wrap justify-content-start align-items-center">
@@ -50,7 +52,7 @@
                 </a>
             </div>
         </div>
-        
+
 
         <!-- Custom CSS for smoother table design and search bar -->
         <style>
@@ -170,40 +172,48 @@
 
             <div class="table-container">
                 <table class="table custom-table mt-0">
-                <thead>
-                    <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Created Date</th>
-                        <th scope="col">Created By</th>
-                        <th scope="col">Product Id</th>
-                        <th scope="col">Product Version</th>
-                        <th scope="col">Notes</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                  @foreach($products as $no => $product)
+                    <thead>
                         <tr>
-                        <th scope="row">{{ $no + 1 }}</th> <!-- Displaying the no + 1 -->
-                        <td>{{ \Carbon\Carbon::parse($productF['created_date'])->format('d-m-Y H:i') }}</td>
-                        <td>{{ $productR['created_by'] ?? 'N/A' }}</td>
-                        <td>{{ $productR['product_id'] ?? 'N/A' }}</td>
-                            <td>{{ $productR['product_version'] ?? 'N/A' }}</td>
-                            <td>{{ $productR['notes'] ?? 'N/A' }}</td>
-                            <td class="action-buttons text-center">
-                                <div class="btn-group" role="group" aria-label="Action Buttons">
-                                    <form action="{{ route('showmoredetailsadm') }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        <button type="submit" class="btn btn-outline-primary btn-sm custom-outline-btn" title="More details">
-                                            <i class="fa fa-info-circle action-icon"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
+                            <th scope="col">No</th>
+                            <th scope="col">Created Date</th>
+                            <th scope="col">Created By</th>
+                            <th scope="col">Product Id</th>
+                            <th scope="col">Product Version</th>
+                            <th scope="col">Notes</th>
+                            <th scope="col">Action</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @forelse ($products as $no => $product)
+                            <tr>
+                                <th scope="row">{{ $no + 1 }}</th> <!-- Displaying the no + 1 -->
+                                <td>{{ \Carbon\Carbon::parse($product['created_date'])->format('d-m-Y H:i') }}</td>
+                                <td>{{ $product['created_by'] ?? 'N/A' }}</td>
+                                <td>{{ $product['product_id'] ?? 'N/A' }}</td>
+                                <td>{{ $product['product_version'] ?? 'N/A' }}</td>
+                                <td>{{ $product['notes'] ?? 'N/A' }}</td>
+                                <td class="action-buttons text-center">
+                                    <div class="btn-group" role="group" aria-label="Action Buttons">
+                                        <form action="{{ route('showmoredetailsadm') }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            <button type="submit" class="btn btn-outline-primary btn-sm custom-outline-btn" title="More details">
+                                                <i class="fa fa-info-circle action-icon"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center">No products available.</td>
+                            </tr>
+                        @endforelse
+                        <!-- Baris pesan "no match data found" -->
+                        <tr id="noMatchRow" style="display: none;">
+                            <td colspan="7" class="text-center">No match data found.</td>
+                        </tr>
+                    </tbody>
+                </table>
         </div>
     </div>
 </section>
@@ -211,31 +221,30 @@
 
 @section('script')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    var searchInput = document.getElementById('searchInput');
+   document.getElementById('searchInput').addEventListener('keyup', function() {
+    const query = this.value.toLowerCase();
+    const rows = document.querySelectorAll('.table-container tbody tr');
+    let matchFound = false;
 
-    searchInput.addEventListener('keyup', function(event) {
-        var searchText = event.target.value.toLowerCase();
-        var rows = document.querySelectorAll('.custom-table tbody tr');
+    rows.forEach(row => {
+        // Skip baris "no match data found" saat pengecekan
+        if (row.id === 'noMatchRow') return;
 
-        rows.forEach(function(row) {
-            // Initialize a variable to check if the row should be displayed
-            var shouldDisplay = false;
+        const productId = row.cells[1].textContent.toLowerCase();
+        const productName = row.cells[2].textContent.toLowerCase();
+        const productCode = row.cells[3].textContent.toLowerCase();
+        const createdBy = row.cells[5].textContent.toLowerCase();
 
-            // Loop through all cells in the current row
-            for (var i = 0; i < row.cells.length; i++) {
-                var cellText = row.cells[i].textContent.toLowerCase();
-                // Check if the search text is found in the current cell
-                if (cellText.includes(searchText)) {
-                    shouldDisplay = true;
-                    break; // No need to check further, we found a match
-                }
-            }
-
-            // Display the row if there's a match, otherwise hide it
-            row.style.display = shouldDisplay ? '' : 'none';
-        });
+        if (productId.includes(query) || productName.includes(query) || productCode.includes(query) || createdBy.includes(query)) {
+            row.style.display = ''; // Tampilkan baris yang cocok
+            matchFound = true;
+        } else {
+            row.style.display = 'none'; // Sembunyikan baris yang tidak cocok
+        }
     });
+
+    // Tampilkan "no match data found" jika tidak ada data yang cocok
+    document.getElementById('noMatchRow').style.display = matchFound ? 'none' : '';
 });
 
     function editUser(userId) {
