@@ -79,6 +79,15 @@
             font-size: 1.2rem;
         }
 
+        /* No Search Results Message Styles */
+        .no-results {
+            text-align: center;
+            padding: 10px;
+            color: #888; /* gray color for emphasis */
+            font-size: 1rem;
+            display: none; /* Initially hidden */
+        }
+
         /* Button Styles */
         .btn-primary {
             padding: 10px 15px;
@@ -144,6 +153,7 @@
     </div>
 
     <input type="text" id="member-search" class="search-bar" placeholder="Search members by name, ID, or email..." onkeyup="filterMembers()">
+    <div id="no-results" class="no-results">No members found matching your search.</div>
 
     <div class="table-container">
         <div class="table-responsive">
@@ -186,6 +196,7 @@
         function filterMembers() {
             const searchInput = document.getElementById('member-search').value.toLowerCase();
             const memberRows = document.querySelectorAll('#member-list tr');
+            let hasResults = false;
 
             memberRows.forEach(row => {
                 const userId = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
@@ -194,10 +205,14 @@
 
                 if (userId.includes(searchInput) || fullName.includes(searchInput) || email.includes(searchInput)) {
                     row.style.display = '';
+                    hasResults = true;
                 } else {
                     row.style.display = 'none';
                 }
             });
+
+            const noResultsMessage = document.getElementById('no-results');
+            noResultsMessage.style.display = hasResults ? 'none' : 'block';
         }
     </script>
 @endsection
