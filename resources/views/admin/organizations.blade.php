@@ -35,7 +35,7 @@
                             <img id="profile_picture" src="{{ asset('img/user.png') }}" alt="Profile Picture" class="profile-picture">
                             <div class="flex-grow-1 ms-3">
                                 <h3 class="card-title">{{ $organization['organization_name'] }}</h3>
-                                <p class="card-description">{{ truncateDescription($organization['description'], 10) }}</p>
+                                <p class="card-description">{{ truncateDescription($organization['description'], 5) }}</p>
                             </div>
                         </div>
                     </div>
@@ -142,6 +142,13 @@
 
     .btn-primary:hover {
         background-color: #0056b3;
+    }
+
+    /* Media Query to hide card description on tablet sizes only */
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .card-description {
+            display: none; /* Hide description on tablet */
+        }
     }
 </style>
 
