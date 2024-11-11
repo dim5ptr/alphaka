@@ -153,7 +153,7 @@
       </li>
         </li>
         <li class="nav-item">
-          <a href="{{ route('showuserdata') }}" class="nav-link {{ Request::is('userdata') ? 'active' : '' }}">
+          <a href="{{ route('showuserdata') }}" class="nav-link {{ Request::is('userdata') || Request::is('userrole') || Request::is('userrole/createrole') || Request::is('userrole/updaterole/*') || Request::is('moredetailsadm') ? 'active' : '' }}">
             <i class="nav-icon fas fa-users"></i>
             <p>Users</p>
           </a>
@@ -165,7 +165,7 @@
           </a>
         </li>
         <li class="nav-item">
-            <a href="{{ route('showLicense') }}" class="nav-link {{ Request::is('licenses') ? 'active' : '' }}">
+            <a href="{{ route('showLicense') }}" class="nav-link {{ Request::is('licenses') || Request::is('licenses/activity') || Request::is('licenses/hooks') || Request::is('licenses/orders') || Request::is('licenses/serial-numbers') ? 'active' : '' }}">
               <i class="nav-icon fas fa-file-contract"></i>
               <p>License</p>
             </a>

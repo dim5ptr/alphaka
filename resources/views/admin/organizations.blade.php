@@ -13,9 +13,14 @@
 </div>
 
 <div class="container mt-4">
+    <!-- Search Bar -->
+    <div class="mb-4">
+        <input type="text" id="search-bar" class="form-control" placeholder="Search by organization name..." onkeyup="filterOrganizations()">
+    </div>
+
     <div class="row" id="organization-list">
         @foreach($organizations as $organization)
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4 mb-4 organization-item">
                 <div class="card organization-card">
                     <div class="card-body">
                         <div class="d-flex align-items-start mb-3">
@@ -108,7 +113,7 @@
     }
 
     /* Additional styles for better aesthetics */
-    .card-footer {
+    .card -footer {
         background-color: #f8f9fa; /* Light background for footer */
         border-top: 1px solid #e9ecef; /* Subtle border on top */
     }
@@ -119,5 +124,31 @@
             margin-bottom: 20px;
         }
     }
+
+    /* Additional styles for the search bar */
+    #search-bar {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+        margin-bottom: 20px;
+    }
 </style>
+
+<script>
+    function filterOrganizations() {
+        const input = document.getElementById('search-bar');
+        const filter = input.value.toLowerCase();
+        const organizationItems = document.querySelectorAll('.organization-item');
+
+        organizationItems.forEach(item => {
+            const title = item.querySelector('.card-title').textContent.toLowerCase();
+            if (title.includes(filter)) {
+                item.style.display = ''; // Show the item
+            } else {
+                item.style.display = 'none'; // Hide the item
+            }
+        });
+    }
+</script>
 @endsection
