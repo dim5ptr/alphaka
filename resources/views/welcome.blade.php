@@ -25,10 +25,11 @@
             <div class="product-list" id="product-list">
                 @foreach($products as $product)
                     <div class="product-card" data-name="{{ strtolower($product['product_name']) }}">
+                        <a href="{{ route('showDetailProductu', ['id' => $product['product_id']]) }}" class="overlay-link"></a>
                         <img src="{{ asset('img/B.png') }}" alt="{{ $product['product_name'] }}">
                         <h3>{{ $product['product_name'] }}</h3>
                         <p class="description">{{ $product['description'] ?? 'No description available.' }}</p>
-                        <p class="price">${{ $product['price'] ?? 'N/A' }}</p>
+                        <p class="price">Rp. {{ $product['price'] ?? '0' }}</p>
                         <a href="/purchase/{{ $product['product_id'] }}" class="btn">Buy Now</a>
                     </div>
                 @endforeach
@@ -95,6 +96,16 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
+        .overlay-link {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10; /* Ensure overlay is in front of other elements */
+            text-decoration: none;
+        }
+
         .product-section {
             margin-bottom: 30px;
         }
@@ -117,7 +128,7 @@
             overflow: hidden; /* To contain the hover effect */
             display: flex; /* Enable flexbox */
             flex-direction: column; /* Stack children vertically */
-            /* height: 100%; Ensure the card takes full height */
+            /*  Ensure the card takes full height */
         }
 
         .product-card img {
@@ -126,11 +137,9 @@
             object-fit: cover; /* Ensures the image covers the area */
             border-radius: 10px 10px 0 0; /* Rounded top corners */
             transition: transform 0.3s; /* Smooth image hover effect */
+            padding-bottom: 5%;
         }
 
-        .product-card:hover img {
-            transform: scale(1.05); /* Zoom effect on hover */
-        }
 
         .product-card:hover {
             transform: translateY(-5px);
@@ -139,16 +148,27 @@
 
         .product-card h3 {
             font-size: 1.25rem;
-            margin: 10px 0;
+            margin: 1px 0;
             color: #333;
             font-weight: 600;
+            margin: 0;
+            white-space: nowrap; /* Prevent text wrapping */
+            overflow: hidden; /* Hide overflowing text */
+            text-overflow: ellipsis; /* Add ellipsis for overflowed text */
         }
 
         .description {
             font-size: 0.9rem;
             color: #666;
             margin-bottom: 10px;
+            min-height: 30px; /* Minimum height for consistency */
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Max 2 lines */
+            -webkit-box-orient: vertical;
+            text-overflow: ellipsis; /* Add ellipsis for overflowed text */
         }
+
 
         .price {
             font-size: 1.5rem;
