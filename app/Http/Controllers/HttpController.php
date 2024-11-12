@@ -926,10 +926,33 @@ public function login(Request $request)
 
 
     public function index()
-    {
+{
+    try {
+        // Prepare the API request to get the product data
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->get(self::API_URL . '/product/product_show.json');
 
-        return view('welcome');
+        // Log the API response for debugging
+        Log::info('Product API Response:', ['response' => $response->json()]);
+
+        // Check if the API response is successful
+        if ($response->successful()) {
+            $products = $response->json()['data']; // Extract the products array
+        } else {
+            // Handle the error response
+            Log::error('Failed to fetch products:', ['response' => $response->json()]);
+            $products = []; // Default to an empty array if fetching fails
+        }
+    } catch (\Exception $e) {
+        Log::error('Error fetching products:', ['message' => $e->getMessage()]);
+        $products = []; // Default to an empty array in case of an exception
     }
+
+    // Pass the products data to the view
+    return view('welcome', compact('products'));
+}
 
     public function showdashboardadm()
     {

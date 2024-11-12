@@ -7,9 +7,13 @@
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <!-- Slick Carousel CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
+
     <style>
         /* CSS Enhancements */
-
         html, body {
             height: 100%;
             margin: 0;
@@ -109,9 +113,9 @@
             color: white;
         }
 
-        .content-wrapper {
-            margin-left: 10%;
-            padding-top: 7%;
+        .main-content {
+            
+            padding-top: 5%;
             transition: margin-left .3s;
         }
 
@@ -133,7 +137,7 @@
             background-color: white;
             color: #c23636;
             border: 2px solid #c23636;
-            transition: background-color 0.3s, color 0.3s;
+            transition: background-color 0 .3s, color 0.3s;
         }
 
         .logout-button:hover {
@@ -142,7 +146,6 @@
         }
 
         @media (max-width: 768px) {
-
             .navbar p {
                 font-size: 0.678rem;
                 margin-right: 5%;
@@ -221,10 +224,9 @@
 
             if (sidebar.style.left === "0px") {
                 sidebar.style.left = "-270px";
-                mainContent.style.marginLeft = "10%";
+                
             } else {
                 sidebar.style.left = "0px";
-                mainContent.style.marginLeft = "19%";
             }
         }
     </script>
