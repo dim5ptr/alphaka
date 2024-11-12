@@ -93,7 +93,7 @@
             background-color: white;
             overflow-x: hidden;
             transition: 0.3s;
-            padding-top: 6%;
+            padding-top: 2%;
             box-shadow: 1px 0 9px rgba(0, 0, 0, 0.1);
             z-index: 1;
         }
@@ -228,15 +228,14 @@
             display: flex;
             text-align : center;
             padding: 8px 9px;
-            margin-bottom: 2%;
             border-radius: 5px;
             text-decoration: none;
             font-weight: 700;
             font-size: 15px;
             width: calc(80% - 40px);
             box-sizing: border-box;
-            position: relative;
-            top: 100%;
+            position: absolute;
+            top: 70%;
             background-color: white;
             color: #c23636;
             border: 2px solid #c23636;
@@ -299,7 +298,7 @@
 <body>
     <nav class="navbar">
         <div class="open-btn">
-            <button onclick="toggleSidebar()">&#9776; Dashboard</button>
+            <button onclick="toggleSidebar()">&#9776; Product</button>
         </div>
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
@@ -308,7 +307,7 @@
         <div class="sidebar-isi">
             <ul class="list">
                 <li>
-                    <a href="/" class="nav-link-act">
+                    <a href="/" class="nav-link">
                         <span class="link"><i class="fa-solid fa-house-chimney"></i>ㅤDashboard</span>
                     </a>
                 </li>
@@ -318,7 +317,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/produk" class="nav-link">
+                    <a href="/produk" class="nav-link-act">
                         <span class="link"><i class="fa-solid fa-cube"></i>ㅤProduct</span>
                     </a>
                 </li>
@@ -333,7 +332,6 @@
                     </a>
                 </li>
             </ul>
-
                 <form id="logoutForm" method="GET" class="logoutForm" action="{{ route('confirm-logout') }}">
                 <button type="submit" class="logout-button">ㅤ <i class="fa-solid fa-right-from-bracket"></i>ㅤLogout</button>
                 </form>
