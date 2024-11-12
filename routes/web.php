@@ -105,9 +105,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/productFolder', [HttpController::class, 'showProductsFolder'])->name('showProductsFolder');
         Route::get('/productsFeatures', [HttpController::class, 'showProductsFeatures'])->name('showProductsFeatures');
         Route::get('/productsRelease', [HttpController::class, 'showProductsRelease'])->name('showProductsRelease');
-        Route::get('/products/edit/{id}', [HttpController::class, 'showEditProductForm'])->name('showproductsedit');
+        Route::get('/products/edit/{id}', [HttpController::class, 'showEditProductForm'])->name(name: 'showproductsedit');
         Route::post('/products/update', [HttpController::class, 'updateProduct'])->name('updateProduct');
-
+        Route::get('/products/create', [HttpController::class, 'createProductForm'])->name('createProductForm');
+        Route::post('/products/store', [HttpController::class, 'storeProduct'])->name('storeProduct');
 
 
         // Route to view organizations for admin

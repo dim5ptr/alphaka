@@ -3,16 +3,12 @@
 @section('content')
 
 <!-- Main content -->
-<div class="content-header">
+<div class="content-header bg-light p-4 shadow-sm rounded" style="margin-bottom: 2%;">
     <div class="container-fluid">
-        <div class="row mb-2">
+        <div class="row mb-2 align-items-center">
             <div class="col-sm-6">
-                <h1 class="m-0" style="color: #0077FF; font-weight: bold;">Products List</h1>
-                </div>
-            <div class="col-sm-6">
-                <!-- You can add additional header content here if needed -->
+                <h1 class="m-0" style="color: #0077FF; font-weight: bold; font-size: 2rem;">Product List</h1>
             </div>
-            <br><br>
         </div>
     </div>
 </div>
@@ -26,12 +22,14 @@
                 <span class="input-group-text" style="background-color: #0077FF; color: white; border: none;">
                     <i class="fa fa-search"></i>
                 </span>
-                <input type="search" id="searchInput" class="form-control rounded" placeholder="Search..." style="border: none; padding: 10px;">
+                <input type="search" id="searchInput" class="form-control rounded shadow-sm" placeholder="Search..." style="border: none; padding: 10px;">
             </div>
-                <!-- Button to Create New Input -->
-                <button class="btn btn-primary ms-2" style="background-color: #2175d5; font-weight: bold;  margin-left: 3%;">
+                <!-- Tombol Create Product -->
+            <a href="{{ route('createProductForm') }}">
+                <button class="btn btn-primary ms-2" style="background-color: #2175d5; font-weight: bold; margin-left: 20%;">
                     <i class="fas fa-plus"></i>
                 </button>
+            </a>
         </div>
 
         <div class="row mb-4">
@@ -215,100 +213,53 @@
         </style>
 
       <div class="table-container">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Product Id</th>
-                <th>Product Name</th>
-                <th>Product Code</th>
-                <th>Description</th>
-                <th>Created By</th>
-                <th>Created Date</th>
-                <th>Price</th>
-                <th>Enabled</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if(isset($products) && count($products) > 0)
-                @foreach($products as $no => $product)
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <th scope="row">{{ $no + 1 }}</th>
-                        <td>{{ $product['product_id'] ?? 'N/A' }}</td>
-                        <td>{{ $product['product_name'] ?? 'N/A' }}</td>
-                        <td>{{ $product['product_code'] ?? 'N/A' }}</td>
-                        <td>{{ $product['description'] ?? 'N/A' }}</td>
-                        <td>{{ $product['created_by'] ?? 'N/A' }}</td>
-                        <td>{{ \Carbon\Carbon::parse($product['created_date'])->format('d-m-Y H:i') }}</td>
-                        <td>Rp.{{ $product['price'] ?? '0' }}</td>
-                        <td>{{ $product['enabled'] ? 'Yes' : 'No' }}</td>
-                        <td class="text-center">
-                            <a href="{{ route('showproductsedit', ['id' => $product['product_id']]) }}" class="btn btn-outline-primary btn-sm">
-                                <i class="fa fa-edit action-icon"></i>
-                            </a>
-                        </td>
+                        <th>No</th>
+                        <th>Product Id</th>
+                        <th>Product Name</th>
+                        <th>Product Code</th>
+                        <th>Description</th>
+                        <th>Created By</th>
+                        <th>Created Date</th>
+                        <th>Price</th>
+                        <th>Enabled</th>
+                        <th>Action</th>
                     </tr>
-                @endforeach
-            @else
-                <tr>
-                    <td colspan="10" class="text-center">No products available.</td>
-                </tr>
-            @endif
-        </tbody>
-    </table>
-</div>
-
-<!-- Modal Edit Product -->
-<div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="updateProductForm" method="POST">
-                @csrf
-                <input type="hidden" name="_method" value="POST"> <!-- Add hidden _method for POST compatibility -->
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="product_id" id="product_id">
-
-                    <div class="mb-3">
-                        <label for="product_name" class="form-label">Product Name</label>
-                        <input type="text" class="form-control" name="product_name" id="product_name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="product_code" class="form-label">Product Code</label>
-                        <input type="text" class="form-control" name="product_code" id="product_code" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" name="description" id="description"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="price" class="form-label">Price</label>
-                        <input type="number" class="form-control" name="price" id="price" step="0.001" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="product_type" class="form-label">Product Type</label>
-                        <input type="number" class="form-control" name="product_type" id="product_type" required>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="enabled" id="enabled">
-                        <label class="form-check-label" for="enabled">Enabled</label>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-
+                </thead>
+                <tbody>
+                    @if(isset($products) && count($products) > 0)
+                        @foreach($products as $no => $product)
+                            <tr>
+                                <th scope="row">{{ $no + 1 }}</th>
+                                <td>{{ $product['product_id'] ?? 'N/A' }}</td>
+                                <td>{{ $product['product_name'] ?? 'N/A' }}</td>
+                                <td>{{ $product['product_code'] ?? 'N/A' }}</td>
+                                <td>{{ $product['description'] ?? 'N/A' }}</td>
+                                <td>{{ $product['created_by'] ?? 'N/A' }}</td>
+                                <td>{{ \Carbon\Carbon::parse($product['created_date'])->format('d-m-Y H:i') }}</td>
+                                <td>Rp.{{ $product['price'] ?? '0' }}</td>
+                                <td>{{ $product['enabled'] ? 'Yes' : 'No' }}</td>
+                                <td class="text-center">
+                                    <a href="{{ route('showproductsedit', ['id' => $product['product_id']]) }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fa fa-edit action-icon"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                                <!-- Tambahkan baris pesan "no match data found" -->
+                            <tr id="noMatchRow" style="display: none;">
+                                <td colspan="10" class="text-center">No match data found.</td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td colspan="10" class="text-center">No products available.</td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </section>
@@ -316,36 +267,31 @@
 
 @section('script')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    var searchInput = document.getElementById('searchInput');
+document.getElementById('searchInput').addEventListener('keyup', function() {
+    const query = this.value.toLowerCase();
+    const rows = document.querySelectorAll('.table-container tbody tr');
+    let matchFound = false;
 
-    searchInput.addEventListener('keyup', function(event) {
-        var searchText = event.target.value.toLowerCase();
-        var rows = document.querySelectorAll('.custom-table tbody tr');
+    rows.forEach(row => {
+        // Skip baris "no match data found" saat pengecekan
+        if (row.id === 'noMatchRow') return;
 
-        rows.forEach(function(row) {
-            // Initialize a variable to check if the row should be displayed
-            var shouldDisplay = false;
+        const productId = row.cells[1].textContent.toLowerCase();
+        const productName = row.cells[2].textContent.toLowerCase();
+        const productCode = row.cells[3].textContent.toLowerCase();
+        const createdBy = row.cells[5].textContent.toLowerCase();
 
-            // Loop through all cells in the current row
-            for (var i = 0; i < row.cells.length; i++) {
-                var cellText = row.cells[i].textContent.toLowerCase();
-                // Check if the search text is found in the current cell
-                if (cellText.includes(searchText)) {
-                    shouldDisplay = true;
-                    break; // No need to check further, we found a match
-                }
-            }
-
-            // Display the row if there's a match, otherwise hide it
-            row.style.display = shouldDisplay ? '' : 'none';
-        });
+        if (productId.includes(query) || productName.includes(query) || productCode.includes(query) || createdBy.includes(query)) {
+            row.style.display = ''; // Tampilkan baris yang cocok
+            matchFound = true;
+        } else {
+            row.style.display = 'none'; // Sembunyikan baris yang tidak cocok
+        }
     });
-});
 
-    function editUser(userId) {
-        window.location.href = '/users/edit/' + userId;
-    }
+    // Tampilkan "no match data found" jika tidak ada data yang cocok
+    document.getElementById('noMatchRow').style.display = matchFound ? 'none' : '';
+});
 
     function confirmDelete(button) {
         Swal.fire({
@@ -362,52 +308,6 @@
             }
         });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-    // Attach event listener to all edit buttons to open modal with product data
-    document.querySelectorAll('.edit-product-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const productId = this.getAttribute('data-product-id');
-            const productName = this.getAttribute('data-product-name');
-            const productCode = this.getAttribute('data-product-code');
-            const description = this.getAttribute('data-description');
-            const price = this.getAttribute('data-price');
-            const productType = this.getAttribute('data-product-type');
-            const enabled = this.getAttribute('data-enabled') === '1';
-
-            // Verify if data attributes are present and not empty
-            if (!productId || !productName || !productCode) {
-                console.error('Missing required product data');
-                return; // Exit if essential data is missing
-            }
-
-            // Set form action to include product_id
-            const form = document.getElementById('updateProductForm');
-            if (form) {
-                form.action = `/products/update/${productId}`;
-            }
-
-            // Set form values
-            document.getElementById('product_id').value = productId;
-            document.getElementById('product_name').value = productName;
-            document.getElementById('product_code').value = productCode;
-            document.getElementById('description').value = description;
-            document.getElementById('price').value = price;
-            document.getElementById('product_type').value = productType;
-            document.getElementById('enabled').checked = enabled;
-
-            // Log data to console
-            console.log(`Opening modal for product ${productId}: ${productName}`);
-            console.log(`Form action set to: ${form.action}`);
-
-            // Show the modal using Bootstrap's modal function
-            $('#editProductModal').modal('show');
-
-            // Log modal opening confirmation
-            console.log('Modal opened successfully.');
-        });
-    });
-});
 
 </script>
 @endsection

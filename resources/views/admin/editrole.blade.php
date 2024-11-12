@@ -1,11 +1,11 @@
 @extends('admin.layoutadm.layoutadm')
 
 @section('content')
-<div class="content-header">
+<div class="content-header bg-light p-4 shadow-sm rounded" style="margin-bottom: 2%;">
     <div class="container-fluid">
-        <div class="row mb-2">
+        <div class="row mb-2 align-items-center">
             <div class="col-sm-6">
-                <h1 class="m-0" style="color: #0077FF; font-weight: bold;">Create Role</h1>
+                <h1 class="m-0" style="color: #0077FF; font-weight: bold; font-size: 2rem;">Update Role</h1>
             </div>
         </div>
     </div>
@@ -28,15 +28,15 @@
         @extends('admin.layoutadm.layoutadm')
 
         @section('content')
-        <div class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1 class="m-0" style="color: #0077FF; font-weight: bold;">Update Role</h1>
-                    </div>
-                </div>
+        <div class="content-header bg-light p-4 shadow-sm rounded" style="margin-bottom: 2%;">
+    <div class="container-fluid">
+        <div class="row mb-2 align-items-center">
+            <div class="col-sm-6">
+                <h1 class="m-0" style="color: #0077FF; font-weight: bold; font-size: 2rem;">Update Role</h1>
             </div>
         </div>
+    </div>
+</div>
 
         <section class="content">
             <div class="container">

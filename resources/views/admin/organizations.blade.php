@@ -2,27 +2,40 @@
 
 @section('content')
 <!-- Content Header (Page header) -->
-<div class="content-header">
+<div class="content-header bg-light p-4 shadow-sm rounded">
     <div class="container-fluid">
-        <div class="row mb-2">
+        <div class="row mb-2 align-items-center">
             <div class="col-sm-6">
-                <h1 class="m-0" style="color: #0077FF; font-weight: bold;">Organization List</h1>
+                <h1 class="m-0" style="color: #0077FF; font-weight: bold; font-size: 2rem;">Organization List</h1>
             </div>
         </div>
     </div>
 </div>
 
 <div class="container mt-4">
+    <!-- Search Bar -->
+    <div class="mb-4">
+        <input type="text" id="search-bar" class="form-control search-bar" placeholder="Search by organization name..." onkeyup="filterOrganizations()">
+    </div>
+
+    <div id="no-results" class="no-results" style="display: none;">
+        <div class="alert alert-info text-center">
+            <i class="fa-solid fa-info-circle" style="font-size: 2rem; color: #007bff;"></i>
+            <h4>No Organizations Found</h4>
+            <p>Try adjusting your search criteria or adding a new organization.</p>
+        </div>
+    </div>
+
     <div class="row" id="organization-list">
         @foreach($organizations as $organization)
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4 mb-4 organization-item">
                 <div class="card organization-card">
                     <div class="card-body">
                         <div class="d-flex align-items-start mb-3">
                             <img id="profile_picture" src="{{ asset('img/user.png') }}" alt="Profile Picture" class="profile-picture">
                             <div class="flex-grow-1 ms-3">
                                 <h3 class="card-title">{{ $organization['organization_name'] }}</h3>
-                                <p class="card-description">{{ $organization['description'] }}</p> <!-- Description below the title -->
+                                <p class="card-description">{{ truncateDescription($organization['description'], 5) }}</p>
                             </div>
                         </div>
                     </div>
@@ -39,15 +52,41 @@
 </div>
 
 <style>
-    /* Enhanced styles for the organization cards */
+    /* Enhanced styles for the search bar */
+    .search-bar {
+        border-radius: 25px;
+        border: 1px solid #007bff;
+        padding: 10px 20px;
+        transition: border-color 0.3s;
+    }
+
+    .search-bar:focus {
+        outline: none;
+        border-color: #0056b3;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    /* Styles for the no results message */
+    .no-results {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .no-results .alert {
+        border-radius: 15px;
+        padding: 20px;
+        background-color: #f8f9fa;
+        color: #333;
+    }
+
     .organization-card {
         background-color: #ffffff;
         border: none;
-        border-radius: 15px; /* Rounded corners */
+        border-radius: 15px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         transition: transform 0.3s, box-shadow 0.3s;
-        overflow: hidden; /* Prevent overflow of content */
-        height: 270px; /* Fixed height for even card sizes */
+        overflow: hidden;
+        height: 270px;
     }
 
     .organization-card:hover {
@@ -56,30 +95,30 @@
     }
 
     .card-body {
-        padding: 20px; /* Increased padding for better spacing */
-        height: calc(100% - 60px); /* Adjust height to fit within the card */
+        padding: 20px;
+        height: calc(100% - 60px);
         display: flex;
-        flex-direction: column; /* Ensure the body grows vertically */
-        justify-content: space-between; /* Space out content */
+        flex-direction: column;
+        justify-content: space-between;
     }
 
     .card-title {
         font-size: 1.5rem;
         font-weight: bold;
         color: #333;
-        margin-bottom: 0.5rem; /* Space below title */
+        margin-bottom: 0.5rem;
         width: 100%;
     }
 
     .card-description {
         font-size: 1rem;
         color: #666;
-        margin-bottom: 1rem; /* Space below description */
-        line-height: 1.5; /* Improved readability */
+        margin-bottom: 1rem;
+        line-height: 1.5;
     }
 
     .profile-picture {
-        width: 70px; /* Slightly larger profile picture */
+        width: 70px;
         height: 70px;
         border-radius: 50%;
         object-fit: cover;
@@ -96,28 +135,41 @@
     .btn-primary {
         background-color: #007bff;
         border: none;
-        padding: 10px 20px; /* Increased padding for buttons */
-        border-radius: 5px; /* Rounded button corners */
-        transition: background-color 0.3s, transform 0.3s;
-        font-weight: bold; /* Bold text for buttons */
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
     }
 
     .btn-primary:hover {
         background-color: #0056b3;
-        transform: translateY(-2px); /* Button lift effect */
     }
 
-    /* Additional styles for better aesthetics */
-    .card-footer {
-        background-color: #f8f9fa; /* Light background for footer */
-        border-top: 1px solid #e9ecef; /* Subtle border on top */
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .organization-card {
-            margin-bottom: 20px;
+    /* Media Query to hide card description on tablet sizes only */
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .card-description {
+            display: none; /* Hide description on tablet */
         }
     }
 </style>
+
+<script>
+    function filterOrganizations() {
+        const searchInput = document.getElementById('search-bar').value.toLowerCase();
+        const organizationItems = document.querySelectorAll('.organization-item');
+        let hasResults = false;
+
+        organizationItems.forEach(item => {
+            const title = item.querySelector('.card-title').textContent.toLowerCase();
+            if (title.includes(searchInput)) {
+                item.style.display = '';
+                hasResults = true;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        const noResultsMessage = document.getElementById('no-results');
+        noResultsMessage.style.display = hasResults ? 'none' : 'block';
+    }
+</script>
 @endsection

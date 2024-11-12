@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\DB;
 use App\Mail\VerifAddMember; // Add this line
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
+
 
 
 
@@ -2748,48 +2750,153 @@ public function showEditProductForm($id)
         Log::error("Exception while retrieving product with ID {$id}: " . $e->getMessage());
         return redirect()->route('showProducts')->with('error', 'Error retrieving product data');
     }
-}
-
-
-public function updateProduct(Request $request)
+}public function updateProduct(Request $request)
 {
-    $request->validate([
-        'product_id' => 'required|integer',
-        'product_name' => 'required|string|max:255',
-        'product_code' => 'required|string|max:50|alpha_dash',
-        'description' => 'nullable|string',
-        'price' => 'nullable|numeric|min:0|max:99999999.999',
-        'product_type' => 'required|integer',
-        'enabled' => 'required|boolean',
-    ]);
+    // Log request input
+    Log::info('Received product update request:', $request->all());
 
-    $price = $request->price;
-    if (!is_null($price)) {
-        $price = number_format((float)str_replace('.', '', $price), 3, '.', '');
-    }
+    try {
+        // Pastikan 'enabled' dikonversi menjadi boolean
+        $request->merge(['enabled' => $request->has('enabled')]);
 
-    $data = [
-        'product_id' => $request->product_id,
-        'product_name' => $request->product_name,
-        'product_code' => $request->product_code,
-        'description' => $request->description,
-        'price' => $price,
-        'product_type' => $request->product_type,
-        'enabled' => $request->enabled,
-    ];
+        // Validasi input
+        $request->validate([
+            'product_id' => 'required|integer',
+            'product_name' => 'required|string|max:255',
+            'product_code' => 'required|string|max:50|alpha_dash',
+            'description' => 'nullable|string',
+            'price' => 'nullable|numeric|min:0|max:99999999.999',
+            'product_type' => 'required|integer',
+            'enabled' => 'required|boolean',
+        ]);
 
-    $response = Http::withHeaders([
-        'Authorization' => session('access_token'),
-        'x-api-key' => self::API_KEY,
-    ])->post(self::API_URL . '/product/update_product.json', $data);
+        // Log setelah validasi
+        Log::info('Validation passed, proceeding with product update.');
 
-    if ($response->successful()) {
-        return view('admin.products')->with('success', 'Product updated successfully.');
-    } else {
-        return redirect()->back()->with('error', 'Failed to update product. Please try again.');
+        // Format harga jika ada
+        $price = $request->price;
+        if (!is_null($price)) {
+            $price = number_format((float)$price, 3, '.', '');
+        }
+
+        // Data yang akan dikirim ke API
+        $data = [
+            'product_id' => $request->product_id,
+            'product_name' => $request->product_name,
+            'product_code' => $request->product_code,
+            'description' => $request->description,
+            'price' => $price,
+            'product_type' => $request->product_type,
+            'enabled' => $request->enabled,
+        ];
+
+        // Log data yang akan dikirim ke API
+        Log::info('Sending update request to API:', $data);
+
+        // Mengirim request ke API untuk update produk
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])
+        ->timeout(10)
+        ->post(self::API_URL . '/product/update_product.json', $data);
+
+        // Log respons dari API
+        Log::info('API response received:', $response->json());
+
+        // Cek apakah request berhasil
+        if ($response->successful() && $response->json('success')) {
+            Log::info('Product updated successfully.');
+            return redirect()->route('showProducts')->with('success_message', 'Product updated successfully.');
+        } else {
+            Log::error('Failed to update product. Response: ' . $response->body());
+            return redirect()->back()->with('error', 'Failed to update product. Please try again.');
+        }
+    } catch (ValidationException $e) {
+        Log::error('Validation failed:', $e->errors());
+        return redirect()->back()->withErrors($e->errors())->withInput();
+    } catch (\Illuminate\Http\Client\RequestException $e) {
+        Log::error('HTTP Request failed: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'HTTP Request failed: ' . $e->getMessage());
+    } catch (\Exception $e) {
+        Log::error('An unexpected error occurred during product update:', ['message' => $e->getMessage()]);
+        return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
     }
 }
 
+
+    // Method untuk menampilkan form create product
+    public function createProductForm()
+    {
+        return view('admin.create_product');
+    }
+
+    // Method untuk menyimpan produk baru
+    public function storeProduct(Request $request)
+    {
+        // Log input request
+        Log::info('Received product creation request:', $request->all());
+
+        try {
+            // Pastikan 'enabled' dikonversi menjadi boolean
+            $request->merge(['enabled' => $request->has('enabled')]);
+
+            // Validasi input
+            $request->validate([
+                'product_name' => 'required|string|max:255',
+                'product_code' => 'required|string|max:50|alpha_dash',
+                'description' => 'nullable|string',
+                'price' => 'nullable|numeric|min:0|max:99999999.999',
+                'product_type' => 'required|integer',
+                'enabled' => 'required|boolean',
+            ]);
+
+            // Log setelah validasi
+            Log::info('Validation passed, proceeding with product creation.');
+
+            // Format harga jika ada
+            $price = $request->price;
+            if (!is_null($price)) {
+                $price = number_format((float)$price, 3, '.', '');
+            }
+
+            // Data yang akan dikirim untuk membuat produk baru
+            $data = [
+                'product_name' => $request->product_name,
+                'product_code' => $request->product_code,
+                'description' => $request->description,
+                'price' => $price,
+                'product_type' => $request->product_type,
+                'enabled' => $request->enabled,
+            ];
+
+            Log::info('Sending request to API:', $data);
+
+            // Kirim request ke API
+            $response = Http::withHeaders([
+                'Authorization' => session('access_token'),
+                'x-api-key' => self::API_KEY,
+            ])
+            ->timeout(10)
+            ->post(self::API_URL . '/product/create_product.json', $data);
+
+            if ($response->successful()) {
+                Log::info('Product created successfully.');
+                return redirect()->route('showProducts')->with('success', 'Product created successfully.');
+            } else {
+                $status = $response->status();
+                $errorMessage = $response->json('message') ?? 'Unknown error';
+                Log::error("Failed to create product. Status: {$status}, Error: {$errorMessage}");
+                return redirect()->back()->with('error', 'Failed to create product. Please try again.');
+            }
+        } catch (ValidationException $e) {
+            Log::error('Validation failed:', $e->errors());
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            Log::error('An unexpected error occurred during product creation:', ['message' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
+        }
+    }
 
 
 public function showTransaction(Request $request)
