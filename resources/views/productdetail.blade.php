@@ -1,177 +1,4 @@
-@extends('layout.userlayout')
-
-@section('head')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
-@endsection
-
-@section('content')
-<style>
-    /* General Styles */
-    .main-content {
-        width: 100%;
-        height: 100%;
-        padding-top: 5%;
-        padding-left: 5%;
-        padding-right: 5%;
-        transition: margin-left .3s;
-    }
-
-    .product-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 16px;
-        margin: 0 auto;
-    }
-
-    .product-card {
-        position: relative;
-        flex: 1 1 calc(25% - 16px); /* 4 items per row with spacing */
-        max-width: 25%;
-        border: 1px solid #AFC3FC;
-        border-radius: 8px;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        padding: 16px;
-        background-color: #ffffff;
-        color: #333333;
-        text-align: left;
-        transition: transform 0.3s ease;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        box-sizing: border-box;
-        min-height: 350px; /* Ensures consistent card height */
-    }
-
-    .product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    }
-
-    .product-image {
-        width: 100%;
-        height: 180px; /* Adjusted for consistency */
-        object-fit: cover;
-        border-radius: 8px;
-        margin-bottom: 16px;
-    }
-
-    .title-price-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 8px;
-    }
-
-    .product-title {
-        font-size: 16px;
-        color: #365AC2;
-        margin: 0;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .product-price {
-        font-size: 18px;
-        color: #365AC2;
-        font-weight: bold;
-        margin: 0;
-    }
-
-    .product-description {
-        font-size: 14px;
-        color: #666666;
-        margin-bottom: 12px;
-        min-height: 40px;
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        text-overflow: ellipsis;
-    }
-
-    .rating {
-        font-size: 14px;
-        color: #FFC107;
-        margin-bottom: 16px;
-    }
-
-    .add-to-cart-btn {
-        background-color: #365AC2;
-        color: #ffffff;
-        border: none;
-        padding: 10px 16px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: background-color 0.3s ease;
-        margin-top: auto;
-    }
-
-    .add-to-cart-btn:hover {
-        background-color: #AFC3FC;
-    }
-
-    /* Media Queries for Responsiveness */
-    @media (max-width: 1200px) {
-        .product-card {
-            flex: 1 1 calc(33.33% - 16px); /* 3 items per row */
-        }
-    }
-
-    @media (max-width: 900px) {
-        .product-card {
-            flex: 1 1 calc(50% - 16px); /* 2 items per row */
-        }
-    }
-
-    @media (max-width: 600px) {
-        .product-card {
-            flex: 1 1 100%; /* 1 item per row */
-        }
-
-        .main-content {
-            padding-left: 3%;
-            padding-right: 3%;
-        }
-    }
-
-    html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        font-family: 'Poppins', sans-serif;
-        background-color: #d5def7;
-    }
-</style>
-
-<div id="main-content" class="main-content">
-    <div class="product-container">
-        @foreach($products as $product)
-        <div class="product-card">
-            <a href="{{ route('showDetailProductu', ['id' => $product['product_id']]) }}" class="overlay-link"></a>
-            <img src="{{ asset('img/App.gif') }}" alt="Product Image" class="product-image">
-            <div class="title-price-container">
-                <h2 class="product-title">{{ $product['product_name'] ?? 'Product Name' }}</h2>
-                <div class="product-price">Rp. {{ number_format($product['price'] ?? 0, 0, ',', '.') }}</div>
-            </div>
-            <p class="product-description">{{ $product['description'] ?? 'No description available.' }}</p>
-            <div class="rating">⭐⭐⭐⭐⭐</div>
-            <button class="add-to-cart-btn">Add to Cart</button>
-        </div>
-        @endforeach
-    </div>
-</div>
-
-@endsection
-
-{{-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -183,7 +10,24 @@
     <style>
         /* CSS Enhancements */
 
+        section {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #d5def7;
+        }
+
+        body {
+            transition: margin-left 0.3s;
+        }
 
         .navbar {
             position: fixed;
@@ -365,7 +209,14 @@
             color: darkblue;
         }
 
-
+        .main-content {
+            width: calc(100% - 270px);
+            height: 100%;
+            flex: 1;
+            padding-top: 10%;
+            margin-left: 10%;
+            transition: margin-left .3s;
+        }
         .logoutForm {
             list-style: none;
             height: 50%;
@@ -404,6 +255,168 @@
             font-weight: 700;
         }
 
+
+        .product-detail-container {
+            display: flex;
+            gap: 40px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+            background-color: #FFFFFF;
+            border-radius: 8px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image-gallery {
+            flex: 1;
+        }
+
+        .main-image {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .thumbnail-gallery {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .thumbnail-gallery img {
+            width: 50px;
+            height: 50px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid #AFC3FC;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-title {
+            font-size: 24px;
+            color: #333333;
+            font-weight: bold;
+        }
+
+        .product-description {
+            font-size: 16px;
+            color: #666666;
+            margin: 10px 0;
+        }
+
+        .product-rating {
+            font-size: 14px;
+            color: #FFC107;
+        }
+
+        .product-price {
+            font-size: 28px;
+            color: #365AC2;
+            font-weight: bold;
+            margin: 20px 0 5px;
+        }
+
+        .product-subtext {
+            font-size: 12px;
+            color: #999999;
+        }
+
+        .color-selection {
+            margin: 15px 0;
+        }
+
+        .color-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .color-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 1px solid #AFC3FC;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .quantity-btn {
+            background-color: #AFC3FC;
+            color: #FFFFFF;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .quantity-input {
+            width: 30px;
+            text-align: center;
+            border: 1px solid #AFC3FC;
+            border-radius: 4px;
+        }
+
+        .stock-info {
+            color: #E74C3C;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .purchase-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .buy-now-btn, .add-to-cart-btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .buy-now-btn {
+            background-color: #365AC2;
+            color: #ffffff;
+        }
+
+        .add-to-cart-btn {
+            background-color: #ffffff;
+            color: #365AC2;
+            border: 2px solid #365AC2;
+        }
+
+        .buy-now-btn:hover {
+            background-color: #AFC3FC;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #AFC3FC;
+            color: #ffffff;
+        }
+
+        .delivery-info {
+            margin-top: 20px;
+            border-top: 1px solid #AFC3FC;
+            padding-top: 10px;
+        }
+
+        .delivery-option, .return-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #333333;
+            margin-top: 10px;
+        }
 
         @media (max-width: 768px) {
 
@@ -488,7 +501,81 @@
             </ul>
         </div>
     </div>
+    <div id="main-content" class="main-content">
+        <div class="product-detail-container">
+            <div class="product-image-gallery">
+                <!-- Replace with the actual product image URL -->
+                <img src="{{ asset('img/App.gif') }}" alt="{{ $product['product_name'] }}" class="main-image">
+                <div class="thumbnail-gallery">
+                    <!-- Add actual thumbnail images if available -->
+                    <img src="{{ asset('img/App.gif') }}" alt="Thumbnail 1">
+                    <img src="{{ asset('img/App.gif') }}" alt="Thumbnail 2">
+                    <img src="{{ asset('img/App.gif') }}" alt="Thumbnail 3">
+                    <img src="{{ asset('img/App.gif') }}" alt="Thumbnail 4">
+                </div>
+            </div>
 
+            <div class="product-info">
+                <!-- Dynamic product name -->
+                <h1 class="product-title">{{ $product['product_name'] }}</h1>
+                <p class="product-description">
+                    {{ $product['description'] }}
+                </p>
+
+                <div class="product-rating">
+                    <!-- Add dynamic rating if available, here using a placeholder rating -->
+                    ⭐⭐⭐⭐⭐ (121)
+                </div>
+
+                <div class="product-price">
+                    <!-- Display dynamic price -->
+                    Rp.{{ ($product['price']) ?? '0' }}
+                    <span class="product-subtext">Suggested payments with 6 months special financing</span>
+                </div>
+
+                <div class="color-selection">
+                    <label>Choose a Color</label>
+                    <div class="color-options">
+                        <!-- Add color options dynamically if needed -->
+                        <span class="color-circle" style="background-color: #FF9999;"></span>
+                        <span class="color-circle" style="background-color: #000000;"></span>
+                        <span class="color-circle" style="background-color: #C0C0C0;"></span>
+                        <span class="color-circle" style="background-color: #365AC2;"></span>
+                        <span class="color-circle" style="background-color: #AFC3FC;"></span>
+                    </div>
+                </div>
+
+                <div class="quantity-selector">
+                    <button class="quantity-btn">-</button>
+                    <input type="text" value="1" class="quantity-input">
+                    <button class="quantity-btn">+</button>
+                </div>
+
+                <div class="stock-info">
+                    <span class="stock-warning">Only 12 Items Left!</span> Don’t miss it
+                </div>
+
+                <div class="purchase-buttons">
+                    <button class="buy-now-btn">Buy Now</button>
+                    <button class="add-to-cart-btn">Add to Cart</button>
+                </div>
+
+                <div class="delivery-info">
+                    <div class="delivery-option">
+                        <span>🚚</span> Free Delivery
+                        <p>Enter your Postal code for Delivery Availability</p>
+                    </div>
+                    <div class="return-option">
+                        <span>🔄</span> Return Delivery
+                        <p>Free 30days Delivery Returns. <a href="#">Details</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
     <script>
         function toggleSidebar() {
             var sidebar = document.getElementById("sidebar");
@@ -532,9 +619,9 @@
             alert('Terjadi kesalahan saat logout!');
         });
     });
-</script>
+</script> --}}
 </div>
 
 
 </body>
-</html> --}}
+</html>
