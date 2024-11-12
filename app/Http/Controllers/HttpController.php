@@ -3330,5 +3330,32 @@ public function serialnumberdetails(Request $request)
         return back()->with('error', 'An error occurred: ' . $e->getMessage());
     }
 }
+public function showProductsu(Request $request)
+{
+    try {
+        Log::info('Requesting product data from API: ' . self::API_URL . '/product/product_show.json');
 
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->get(self::API_URL . '/product/product_show.json');
+
+        Log::info('API Response: ' . $response->body());
+
+        if ($response->successful()) {
+            $products = $response->json()['data'] ?? [];
+            Log::info('Product data retrieved successfully, total products: ' . count($products));
+
+            // Mengirimkan data produk ke view `admin.products`
+            return view('products', ['products' => $products]);
+        }
+
+        Log::error('API request failed with status ' . $response->status() . ': ' . $response->body());
+        return redirect()->back()->with('error', 'Failed to retrieve product data.');
+
+    } catch (\Exception $e) {
+        Log::error('Exception while retrieving product data: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Error retrieving data');
+    }
+}
 }
