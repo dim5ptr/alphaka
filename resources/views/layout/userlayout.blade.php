@@ -7,7 +7,7 @@
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    
+
     <!-- Slick Carousel CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
@@ -180,27 +180,27 @@
         <div class="sidebar-isi">
             <ul class="list">
                 <li>
-                    <a href="/" class="{{ request()->is('/') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Dashboard')">
+                    <a href="/" class="{{ request()->is('/*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Dashboard')">
                         <span class="link"><i class="fa-solid fa-house-chimney"></i>ㅤDashboard</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/organization" class="{{ request()->is('organization') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Organization')">
+                    <a href="/organization" class="{{ request()->is('organization*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Organization')">
                         <span class="link"><i class="nav-icon fas fa-users"></i>ㅤOrganization</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/produk" class="{{ request()->is('produk') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Product')">
+                    <a href="/produk" class="{{ request()->is('produk*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Product')">
                         <span class="link"><i class="fa-solid fa-cube"></i>ㅤProduct</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/personal" class="{{ request()->is('personal') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Profile')">
+                    <a href="/personal" class="{{ request()->is('personal*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Profile')">
                         <span class="link"><i class="fa-solid fa-id-card"></i>ㅤProfile</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/security" class="{{ request()->is('security') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Security')">
+                    <a href="/security" class="{{ request()->is('security*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Security')">
                         <span class="link"><i class="fa-solid fa-user-shield"></i>ㅤSecurity</span>
                     </a>
                 </li>

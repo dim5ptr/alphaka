@@ -187,7 +187,7 @@
             transition: background-color 0.3s, transform 0.3s;
             margin-top: auto; /* Push the button to the bottom */
             font-weight: 500;
-            width: 80%;
+            width: 85%;
         }
 
         .btn:hover {
