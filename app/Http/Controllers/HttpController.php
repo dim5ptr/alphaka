@@ -950,8 +950,11 @@ public function login(Request $request)
         $products = []; // Default to an empty array in case of an exception
     }
 
-    // Pass the products data to the view
-    return view('welcome', compact('products'));
+    // Pass the products data and current page name to the view
+    return view('welcome', [
+        'products' => $products,
+        'currentPage' => 'Dashboard' // Set the current page name
+    ]);
 }
 
     public function showdashboardadm()
@@ -1593,20 +1596,23 @@ public function organizationVerify(Request $request, $token)
 }
 
 
-    public function personal()
-    {
-        $personalInfo = [
-            'fullname' => session('full_name'),
-            'username' => session('username'),
-            'dateofbirth' => session('birthday'),
-            'gender' => session('gender'),
-            'email' => session('email'),
-            'phone' => session('phone'),
-        ];
+public function personal()
+{
+    $personalInfo = [
+        'fullname' => session('full_name'),
+        'username' => session('username'),
+        'dateofbirth' => session('birthday'),
+        'gender' => session('gender'),
+        'email' => session('email'),
+        'phone' => session('phone'),
+    ];
 
-        return view('personal', compact('personalInfo'));
-
-    }
+    // Pass the current page name to the view
+    return view('personal', [
+        'personalInfo' => $personalInfo,
+        'currentPage' => 'Profile' // Set the current page name
+    ]);
+}
 
 
     public function showeditpersonal()
@@ -3477,8 +3483,11 @@ public function showProductsu(Request $request)
             $products = $response->json()['data'] ?? [];
             Log::info('Product data retrieved successfully, total products: ' . count($products));
 
-            // Mengirimkan data produk ke view `admin.products`
-            return view('product', ['products' => $products]);
+            // Pass the products data and current page name to the view
+            return view('product', [
+                'products' => $products,
+                'currentPage' => 'Products' // Set the current page name
+            ]);
         }
 
         Log::error('API request failed with status ' . $response->status() . ': ' . $response->body());
