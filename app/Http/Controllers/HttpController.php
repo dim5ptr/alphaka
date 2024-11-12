@@ -1054,7 +1054,7 @@ public function login(Request $request)
             $organizations = array_merge($ownerOrganizations, $memberOrganizations);
 
             // Pass the merged data to the Blade view
-            return view('organization', ['organizations' => $organizations]);
+            return view('organization', ['organizations' => $organizations, 'currentPage' => 'Organization']);
         } else {
             return back()->with('error', 'Gagal mendapatkan daftar organisasi. Silakan coba lagi.');
         }
@@ -1790,9 +1790,7 @@ public function personal()
 
     public function showsecurity()
     {
-        return view ('security',[
-            'currentPage' => 'Security' // Set the current page name
-        ]);
+        return view ('security');
     }
 
     public function showeditpassword()
