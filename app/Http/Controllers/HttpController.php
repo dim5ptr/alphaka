@@ -3486,7 +3486,7 @@ public function showProductsu(Request $request)
             // Pass the products data and current page name to the view
             return view('product', [
                 'products' => $products,
-                'currentPage' => 'Products' // Set the current page name
+                'currentPage' => 'Product' // Set the current page name
             ]);
         }
 

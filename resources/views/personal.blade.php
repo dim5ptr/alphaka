@@ -23,7 +23,7 @@
         width: 80%;
         height: 40vh;
         flex: 1;
-        margin-top: 5%;
+        /* margin-top: 5%; */
         margin-left: 10%;
         transition: margin-left .3s;
     }
