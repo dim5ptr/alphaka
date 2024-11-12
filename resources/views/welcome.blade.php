@@ -117,7 +117,7 @@
             overflow: hidden; /* To contain the hover effect */
             display: flex; /* Enable flexbox */
             flex-direction: column; /* Stack children vertically */
-            height: 100%; /* Ensure the card takes full height */
+            /* height: 100%; Ensure the card takes full height */
         }
 
         .product-card img {
