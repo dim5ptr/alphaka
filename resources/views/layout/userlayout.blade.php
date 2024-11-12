@@ -109,7 +109,7 @@
             color: white;
         }
 
-        .main-content {
+        .content-wrapper {
             margin-left: 10%;
             padding-top: 7%;
             transition: margin-left .3s;
