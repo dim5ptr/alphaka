@@ -9,7 +9,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         /* CSS Enhancements */
-
+        
         section {
             max-width: 100%;
             margin: 0 auto;
@@ -191,6 +191,35 @@
             font-size: 16px;
         }
 
+        .banner-container {
+            position: relative;
+            width: 100%;
+            height: 300px; /* Atur tinggi sesuai kebutuhan */
+            overflow: hidden;
+            margin-top: 60px; /* Memberikan jarak dari navbar */
+        }
+
+        .banner-container img {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            border-radius: 10px;
+        }
+
+        .banner-container img.active {
+            left: 0;
+            opacity: 1;
+        }
+
+        .banner-container img.previous {
+            left: 0;
+            opacity: 1;
+        }
+
         .open-btn {
             position: fixed;
             left: 2%;
@@ -213,7 +242,7 @@
             width: calc(100% - 270px);
             height: 100%;
             flex: 1;
-            margin-top: 5%;
+            margin-top: 7%;
             margin-left: 10%;
             transition: margin-left .3s;
         }
@@ -304,6 +333,8 @@
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
 
+    
+
     <div id="sidebar" class="sidebar">
         <div class="sidebar-isi">
             <ul class="list">
@@ -329,14 +360,36 @@
                 </li>
             </ul>
 
-                <form id="logoutForm" method="GET" class="logoutForm" action="{{ route('confirm-logout') }}">
+            <form id="logoutForm" method="GET" class="logoutForm" action ="{{ route('confirm-logout') }}">
                 <button type="submit" class="logout-button">ㅤ <i class="fa-solid fa-right-from-bracket"></i>ㅤLogout</button>
-                </form>
-            </ul>
+            </form>
         </div>
     </div>
 
+    <div id="main-content" class="main-content">
+        <!-- Banner Slideshow -->
+        <div class="banner-container">
+            <img src="img/SLIDE1.png" alt="Promosi 1" class="active">
+            <img src="img/SLIDE2.png" alt="Promosi 2">
+            <img src="img/SLIDE3.png" alt="Promosi 3">
+        </div>
+    </div>
+
+       
+
     <script>
+        let currentIndex = 0;
+        const images = document.querySelectorAll('.banner-container img');
+        const totalImages = images.length;
+
+        function showNextImage() {
+            images[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % totalImages;
+            images[currentIndex].classList.add('active');
+        }
+
+        setInterval(showNextImage, 3000); // Ganti gambar setiap 3 detik
+
         function toggleSidebar() {
             var sidebar = document.getElementById("sidebar");
             var mainContent = document.getElementById("main-content");
@@ -350,38 +403,5 @@
             }
         }
     </script>
-{{--
-<script>
-    document.getElementById('logoutForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Mencegah form submit secara default
-
-        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        const headers = new Headers();
-        headers.append('X-CSRF-TOKEN', token);
-        headers.append('Content-Type', 'application/json');
-
-        fetch(this.action, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify({})
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Logout berhasil!');
-                window.location.href = data.redirect; // Redirect ke halaman login setelah logout
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat logout!');
-        });
-    });
-</script> --}}
-</div>
-
-
 </body>
 </html>
