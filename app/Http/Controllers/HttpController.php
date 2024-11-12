@@ -3539,7 +3539,9 @@ public function showDetailProductu($id)
                 'product_type' => $product['product_type'] ?? null,
             ]);
 
-            return view('productdetail', compact('product', 'id'));
+            return view('productdetail', compact('product', 'id'),[
+                'currentPage' => 'Products' // Set the current page name
+            ]);
         }
 
         Log::error("Failed to retrieve product with status " . $response->status() . ": " . $response->body());
