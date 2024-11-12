@@ -3454,7 +3454,7 @@ public function showProductsu(Request $request)
             Log::info('Product data retrieved successfully, total products: ' . count($products));
 
             // Mengirimkan data produk ke view `admin.products`
-            return view('products', ['products' => $products]);
+            return view('product', ['products' => $products]);
         }
 
         Log::error('API request failed with status ' . $response->status() . ': ' . $response->body());
