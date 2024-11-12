@@ -9,7 +9,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         /* CSS Enhancements */
-        
+
         section {
             max-width: 100%;
             margin: 0 auto;
@@ -333,7 +333,7 @@
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
 
-    
+
 
     <div id="sidebar" class="sidebar">
         <div class="sidebar-isi">
@@ -346,6 +346,11 @@
                 <li>
                     <a href="/organization" class="nav-link">
                         <span class="link"><i class="nav-icon fas fa-users"></i>ㅤOrganization</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/produk" class="nav-link">
+                        <span class="link"><i class="fa-solid fa-cube"></i>ㅤProduct</span>
                     </a>
                 </li>
                 <li>
@@ -375,7 +380,7 @@
         </div>
     </div>
 
-       
+
 
     <script>
         let currentIndex = 0;

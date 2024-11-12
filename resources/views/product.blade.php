@@ -318,6 +318,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="/produk" class="nav-link">
+                        <span class="link"><i class="fa-solid fa-cube"></i>ㅤProduct</span>
+                    </a>
+                </li>
+                <li>
                     <a href="/personal" class="nav-link">
                         <span class="link"><i class="fa-solid fa-id-card"></i>ㅤProfile</span>
                     </a>
@@ -336,7 +341,7 @@
         </div>
     </div>
     <div id="main-content" class="main-content">
-        
+
     </div>
     <script>
         function toggleSidebar() {
