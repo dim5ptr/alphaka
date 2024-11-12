@@ -29,14 +29,13 @@
             height: 100%;
             width: 250px;
             position: fixed;
-            top: 0;
             left: -270px;
             background-color: white;
             overflow-x: hidden;
             transition: 0.3s;
-            padding-top: 100px;
+            padding-top: 2%;
             box-shadow: 1px 0 9px rgba(0, 0, 0, 0.1);
-            z-index: 2;
+            z-index: 1;
         }
 
         .sidebar .sidebar-isi {
@@ -183,15 +182,14 @@
             display: flex;
             text-align : center;
             padding: 8px 9px;
-            margin-bottom: 2%;
             border-radius: 5px;
             text-decoration: none;
             font-weight: 700;
             font-size: 15px;
             width: calc(80% - 40px);
             box-sizing: border-box;
-            position: relative;
-            top: 100%;
+            position: absolute;
+            top: 70%;
             background-color: white;
             color: #c23636;
             border: 2px solid #c23636;
@@ -620,8 +618,13 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/organization" class="nav-link-act">
+                    <a href="/organization" class="nav-link">
                         <span class="link"><i class="nav-icon fas fa-users"></i>ㅤOrganization</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/produk" class="nav-link-act">
+                        <span class="link"><i class="fa-solid fa-cube"></i>ㅤProduct</span>
                     </a>
                 </li>
                 <li>
@@ -635,7 +638,6 @@
                     </a>
                 </li>
             </ul>
-
                 <form id="logoutForm" method="GET" class="logoutForm" action="{{ route('confirm-logout') }}">
                 <button type="submit" class="logout-button">ㅤ <i class="fa-solid fa-right-from-bracket"></i>ㅤLogout</button>
                 </form>
