@@ -1790,7 +1790,9 @@ public function personal()
 
     public function showsecurity()
     {
-        return view ('security');
+        return view ('security',[
+            'currentPage' => 'Security' // Set the current page name
+        ]);
     }
 
     public function showeditpassword()
