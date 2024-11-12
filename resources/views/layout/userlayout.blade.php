@@ -210,7 +210,7 @@
         </div>
     </div>
 
-    <div id="main-content" class="main-content">
+    <div id="content-wrapper" class="content-wrapper">
         @yield('content') <!-- This is where the content from welcome.blade.php will be injected -->
     </div>
 
