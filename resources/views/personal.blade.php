@@ -344,12 +344,12 @@
                 </div>
 
                 <div class="data">
-                    <p><span class="text-bold"><strong>User Name:</strong> {{ $personalInfo['username'] }}</span></p>
-                    <p class="text-bold"><strong>Nama:</strong> {{ $personalInfo['fullname'] }}</p>
-                    <p class="text-bold"><strong>Birthday:</strong> {{ $personalInfo['dateofbirth'] }}</p>
+                    <p><span class="text-bold"><strong>User Name:</strong> {{ $personalInfo['username'] ?? 'N/A' }}</span></p>
+                    <p class="text-bold"><strong>Nama:</strong> {{ $personalInfo['fullname'] ?? 'N/A' }}</p>
+                    <p class="text-bold"><strong>Birthday:</strong> {{ $personalInfo['dateofbirth'] ?? 'N/A'}}</p>
                     <p class="text-bold"><strong>Gender:</strong> {{ $personalInfo['gender'] == 0 ? 'Female' : 'Male' }}</p>
-                    <p class="text-bold"><strong>Email:</strong> {{ session('email') }}</p>
-                    <p class="text-bold"><strong>Phone Number:</strong> {{ $personalInfo['phone'] }}</p>
+                    <p class="text-bold"><strong>Email:</strong> {{ session('email') ?? 'N/A'}}</p>
+                    <p class="text-bold"><strong>Phone Number:</strong> {{ $personalInfo['phone']?? 'N/A' }}</p>
                     <div class="btn-container">
                         <button type="button" class="btn btn-light" onclick="openModal()">
                             <i class="fas fa-user-edit me-2"></i> Edit Profile
@@ -395,7 +395,7 @@
             </div>
         </div>
 
-        <div class="modal-image" id="updateImageModal">
+        {{-- <div class="modal-image" id="updateImageModal">
             <div class="modal-image-content">
                 <div class="modal-image-header">
                     <h1 class="modal-title" id="updateImageModalLabel">Change Profile Image</h1>
@@ -412,7 +412,7 @@
                     </div>
                 </form>
             </div>
-        </div>
+        </div> --}}
 
         @if ($errors->any())
             <div class="alert alert-danger">
@@ -428,7 +428,7 @@
 
 <script>
     function redirectToGravatar() {
-        fetch('{{ route("gravatar") }}', 
+        fetch('{{ route("gravatar") }}',
             {
                 method: 'POST',
                 headers: {
