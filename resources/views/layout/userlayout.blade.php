@@ -114,7 +114,6 @@
         }
 
         .main-content {
-            
             padding-top: 5%;
             transition: margin-left .3s;
         }
