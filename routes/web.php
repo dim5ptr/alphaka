@@ -205,7 +205,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/produk/detail/{id}', [HttpController::class, 'showDetailProductu'])->name(name: 'showDetailProductu');
 
         //Route Pre-Payment
-        Route::get('/prepayment',  [HttpController::class, 'showprepayment'])->name('prepayment');
+        Route::get('/payment',  [HttpController::class, 'showpayment'])->name('payment');
     });
 });
 

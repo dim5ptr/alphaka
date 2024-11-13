@@ -1,6 +1,6 @@
 @extends('layout.userlayout')
 @section('head')
- <title>Pre-Payment</title>
+ <title>Payment</title>
 @endsection
 @section('content')
  <h1>Test</h1>

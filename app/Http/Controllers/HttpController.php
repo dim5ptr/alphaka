@@ -3554,10 +3554,10 @@ public function showDetailProductu($id)
     }
 }
 
-public function showprepayment()
+public function showpayment()
     {
-        $currentPage = 'Pre-Payment'; // Define the current page variable
-        return view('prepayment', compact('currentPage')); // Pass it to the view
+        $currentPage = 'Payment'; // Define the current page variable
+        return view('payment', compact('currentPage')); // Pass it to the view
     }
 
 }
