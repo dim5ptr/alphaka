@@ -3640,4 +3640,10 @@ public function showinboxadm()
     return redirect()->back()->with('error', 'Failed to retrieve inbox.');
 }
 
+public function showpayment()
+    {
+        $currentPage = 'Payment'; // Define the current page variable
+        return view('payment', compact('currentPage')); // Pass it to the view
+    }
+
 }
