@@ -16,36 +16,27 @@
 <!-- Table and Search -->
 <section class="content">
     <div class="container">
-        <!-- Search bar aligned to the right -->
-        <div class="col-12 mt-3 d-flex justify-content-start" style="margin-bottom: 3%;">
-            <div class="input-group rounded shadow-sm" style="max-width: 90%; width: 100%;">
-                <span class="input-group-text" style="background-color: #0077FF; color: white; border: none;">
-                    <i class="fa fa-search"></i>
-                </span>
-                <input type="search" id="searchInput" class="form-control rounded" placeholder="Search..." style="border: none; padding: 10px;">
-            </div>
-        </div>
-
-        <!-- Inbox table -->
-        <div class="table-container">
-            <table class="table custom-table mt-0">
-                <tbody>
-                    @forelse($messages as $message)
-                        <tr class="{{ $message['type'] == 'success' ? 'table-success' : 'table-danger' }}">
-                            <td>{{ ucfirst($message['type']) }}</td>
-                            <td>{{ $message['message'] }}</td>
-                            <td>{{ \Carbon\Carbon::parse($message['created_at'])->format('Y-m-d H:i:s') }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="3" class="text-center">Tidak ada pesan di inbox Anda.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-</section>
+<!-- Inbox table -->
+<div class="table-container">
+    <table class="table custom-table mt-0">
+        <tbody>
+            @forelse($messages as $message)
+                <tr>
+                    <td style="color: {{ $message['type'] == 'success' ? '#28a745' : '#dc3545' }};">
+                        {{ ucfirst($message['type']) }}
+                    </td>
+                    <td>{{ $message['message'] }}</td>
+                    <td>{{ \Carbon\Carbon::parse($message['created_at'])->format('Y-m-d') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($message['created_at'])->format('H:i:s') }}</td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="4" class="text-center">Tidak ada pesan di inbox Anda.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 
 <!-- Custom CSS for the inbox table -->
 <style>
@@ -64,7 +55,6 @@
         overflow: hidden;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
-
 
     .table td {
         padding: 15px;
@@ -101,6 +91,9 @@
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
     }
 </style>
+
+
+
 
 @endsection
 

@@ -40,6 +40,12 @@
       font-size: 16px;
     }
 
+    .navbar-item a{
+        border-right: 5px solid gray;
+        padding-right: 40%;
+        height: 40px;
+    }
+
     /* Adjust content wrapper to avoid overlap with navbar */
     .content-wrapper {
       margin-top: 56px; /* Adjust this based on your navbar height */
@@ -114,6 +120,9 @@
         <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
       </li>
     </ul>
+    <ul class="navbar-nav">
+
+    </ul>
     <ul class="navbar-nav ml-auto">
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
@@ -126,6 +135,8 @@
           <span>{{ session('username') ? session('username') : session('email') }}</span>
         </a>
         <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" href="{{ route('showinboxadm') }}" >Inbox</a>
+          <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{{ route('personaladm') }}">Settings</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" id="logout">Logout</a>
