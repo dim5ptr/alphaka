@@ -3515,7 +3515,7 @@ public function showProductsu(Request $request)
             // Pass the products data and current page name to the view
             return view('product', [
                 'products' => $products,
-                'currentPage' => 'Product' // Set the current page name
+                'currentPage' => 'Products' // Set the current page name
             ]);
         }
 
@@ -3571,7 +3571,7 @@ public function showDetailProductu($id)
             }
 
             return view('productdetail', compact('product', 'logo', 'displayImages'), [
-                'currentPage' => 'Products'
+                'currentPage' => 'Product'
             ]);
         }
 
