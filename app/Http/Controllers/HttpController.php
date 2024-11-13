@@ -1658,58 +1658,61 @@ public function personal()
     }
 
     public function uploadProfilePicture(Request $request)
-    {
-        Log::info('Starting profile picture upload process.');
+{
+    Log::info('Starting profile picture upload process.');
 
-        // Validasi file gambar
-        $request->validate([
-            'profile_picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+    // Validate image file
+    $request->validate([
+        'profile_picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        if ($request->hasFile('profile_picture')) {
-            $file = $request->file('profile_picture');
-            $filename = time() . '_' . $file->getClientOriginalName();
+    $profilePicturePath = null;
 
-            Log::info('File uploaded by user:', ['filename' => $filename]);
+    if ($request->hasFile('profile_picture') && $request->file('profile_picture')->isValid()) {
+        $file = $request->file('profile_picture');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $profilePicturePath = $file->storeAs('public/profile_pictures', $filename);
 
-            $requestData = [
-                'profile_picture' => $file,
-            ];
+        // Adjust path for session and storage (relative path)
+        $profilePicturePath = '/storage/profile_pictures/' . $filename; // Use relative path
 
-            try {
-                $response = Http::withHeaders([
-                    'Authorization' => session('access_token'),
-                    'x-api-key' => self::API_KEY,
-                ])->attach('profile_picture', $file->getPathname(), $file->getClientOriginalName())
-                ->post(self::API_URL . '/sso/update_profile_picture.json', $requestData);
+        session(['profile_picture' => $profilePicturePath]);
 
-                $data = $response->json();
+        Log::info('File uploaded by user:', ['filename' => $filename, 'path' => $profilePicturePath]);
 
-                Log::info('API response received:', ['status' => $response->status(), 'data' => $data]);
+        try {
+            // Send the relative path to the API
+            $response = Http::withHeaders([
+                'Authorization' => session('access_token'),
+                'x-api-key' => self::API_KEY,
+            ])
+            ->post(self::API_URL . '/sso/update_profile_picture.json', [
+                'profile_image_path' => $profilePicturePath, // sending relative path
+            ]);
 
-                if ($response->successful()) {
-                    $file->storeAs('public/profile_pictures', $filename);
-                    session(['profile_picture' => 'storage/profile_pictures/' . $filename]);
+            Log::info('API response received:', ['status' => $response->status(), 'body' => $response->body()]);
 
-                    echo "<script>localStorage.setItem('profile_picture', 'storage/profile_pictures/$filename');</script>";
+            if ($response->successful()) {
+                Log::info('Profile picture updated successfully via API.', ['filename' => $filename]);
 
-                    Log::info('Profile picture stored successfully.', ['filename' => $filename]);
-
-                    return redirect()->route('personal')->with('success', 'Profile picture uploaded successfully.');
-                } else {
-                    $errorMessage = $data['message'] ?? 'An error occurred while uploading profile picture.';
-                    Log::error('API error:', ['message' => $errorMessage]);
-                    return redirect()->back()->with('error', $errorMessage);
-                }
-            } catch (\Exception $e) {
-                Log::error('Exception occurred during API request:', ['exception' => $e->getMessage()]);
-                return redirect()->back()->with('error', 'An error occurred during the upload process.');
+                echo "<script>localStorage.setItem('profile_picture', '$profilePicturePath');</script>";
+                return redirect()->route('personal')->with('success', 'Profile picture uploaded successfully.');
+            } else {
+                $errorMessage = $response->json()['message'] ?? 'An error occurred while uploading profile picture.';
+                Log::error('API response error:', ['status' => $response->status(), 'message' => $errorMessage]);
+                return redirect()->back()->with('error', $errorMessage);
             }
-        } else {
-            Log::warning('No file uploaded by user.');
-            return redirect()->back()->with('error', 'No file uploaded.');
+        } catch (\Exception $e) {
+            Log::error('Exception during API request:', ['exception' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'An error occurred during the upload process.');
         }
+    } else {
+        Log::warning('No valid file uploaded by user.');
+        return redirect()->back()->with('error', 'No file uploaded.');
     }
+}
+
+
 
     public function gravatar(Request $request)
 {
