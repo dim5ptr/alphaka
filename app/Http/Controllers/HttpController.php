@@ -2867,70 +2867,152 @@ public function updateProduct(Request $request)
 
     // Method untuk menyimpan produk baru
     public function storeProduct(Request $request)
-    {
-        // Log input request
-        Log::info('Received product creation request:', $request->all());
+{
+    Log::info('Received product creation request:', $request->all());
 
-        try {
-            // Pastikan 'enabled' dikonversi menjadi boolean
-            $request->merge(['enabled' => $request->has('enabled')]);
+    try {
+        // Convert 'enabled' to boolean
+        $request->merge(['enabled' => $request->has('enabled')]);
 
-            // Validasi input
-            $request->validate([
-                'product_name' => 'required|string|max:255',
-                'product_code' => 'required|string|max:50|alpha_dash',
-                'description' => 'nullable|string',
-                'price' => 'nullable|numeric|min:0|max:99999999.999',
-                'product_type' => 'required|integer',
-                'enabled' => 'required|boolean',
-            ]);
+        // Validate input, skipping image validations temporarily
+        $request->validate([
+            'product_name' => 'required|string|max:255',
+            'product_code' => 'required|string|max:50|alpha_dash',
+            'description' => 'nullable|string',
+            'price' => 'nullable|numeric|min:0|max:99999999.999',
+            'product_type' => 'required|integer',
+            'enabled' => 'required|boolean',
+            // Temporarily skipping logo and display images validation
+        ]);
 
-            // Log setelah validasi
-            Log::info('Validation passed, proceeding with product creation.');
-
-            // Format harga jika ada
-            $price = $request->price;
-            if (!is_null($price)) {
-                $price = number_format((float)$price, 3, '.', '');
-            }
-
-            // Data yang akan dikirim untuk membuat produk baru
-            $data = [
-                'product_name' => $request->product_name,
-                'product_code' => $request->product_code,
-                'description' => $request->description,
-                'price' => $price,
-                'product_type' => $request->product_type,
-                'enabled' => $request->enabled,
-            ];
-
-            Log::info('Sending request to API:', $data);
-
-            // Kirim request ke API
-            $response = Http::withHeaders([
-                'Authorization' => session('access_token'),
-                'x-api-key' => self::API_KEY,
-            ])
-            ->timeout(10)
-            ->post(self::API_URL . '/product/create_product.json', $data);
-
-            if ($response->successful()) {
-                Log::info('Product created successfully.');
-                return redirect()->route('showProducts')->with('success', 'Product created successfully.');
-            } else {
-                $status = $response->status();
-                $errorMessage = $response->json('message') ?? 'Unknown error';
-                Log::error("Failed to create product. Status: {$status}, Error: {$errorMessage}");
-                return redirect()->back()->with('error', 'Failed to create product. Please try again.');
-            }
-        } catch (ValidationException $e) {
-            Log::error('Validation failed:', $e->errors());
-            return redirect()->back()->withErrors($e->errors())->withInput();
-        } catch (\Exception $e) {
-            Log::error('An unexpected error occurred during product creation:', ['message' => $e->getMessage()]);
-            return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
+        // Store logo and get path
+        $logoPath = null;
+        if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
+            $logoPath = $request->file('logo')->store('public/images');
+            $logoPath = str_replace('public/', '/storage/', $logoPath);
         }
+        Log::info("Logo Path: {$logoPath}");
+
+        // Store display images and get paths if provided
+        $displayPaths = [];
+        if ($request->hasFile('display_images')) {
+            foreach ($request->file('display_images') as $image) {
+                if ($image->isValid()) {
+                    $path = $image->store('public/images');
+                    $displayPaths[] = str_replace('public/', '/storage/', $path);
+                }
+            }
+        }
+        Log::info("Display Paths: ", $displayPaths);
+
+        // Format price if present
+        $price = $request->price ? number_format((float)$request->price, 3, '.', '') : null;
+
+        // Prepare data for API request
+        $data = [
+            'product_name' => $request->product_name,
+            'product_code' => $request->product_code,
+            'description' => $request->description,
+            'price' => $price,
+            'product_type' => $request->product_type,
+            'enabled' => $request->enabled,
+            'logo_path' => $logoPath,
+            'display_paths' => $displayPaths,
+        ];
+
+        Log::info('Sending request to API:', $data);
+
+        // Send request to API
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->timeout(10)
+          ->post(self::API_URL . '/product/create_product.json', $data);
+
+        if ($response->successful()) {
+            Log::info('Product created successfully.');
+            return redirect()->route('showProducts')->with('success', 'Product created successfully.');
+        } else {
+            $status = $response->status();
+            $errorMessage = $response->json('message') ?? 'Unknown error';
+            Log::error("Failed to create product. Status: {$status}, Error: {$errorMessage}");
+            return redirect()->back()->with('error', 'Failed to create product. Please try again.');
+        }
+    } catch (ValidationException $e) {
+        Log::error('Validation failed:', $e->errors());
+        return redirect()->back()->withErrors($e->errors())->withInput();
+    } catch (\Exception $e) {
+        Log::error('An unexpected error occurred during product creation:', ['message' => $e->getMessage()]);
+        return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
     }
+}
+
+
+    // public function storeProduct(Request $request)
+    // {
+    //     // Log input request
+    //     Log::info('Received product creation request:', $request->all());
+
+    //     try {
+    //         // Pastikan 'enabled' dikonversi menjadi boolean
+    //         $request->merge(['enabled' => $request->has('enabled')]);
+
+    //         // Validasi input
+    //         $request->validate([
+    //             'product_name' => 'required|string|max:255',
+    //             'product_code' => 'required|string|max:50|alpha_dash',
+    //             'description' => 'nullable|string',
+    //             'price' => 'nullable|numeric|min:0|max:99999999.999',
+    //             'product_type' => 'required|integer',
+    //             'enabled' => 'required|boolean',
+    //         ]);
+
+    //         // Log setelah validasi
+    //         Log::info('Validation passed, proceeding with product creation.');
+
+    //         // Format harga jika ada
+    //         $price = $request->price;
+    //         if (!is_null($price)) {
+    //             $price = number_format((float)$price, 3, '.', '');
+    //         }
+
+    //         // Data yang akan dikirim untuk membuat produk baru
+    //         $data = [
+    //             'product_name' => $request->product_name,
+    //             'product_code' => $request->product_code,
+    //             'description' => $request->description,
+    //             'price' => $price,
+    //             'product_type' => $request->product_type,
+    //             'enabled' => $request->enabled,
+    //         ];
+
+    //         Log::info('Sending request to API:', $data);
+
+    //         // Kirim request ke API
+    //         $response = Http::withHeaders([
+    //             'Authorization' => session('access_token'),
+    //             'x-api-key' => self::API_KEY,
+    //         ])
+    //         ->timeout(10)
+    //         ->post(self::API_URL . '/product/create_product.json', $data);
+
+    //         if ($response->successful()) {
+    //             Log::info('Product created successfully.');
+    //             return redirect()->route('showProducts')->with('success', 'Product created successfully.');
+    //         } else {
+    //             $status = $response->status();
+    //             $errorMessage = $response->json('message') ?? 'Unknown error';
+    //             Log::error("Failed to create product. Status: {$status}, Error: {$errorMessage}");
+    //             return redirect()->back()->with('error', 'Failed to create product. Please try again.');
+    //         }
+    //     } catch (ValidationException $e) {
+    //         Log::error('Validation failed:', $e->errors());
+    //         return redirect()->back()->withErrors($e->errors())->withInput();
+    //     } catch (\Exception $e) {
+    //         Log::error('An unexpected error occurred during product creation:', ['message' => $e->getMessage()]);
+    //         return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
+    //     }
+    // }
 
 
 public function showTransaction(Request $request)
@@ -3506,8 +3588,7 @@ public function showProductsu(Request $request)
 public function showDetailProductu($id)
 {
     try {
-        Log::info('Requesting product data from API: ' . self::API_URL . '/product/get_products.json');
-        Log::info("Requesting product data for product ID: {$id}");
+        Log::info("Requesting product data for product ID: {$id} from API.");
 
         $accessToken = session('access_token');
         if (!$accessToken) {
@@ -3525,10 +3606,21 @@ public function showDetailProductu($id)
         Log::info('API Response for product ID ' . $id . ': ' . $response->body());
 
         if ($response->successful() && isset($response->json()['data'])) {
-            $product = $response->json()['data'][0]; // Assuming 'data' is an array and you want the first product
+            $product = $response->json()['data'][0]; // Assuming we're dealing with the first product in the response
             Log::info("Product data for ID {$id} retrieved successfully.");
 
-            // Store product details in the session
+            // Extract images based on their type (e.g., 'logo' and 'display')
+            $logo = null;
+            $displayImages = [];
+            foreach ($product['images'] as $image) {
+                if ($image['image_type'] === 'logo') {
+                    $logo = $image['image_path'];
+                } elseif ($image['image_type'] === 'display') {
+                    $displayImages[] = $image['image_path'];
+                }
+            }
+
+            // Store product details in session
             session([
                 'product_id' => $product['product_id'] ?? null,
                 'product_code' => $product['product_code'] ?? 'N/A',
@@ -3543,7 +3635,7 @@ public function showDetailProductu($id)
                 'product_type' => $product['product_type'] ?? null,
             ]);
 
-            return view('productdetail', compact('product', 'id'),[
+            return view('productdetail', compact('product', 'id', 'logo', 'displayImages'), [
                 'currentPage' => 'Products' // Set the current page name
             ]);
         }

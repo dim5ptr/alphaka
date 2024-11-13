@@ -25,10 +25,10 @@
             </div>
         @endif
 
-        @extends('admin.layoutadm.layoutadm')
 
 
-                <form action="{{ route('storeProduct') }}" method="POST">
+
+                <form action="{{ route('storeProduct') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="mb-3">
@@ -54,6 +54,16 @@
                     <div class="mb-3">
                         <label for="product_type" class="form-label">Product Type</label>
                         <input type="number" class="form-control" name="product_type" id="product_type" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="logo" class="form-label">Logo</label>
+                        <input type="file" class="form-control" name="logo" id="logo" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="display_images" class="form-label">Display Images</label>
+                        <input type="file" class="form-control" name="display_images[]" id="display_images.*" multiple>
                     </div>
 
                     <div class="form-check">
@@ -89,20 +99,3 @@
     </div>
 </section>
 @endsection
-
-<style>
-    /* Custom Styles */
-    .alert-success, .alert-danger {
-        border-radius: 10px;
-        font-size: 0.9rem;
-        text-align: center;
-        margin-top: 10px;
-    }
-
-    /* Form Input Focus Effect */
-    .form-control:focus {
-        outline: none;
-        border-color: #0077FF;
-        box-shadow: 0 0 5px rgba(0, 119, 255, 0.2);
-    }
-</style>

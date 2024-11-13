@@ -5,22 +5,31 @@
 
         <section style="margin-top: 5%;" class="product-section">
             <div class="product-list" id="product-list">
-                @foreach($products as $product)
-                    <div class="product-card" data-name="{{ strtolower($product['product_name']) }}">
-                        <a href="{{ route('showDetailProductu', ['id' => $product['product_id']]) }}" class="overlay-link"></a>
-                        <img src="{{ asset('img/B.png') }}" alt="{{ $product['product_name'] }}">
-                        <h3>{{ $product['product_name'] }}</h3>
-                        <p class="description">{{ $product['description'] ?? 'No description available.' }}</p>
-                        <p class="price">Rp. {{ $product['price'] ?? '0' }}</p>
-                        <a href="/purchase/{{ $product['product_id'] }}" class="btn">Buy Now</a>
-                    </div>
-                @endforeach
-            </div>
-            <div id="no-results-message" class="no-results" style="display: none;">
-                <p>No products found matching your search criteria.</p>
-            </div>
-        </section>
-    </div>
+               @foreach($products as $product)
+                <div class="product-card" data-name="{{ strtolower($product['product_name']) }}">
+                    <a href="{{ route('showDetailProductu', ['id' => $product['product_id']]) }}" class="overlay-link"></a>
+
+                    @if (!empty($product['images']) && collect($product['images'])->contains('image_type', 'logo'))
+                        {{-- Display the logo if available --}}
+                        @php
+                            $logoImage = collect($product['images'])->firstWhere('image_type', 'logo')['image_path'];
+                        @endphp
+                        <img src="{{ asset($logoImage) }}" alt="Product Logo">
+                    @endif
+
+                            <h3>{{ $product['product_name'] }}</h3>
+                            <p class="description">{{ $product['description'] ?? 'No description available.' }}</p>
+                            <p class="price">Rp. {{ $product['price'] ?? '0' }}</p>
+                            <a href="/purchase/{{ $product['product_id'] }}" class="btn">Buy Now</a>
+                        </div>
+                    @endforeach
+
+                        </div>
+                        <div id="no-results-message" class="no-results" style="display: none;">
+                            <p>No products found matching your search criteria.</p>
+                        </div>
+                    </section>
+                </div>
 
     <style>
 

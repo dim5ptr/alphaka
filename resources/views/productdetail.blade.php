@@ -4,12 +4,14 @@
 <div id="main-content" class="main-content">
     <div class="product-detail-container">
         <div class="product-image-gallery">
-            <img src="{{ asset('img/B.png') }}" alt="{{ $product['product_name'] }}" class="main-image">
+            <!-- Main image (first image in the product's images array or a default if no images are provided) -->
+            <img src="{{ $product['images'][0]['image_path'] ?? asset('img/default.png') }}" alt="{{ $product['product_name'] }}" class="main-image">
+
             <div class="thumbnail-gallery">
-                <img src="{{ asset('img/App.gif') }}" alt="Thumbnail 1">
-                <img src="{{ asset('img/App.gif') }}" alt="Thumbnail 2">
-                <img src="{{ asset('img/App.gif') }}" alt="Thumbnail 3">
-                <img src="{{ asset('img/App.gif') }}" alt="Thumbnail 4">
+                <!-- Loop through each image in the product's images array to display as thumbnails -->
+                @foreach ($product['images'] as $index => $image)
+                    <img src="{{ asset($image['image_path']) }}" alt="Thumbnail {{ $index + 1 }}">
+                @endforeach
             </div>
         </div>
 
@@ -18,11 +20,12 @@
             <h1 class="product-title">{{ $product['product_name'] }}</h1>
             <p class="product-description">{{ $product['description'] }}</p>
             <div class="product-price">
-                Rp.{{ ($product['price']) ?? '0' }}
+                Rp.{{ number_format($product['price'] ?? 0, 0, ',', '.') }}
                 <span class="product-subtext">Suggested payments with 6 months special financing</span>
             </div>
         </div>
     </div>
+
 </div>
 
 <style>
