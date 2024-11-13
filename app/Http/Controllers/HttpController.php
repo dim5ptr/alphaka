@@ -1790,7 +1790,8 @@ public function personal()
 
     public function showsecurity()
     {
-        return view ('security');
+        $currentPage = 'security'; // Define the current page variable
+        return view('security', compact('currentPage')); // Pass it to the view
     }
 
     public function showeditpassword()
