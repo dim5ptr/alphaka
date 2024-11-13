@@ -20,8 +20,22 @@
             </div>
         </section>
 
+        <div class="filter-sort">
+            <h4>Sort By</h4>
+            <select id="sort-options" onchange="sortProducts()">
+                <option value="default">Default</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="name-asc">Name: A to Z</option>
+                <option value="name-desc">Name: Z to A</option>
+            </select>
+        </div>
+
         <section style="margin-top: 5%;" class="product-section">
             <h2 id="search-results-heading">Featured Products</h2>
+
+
+
             <div class="product-list" id="product-list">
                 @foreach($products as $product)
                 <div class="product-card" data-name="{{ strtolower($product['product_name']) }}">
@@ -64,7 +78,7 @@
     <style>
         .homepage {
             padding: 10%;
-            background-color: #f9f9f9; /* Light background for better contrast */
+            background-color: #f9f9f9; Light background for better contrast
             height: auto;
         }
 
@@ -80,10 +94,10 @@
 
         .search-bar {
             padding: 15px 40px 15px 20px; /* Add padding for the icon */
-            border-radius: 25px;
+            border-radius: 10px;
             border: 1px solid #ccc;
             width: 94%;
-            background-color: #f9f9f9; /* Light background color */
+            background-color: #ffffff; /* Light background color */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
             transition: border-color 0.3s ease; /* Smooth transition for focus effect */
         }
@@ -224,6 +238,36 @@
             padding-bottom: 200%;
         }
 
+        .filter-sort {
+            margin-bottom: 20px;
+        }
+
+        .filter-sort h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #333; /* Dark color for the heading */
+        }
+
+        .filter-sort select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%; /* Full width to match the search bar */
+            background-color: #fff; /* White background */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            transition: border-color 0.3s ease; /* Smooth transition for focus effect */
+        }
+
+        .filter-sort select:focus {
+            border-color: #007bff; /* Change border color on focus */
+            outline: none; /* Remove default outline */
+        }
+
+        /* Additional styles for better appearance */
+        .filter-sort select option {
+            color: #333; /* Dark text color for options */
+        }
+
         @media (max-width: 768px) {
 
             .homepage {
@@ -277,6 +321,66 @@
                 noResultsMessage.style.display = hasVisibleProducts ? 'none' : 'block'; // Show no results message if no products are visible
                 searchResultsHeading.textContent = hasVisibleProducts ? 'Search Results' : 'Search Results'; // Update heading
             }
+        }
+    </script>
+    <script>
+        function filterProducts() {
+            const searchInput = document.getElementById('product-search').value.toLowerCase();
+            const productCards = document.querySelectorAll('.product-card');
+            const promotionsSection = document.getElementById('promotions-section');
+            const noResultsMessage = document.getElementById('no-results-message');
+            const searchResultsHeading = document.getElementById('search-results-heading');
+            let hasVisibleProducts = false;
+
+            productCards.forEach(card => {
+                const productName = card.getAttribute('data-name');
+                if (productName.includes(searchInput)) {
+                    card.style.display = '';
+                    hasVisibleProducts = true; // Found a visible product
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Show or hide promotions and no results message based on search results
+            if (searchInput === '') {
+                promotionsSection.style.display = 'block'; // Show promotions if search is empty
+                noResultsMessage.style.display = 'none'; // Hide no results message
+                searchResultsHeading.textContent = 'Featured Products'; // Reset heading
+            } else {
+                promotionsSection.style.display = 'none'; // Hide promotions if there is a search
+                noResultsMessage.style.display = hasVisibleProducts ? 'none' : 'block'; // Show no results message if no products are visible
+                searchResultsHeading.textContent = hasVisibleProducts ? 'Search Results' : 'Search Results'; // Update heading
+            }
+        }
+
+        function sortProducts() {
+            const sortOption = document.getElementById('sort-options').value;
+            const productList = document.getElementById('product-list');
+            const productCards = Array.from(productList.children);
+
+            productCards.sort((a, b) => {
+                const priceA = parseFloat(a.querySelector('.price').textContent.replace(/[^0-9]/g, ''));
+                const priceB = parseFloat(b.querySelector('.price').textContent.replace(/[^0-9]/g, ''));
+                const nameA = a.querySelector('h3').textContent.toLowerCase();
+                const nameB = b.querySelector('h3').textContent.toLowerCase();
+
+                switch (sortOption) {
+                    case 'price-asc':
+                        return priceA - priceB;
+                    case 'price-desc':
+                        return priceB - priceA;
+                    case 'name-asc':
+                        return nameA.localeCompare(nameB);
+                    case 'name-desc':
+                        return nameB.localeCompare(nameA);
+                    default:
+                        return 0; // Default case (no sorting)
+                }
+            });
+
+            // Re-append sorted products to the product list
+            productCards.forEach(card => productList.appendChild(card));
         }
     </script>
 
