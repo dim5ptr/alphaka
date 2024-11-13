@@ -130,7 +130,7 @@
                 <input type="search" id="searchInput" class="form-control rounded shadow-sm" placeholder="Search..." style="border: none; padding: 10px;">
             </div>
                 <!-- Tombol Create Product -->
-            <a href="{{ route('createProductForm') }}">
+                <a href="{{ route('showinboxadm') }}">
                 <button class="btn btn-primary ms-2" style="background-color: #2175d5; font-weight: bold; margin-left: 20%;">
                     <i class="fas fa-plus"></i>
                 </button>

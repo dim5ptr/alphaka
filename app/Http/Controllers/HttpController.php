@@ -47,12 +47,6 @@ class HttpController extends Controller
         return redirect()->back()->with('success', 'Notifications cleared successfully.');
     }
 
-    public function inbox(Request $request)
-    {
-        // Your logic for the inbox functionality
-        return view('inbox'); // Return the view for inbox or perform other actions
-    }
-
      // Fungsi untuk redirect ke Google login page
   public function redirectToGoogle()
   {
@@ -2776,6 +2770,10 @@ public function showEditProductForm($id)
 }
 public function updateProduct(Request $request)
 {
+    $arg_request = $request->all(); // Mengambil seluruh data dari request body
+
+    $userId = session('user_id'); // Mengambil user_id dari session
+
     // Log request input
     Log::info('Received product update request:', $request->all());
 
@@ -2831,19 +2829,24 @@ public function updateProduct(Request $request)
         // Cek apakah request berhasil
         if ($response->successful() && $response->json('success')) {
             Log::info('Product updated successfully.');
+            $this->saveInboxMessage($userId, 'success', 'Product updated successfully.',  $arg_request);
             return redirect()->route('showProducts')->with('success_message', 'Product updated successfully.');
         } else {
             Log::error('Failed to update product. Response: ' . $response->body());
+            $this->saveInboxMessage($userId, 'error', 'Failed to update product. Please try again.', $arg_request);
             return redirect()->back()->with('error', 'Failed to update product. Please try again.');
         }
     } catch (ValidationException $e) {
         Log::error('Validation failed:', $e->errors());
+        $this->saveInboxMessage($userId, 'error', 'Validation failed: ' . json_encode($e->errors()),  $arg_request);
         return redirect()->back()->withErrors($e->errors())->withInput();
     } catch (\Illuminate\Http\Client\RequestException $e) {
         Log::error('HTTP Request failed: ' . $e->getMessage());
+        $this->saveInboxMessage($userId, 'error', 'HTTP Request failed: ' . $e->getMessage(),  $arg_request);
         return redirect()->back()->with('error', 'HTTP Request failed: ' . $e->getMessage());
     } catch (\Exception $e) {
         Log::error('An unexpected error occurred during product update:', ['message' => $e->getMessage()]);
+        $this->saveInboxMessage($userId, 'error', 'An unexpected error occurred. Please try again.',  $arg_request);
         return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
     }
 }
@@ -3541,4 +3544,88 @@ public function showDetailProductu($id)
         return redirect()->route('showProducts')->with('error', 'Error retrieving product data');
     }
 }
+
+public function saveInboxMessage($userId, $type, $message, $arg_request)
+{
+    // Menyimpan pesan ke database atau API dengan mengirimkan arg_request sebagai data tambahan
+    $data = [
+        'user_id' => $userId,
+        'type' => $type,
+        'message' => $message,
+        'request_data' => json_encode($arg_request), // Menyertakan data request sebagai JSON
+    ];
+
+    $response = Http::withHeaders([
+        'Authorization' => session('access_token'),
+        'x-api-key' => self::API_KEY,
+    ])
+    ->timeout(10)
+    ->post(self::API_URL . '/sso/get_inbox.json', $data);
+
+    // Pastikan untuk menangani respons dari API
+    if ($response->successful()) {
+        Log::info("Message saved to inbox for user $userId");
+    } else {
+        Log::error("Failed to save message to inbox: " . $response->body());
+    }
+}
+
+public function showinbox()
+{
+      // Ambil user_id dari session
+      $userId = session('user_id'); // Mengambil user_id dari session
+
+      // Data yang akan dikirimkan ke API
+      $data = [
+          'user_id' => $userId
+      ];
+
+      // Kirim request ke API
+      $response = Http::withHeaders([
+          'Authorization' => session('access_token'),
+          'x-api-key' => self::API_KEY,
+      ])
+      ->timeout(10)
+      ->post(self::API_URL . '/sso/show_inbox.json', $data);
+
+      // Mengecek jika request berhasil
+      if ($response->successful()) {
+          $messages = $response->json()['data']; // Ambil data pesan dari response
+
+          return view('inbox', ['messages' => $messages]);
+      }
+
+      // Jika request gagal, tampilkan pesan error
+      return redirect()->back()->with('error', 'Failed to retrieve inbox.');
+}
+
+public function showinboxadm()
+{
+    Log::info('Fetching inbox data for user.');
+
+    // Ambil user_id dari session
+    $userId = session('user_id');
+
+    // Kirim request ke API dengan metode GET dan parameter user_id di query string
+    $response = Http::withHeaders([
+        'Authorization' => session('access_token'),
+        'x-api-key' => self::API_KEY,
+    ])
+    ->timeout(10)
+    ->get(self::API_URL . '/sso/show_inbox.json', ['user_id' => $userId]);
+
+    Log::info('API Response Status: ' . $response->status());
+
+    // Mengecek jika request berhasil
+    if ($response->successful()) {
+        Log::info('Inbox data retrieved successfully for user ID: ' . $userId);
+        $messages = $response->json()['data'];
+
+        return view('admin.inbox', ['messages' => $messages]);
+    }
+
+    Log::error('Failed to fetch inbox data for user ID: ' . $userId);
+    return redirect()->back()->with('error', 'Failed to retrieve inbox.');
+}
+
 }

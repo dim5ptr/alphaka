@@ -19,7 +19,7 @@ Route::get('active/{token}', [HttpController::class, 'showActivationForm'])->nam
 
 // Rute untuk login
 Route::middleware('auth.redirect')->group(function () {
-    Route::get('/inbox', [HttpController::class, 'inbox'])->name('inbox');
+    Route::get('/inbox', [HttpController::class, 'showinbox'])->name('showinbox');
     Route::post('/inbox/clear', [HttpController::class, 'clearNotifications'])->name('clear-notifications');
 
     Route::get('/register', [HttpController::class, 'showRegister'])->name('register');
@@ -203,6 +203,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/user-activity',  [HttpController::class, 'activityUser'])->name('user.activity');
         Route::get('/produk', [HttpController::class, 'showProductsu'])->name('showProductsu');
         Route::get('/produk/detail/{id}', [HttpController::class, 'showDetailProductu'])->name(name: 'showDetailProductu');
+
+        Route::get('/adminbox', [HttpController::class, 'showinboxadm'])->name('showinboxadm');
+
     });
 });
 
