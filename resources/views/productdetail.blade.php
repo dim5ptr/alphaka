@@ -4,29 +4,52 @@
 <div id="main-content" class="main-content">
     <div class="product-detail-container">
         <div class="product-image-gallery">
-            <!-- Main image (first image in the product's images array or a default if no images are provided) -->
-            <img src="{{ $product['images'][0]['image_path'] ?? asset('img/default.png') }}" alt="{{ $product['product_name'] }}" class="main-image">
+            <!-- Main image (first image in the product's logo_images array or a default if no images are provided) -->
+            <img src="{{ isset($logo) ? asset($logo) : asset('img/logo_sti.png') }}"
+                 alt="{{ $product['product_name'] ?? 'Product' }}" class="main-image">
 
             <div class="thumbnail-gallery">
-                <!-- Loop through each image in the product's images array to display as thumbnails -->
-                @foreach ($product['images'] as $index => $image)
-                    <img src="{{ asset($image['image_path']) }}" alt="Thumbnail {{ $index + 1 }}">
-                @endforeach
+                <!-- Check if display images exist and is an array -->
+                @if (isset($displayImages) && is_array($displayImages) && count($displayImages) > 0)
+                    <!-- Loop through each display image in the product's display_images array to display as thumbnails -->
+                    @foreach ($displayImages as $index => $image)
+                        <!-- Make sure we're accessing the 'image_path' key -->
+                        @if (isset($image['image_path']) && is_string($image['image_path']))
+                            <img src="{{ asset($image['image_path']) }}" alt="Thumbnail {{ $index + 1 }}" class="thumbnail">
+                        @else
+                            <p>Invalid image data.</p>
+                        @endif
+                    @endforeach
+                @else
+                    <!-- If no display images, display a placeholder -->
+                    <p>No additional images available.</p>
+                @endif
             </div>
         </div>
 
         <div class="product-info">
             <button class="buy-now-btn">Buy Now</button>
-            <h1 class="product-title">{{ $product['product_name'] }}</h1>
-            <p class="product-description">{{ $product['description'] }}</p>
+            <h1 class="product-title">{{ $product['product_name'] ?? 'Product Name Unavailable' }}</h1>
+
+            <!-- Display description or fallback message if it's empty -->
+            <p class="product-description">{{ $product['description'] ?? 'No description available.' }}</p>
+
             <div class="product-price">
+                <!-- Display price or fallback to 0 if not available -->
                 Rp.{{ number_format($product['price'] ?? 0, 0, ',', '.') }}
-                <span class="product-subtext">Suggested payments with 6 months special financing</span>
+
+                <!-- Fallback for subtext -->
+                <span class="product-subtext">
+                    {{ $product['price'] ? 'Suggested payments with 6 months special financing' : '' }}
+                </span>
             </div>
         </div>
     </div>
-
 </div>
+
+
+
+
 
 <style>
     body {
@@ -39,7 +62,7 @@
     .main-content {
         display: flex;
         justify-content: center;
-        padding-top: 5%;
+        padding: 7%;
     }
 
     .product-detail-container {
@@ -64,7 +87,7 @@
 
     .main-image {
         width: 100%;
-        max-width: 300px;
+        max-width: 250px;
         border-radius: 8px;
         margin-bottom: 15px;
     }

@@ -148,6 +148,77 @@
         padding-top: 10px;
         margin-top: 20px;
     }
+    .modal-image {
+        display: none;
+        position: fixed;
+        z-index: 1001;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-image-content {
+        background-color: #fefefe;
+        margin: 2% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+        border-radius: 10px;
+    }
+
+    .modal-image-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e5e5e5;
+        background-color: #365AC2;
+        color: white;
+        padding: 10px 20px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        margin-bottom: 2.1%;
+    }
+
+    .modal-image-header h1 {
+        margin: 0;
+        font-size: 24px;
+    }
+
+    .btn-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: white;
+    }
+
+    .form-control {
+        width: 96%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .modal-image-footer {
+        display: flex;
+        justify-content: flex-end;
+        border-top: 1px solid #e5e5e5;
+        padding-top: 10px;
+        margin-top: 20px;
+    }
 
     .alert {
         padding: 15px;
@@ -211,34 +282,36 @@
     }
 
     .foto {
-        height: 30%;
+        width: 250px; /* Adjust to desired size */
+        height: 250px;
         position: relative;
         margin-left: 3%;
         margin-right: 3%;
-        border-radius: 100%;
+        border-radius: 50%;
+        overflow: hidden; /* Ensures the image stays within the circular shape */
     }
 
     .foto img {
         width: 100%;
+        height: 100%;
         display: block;
-        margin: auto;
-        border-radius: 100%;
+        object-fit: cover; /* Ensures the image fills the container while keeping aspect ratio */
+        border-radius: 50%;
     }
 
     .editfoto {
-        margin-left: 2.5%;
-        margin-top: 2%;
-        width: 95%;
-        height: 95%;
+        width: 100%; /* Matches the width and height of .foto */
+        height: 100%;
         position: absolute;
         top: 0;
         left: 0;
         border-radius: 50%;
-        background: #00000039;
+        background: rgba(0, 0, 0, 0.35);
         display: flex;
+        align-items: center;
         justify-content: center;
         opacity: 0;
-        transition: 0.3ms ease-out;
+        transition: opacity 0.3s ease-out;
     }
 
     .editfoto button {
@@ -248,9 +321,10 @@
         color: white;
     }
 
-    .editfoto:hover {
-        opacity: 100%;
+    .foto:hover .editfoto {
+        opacity: 1; /* Show overlay on hover */
     }
+
 
     .editfoto > * {
         transform: translateY(25px);
@@ -308,6 +382,7 @@
         .profile-info .data span, .profile-info .data p {
             text-align: left;
         }
+
     }
 </style>
 
@@ -337,7 +412,7 @@
                     @endif
 
                     <div class="editfoto">
-                        <button type="button" onclick="redirectToGravatar()">
+                        <button type="button" onclick="openImageModal()">
                             <i class="fas fa-image me-2"></i>
                         </button>
                     </div>
@@ -395,7 +470,7 @@
             </div>
         </div>
 
-        {{-- <div class="modal-image" id="updateImageModal">
+        <div class="modal-image" id="updateImageModal">
             <div class="modal-image-content">
                 <div class="modal-image-header">
                     <h1 class="modal-title" id="updateImageModalLabel">Change Profile Image</h1>
@@ -412,7 +487,7 @@
                     </div>
                 </form>
             </div>
-        </div> --}}
+        </div>
 
         @if ($errors->any())
             <div class="alert alert-danger">

@@ -13,7 +13,6 @@
 
 <section class="content">
     <div class="container">
-        @extends('admin.layoutadm.layoutadm')
 
         @if(session('success'))
             <div class="alert alert-success shadow-sm">
@@ -41,10 +40,11 @@
                     </div>
                 @endif
 
-                <form action="{{ route('updateProduct') }}" method="POST">
+                <form action="{{ route('updateProduct') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <input type="hidden" class="form-control" name="product_id" id="product_id" value="{{ session('product_id') }}" required>
+
                     <div class="mb-3">
                         <label for="product_name" class="form-label">Product Name</label>
                         <input type="text" class="form-control" name="product_name" id="product_name" value="{{ session('product_name') }}" required>
@@ -57,7 +57,7 @@
 
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" name="description" id="description" value="{{ session('description') }}"></textarea>
+                        <textarea class="form-control" name="description" id="description">{{ session('description') }}</textarea>
                     </div>
 
                     <div class="mb-3">
@@ -70,6 +70,30 @@
                         <input type="number" class="form-control" name="product_type" id="product_type" value="{{ session('product_type') }}" required>
                     </div>
 
+                    <div class="mb-3">
+                        <label for="logo" class="form-label">Logo</label>
+                        <!-- Display current logo if available -->
+                        @if(session('logo_path'))
+                            <img src="{{ asset(session('logo_path')) }}" alt="Current Logo" class="img-thumbnail" style="max-width: 150px; margin-bottom: 10px;">
+                        @endif
+                        <input type="file" class="form-control" name="logo" id="logo">
+                    </div>
+                    <div class="mb-3">
+                        <label for="display_images" class="form-label">Display Images</label>
+                        <!-- Display current images if available -->
+                        @if(session('display_images'))
+                            <div class="row">
+                                @foreach(session('display_images') as $image)
+                                    <div class="col-3">
+                                        <img src="{{ asset($image) }}" alt="Display Image" class="img-thumbnail" style="max-width: 100px;">
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                        <input type="file" class="form-control" name="display_images[]" id="display_images" multiple>
+                    </div>
+
+
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="enabled" id="enabled" {{ session('enabled') ? 'checked' : '' }}>
                         <label class="form-check-label" for="enabled">Enabled</label>
@@ -80,6 +104,7 @@
                         <a href="{{ route('showProducts') }}" class="btn btn-secondary">Cancel</a>
                     </div>
                 </form>
+
             </div>
         </section>
 

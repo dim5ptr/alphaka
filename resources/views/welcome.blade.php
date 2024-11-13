@@ -24,14 +24,35 @@
             <h2 id="search-results-heading">Featured Products</h2>
             <div class="product-list" id="product-list">
                 @foreach($products as $product)
-                    <div class="product-card" data-name="{{ strtolower($product['product_name']) }}">
-                        <a href="{{ route('showDetailProductu', ['id' => $product['product_id']]) }}" class="overlay-link"></a>
-                        <img src="{{ asset('img/B.png') }}" alt="{{ $product['product_name'] }}">
-                        <h3>{{ $product['product_name'] }}</h3>
-                        <p class="description">{{ $product['description'] ?? 'No description available.' }}</p>
-                        <p class="price">Rp. {{ $product['price'] ?? '0' }}</p>
-                        <a href="/purchase/{{ $product['product_id'] }}" class="btn">Buy Now</a>
-                    </div>
+                <div class="product-card" data-name="{{ strtolower($product['product_name']) }}">
+                    <!-- Link to product details page, still working even if no image is available -->
+                    <a href="{{ route('showDetailProductu', ['id' => $product['product_id']]) }}" class="overlay-link"></a>
+
+                    <!-- Check if a logo image is available -->
+                    @php
+                        $logoImage = collect($product['images'])->firstWhere('image_type', 'logo')['image_path'] ?? null;
+                    @endphp
+
+                    <!-- If logo image exists, display it, otherwise fall back to a default image -->
+                    @if ($logoImage)
+                        <img src="{{ asset($logoImage) }}" alt="Product Logo">
+                    @else
+                        <!-- Fallback content if logo image is not found (can be a default image or just leave empty) -->
+                        <img src="{{ asset('img/A.jpg') }}" alt="Default Logo">
+                    @endif
+
+                    <!-- Product Name (with fallback if not available) -->
+                    <h3>{{ $product['product_name'] ?? 'Product Name Unavailable' }}</h3>
+
+                    <!-- Product Description (with fallback if not available) -->
+                    <p class="description">{{ $product['description'] ?? 'No description available.' }}</p>
+
+                    <!-- Product Price (with fallback if not available) -->
+                    <p class="price">Rp. {{ number_format($product['price'] ?? 0, 0, ',', '.') }}</p>
+
+                    <!-- Link to purchase the product -->
+                    <a href="/purchase/{{ $product['product_id'] }}" class="btn">Buy Now</a>
+                </div>
                 @endforeach
             </div>
             <div id="no-results-message" class="no-results" style="display: none;">
@@ -44,7 +65,7 @@
         .homepage {
             padding: 10%;
             background-color: #f9f9f9; /* Light background for better contrast */
-            height: 1500px;
+            height: auto;
         }
 
         .search-container {
@@ -200,9 +221,15 @@
             font-size: 1.2rem;
             color: #ff0000; /* Red color for no results message */
             text-align: center; /* Center the message */
+            padding-bottom: 200%;
         }
 
         @media (max-width: 768px) {
+
+            .homepage {
+                padding-top: 20%;
+            }
+
             .product-list {
                 grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
@@ -213,6 +240,10 @@
 
             .homepage-header p {
                 font-size: 1rem;
+            }
+
+            .search-bar {
+                width: 80%;
             }
         }
     </style>
