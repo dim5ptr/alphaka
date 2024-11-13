@@ -1674,7 +1674,7 @@ public function personal()
         $profilePicturePath = $file->storeAs('public/profile_pictures', $filename);
 
         // Adjust path for session and storage (relative path)
-        $profilePicturePath = '/storage/profile_pictures/' . $filename; // Use relative path
+        $profilePicturePath = '/storages/profile_pictures/' . $filename; // Use relative path
 
         session(['profile_picture' => $profilePicturePath]);
 
@@ -2801,7 +2801,7 @@ public function updateProduct(Request $request)
         $logoPath = null;
         if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
             $logoPath = $request->file('logo')->store('public/images');
-            $logoPath = str_replace('public/', '/storage/', $logoPath);
+            $logoPath = str_replace('public/', '/storages/', $logoPath);
         } else {
             // Keep the existing logo path from session
             $logoPath = session('logo_path');
@@ -2813,7 +2813,7 @@ public function updateProduct(Request $request)
             foreach ($request->file('display_images') as $image) {
                 if ($image->isValid()) {
                     $path = $image->store('public/images');
-                    $displayPaths[] = str_replace('public/', '/storage/', $path);
+                    $displayPaths[] = str_replace('public/', '/storages/', $path);
                 }
             }
         } else {
@@ -2890,7 +2890,7 @@ public function updateProduct(Request $request)
         $logoPath = null;
         if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
             $logoPath = $request->file('logo')->store('public/images');
-            $logoPath = str_replace('public/', '/storage/', $logoPath);
+            $logoPath = str_replace('public/', '/storages/', $logoPath);
             Log::info('Logo path stored:', ['path' => $logoPath]);
         } else {
             Log::warning('No logo image uploaded or file is not valid.');
@@ -2902,7 +2902,7 @@ public function updateProduct(Request $request)
             foreach ($request->file('display_images') as $image) {
                 if ($image->isValid()) {
                     $path = $image->store('public/images');
-                    $displayPaths[] = str_replace('public/', '/storage/', $path);
+                    $displayPaths[] = str_replace('public/', '/storages/', $path);
                     Log::info('Display image path stored:', ['path' => $path]);
                 } else {
                     Log::warning('Invalid display image file.');
