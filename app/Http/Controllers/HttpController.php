@@ -3553,4 +3553,11 @@ public function showDetailProductu($id)
         return redirect()->route('showProducts')->with('error', 'Error retrieving product data');
     }
 }
+
+public function showprepayment()
+    {
+        $currentPage = 'Pre-Payment'; // Define the current page variable
+        return view('prepayment', compact('currentPage')); // Pass it to the view
+    }
+
 }

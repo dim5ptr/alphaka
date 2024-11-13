@@ -203,6 +203,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/user-activity',  [HttpController::class, 'activityUser'])->name('user.activity');
         Route::get('/produk', [HttpController::class, 'showProductsu'])->name('showProductsu');
         Route::get('/produk/detail/{id}', [HttpController::class, 'showDetailProductu'])->name(name: 'showDetailProductu');
+
+        //Route Pre-Payment
+        Route::get('/prepayment',  [HttpController::class, 'showprepayment'])->name('prepayment');
     });
 });
 
