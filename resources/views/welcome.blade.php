@@ -65,7 +65,7 @@
         .homepage {
             padding: 10%;
             background-color: #f9f9f9; /* Light background for better contrast */
-            height: 1500px;
+            height: auto;
         }
 
         .search-container {
@@ -221,9 +221,15 @@
             font-size: 1.2rem;
             color: #ff0000; /* Red color for no results message */
             text-align: center; /* Center the message */
+            padding-bottom: 200%;
         }
 
         @media (max-width: 768px) {
+
+            .homepage {
+                padding-top: 20%;
+            }
+
             .product-list {
                 grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
@@ -234,6 +240,10 @@
 
             .homepage-header p {
                 font-size: 1rem;
+            }
+
+            .search-bar {
+                width: 80%;
             }
         }
     </style>
