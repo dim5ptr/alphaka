@@ -161,6 +161,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/licenses/serial-numbers', [HttpController::class, 'getSerialNumberData'])->name('getSerialNumberData');
         Route::post('/licenses/serial-numbers/details', [HttpController::class, 'serialnumberdetails'])->name('serialnumberdetails');
         Route::get('/licenses/serial-numbers/details', [HttpController::class, 'serialnumberdetails'])->name('serialnumberdetails');
+
+        Route::get('/adminbox', [HttpController::class, 'showinboxadm'])->name('showinboxadm');
+
     });
 
     Route::middleware(['role:1'])->group(function () {
@@ -204,7 +207,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/produk', [HttpController::class, 'showProductsu'])->name('showProductsu');
         Route::get('/produk/detail/{id}', [HttpController::class, 'showDetailProductu'])->name(name: 'showDetailProductu');
 
-        Route::get('/adminbox', [HttpController::class, 'showinboxadm'])->name('showinboxadm');
 
         //Route Pre-Payment
         Route::get('/payment',  [HttpController::class, 'showpayment'])->name('payment');
