@@ -7,7 +7,7 @@
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    
+
     <!-- Slick Carousel CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
@@ -114,7 +114,6 @@
         }
 
         .main-content {
-            
             padding-top: 5%;
             transition: margin-left .3s;
         }
@@ -137,7 +136,7 @@
             background-color: white;
             color: #c23636;
             border: 2px solid #c23636;
-            transition: background-color 0 .3s, color 0.3s;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .logout-button:hover {
@@ -173,7 +172,7 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="open-btn" onclick="toggleSidebar()">&#9776; Dashboard</div>
+        <div class="open-btn" onclick="toggleSidebar()">&#9776; {{ $currentPage }}</div>
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
 
@@ -181,28 +180,33 @@
         <div class="sidebar-isi">
             <ul class="list">
                 <li>
-                    <a href="/" class="nav-link-act">
+                    <a href="/" class="{{ request()->is('/*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Dashboard')">
                         <span class="link"><i class="fa-solid fa-house-chimney"></i>ㅤDashboard</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/organization" class="nav-link">
+                    <a href="/organization" class="{{ request()->is('organization*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Organization')">
                         <span class="link"><i class="nav-icon fas fa-users"></i>ㅤOrganization</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/produk" class="nav-link">
+                    <a href="/produk" class="{{ request()->is('produk*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Product')">
                         <span class="link"><i class="fa-solid fa-cube"></i>ㅤProduct</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/personal" class="nav-link">
+                    <a href="/personal" class="{{ request()->is('personal*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Profile')">
                         <span class="link"><i class="fa-solid fa-id-card"></i>ㅤProfile</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/security" class="nav-link">
+                    <a href="/security" class="{{ request()->is('security*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Security')">
                         <span class="link"><i class="fa-solid fa-user-shield"></i>ㅤSecurity</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/payment" class="{{ request()->is('payment*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Payment')">
+                        <span class="link"><i class="fa-solid fa-money-bill-wave"></i>ㅤPayment</span>
                     </a>
                 </li>
             </ul>
@@ -220,14 +224,15 @@
     <script>
         function toggleSidebar() {
             var sidebar = document.getElementById("sidebar");
-            var mainContent = document.getElementById("main-content");
-
             if (sidebar.style.left === "0px") {
                 sidebar.style.left = "-270px";
-                
             } else {
                 sidebar.style.left = "0px";
             }
+        }
+
+        function updateNavbarText(pageName) {
+            document.querySelector('.open-btn').innerHTML = `&#9776; ${pageName}`;
         }
     </script>
 </body>

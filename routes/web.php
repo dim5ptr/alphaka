@@ -206,6 +206,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/adminbox', [HttpController::class, 'showinboxadm'])->name('showinboxadm');
 
+        //Route Pre-Payment
+        Route::get('/payment',  [HttpController::class, 'showpayment'])->name('payment');
     });
 });
 
