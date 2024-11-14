@@ -5,40 +5,37 @@
     <div class="product-detail-container">
         <div class="product-image-gallery">
             <!-- Main image (first image in the product's logo_images array or a default if no images are provided) -->
-            <img src="{{ isset($logo) ? asset($logo) : asset('img/logo_sti.png') }}"
-                 alt="{{ $product['product_name'] ?? 'Product' }}" class="main-image">
+            @if (isset($logo) && $logo)
+                <img id="main-image" src="{{ asset($logo) }}" alt="{{ $product['product_name'] ?? 'Product' }}" class="main-image">
+            @else
+                <img id="main-image" src="{{ asset('img/App.gif') }}" alt="Default Product" class="main-image">
+            @endif
+
 
             <div class="thumbnail-gallery">
-                <!-- Check if display images exist and is an array -->
                 @if (isset($displayImages) && is_array($displayImages) && count($displayImages) > 0)
-                    <!-- Loop through each display image in the product's display_images array to display as thumbnails -->
                     @foreach ($displayImages as $index => $image)
-                        <!-- Make sure we're accessing the 'image_path' key -->
                         @if (isset($image['image_path']) && is_string($image['image_path']))
-                            <img src="{{ asset($image['image_path']) }}" alt="Thumbnail {{ $index + 1 }}" class="thumbnail">
+                            <img src="{{ asset($image['image_path']) }}" alt="Thumbnail {{ $index + 1 }}" class="thumbnail" data-index="{{ $index }}">
                         @else
                             <p>Invalid image data.</p>
                         @endif
                     @endforeach
                 @else
-                    <!-- If no display images, display a placeholder -->
-                    <p>No additional images available.</p>
+                    <!-- Display a single default thumbnail if no additional images are available -->
+                    <img src="{{ asset('img/App.gif') }}" alt="Default Thumbnail" class="thumbnail">
                 @endif
             </div>
+
         </div>
 
         <div class="product-info">
             <button class="buy-now-btn">Buy Now</button>
             <h1 class="product-title">{{ $product['product_name'] ?? 'Product Name Unavailable' }}</h1>
-
-            <!-- Display description or fallback message if it's empty -->
             <p class="product-description">{{ $product['description'] ?? 'No description available.' }}</p>
 
             <div class="product-price">
-                <!-- Display price or fallback to 0 if not available -->
                 Rp.{{ number_format($product['price'] ?? 0, 0, ',', '.') }}
-
-                <!-- Fallback for subtext -->
                 <span class="product-subtext">
                     {{ $product['price'] ? 'Suggested payments with 6 months special financing' : '' }}
                 </span>
@@ -46,10 +43,6 @@
         </div>
     </div>
 </div>
-
-
-
-
 
 <style>
     body {
@@ -184,4 +177,42 @@
         }
     }
 </style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const mainImage = document.getElementById("main-image");
+        const thumbnails = document.querySelectorAll(".thumbnail");
+        let displayImages = @json($displayImages);
+        let currentIndex = 0;
+        let intervalId;
+
+        // Function to change main image automatically every 5 seconds
+        function startAutoSwitch() {
+            intervalId = setInterval(() => {
+                currentIndex = (currentIndex + 1) % displayImages.length;
+                mainImage.src = displayImages[currentIndex].image_path;
+            }, 5000);
+        }
+
+        // Stop the automatic switching temporarily
+        function stopAutoSwitch() {
+            clearInterval(intervalId);
+        }
+
+        // Event listener for clicking on thumbnails
+        thumbnails.forEach((thumbnail, index) => {
+            thumbnail.addEventListener("click", () => {
+                stopAutoSwitch();
+                currentIndex = index;
+                mainImage.src = displayImages[index].image_path;
+                startAutoSwitch();
+            });
+        });
+
+        // Start the auto-switch when page loads
+        if (displayImages && displayImages.length > 0) {
+            startAutoSwitch();
+        }
+    });
+</script>
 @endsection

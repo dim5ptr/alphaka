@@ -105,6 +105,7 @@ class HttpController extends Controller
             // Redirect based on role_id
             $roleId = session('role_id');
             if ($roleId == 2) {
+
                 return redirect()->route('showdashboardadm'); // Redirect to admin dashboard
             } elseif ($roleId == 1) {
                 return redirect()->route('dashboard'); // Redirect to user dashboard
@@ -1087,6 +1088,10 @@ public function login(Request $request)
 
 public function addOrganization(Request $request)
 {
+    $arg_request = $request->all(); // Mengambil seluruh data dari request body
+
+    $userId = session('user_id'); // Mengambil user_id dari session
+
     // Validate input
     $request->validate([
         'organization_name' => 'required|string|max:255',
@@ -1136,10 +1141,12 @@ public function addOrganization(Request $request)
             });
             Log::info('Organization creation email sent.');
 
+            $this->saveInboxMessage($userId, 'success', 'Organization created successfully',  $arg_request);
             return redirect('/organization')->with('success_message', 'Organization created successfully.');
         } else {
             // Log error and show error message
             Log::error('Failed to add organization. Response: ' . $response->body());
+            $this->saveInboxMessage($userId, 'error', 'Failed to add organization. Please try again.',  $arg_request);
             return back()->withErrors(['error_message' => 'Failed to add organization. Please try again.'])->withInput();
         }
     } catch (\Illuminate\Http\Client\RequestException $e) {
@@ -1158,6 +1165,7 @@ public function addOrganization(Request $request)
     // Add member to the organization
     public function addMember(Request $request, $id)
     {
+
         // Validate the request input (search term)
         $request->validate([
             'search' => 'required|string',
@@ -1196,6 +1204,11 @@ public function addOrganization(Request $request)
     // Add selected member to the organization
     public function addMemberToOrganization(Request $request, $id)
     {
+
+    $arg_request = $request->all(); // Mengambil seluruh data dari request body
+
+    $userId = session('user_id'); // Mengambil user_id dari session
+
         // Validate the input
         $request->validate([
             'user_id' => 'required|integer',
@@ -1217,9 +1230,11 @@ public function addOrganization(Request $request)
             Log::info('Add Member API Response:', ['response' => $data]);
 
             if ($response->successful()) {
+                $this->saveInboxMessage($userId, 'success', 'Member added successfully',  $arg_request);
                 return redirect()->route('showvieworganization', $id)
                     ->with('success', 'Member added successfully.');
             } else {
+                $this->saveInboxMessage($userId, 'error', 'Failed to add member. Please try again',  $arg_request);
                 return back()->withErrors('Failed to add member. Please try again.');
             }
         } catch (\Exception $e) {
@@ -1232,6 +1247,11 @@ public function organizationVerify(Request $request, $token)
 {
     // Log for debugging
     Log::info('Route accessed with token: ' . $token);
+
+    $arg_request = $request->all(); // Mengambil seluruh data dari request body
+
+    $userId = session('user_id'); // Mengambil user_id dari session
+
 
     try {
         // Send request to the API for organization verification
@@ -1249,10 +1269,12 @@ public function organizationVerify(Request $request, $token)
         // Check if the response is successful
         if ($response->successful() && $data['success']) {
             // Organization activated successfully
+            $this->saveInboxMessage($userId, 'success', 'Your organization has been activated successfully',  $arg_request);
             return redirect('/organization')->with('success_message', 'Your organization has been activated successfully.');
         } else {
             // Log error and show error message
             Log::error('Failed to activate organization. Response: ' . $response->body());
+            $this->saveInboxMessage($userId, 'error', 'Failed to activate your organization. Please try again',  $arg_request);
             return back()->withErrors(['error_message' => 'Failed to activate your organization. Please try again.'])->withInput();
         }
     } catch (\Illuminate\Http\Client\RequestException $e) {
@@ -1551,6 +1573,12 @@ public function organizationVerify(Request $request, $token)
 
     public function editorganization(Request $request)
 {
+
+
+    $arg_request = $request->all(); // Mengambil seluruh data dari request body
+
+    $userId = session('user_id'); // Mengambil user_id dari session
+
     // Validate input
     $request->validate([
         'organization_id' => 'required|integer',
@@ -1575,9 +1603,11 @@ public function organizationVerify(Request $request, $token)
         // Check the response
         if ($response->successful() && $response->json('success')) {
             Log::info('Organization updated successfully: ' . $request->organization_id);
+            $this->saveInboxMessage($userId, 'success', 'Organization updated successfully.',  $arg_request);
             return redirect('/organization')->with('success_message', 'Organization updated successfully.');
         } else {
             Log::error('Failed to update organization. Response: ' . $response->body());
+                        $this->saveInboxMessage($userId, 'error', 'Failed to update organization. Please try again',  $arg_request);
             return back()->withErrors(['error_message' => 'Failed to update organization. Please try again.'])->withInput();
         }
     } catch (\Illuminate\Http\Client\RequestException $e) {
@@ -1616,6 +1646,12 @@ public function personal()
 
     public function editpersonal(Request $request)
 {
+
+
+    $arg_request = $request->all(); // Mengambil seluruh data dari request body
+
+    $userId = session('user_id'); // Mengambil user_id dari session
+
     // Mengirim data ke endpoint menggunakan HTTP Client
     $response = Http::withHeaders([
         'x-api-key' => self::API_KEY,
@@ -1645,9 +1681,27 @@ public function personal()
             'phone' => $request->phone,
         ]);
 
+            // Simpan pesan ke inbox dengan data baru
+        $message = 'Profile updated successfully. Updated data: ' . 
+                    'Name: ' . $request->fullname . ', ' .
+                    'Username: ' . $request->username . ', ' .
+                    'birthday' . $request->dateofbirth;
+                    'gender' . $request->gender;
+                    'phone' . $request->phone;
+
+        // Simpan pesan sukses ke inbox
+        $this->saveInboxMessage($userId, 'success', $message, $request);
         return redirect('/personal')->with('success', 'Data has been saved!');
     } else {
         // Jika gagal, kembalikan pengguna dengan pesan error
+  $message = 'Failed to save data! Please try again. Attempted data: ' .
+                    'Name: ' . $request->fullname . ', ' .
+                    'Username: ' . $request->username . ', ' .
+                    'Birthday: ' . $request->dateofbirth;
+                    'gender' . $request->gender;
+                    'phone' . $request->phone;
+
+        $this->saveInboxMessage($userId, 'error', $message, $request);
         return redirect()->back()->with('error', 'Failed to save data! Please try again.');
     }
 }
@@ -1659,6 +1713,12 @@ public function personal()
 
     public function uploadProfilePicture(Request $request)
     {
+
+        $arg_request = $request->all(); // Mengambil seluruh data dari request body
+
+    $userId = session('user_id'); // Mengambil user_id dari session
+
+
         Log::info('Starting profile picture upload process.');
 
         // Validate image file
@@ -1695,6 +1755,8 @@ public function personal()
                 Log::info('API response received:', ['status' => $response->status(), 'body' => $response->body()]);
 
                 if ($response->successful()) {
+                            $this->saveInboxMessage($userId, 'success', 'Profile picture updated successfully.',  $arg_request);
+
                     Log::info('Profile picture updated successfully via API.', ['filename' => $filename]);
 
                     echo "<script>localStorage.setItem('profile_picture', '$profilePicturePath');</script>";
@@ -1702,6 +1764,7 @@ public function personal()
                 } else {
                     $errorMessage = $response->json()['message'] ?? 'An error occurred while uploading profile picture.';
                     Log::error('API response error:', ['status' => $response->status(), 'message' => $errorMessage]);
+                                $this->saveInboxMessage($userId, 'success', 'An error occurred while uploading profile picture',  $arg_request);
                     return redirect()->back()->with('error', $errorMessage);
                 }
             } catch (\Exception $e) {
@@ -1798,6 +1861,11 @@ public function personal()
 
     public function editpassword(Request $request)
 {
+
+    $arg_request = $request->all(); // Mengambil seluruh data dari request body
+
+    $userId = session('user_id'); // Mengambil user_id dari session
+
     // Validasi input
     $request->validate([
         'new_password' => 'required|min:6',
@@ -1824,6 +1892,7 @@ public function personal()
         // Logout user setelah perubahan password berhasil
         Auth::logout();
         Session::flash('success', 'Password changed successfully. Please log in again.');
+                    $this->saveInboxMessage($userId, 'success', 'Password changed successfully',  $arg_request);
         return redirect()->route('confirm-logout'); // Redirect ke halaman logout view
     } else {
         // Tangani kesalahan dari API
@@ -2781,6 +2850,10 @@ public function showEditProductForm($id)
 
 public function updateProduct(Request $request)
 {
+    $arg_request = $request->all(); // Mengambil seluruh data dari request body
+
+    $userId = session('user_id'); // Mengambil user_id dari session
+
     Log::info('Received product update request:', $request->all());
 
     try {
@@ -2842,19 +2915,22 @@ public function updateProduct(Request $request)
         ])->timeout(10)
           ->post(self::API_URL . '/product/update_product.json', $data);
 
-        if ($response->successful()) {
+          if ($response->successful()) {
             Log::info('Product updated successfully.');
+            $this->saveInboxMessage($userId, 'success', 'Product updated successfully.',  $arg_request);
             return redirect()->route('showProducts')->with('success_message', 'Product updated successfully.');
         } else {
             Log::error('Failed to update product. Response: ' . $response->body());
+            $this->saveInboxMessage($userId, 'error', 'Failed to update product. Please try again.',  $arg_request);
             return redirect()->back()->with('error', 'Failed to update product. Please try again.');
         }
     } catch (ValidationException $e) {
         Log::error('Validation failed:', $e->errors());
+        $this->saveInboxMessage($userId, 'error', 'Validation failed.', $arg_request);
         return redirect()->back()->withErrors($e->errors())->withInput();
     } catch (\Exception $e) {
-        Log::error('An unexpected error occurred during product update:', ['message' =>
- $e->getMessage()]);
+        Log::error('An unexpected error occurred during product update:', ['message' => $e->getMessage()]);
+        $this->saveInboxMessage($userId, 'error', 'An unexpected error occurred. Please try again.', $arg_request);
         return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
     }
 }
@@ -3642,32 +3718,40 @@ public function showinbox()
 
 public function showinboxadm()
 {
-    Log::info('Fetching inbox data for user.');
+    try {
+        Log::info('Requesting inbox data from API: ' . self::API_URL . '/sso/show_inbox.json');
 
-    // Ambil user_id dari session
-    $userId = session('user_id');
+        // Ambil user_id dari session
+        $userId = session('user_id');
 
-    // Kirim request ke API dengan metode GET dan parameter user_id di query string
-    $response = Http::withHeaders([
-        'Authorization' => session('access_token'),
-        'x-api-key' => self::API_KEY,
-    ])
-    ->timeout(10)
-    ->get(self::API_URL . '/sso/show_inbox.json', ['user_id' => $userId]);
+        // Ambil response API
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])
+        ->timeout(10)
+        ->get(self::API_URL . '/sso/show_inbox.json', ['user_id' => $userId]);
 
-    Log::info('API Response Status: ' . $response->status());
+        Log::info('API Response: ' . $response->body());
 
-    // Mengecek jika request berhasil
-    if ($response->successful()) {
-        Log::info('Inbox data retrieved successfully for user ID: ' . $userId);
-        $messages = $response->json()['data'];
+        // Cek apakah response API mengandung kunci 'data'
+        if ($response->successful() && isset($response->json()['data'])) {
+            $messages = $response->json()['data'];
+            Log::info('Inbox data retrieved successfully, total messages: ' . count($messages));
 
-        return view('admin.inbox', ['messages' => $messages]);
+            // Mengirimkan data inbox ke view `admin.inbox`
+            return view('admin.inbox', ['messages' => $messages]);
+        }
+
+        Log::error('API request failed with status ' . $response->status() . ': ' . $response->body());
+        return redirect()->back()->with('error', 'Failed to retrieve inbox data.');
+
+    } catch (\Exception $e) {
+        Log::error('Exception while retrieving inbox data: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Error retrieving inbox data');
     }
-
-    Log::error('Failed to fetch inbox data for user ID: ' . $userId);
-    return redirect()->back()->with('error', 'Failed to retrieve inbox.');
 }
+
 
 public function showpayment()
     {
