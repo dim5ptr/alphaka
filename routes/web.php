@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\NewMessage;
 use App\Http\Controllers\ActivationController;
+use App\Http\Controllers\PaymentController;
 
 Route::get ('/cantreset', [HttpController::class, 'showCantreset'])->name('cantreset');
 Route::get('/test-mail', function (){
@@ -170,6 +171,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [HttpController::class, 'index'])->name('dashboard');
         Route::get('/organization', [HttpController::class, 'showaddorganization'])->name('organization');
 
+        //Midtrans route
+        Route::get('/payment', function () {
+            return view('payments.payment');
+        });
+        Route::post('/create-transaction', [PaymentController::class, 'createTransaction']);
+        //Midtrans end
+
         Route::get('/organizations/{token}', [HttpController::class, 'organizationVerify'])->name('organizations');
         Route::get('/viewsorganization', [HttpController::class, 'organization'])->name('viewsorganization');
 
@@ -209,7 +217,7 @@ Route::middleware(['auth'])->group(function () {
 
 
         //Route Pre-Payment
-        Route::get('/payment',  [HttpController::class, 'showpayment'])->name('payment');
+        // Route::get('/payment',  [HttpController::class, 'showpayment'])->name('payment');
     });
 });
 
