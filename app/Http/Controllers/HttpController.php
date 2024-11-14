@@ -1682,7 +1682,7 @@ public function personal()
         ]);
 
             // Simpan pesan ke inbox dengan data baru
-        $message = 'Profile updated successfully. Updated data: ' . 
+        $message = 'Profile updated successfully. Updated data: ' .
                     'Name: ' . $request->fullname . ', ' .
                     'Username: ' . $request->username . ', ' .
                     'birthday' . $request->dateofbirth;

@@ -18,17 +18,20 @@ class PaymentController extends Controller
 
     public function createTransaction(Request $request)
     {
+        // Ambil harga dari permintaan
+        $price = $request->input('price', 0); // Default ke 0 jika tidak ada
+
         // Data transaksi
         $transactionDetails = [
             'order_id' => 'order-id-' . time(),
-            'gross_amount' => 5000, // Jumlah total
+            'gross_amount' => $price, // Gunakan harga dari permintaan
         ];
 
         // Data item
         $itemDetails = [
             [
                 'id' => 'item1',
-                'price' => 5000,
+                'price' => $price, // Gunakan harga dari permintaan
                 'quantity' => 1,
                 'name' => 'Item Name',
             ],
