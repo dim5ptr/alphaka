@@ -20,23 +20,27 @@
 <div class="table-container">
     <table class="table custom-table mt-0">
         <tbody>
-            @forelse($messages as $message)
-                <tr>
-                    <td style="color: {{ $message['type'] == 'success' ? '#28a745' : '#dc3545' }};">
-                        {{ ucfirst($message['type']) }}
-                    </td>
-                    <td>{{ $message['message'] }}</td>
-                    <td>{{ \Carbon\Carbon::parse($message['created_at'])->format('Y-m-d') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($message['created_at'])->format('H:i:s') }}</td>
-                </tr>
-            @empty
+
+            @if(is_array($messages) || is_object($messages))
+                @foreach($messages as $message)
+                    <tr>
+                        <td style="color: {{ $message['type'] == 'success' ? '#28a745' : '#dc3545' }};">
+                            {{ ucfirst($message['type']) }}
+                        </td>
+                        <td>{{ $message['message'] }}</td>
+                        <td>{{ \Carbon\Carbon::parse($message['created_at'])->format('Y-m-d') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($message['created_at'])->format('H:i:s') }}</td>
+                    </tr>
+                @endforeach
+            @else
                 <tr>
                     <td colspan="4" class="text-center">Tidak ada pesan di inbox Anda.</td>
                 </tr>
-            @endforelse
+            @endif
         </tbody>
     </table>
 </div>
+
 
 <!-- Custom CSS for the inbox table -->
 <style>
@@ -50,25 +54,22 @@
     .table {
         width: 100%;
         border-collapse: collapse;
-        background-color: white;
-        border-radius: 10px;
         overflow: hidden;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-collapse: separate;
+        border-spacing: 0 10px; /* Menambahkan spasi vertikal 10px */
     }
 
     .table td {
         padding: 15px;
         text-align: left;
         border-bottom: 1px solid #f0f0f0;
+        background-color: white;
         white-space: nowrap;
     }
 
-    .table tbody tr {
-        transition: background-color 0.2s;
-    }
-
-    .table tbody tr:hover {
-        background-color: #eef5ff;
+    .table tr {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
     }
 
     /* Search Bar */
