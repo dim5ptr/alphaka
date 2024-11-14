@@ -1658,61 +1658,61 @@ public function personal()
     }
 
     public function uploadProfilePicture(Request $request)
-{
-    Log::info('Starting profile picture upload process.');
+    {
+        Log::info('Starting profile picture upload process.');
 
-    // Validate image file
-    $request->validate([
-        'profile_picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-    ]);
+        // Validate image file
+        $request->validate([
+            'profile_picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-    $profilePicturePath = null;
+        $profilePicturePath = null;
 
-    if ($request->hasFile('profile_picture') && $request->file('profile_picture')->isValid()) {
-        $file = $request->file('profile_picture');
-        $filename = time() . '_' . $file->getClientOriginalName();
-        $profilePicturePath = $file->storeAs('public/profile_pictures', $filename);
+        if ($request->hasFile('profile_picture') && $request->file('profile_picture')->isValid()) {
+            $file = $request->file('profile_picture');
+            $filename = time() . '_' . $file->getClientOriginalName();
 
-        // Adjust path for session and storage (relative path)
-        $profilePicturePath = '/storage/profile_pictures/' . $filename; // Use relative path
+            // Store the image in 'public/images/profile_pictures' directory
+            $file->move(public_path('images/profile_pictures'), $filename);
 
-        session(['profile_picture' => $profilePicturePath]);
+            // Define the path to be stored in the session and used for API
+            $profilePicturePath = '/images/profile_pictures/' . $filename;
 
-        Log::info('File uploaded by user:', ['filename' => $filename, 'path' => $profilePicturePath]);
+            session(['profile_picture' => $profilePicturePath]);
 
-        try {
-            // Send the relative path to the API
-            $response = Http::withHeaders([
-                'Authorization' => session('access_token'),
-                'x-api-key' => self::API_KEY,
-            ])
-            ->post(self::API_URL . '/sso/update_profile_picture.json', [
-                'profile_image_path' => $profilePicturePath, // sending relative path
-            ]);
+            Log::info('File uploaded by user:', ['filename' => $filename, 'path' => $profilePicturePath]);
 
-            Log::info('API response received:', ['status' => $response->status(), 'body' => $response->body()]);
+            try {
+                // Send the relative path to the API
+                $response = Http::withHeaders([
+                    'Authorization' => session('access_token'),
+                    'x-api-key' => self::API_KEY,
+                ])
+                ->post(self::API_URL . '/sso/update_profile_picture.json', [
+                    'profile_image_path' => $profilePicturePath, // sending relative path
+                ]);
 
-            if ($response->successful()) {
-                Log::info('Profile picture updated successfully via API.', ['filename' => $filename]);
+                Log::info('API response received:', ['status' => $response->status(), 'body' => $response->body()]);
 
-                echo "<script>localStorage.setItem('profile_picture', '$profilePicturePath');</script>";
-                return redirect()->route('personal')->with('success', 'Profile picture uploaded successfully.');
-            } else {
-                $errorMessage = $response->json()['message'] ?? 'An error occurred while uploading profile picture.';
-                Log::error('API response error:', ['status' => $response->status(), 'message' => $errorMessage]);
-                return redirect()->back()->with('error', $errorMessage);
+                if ($response->successful()) {
+                    Log::info('Profile picture updated successfully via API.', ['filename' => $filename]);
+
+                    echo "<script>localStorage.setItem('profile_picture', '$profilePicturePath');</script>";
+                    return redirect()->route('personal')->with('success', 'Profile picture uploaded successfully.');
+                } else {
+                    $errorMessage = $response->json()['message'] ?? 'An error occurred while uploading profile picture.';
+                    Log::error('API response error:', ['status' => $response->status(), 'message' => $errorMessage]);
+                    return redirect()->back()->with('error', $errorMessage);
+                }
+            } catch (\Exception $e) {
+                Log::error('Exception during API request:', ['exception' => $e->getMessage()]);
+                return redirect()->back()->with('error', 'An error occurred during the upload process.');
             }
-        } catch (\Exception $e) {
-            Log::error('Exception during API request:', ['exception' => $e->getMessage()]);
-            return redirect()->back()->with('error', 'An error occurred during the upload process.');
+        } else {
+            Log::warning('No valid file uploaded by user.');
+            return redirect()->back()->with('error', 'No file uploaded.');
         }
-    } else {
-        Log::warning('No valid file uploaded by user.');
-        return redirect()->back()->with('error', 'No file uploaded.');
     }
-}
-
-
 
     public function gravatar(Request $request)
 {
@@ -2748,7 +2748,7 @@ public function showEditProductForm($id)
         Log::info('API Response for product ID ' . $id . ': ' . $response->body());
 
         if ($response->successful() && isset($response->json()['data'])) {
-            $product = $response->json()['data'][0]; // Assuming 'data' is an array and you want the first product
+            $product = $response->json()['data'][0];
             Log::info("Product data for ID {$id} retrieved successfully.");
 
             // Store product details in the session
@@ -2778,6 +2778,7 @@ public function showEditProductForm($id)
         return redirect()->route('showProducts')->with('error', 'Error retrieving product data');
     }
 }
+
 public function updateProduct(Request $request)
 {
     Log::info('Received product update request:', $request->all());
@@ -2797,28 +2798,25 @@ public function updateProduct(Request $request)
             'enabled' => 'required|boolean',
         ]);
 
-        // Logo and Display Images Handling
-        $logoPath = null;
+        // Handle logo upload directly to public/images
+        $logoPath = session('logo_path'); // Default to existing path
         if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
-            $logoPath = $request->file('logo')->store('public/images');
-            $logoPath = str_replace('public/', '/storage/', $logoPath);
-        } else {
-            // Keep the existing logo path from session
-            $logoPath = session('logo_path');
+            $fileName = time() . '_' . $request->file('logo')->getClientOriginalName();
+            $request->file('logo')->move(public_path('images'), $fileName);
+            $logoPath = '/images/' . $fileName; // Set the new path
         }
 
-        // Handle display images
-        $displayPaths = [];
+        // Handle display images upload directly to public/images
+        $displayPaths = session('display_paths', []); // Default to existing paths
         if ($request->hasFile('display_images')) {
+            $displayPaths = []; // Reset the array if new images are provided
             foreach ($request->file('display_images') as $image) {
                 if ($image->isValid()) {
-                    $path = $image->store('public/images');
-                    $displayPaths[] = str_replace('public/', '/storage/', $path);
+                    $fileName = time() . '_' . $image->getClientOriginalName();
+                    $image->move(public_path('images'), $fileName);
+                    $displayPaths[] = '/images/' . $fileName;
                 }
             }
-        } else {
-            // Keep the existing display image paths from session
-            $displayPaths = session('display_paths', []);
         }
 
         // Format price if present
@@ -2855,7 +2853,8 @@ public function updateProduct(Request $request)
         Log::error('Validation failed:', $e->errors());
         return redirect()->back()->withErrors($e->errors())->withInput();
     } catch (\Exception $e) {
-        Log::error('An unexpected error occurred during product update:', ['message' => $e->getMessage()]);
+        Log::error('An unexpected error occurred during product update:', ['message' =>
+ $e->getMessage()]);
         return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
     }
 }
@@ -2869,96 +2868,95 @@ public function updateProduct(Request $request)
 
     // Method untuk menyimpan produk baru
     public function storeProduct(Request $request)
-{
-    Log::info('Received product creation request:', $request->all());
+    {
+        Log::info('Received product creation request:', $request->all());
 
-    try {
-        // Convert 'enabled' to boolean
-        $request->merge(['enabled' => $request->has('enabled')]);
+        try {
+            // Convert 'enabled' to boolean
+            $request->merge(['enabled' => $request->has('enabled')]);
 
-        // Validate input, skipping image validations temporarily
-        $request->validate([
-            'product_name' => 'required|string|max:255',
-            'product_code' => 'required|string|max:50|alpha_dash',
-            'description' => 'nullable|string',
-            'price' => 'nullable|numeric|min:0|max:99999999.999',
-            'product_type' => 'required|integer',
-            'enabled' => 'required|boolean',
-        ]);
+            // Validate input, skipping image validations temporarily
+            $request->validate([
+                'product_name' => 'required|string|max:255',
+                'product_code' => 'required|string|max:50|alpha_dash',
+                'description' => 'nullable|string',
+                'price' => 'nullable|numeric|min:0|max:99999999.999',
+                'product_type' => 'required|integer',
+                'enabled' => 'required|boolean',
+            ]);
 
-        // Store logo and get path
-        $logoPath = null;
-        if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
-            $logoPath = $request->file('logo')->store('public/images');
-            $logoPath = str_replace('public/', '/storage/', $logoPath);
-            Log::info('Logo path stored:', ['path' => $logoPath]);
-        } else {
-            Log::warning('No logo image uploaded or file is not valid.');
-        }
-
-        // Store display images and get paths if provided
-        $displayPaths = [];
-        if ($request->hasFile('display_images')) {
-            foreach ($request->file('display_images') as $image) {
-                if ($image->isValid()) {
-                    $path = $image->store('public/images');
-                    $displayPaths[] = str_replace('public/', '/storage/', $path);
-                    Log::info('Display image path stored:', ['path' => $path]);
-                } else {
-                    Log::warning('Invalid display image file.');
-                }
+            // Store logo and get path
+            $logoPath = null;
+            if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
+                $fileName = time() . '_' . $request->file('logo')->getClientOriginalName();
+                $request->file('logo')->move(public_path('images'), $fileName);
+                $logoPath = '/images/' . $fileName; // Path to use for access
+                Log::info('Logo path stored:', ['path' => $logoPath]);
+            } else {
+                Log::warning('No logo image uploaded or file is not valid.');
             }
-        } else {
-            Log::warning('No display images uploaded.');
-        }
 
-        // Format price if present
-        $price = $request->price ? number_format((float)$request->price, 3, '.', '') : null;
+            // Store display images and get paths if provided
+            $displayPaths = [];
+            if ($request->hasFile('display_images')) {
+                foreach ($request->file('display_images') as $image) {
+                    if ($image->isValid()) {
+                        $fileName = time() . '_' . $image->getClientOriginalName();
+                        $image->move(public_path('images'), $fileName);
+                        $displayPaths[] = '/images/' . $fileName; // Path to use for access
+                        Log::info('Display image path stored:', ['path' => '/images/' . $fileName]);
+                    } else {
+                        Log::warning('Invalid display image file.');
+                    }
+                }
+            } else {
+                Log::warning('No display images uploaded.');
+            }
 
-        // Prepare data for API request
-        $data = [
-            'product_name' => $request->product_name,
-            'product_code' => $request->product_code,
-            'description' => $request->description,
-            'price' => $price,
-            'product_type' => $request->product_type,
-            'enabled' => $request->enabled,
-            'logo_path' => $logoPath ?? null,
-            'display_paths' => $displayPaths,
-        ];
+            // Format price if present
+            $price = $request->price ? number_format((float)$request->price, 3, '.', '') : null;
 
-        Log::info('Prepared data for API request:', $data);
+            // Prepare data for API request
+            $data = [
+                'product_name' => $request->product_name,
+                'product_code' => $request->product_code,
+                'description' => $request->description,
+                'price' => $price,
+                'product_type' => $request->product_type,
+                'enabled' => $request->enabled,
+                'logo_path' => $logoPath,
+                'display_paths' => $displayPaths,
+            ];
 
-        // Send request to API
-        $response = Http::withHeaders([
-            'Authorization' => session('access_token'),
-            'x-api-key' => self::API_KEY,
-        ])->timeout(10)
-          ->post(self::API_URL . '/product/create_product.json', $data);
+            Log::info('Prepared data for API request:', $data);
 
-          if ($response->successful()) {
-            Log::info('Product created successfully.');
-            Log::info('API Response:', ['response' => $response->body()]);
-            return redirect()->route('showProducts')->with('success', 'Product created successfully.');
-        } else {
-            $status = $response->status();
-            $errorMessage = $response->json('message') ?? 'Unknown error';
-            $responseBody = $response->body(); // Log the raw response body
-            Log::error("Failed to create product. Status: {$status}, Error: {$errorMessage}, Response: {$responseBody}");
-            return redirect()->back()->with('error', 'Failed to create product. Please try again.');
-        }
+            // Send request to API
+            $response = Http::withHeaders([
+                'Authorization' => session('access_token'),
+                'x-api-key' => self::API_KEY,
+            ])->timeout(10)
+              ->post(self::API_URL . '/product/create_product.json', $data);
 
-    } catch (ValidationException $e) {
-        Log::error('Validation failed:', $e->errors());
-        return redirect()->back()->withErrors($e->errors())->withInput();
-    } catch (\Exception $e) {
-        Log::error('An unexpected error occurred during product creation:', ['message' => $e->getMessage()]);
-        return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
+            if ($response->successful()) {
+                Log::info('Product created successfully.');
+                Log::info('API Response:', ['response' => $response->body()]);
+                return redirect()->route('showProducts')->with('success', 'Product created successfully.');
+            } else {
+                $status = $response->status();
+                $errorMessage = $response->json('message') ?? 'Unknown error';
+                $responseBody = $response->body(); // Log the raw response body
+                Log::error("Failed to create product. Status: {$status}, Error: {$errorMessage}, Response: {$responseBody}");
+                return redirect()->back()->with('error', 'Failed to create product. Please try again.');
+            }
+
+        } catch (ValidationException $e) {
+            Log::error('Validation failed:', $e->errors());
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            Log::error('An unexpected error occurred during product creation:', ['message' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
     }
-}
-
-
-
+    }
 
 
 public function showTransaction(Request $request)
