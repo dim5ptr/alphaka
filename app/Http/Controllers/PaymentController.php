@@ -37,12 +37,12 @@ class PaymentController extends Controller
             ],
         ];
 
-        // Data customer
+        // Data customer diambil dari session
         $customerDetails = [
-            'first_name' => "Litto",
-            'last_name' => "Widodo",
-            'email' => "projekfedweb2@example.com",
-            'phone' => "085648129574",
+            'first_name' => session('full_name', 'Guest'), // Mengambil nama lengkap
+            'last_name' => '', // Jika tidak ada last name, bisa dikosongkan
+            'email' => session('email', ''),
+            'phone' => session('phone', ''),
         ];
 
         // Data transaksi lengkap
