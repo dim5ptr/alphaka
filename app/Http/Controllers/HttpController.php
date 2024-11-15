@@ -1681,16 +1681,8 @@ public function personal()
             'phone' => $request->phone,
         ]);
 
-            // Simpan pesan ke inbox dengan data baru
-        $message = 'Profile updated successfully. Updated data: ' . 
-                    'Name: ' . $request->fullname . ', ' .
-                    'Username: ' . $request->username . ', ' .
-                    'birthday' . $request->dateofbirth;
-                    'gender' . $request->gender;
-                    'phone' . $request->phone;
-
         // Simpan pesan sukses ke inbox
-        $this->saveInboxMessage($userId, 'success', $message, $request);
+        $this->saveInboxMessage($userId, 'success', 'profil udah update', $arg_request);
         return redirect('/personal')->with('success', 'Data has been saved!');
     } else {
         // Jika gagal, kembalikan pengguna dengan pesan error
@@ -3687,34 +3679,58 @@ public function saveInboxMessage($userId, $type, $message, $arg_request)
     }
 }
 
+public function userinbox()
+{
+    $currentPage = 'Inbox'; // Define the current page variable
+    return view('inbox', compact('currentPage')); // Pass it to the view
+}
+
 public function showinbox()
 {
-      // Ambil user_id dari session
-      $userId = session('user_id'); // Mengambil user_id dari session
+    try {
 
-      // Data yang akan dikirimkan ke API
-      $data = [
-          'user_id' => $userId
-      ];
+        Log::info('Requesting inbox data from API: ' . self::API_URL . '/sso/show_inbox.json');
 
-      // Kirim request ke API
-      $response = Http::withHeaders([
-          'Authorization' => session('access_token'),
-          'x-api-key' => self::API_KEY,
-      ])
-      ->timeout(10)
-      ->post(self::API_URL . '/sso/show_inbox.json', $data);
+        // Ambil user_id dari session
+        $userId = session('user_id');
+        $currentPage = 'Inbox';
 
-      // Mengecek jika request berhasil
-      if ($response->successful()) {
-          $messages = $response->json()['data']; // Ambil data pesan dari response
+        // Ambil response API
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])
+        ->timeout(10)
+        ->get(self::API_URL . '/sso/show_inbox.json', ['user_id' => $userId]);
 
-          return view('inbox', ['messages' => $messages]);
-      }
+        Log::info('API Response: ' . $response->body());
 
-      // Jika request gagal, tampilkan pesan error
-      return redirect()->back()->with('error', 'Failed to retrieve inbox.');
+        // Cek apakah response API mengandung kunci 'data' dan memastikan 'data' adalah array
+        if ($response->successful()) {
+            $messages = $response->json()['data'] ?? [];
+            if (!is_array($messages)) {
+                $messages = []; // Pastikan $messages adalah array
+            }
+            Log::info('Inbox data retrieved successfully, total messages: ' . count($messages));
+
+              // Menyimpan data pesan ke session
+              session(['messages' => $messages]);
+
+            // Mengirimkan data inbox ke view `admin.inbox`, meskipun kosong
+            return view('inbox')->with('messages', $messages)->with('currentPage', $currentPage);
+
+
+        }
+
+        Log::error('API request failed with status ' . $response->status() . ': ' . $response->body());
+        return redirect()->back()->with('error', 'Failed to retrieve inbox data.');
+
+    } catch (\Exception $e) {
+        Log::error('Exception while retrieving inbox data: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Error retrieving inbox data');
+    }
 }
+
 
 public function showinboxadm()
 {
@@ -3753,10 +3769,59 @@ public function showinboxadm()
 }
 
 
-public function showpayment()
-    {
-        $currentPage = 'Payment'; // Define the current page variable
-        return view('payment', compact('currentPage')); // Pass it to the view
-    }
+    public function showpayment()
+        {
+            $currentPage = 'Payment'; // Define the current page variable
+            return view('payment', compact('currentPage')); // Pass it to the view
+        }
+
+        public function getUnreadMessages()
+        {
+            // Mengambil data dari API
+            $response = Http::withHeaders([
+                'Authorization' => session('access_token'),
+                'x-api-key' => self::API_KEY,
+            ])->post(self::API_URL . '/sso/check_inbox_message.json', []);
+
+            // Mengambil hasil dari API
+            $data = $response->json();
+
+            // Cek apakah ada pesan dalam array 'data'
+            $unreadMessages = !empty($data['data']) ? 1 : 0;  // Jika ada pesan, set unreadMessages menjadi 1
+
+            // Menyimpan status unreadMessages ke dalam session
+            session(['unreadMessages' => $unreadMessages]);
+
+            // Log status unreadMessages dan data yang diterima dari API
+            Log::debug('Unread Messages Status: ' . $unreadMessages);
+            Log::debug('API Response Data: ', $data);
+
+            // Mengirim nilai unreadMessages ke view
+            return view('layout.userlayout')->with('unreadMessages', $unreadMessages);
+        }
+
+        public function markMessagesAsRead()
+        {
+            $userId = session('user_id');
+
+            // Mengirim permintaan untuk menandai pesan sebagai sudah dibaca
+            $response = Http::withHeaders([
+                'Authorization' => session('access_token'),
+                'x-api-key' => self::API_KEY,
+            ])->post(self::API_URL . '/sso/mark_inbox_message.json', ['user_id' => $userId]);
+
+            // Mengambil hasil dari API
+            $data = $response->json();
+
+            // Debugging: Log hasil respons API
+            Log::info('Mark Messages As Read Response:', ['data' => $data]);
+
+            if ($data['success']) {
+                return response()->json(['success' => true]);
+            } else {
+                return response()->json(['success' => false, 'error' => 'Failed to mark messages as read'], 500);
+            }
+        }
 
 }
+

@@ -62,14 +62,14 @@
     .table td {
         padding: 15px;
         text-align: left;
-        border-bottom: 1px solid #f0f0f0;
         background-color: white;
         white-space: nowrap;
     }
 
     .table tr {
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
+        border-radius: 20px;
+        border: 1px solid #f0f0f0;
     }
 
     /* Search Bar */

@@ -133,9 +133,14 @@
             <img id="profile_picture" src="https://www.gravatar.com/avatar/{{ md5(strtolower(trim(session('email')))) }}?s=200&d=mp" alt="Foto Profil" class="rounded-circle" style="width: 30px; height: 30px;">
           @endif
           <span>{{ session('username') ? session('username') : session('email') }}</span>
+
+          <span id="notificationDot" class="badge badge-danger" style="display: none; position: absolute; top: 5px; right: 5px; border-radius: 50%; width: 10px; height: 10px;"></span>
+        
         </a>
         <div class="dropdown-menu dropdown-menu-right">
-          <a class="dropdown-item" href="{{ route('showinboxadm') }}" >Inbox</a>
+          <a class="dropdown-item" href="{{ route('markMessagesAsRead') }}" >Inbox</a>    @if($unreadMessages > 0) 
+                <span class="badge badge-danger" style="position: absolute; top: 0; right: 0; border-radius: 50%; width: 10px; height: 10px;"></span>
+            @endif
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{{ route('personaladm') }}">Settings</a>
           <div class="dropdown-divider"></div>

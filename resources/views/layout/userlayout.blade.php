@@ -167,12 +167,24 @@
             ul {
                 font-size: 0.876rem;
             }
+
+            .dot {
+    width: 8px;
+    height: 8px;
+    background-color: red;
+    border-radius: 50%;
+    display: inline-block; /* pastikan display ini benar */
+    position: relative; /* untuk memudahkan positioning */
+}
+
         }
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <div class="open-btn" onclick="toggleSidebar()">&#9776; {{ $currentPage }}</div>
+        <div class="open-btn" onclick="toggleSidebar()">&#9776; {{ $currentPage }}
+            <span id="sidebarDot" class="dot" style="width: 8px; height: 8px; background-color: red; display: inline-block;"></span>
+        </div>
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
 
@@ -182,6 +194,12 @@
                 <li>
                     <a href="/" class="{{ request()->is('/*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Dashboard')">
                         <span class="link"><i class="fa-solid fa-house-chimney"></i>ㅤDashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/inbox" class="{{ request()->is('showinbox*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Inbox')">
+                        <span class="link"><i class="fa-solid fa-inbox"></i>ㅤInbox</span>
+                        <span id="inboxDot" class="dot" style="width: 8px; height: 8px; background-color: red; display: inline-block;"></span>
                     </a>
                 </li>
                 <li>
@@ -234,6 +252,52 @@
         function updateNavbarText(pageName) {
             document.querySelector('.open-btn').innerHTML = `&#9776; ${pageName}`;
         }
+
+
+        function markAllAsRead() {
+            fetch('/mark-messages-as-read', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Jika pesan berhasil ditandai sebagai sudah dibaca, sembunyikan dot
+                    updateDotDisplay(0);
+                } else {
+                    console.error('Gagal menandai pesan sebagai sudah dibaca');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
     </script>
+    <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    let unreadMessages = {{ session('unreadMessages', 0) }};
+    console.log("Unread messages from session:", unreadMessages); // Debug
+    updateDotDisplay(unreadMessages);
+});function updateDotDisplay(unreadMessages) {
+    const inboxDot = document.getElementById('inboxDot');
+    const sidebarDot = document.getElementById('sidebarDot');
+
+    console.log("Running updateDotDisplay with unreadMessages:", unreadMessages); // Debugging log
+
+    if (unreadMessages > 0) {
+        inboxDot.style.display = 'inline-block';
+        sidebarDot.style.display = 'inline-block';
+        console.log("Dot displayed");
+    } else {
+        inboxDot.style.display = 'none';
+        sidebarDot.style.display = 'none';
+        console.log("Dot hidden");
+    }
+}
+
+
+    </script>
+
 </body>
 </html>
