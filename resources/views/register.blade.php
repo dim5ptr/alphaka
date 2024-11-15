@@ -158,7 +158,7 @@
             padding: 5px;
         }
 
-        .google-form a{
+        .google-form span{
             margin-left: 2%;
             color: #c3e6cb;
             text-decoration: none;
@@ -335,10 +335,10 @@
                 <button type="submit" class="btn btn-primary">Register</button>
 
                 <div class="google-form">
-                    <div class="google">
+                    <a class="google" href="{{ route('auth.google') }}">
                         <i class="fab fa-google"></i>
-                        <a class="google-login" href="{{ route('auth.google') }}" class="btn btn-google">Register with Google</a>
-                    </div>
+                        <span class="google-login">Login with Google</span>
+                    </a>
                 </div>
             </form>
 

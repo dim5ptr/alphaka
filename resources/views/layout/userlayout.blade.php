@@ -172,18 +172,20 @@
     width: 8px;
     height: 8px;
     background-color: red;
-    border-radius: 50%;
+    border-radius: 100%;
     display: inline-block; /* pastikan display ini benar */
     position: relative; /* untuk memudahkan positioning */
 }
 
-        }
+}
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <div class="open-btn" onclick="toggleSidebar()">&#9776; {{ $currentPage }}
-            <span id="sidebarDot" class="dot" style="width: 8px; height: 8px; background-color: red; display: inline-block;"></span>
+        <div class="open-btn" onclick="toggleSidebar()">
+            &#9776; 
+            <span id="sidebarDot" class="dot" style="width: 8px; height: 8px; transform: translate(-100%, -120%);  border-radius: 50%;  background-color: red; display: none;"></span>
+             {{ $currentPage }}
         </div>
         <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
     </nav>
@@ -197,9 +199,9 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/inbox" class="{{ request()->is('showinbox*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Inbox')">
+                    <a href="/inbox" class="{{ request()->is('showinbox') ? 'nav-link-act' : 'nav-link' }}"  onclick="markAllAsRead(); updateNavbarText('Inbox');">
                         <span class="link"><i class="fa-solid fa-inbox"></i>ㅤInbox</span>
-                        <span id="inboxDot" class="dot" style="width: 8px; height: 8px; background-color: red; display: inline-block;"></span>
+                        <span id="inboxDot" class="dot" style="width: 8px; height: 8px; border-radius: 50%; margin-left: 50%; background-color: red; display: none;"></span>
                     </a>
                 </li>
                 <li>
@@ -252,8 +254,51 @@
         function updateNavbarText(pageName) {
             document.querySelector('.open-btn').innerHTML = `&#9776; ${pageName}`;
         }
+    </script>
+    
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+    // Mengirim request ke server untuk mendapatkan unreadMessages
+    fetch('/get-unread-messages', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'  // Pastikan untuk mengirimkan token CSRF
+        }
+    })
+    .then(response => response.json())  // Mengubah response menjadi format JSON
+    .then(data => {
+        const unreadMessages = data.unreadMessages;  // Mendapatkan status unreadMessages dari response
+        console.log("Unread messages status:", unreadMessages);  // Debug log
+        updateDotDisplay(unreadMessages);  // Memperbarui tampilan dot
+    })
+    .catch(error => console.error('Error fetching unread messages:', error));
+
+    // Jika halaman ini adalah Inbox, sembunyikan dot notifikasi
+    if (window.location.pathname === '/inbox') {
+        updateDotDisplay(0);  // Menyembunyikan dot langsung jika halaman Inbox
+    }
+});
+
+function updateDotDisplay(unreadMessages) {
+    const inboxDot = document.getElementById('inboxDot');
+    const sidebarDot = document.getElementById('sidebarDot');
+
+    // Menampilkan atau menyembunyikan dot notifikasi
+    if (unreadMessages > 0) {
+        inboxDot.style.display = 'inline-block';  // Menampilkan dot
+        sidebarDot.style.display = 'inline-block';  // Menampilkan dot
+        console.log("Dot displayed");
+    } else {
+        inboxDot.style.display = 'none';  // Menyembunyikan dot
+        sidebarDot.style.display = 'none';  // Menyembunyikan dot
+        console.log("Dot hidden");
+    }
+}
 
 
+        // Menambahkan fungsi untuk menandai semua pesan sebagai sudah dibaca
         function markAllAsRead() {
             fetch('/mark-messages-as-read', {
                 method: 'POST',
@@ -273,29 +318,6 @@
             })
             .catch(error => console.error('Error:', error));
         }
-    </script>
-    <script>
-   document.addEventListener('DOMContentLoaded', function() {
-    let unreadMessages = {{ session('unreadMessages', 0) }};
-    console.log("Unread messages from session:", unreadMessages); // Debug
-    updateDotDisplay(unreadMessages);
-});function updateDotDisplay(unreadMessages) {
-    const inboxDot = document.getElementById('inboxDot');
-    const sidebarDot = document.getElementById('sidebarDot');
-
-    console.log("Running updateDotDisplay with unreadMessages:", unreadMessages); // Debugging log
-
-    if (unreadMessages > 0) {
-        inboxDot.style.display = 'inline-block';
-        sidebarDot.style.display = 'inline-block';
-        console.log("Dot displayed");
-    } else {
-        inboxDot.style.display = 'none';
-        sidebarDot.style.display = 'none';
-        console.log("Dot hidden");
-    }
-}
-
 
     </script>
 

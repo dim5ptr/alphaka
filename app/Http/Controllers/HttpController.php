@@ -3777,30 +3777,84 @@ public function showinboxadm()
 
         public function getUnreadMessages()
         {
+            // Ambil user_id dari session
+            $userId = session('user_id');
+            
             // Mengambil data dari API
             $response = Http::withHeaders([
                 'Authorization' => session('access_token'),
                 'x-api-key' => self::API_KEY,
-            ])->post(self::API_URL . '/sso/check_inbox_message.json', []);
+            ])->post(self::API_URL . '/sso/check_inbox_message.json', ['user_id' => $userId]);
+        
+            // Mengambil hasil dari API
+            $data = $response->json();
+        
+            // Cek apakah status success bernilai true
+            $unreadMessages = isset($data['success']) && $data['success'] === true ? 1 : 0;  // Jika success true, set unreadMessages menjadi 1
+        
+            // Menyimpan status unreadMessages ke dalam session
+            session(['unreadMessages' => $unreadMessages]);
+        
+            // Log status unreadMessages dan data yang diterima dari API
+            Log::debug('Unread Messages Status: ' . $unreadMessages);
+            Log::debug('API Response Data: ', $data);
+        
+            // Mengembalikan status unreadMessages dalam format JSON
+            return response()->json(['unreadMessages' => $unreadMessages]);
+        }
+
+        public function markMessagesAsRead()
+        {
+            $userId = session('user_id');
+
+            // Mengirim permintaan untuk menandai pesan sebagai sudah dibaca
+            $response = Http::withHeaders([
+                'Authorization' => session('access_token'),
+                'x-api-key' => self::API_KEY,
+            ])->post(self::API_URL . '/sso/mark_inbox_message.json', ['user_id' => $userId]);
 
             // Mengambil hasil dari API
             $data = $response->json();
 
-            // Cek apakah ada pesan dalam array 'data'
-            $unreadMessages = !empty($data['data']) ? 1 : 0;  // Jika ada pesan, set unreadMessages menjadi 1
+            // Debugging: Log hasil respons API
+            Log::info('Mark Messages As Read Response:', ['data' => $data]);
 
+            if ($data['success']) {
+                return response()->json(['success' => true]);
+            } else {
+                return response()->json(['success' => false, 'error' => 'Failed to mark messages as read'], 500);
+            }
+        }
+
+        public function getUnreadMessagesadm()
+        {
+            // Ambil user_id dari session
+            $userId = session('user_id');
+            
+            // Mengambil data dari API
+            $response = Http::withHeaders([
+                'Authorization' => session('access_token'),
+                'x-api-key' => self::API_KEY,
+            ])->post(self::API_URL . '/sso/check_inbox_message.json', ['user_id' => $userId]);
+        
+            // Mengambil hasil dari API
+            $data = $response->json();
+        
+            // Cek apakah status success bernilai true
+            $unreadMessages = isset($data['success']) && $data['success'] === true ? 1 : 0;  // Jika success true, set unreadMessages menjadi 1
+        
             // Menyimpan status unreadMessages ke dalam session
             session(['unreadMessages' => $unreadMessages]);
-
+        
             // Log status unreadMessages dan data yang diterima dari API
             Log::debug('Unread Messages Status: ' . $unreadMessages);
             Log::debug('API Response Data: ', $data);
-
-            // Mengirim nilai unreadMessages ke view
-            return view('layout.userlayout')->with('unreadMessages', $unreadMessages);
+        
+            // Mengembalikan status unreadMessages dalam format JSON
+            return response()->json(['unreadMessages' => $unreadMessages]);
         }
 
-        public function markMessagesAsRead()
+        public function markMessagesAsReadadm()
         {
             $userId = session('user_id');
 

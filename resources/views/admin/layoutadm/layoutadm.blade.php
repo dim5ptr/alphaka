@@ -126,7 +126,7 @@
     <ul class="navbar-nav ml-auto">
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
-
+            <span id="sidebarDot" class="dot" style="width: 8px; height: 8px; transform: translate(150%, -150%); border-radius: 50%;  background-color: red; display: none;"></span>
           @if (session('profile_picture'))
             <img id="profile_picture" src="{{ asset(session('profile_picture')) }}" alt="Foto Profil" class="rounded-circle" style="width: 30px; height: 30px;">
           @else
@@ -138,9 +138,10 @@
         
         </a>
         <div class="dropdown-menu dropdown-menu-right">
-          <a class="dropdown-item" href="{{ route('markMessagesAsRead') }}" >Inbox</a>    @if($unreadMessages > 0) 
-                <span class="badge badge-danger" style="position: absolute; top: 0; right: 0; border-radius: 50%; width: 10px; height: 10px;"></span>
-            @endif
+          <a href="/adminbox" class="dropdown-item";  onclick="markAllAsRead();">
+            <span class="link">Inbox</span>
+            <span id="inboxDot" class="dot" style="width: 8px; height: 8px; border-radius: 50%; margin-left: 1%; background-color: red; display: none;"></span>
+          </a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{{ route('personaladm') }}">Settings</a>
           <div class="dropdown-divider"></div>
@@ -261,6 +262,71 @@
     });
   });
 </script>
+  
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+  // Mengirim request ke server untuk mendapatkan unreadMessages
+  fetch('/get-unread-messages-adm', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrf_token() }}'  // Pastikan untuk mengirimkan token CSRF
+      }
+  })
+  .then(response => response.json())  // Mengubah response menjadi format JSON
+  .then(data => {
+      const unreadMessages = data.unreadMessages;  // Mendapatkan status unreadMessages dari response
+      console.log("Unread messages status:", unreadMessages);  // Debug log
+      updateDotDisplay(unreadMessages);  // Memperbarui tampilan dot
+  })
+  .catch(error => console.error('Error fetching unread messages:', error));
+
+  // Jika halaman ini adalah Inbox, sembunyikan dot notifikasi
+  if (window.location.pathname === '/inbox') {
+      updateDotDisplay(0);  // Menyembunyikan dot langsung jika halaman Inbox
+  }
+});
+
+function updateDotDisplay(unreadMessages) {
+  const inboxDot = document.getElementById('inboxDot');
+  const sidebarDot = document.getElementById('sidebarDot');
+
+  // Menampilkan atau menyembunyikan dot notifikasi
+  if (unreadMessages > 0) {
+      inboxDot.style.display = 'inline-block';  // Menampilkan dot
+      sidebarDot.style.display = 'inline-block';  // Menampilkan dot
+      console.log("Dot displayed");
+  } else {
+      inboxDot.style.display = 'none';  // Menyembunyikan dot
+      sidebarDot.style.display = 'none';  // Menyembunyikan dot
+      console.log("Dot hidden");
+  }
+}
+
+
+      // Menambahkan fungsi untuk menandai semua pesan sebagai sudah dibaca
+      function markAllAsRead() {
+          fetch('/mark-messages-as-read-adm', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRF-TOKEN': '{{ csrf_token() }}'
+              }
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  // Jika pesan berhasil ditandai sebagai sudah dibaca, sembunyikan dot
+                  updateDotDisplay(0);
+              } else {
+                  console.error('Gagal menandai pesan sebagai sudah dibaca');
+              }
+          })
+          .catch(error => console.error('Error:', error));
+      }
+
+  </script>
+
 
 @yield('script')
 </body>

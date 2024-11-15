@@ -162,8 +162,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/licenses/serial-numbers/details', [HttpController::class, 'serialnumberdetails'])->name('serialnumberdetails');
         Route::get('/licenses/serial-numbers/details', [HttpController::class, 'serialnumberdetails'])->name('serialnumberdetails');
 
-        Route::post('/adminbox', [HttpController::class, 'markMessagesAsRead'])->name('markMessagesAsRead');
         Route::get('/adminbox', [HttpController::class, 'showinboxadm'])->name('showinboxadm');
+        Route::post('/mark-messages-as-read-adm', [HttpController::class, 'markMessagesAsReadadm'])->name('mark-messages-as-read-adm');
+        Route::post('/get-unread-messages-adm', [HttpController::class, 'getUnreadMessagesadm']);
+
 
     });
 
@@ -211,18 +213,18 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/user-activity',  [HttpController::class, 'activityUser'])->name('user.activity');
         Route::get('/produk', [HttpController::class, 'showProductsu'])->name('showProductsu');
         Route::get('/produk/detail/{id}', [HttpController::class, 'showDetailProductu'])->name(name: 'showDetailProductu');
-<<<<<<< HEAD
 
         Route::get('/inbox', [HttpController::class, 'showinbox'])->name('showinbox');
         // Route::get('/inbox', [HttpController::class, 'userinbox'])->name('userinbox');
 
         Route::post('/mark-messages-as-read', [HttpController::class, 'markMessagesAsRead'])->name('mark-messages-as-read');
+        Route::post('/get-unread-messages', [HttpController::class, 'getUnreadMessages']);
+
 
 
         //Route Pre-Payment
         // Route::get('/payment',  [HttpController::class, 'showpayment'])->name('payment');
-=======
->>>>>>> aecda6edcc8ca1eb165015fd937b67cce7d80874
+
     });
 });
 

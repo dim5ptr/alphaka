@@ -315,7 +315,7 @@ footer {
 @media (max-width: 480px) {
 
 .main-content {
-    margin-top: 15%;
+    padding-top: 15%;
     margin-left: 0;
     width: 100%;
 }
