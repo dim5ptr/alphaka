@@ -204,11 +204,6 @@
                         <span class="link"><i class="fa-solid fa-user-shield"></i>ㅤSecurity</span>
                     </a>
                 </li>
-                <li>
-                    <a href="/payment" class="{{ request()->is('payment*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Payment')">
-                        <span class="link"><i class="fa-solid fa-money-bill-wave"></i>ㅤPayment</span>
-                    </a>
-                </li>
             </ul>
 
             <form id="logoutForm" method="GET" class="logoutForm" action="{{ route('confirm-logout') }}">
