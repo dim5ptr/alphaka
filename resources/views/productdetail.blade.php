@@ -26,7 +26,7 @@
         </div>
 
         <div class="product-info">
-            <button id="pay-button" class="buy-now-btn">Buy Now</button>
+
             <h1 class="product-title">{{ $product['product_name'] ?? 'Product Name Unavailable' }}</h1>
             <p class="product-description">{{ $product['description'] ?? 'No description available.' }}</p>
 
@@ -36,6 +36,8 @@
                     {{ $product['price'] ? 'Suggested payments with 6 months special financing' : '' }}
                 </span>
             </div>
+
+            <button id="pay-button" class="buy-now-btn">Buy Now</button>
         </div>
     </div>
 </div>
@@ -125,6 +127,7 @@
         font-size: 22px;
         color: #365AC2;
         font-weight: bold;
+        margin-bottom: 25%;
     }
 
     .product-subtext {
