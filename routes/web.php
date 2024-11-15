@@ -172,9 +172,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/organization', [HttpController::class, 'showaddorganization'])->name('organization');
 
         //Midtrans route
-        Route::get('/payment', function () {
-            return view('payments.payment');
-        });
         Route::post('/create-transaction', [PaymentController::class, 'createTransaction']);
         //Midtrans end
 
@@ -214,6 +211,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/user-activity',  [HttpController::class, 'activityUser'])->name('user.activity');
         Route::get('/produk', [HttpController::class, 'showProductsu'])->name('showProductsu');
         Route::get('/produk/detail/{id}', [HttpController::class, 'showDetailProductu'])->name(name: 'showDetailProductu');
+<<<<<<< HEAD
 
         Route::get('/inbox', [HttpController::class, 'showinbox'])->name('showinbox');
         // Route::get('/inbox', [HttpController::class, 'userinbox'])->name('userinbox');
@@ -223,6 +221,8 @@ Route::middleware(['auth'])->group(function () {
 
         //Route Pre-Payment
         // Route::get('/payment',  [HttpController::class, 'showpayment'])->name('payment');
+=======
+>>>>>>> aecda6edcc8ca1eb165015fd937b67cce7d80874
     });
 });
 

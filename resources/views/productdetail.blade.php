@@ -4,13 +4,11 @@
 <div id="main-content" class="main-content">
     <div class="product-detail-container">
         <div class="product-image-gallery">
-            <!-- Main image (first image in the product's logo_images array or a default if no images are provided) -->
             @if (isset($logo) && $logo)
                 <img id="main-image" src="{{ asset($logo) }}" alt="{{ $product['product_name'] ?? 'Product' }}" class="main-image">
             @else
                 <img id="main-image" src="{{ asset('img/App.gif') }}" alt="Default Product" class="main-image">
             @endif
-
 
             <div class="thumbnail-gallery">
                 @if (isset($displayImages) && is_array($displayImages) && count($displayImages) > 0)
@@ -22,15 +20,13 @@
                         @endif
                     @endforeach
                 @else
-                    <!-- Display a single default thumbnail if no additional images are available -->
                     <img src="{{ asset('img/App.gif') }}" alt="Default Thumbnail" class="thumbnail">
                 @endif
             </div>
-
         </div>
 
         <div class="product-info">
-            <button class="buy-now-btn">Buy Now</button>
+
             <h1 class="product-title">{{ $product['product_name'] ?? 'Product Name Unavailable' }}</h1>
             <p class="product-description">{{ $product['description'] ?? 'No description available.' }}</p>
 
@@ -40,11 +36,14 @@
                     {{ $product['price'] ? 'Suggested payments with 6 months special financing' : '' }}
                 </span>
             </div>
+
+            <button id="pay-button" class="buy-now-btn">Buy Now</button>
         </div>
     </div>
 </div>
 
 <style>
+    /* Style yang ada tetap sama */
     body {
         font-family: 'Poppins', sans-serif;
         background-color: #d5def7;
@@ -128,10 +127,11 @@
         font-size: 22px;
         color: #365AC2;
         font-weight: bold;
+        margin-bottom: 25%;
     }
 
     .product-subtext {
-        font-size: 12px;
+ font-size: 12px;
         color: #999999;
         display: block;
         margin-top: 5px;
@@ -178,6 +178,7 @@
     }
 </style>
 
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const mainImage = document.getElementById("main-image");
@@ -213,6 +214,23 @@
         if (displayImages && displayImages.length > 0) {
             startAutoSwitch();
         }
+
+        // Payment button functionality
+        document.getElementById('pay-button').onclick = function () {
+            const productPrice = {{ $product['price'] ?? 0 }};
+            fetch('/create-transaction', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ price: productPrice })
+            })
+            .then(response => response.json())
+            .then(data => {
+                snap.pay(data.snap_token);
+            });
+        };
     });
 </script>
 @endsection
