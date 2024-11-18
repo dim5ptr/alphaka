@@ -112,7 +112,7 @@
     <div class="container-fluid">
         <div class="row mb-2 align-items-center">
             <div class="col-sm-6">
-                <h1 class="m-0" style="color: #0077FF; font-weight: bold; font-size: 2rem;">Transaction History</h1>
+                <h1 class="m-0" style="color: #0077FF; font-weight: bold; font-size: 2rem;">Transaction</h1>
             </div>
         </div>
     </div>
@@ -200,9 +200,9 @@
     let matchFound = false;
 
     rows.forEach(row => {
-        const transactionDate = row.cells[1]?.textContent.toLowerCase() || "";
-        const transactionNumber = row.cells[2]?.textContent.toLowerCase() || "";
-        const createdDate = row.cells[3]?.textContent.toLowerCase() || "";
+        const transaction_date = row.cells[1]?.textContent.toLowerCase() || "";
+        const transaction_number = row.cells[2]?.textContent.toLowerCase() || "";
+        const created_date = row.cells[3]?.textContent.toLowerCase() || "";
         const notes = row.cells[5]?.textContent.toLowerCase() || "";
 
         if (

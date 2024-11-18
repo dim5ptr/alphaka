@@ -112,7 +112,7 @@
     <div class="container-fluid">
         <div class="row mb-2 align-items-center">
             <div class="col-sm-6">
-                <h1 class="m-0" style="color: #0077FF; font-weight: bold; font-size: 2rem;">Transaction History</h1>
+                <h1 class="m-0" style="color: #0077FF; font-weight: bold; font-size: 2rem;">Transaction</h1>
             </div>
         </div>
     </div>
@@ -192,31 +192,32 @@
 
 @section('script')
 <script>
- document.getElementById('searchInput').addEventListener('keyup', function() {
-    const query = this.value.toLowerCase();
-    const rows = document.querySelectorAll('.table-container tbody tr:not(#noMatchRow)');
-    let matchFound = false;
+document.getElementById('searchInput').addEventListener('keyup', function() {
+    const query = this.value.toLowerCase();  // Ambil input pencarian dan ubah menjadi huruf kecil
+    const rows = document.querySelectorAll('.table-container tbody tr:not(#noMatchRow)');  // Ambil semua baris tabel, kecuali baris 'no match'
+    let matchFound = false;  // Menandakan apakah ada data yang cocok dengan pencarian
 
     rows.forEach(row => {
-        const transactionDate = row.cells[1]?.textContent.toLowerCase() || "";
-        const transactionNumber = row.cells[2]?.textContent.toLowerCase() || "";
-        const createdDate = row.cells[3]?.textContent.toLowerCase() || "";
-        const notes = row.cells[5]?.textContent.toLowerCase() || "";
+        const id = row.cells[1]?.textContent.toLowerCase() || "";  // Ambil nilai ID
+        const createdDate = row.cells[2]?.textContent.toLowerCase() || "";  // Ambil nilai Created Date
+        const transactionNumber = row.cells[3]?.textContent.toLowerCase() || "";  // Ambil nilai Transaction Number
+        const status = row.cells[4]?.textContent.toLowerCase() || "";  // Ambil nilai Status
 
+        // Periksa apakah salah satu kolom mengandung kata kunci pencarian
         if (
-            transactionDate.includes(query) ||
-            transactionNumber.includes(query) ||
+            id.includes(query) ||
             createdDate.includes(query) ||
-            notes.includes(query)
+            transactionNumber.includes(query) ||
+            status.includes(query)
         ) {
-            row.style.display = ''; // Tampilkan baris yang cocok
-            matchFound = true;
+            row.style.display = '';  // Tampilkan baris yang cocok
+            matchFound = true;  // Tandai bahwa ada pencocokan
         } else {
-            row.style.display = 'none'; // Sembunyikan baris yang tidak cocok
+            row.style.display = 'none';  // Sembunyikan baris yang tidak cocok
         }
     });
 
-    // Tampilkan "no match data found" jika tidak ada data yang cocok
+    // Tampilkan pesan "no match data found" jika tidak ada data yang cocok
     document.getElementById('noMatchRow').style.display = matchFound ? 'none' : '';
 });
 </script>
