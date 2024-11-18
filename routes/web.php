@@ -224,8 +224,8 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-        //Route Pre-Payment
-        // Route::get('/payment',  [HttpController::class, 'showpayment'])->name('payment');
+        //Route Transaction
+        Route::get('/transaction',  [HttpController::class, 'showUserTransactions'])->name('transaction');
 
     });
 });
