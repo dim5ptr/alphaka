@@ -3950,5 +3950,30 @@ public function showinboxadm()
             }
         }
 
+        public function showUserTransactions()
+{
+    // Assuming you have a way to get the access token
+    $accessToken = session('access_token');
+    $currentPage = 'Transaction'; // Define the current page variable
+
+    if (!$accessToken) {
+        return redirect()->route('login')->with('error', 'Unauthorized access.');
+    }
+
+    // Call the API to get user transactions
+    $response = Http::withHeaders([
+        'Authorization' => $accessToken,
+        'x-api-key' => self::API_KEY,
+    ])->get(self::API_URL . '/product/transactions_user_show.json');
+
+    if ($response->successful()) {
+        // Use null coalescing operator to ensure $transactions is always an array
+        $transactions = $response->json()['data'] ?? [];
+        return view('transaction', compact('currentPage', 'transactions')); // Pass transactions to the view
+    } else {
+        return redirect()->back()->with('error', 'Failed to fetch transactions.');
+    }
+}
+
 }
 
