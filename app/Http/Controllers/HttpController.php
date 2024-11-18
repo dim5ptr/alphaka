@@ -3027,7 +3027,32 @@ public function updateProduct(Request $request)
     }
 
 
-public function showTransaction(Request $request)
+    public function showTransaction(Request $request)
+    {
+        try {
+            // Make the GET request to the external API
+            $response = Http::withHeaders([
+                        'Authorization' => session('access_token'),
+                        'x-api-key' => self::API_KEY, // Ensure API_KEY is set in your .env file
+                    ])->get(self::API_URL .  '/product/transactions_show.json');
+
+            if ($response->successful()) {
+                return view('admin.datatransaksi', [
+                    'transactions' => $response->json()['data'] // Mengubah 'users' menjadi 'transactions'
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve transaction data.',
+            ], $response->status());
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
+        }
+    }
+
+public function showPaymentHistory(Request $request)
 {
     try {
         // Make the GET request to the external API
@@ -3037,8 +3062,8 @@ public function showTransaction(Request $request)
                 ])->get(self::API_URL .  '/finance/receipt_show.json');
 
         if ($response->successful()) {
-            return view('admin.datatransaksi', [
-                'transactions' => $response->json()['data'] // Mengubah 'users' menjadi 'transactions'
+            return view('admin.datapembayaran', [
+                'receipt' => $response->json()['data'] // Mengubah 'users' menjadi 'transactions'
             ]);
         }
 

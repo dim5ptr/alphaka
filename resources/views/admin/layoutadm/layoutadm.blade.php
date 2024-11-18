@@ -135,7 +135,7 @@
           <span>{{ session('username') ? session('username') : session('email') }}</span>
 
           <span id="notificationDot" class="badge badge-danger" style="display: none; position: absolute; top: 5px; right: 5px; border-radius: 50%; width: 10px; height: 10px;"></span>
-        
+
         </a>
         <div class="dropdown-menu dropdown-menu-right">
           <a href="/adminbox" class="dropdown-item";  onclick="markAllAsRead();">
@@ -188,7 +188,7 @@
             </a>
         </li>
         <li class="nav-item">
-          <a href="{{ route('showtransaction') }}" class="nav-link {{ Request::is('transactionhistory') ? 'active' : '' }}">
+          <a href="{{ route('showtransaction') }}" class="nav-link {{ Request::is('transactions') ? 'active' : '' }}">
             <i class="nav-icon fas fa-history"></i>
             <p>Transaction History</p>
           </a>
@@ -262,7 +262,7 @@
     });
   });
 </script>
-  
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
   // Mengirim request ke server untuk mendapatkan unreadMessages

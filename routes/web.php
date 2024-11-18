@@ -144,7 +144,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/edituseradm',  [HttpController::class, 'showedituseradm'])->name('showedituseradm');
         Route::post('/edituseradm', [HttpController::class, 'edituseradm'])->name('edituseradm');
 
-        Route::get('/transactionhistory', [HttpController::class, 'showtransaction'])->name('showtransaction');
+        Route::get('/transactions', [HttpController::class, 'showtransaction'])->name('showtransaction');
+        Route::get('/payment-receipt', [HttpController::class, 'showPaymentHistory'])->name('showPaymentHistory');
         // web.php
         Route::get('/licenses', [HttpController::class, 'getLicenseData'])->name('showLicense');
         Route::post('/licenses/details', [HttpController::class, 'licensedetails'])->name('licensedetails');
