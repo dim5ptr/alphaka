@@ -7,6 +7,7 @@
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
 
     <!-- Slick Carousel CSS -->
@@ -229,6 +230,11 @@
                 <li>
                     <a href="/transaction" class="{{ request()->is('transaction*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Transactions')">
                         <span class="link"><i class="fa-solid fa-money-bill-wave"></i>ㅤTransaction</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/ownedproduct" class="{{ request()->is('ownedproduct*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Owned Products')">
+                        <span class="link"><i class="bi bi-cart"></i>ㅤOwned Products</span>
                     </a>
                 </li>
             </ul>

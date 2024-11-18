@@ -14,6 +14,7 @@
     .container {
         max-width: 800px;
         margin: 0 auto;
+        padding: 5%;
     }
 
     h1 {
@@ -89,7 +90,7 @@
 </style>
 
 <div class="container">
-    <h1>{{ $currentPage }}</h1>
+    <pre> </pre>
 
     @if(session('error'))
         <div class="alert">{{ session('error') }}</div>

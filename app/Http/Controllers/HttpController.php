@@ -3951,29 +3951,54 @@ public function showinboxadm()
         }
 
         public function showUserTransactions()
-{
-    // Assuming you have a way to get the access token
-    $accessToken = session('access_token');
-    $currentPage = 'Transaction'; // Define the current page variable
+        {
+            // Assuming you have a way to get the access token
+            $accessToken = session('access_token');
+            $currentPage = 'Transaction'; // Define the current page variable
 
-    if (!$accessToken) {
-        return redirect()->route('login')->with('error', 'Unauthorized access.');
-    }
+            if (!$accessToken) {
+                return redirect()->route('login')->with('error', 'Unauthorized access.');
+            }
 
-    // Call the API to get user transactions
-    $response = Http::withHeaders([
-        'Authorization' => $accessToken,
-        'x-api-key' => self::API_KEY,
-    ])->get(self::API_URL . '/product/transactions_user_show.json');
+            // Call the API to get user transactions
+            $response = Http::withHeaders([
+                'Authorization' => $accessToken,
+                'x-api-key' => self::API_KEY,
+            ])->get(self::API_URL . '/product/transactions_user_show.json');
 
-    if ($response->successful()) {
-        // Use null coalescing operator to ensure $transactions is always an array
-        $transactions = $response->json()['data'] ?? [];
-        return view('transaction', compact('currentPage', 'transactions')); // Pass transactions to the view
-    } else {
-        return redirect()->back()->with('error', 'Failed to fetch transactions.');
-    }
-}
+            if ($response->successful()) {
+                // Use null coalescing operator to ensure $transactions is always an array
+                $transactions = $response->json()['data'] ?? [];
+                return view('transaction', compact('currentPage', 'transactions')); // Pass transactions to the view
+            } else {
+                return redirect()->back()->with('error', 'Failed to fetch transactions.');
+            }
+        }
+
+        public function showOwnedProduct()
+        {
+            // Assuming you have a way to get the access token
+            $accessToken = session('access_token');
+            $currentPage = 'Owned Products'; // Define the current page variable
+
+            if (!$accessToken) {
+                return redirect()->route('login')->with('error', 'Unauthorized access.');
+            }
+
+            // Call the API to get owned products
+            $response = Http::withHeaders([
+                'Authorization' => $accessToken,
+                'x-api-key' => self::API_KEY,
+            ])->get(self::API_URL . '/product/product_user_own.json');
+
+            if ($response->successful()) {
+                // Use null coalescing operator to ensure $products is always an array
+                $products = $response->json()['data'] ?? [];
+                return view('ownedproduct', compact('currentPage', 'products')); // Pass products to the view
+            } else {
+                return redirect()->back()->with('error', 'Failed to fetch owned products.');
+            }
+        }
 
 }
 

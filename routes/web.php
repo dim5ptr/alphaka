@@ -224,7 +224,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/get-unread-messages', [HttpController::class, 'getUnreadMessages']);
 
 
-
+        //Route Owned Products
+        Route::get('/ownedproduct',  [HttpController::class, 'showOwnedProduct'])->name('ownedproduct');
         //Route Transaction
         Route::get('/transaction',  [HttpController::class, 'showUserTransactions'])->name('transaction');
 
