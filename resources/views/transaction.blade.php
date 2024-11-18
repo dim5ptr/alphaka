@@ -90,7 +90,7 @@
 </style>
 
 <div class="container">
-    <pre> </pre>
+    <h1>Transaction History</h1>
 
     @if(session('error'))
         <div class="alert">{{ session('error') }}</div>
