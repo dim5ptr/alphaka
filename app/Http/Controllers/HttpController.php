@@ -3877,49 +3877,53 @@ public function showinboxadm()
             }
         }
 
-    public function createTransaction(Request $request)
-    {
-        try {
-            // Retrieve the access token from the session
-            $accessToken = session('access_token');
-            if (!$accessToken) {
-                return response()->json(['success' => false, 'message' => 'Unauthorized access.'], 403);
-            }
+        public function createTransaction(Request $request)
+        {
+            try {
+                // Retrieve the access token from the session
+                $accessToken = session('access_token');
+                if (!$accessToken) {
+                    return response()->json(['success' => false, 'message' => 'Unauthorized access.'], 403);
+                }
 
-            // Prepare the API request body
-            $apiRequestBody = [
-                'product_ids' => $request->input('product_ids'),
-            ];
+                // Prepare the API request body
+                $apiRequestBody = [
+                    'product_ids' => $request->input('product_ids'),
+                ];
 
-            // Call the API to create the transaction
-            $response = Http::withHeaders([
-                'Authorization' => $accessToken,
-                'x-api-key' => self::API_KEY,
-            ])->post(self::API_URL . '/product/create_transaction.json', $apiRequestBody);
+                // Call the API to create the transaction
+                $response = Http::withHeaders([
+                    'Authorization' => $accessToken,
+                    'x-api-key' => self::API_KEY,
+                ])->post(self::API_URL . '/product/create_transaction.json', $apiRequestBody);
 
-            // Check if the API response is successful
-            if ($response->successful()) {
-                $data = $response->json();
-                // Log the successful transaction
-                Log::info('Transaction created successfully: ', $data);
-                return response()->json(['success' => true, 'message' => $data['message'] ?? 'Transaction created successfully.']);
-            } else {
-                // Log the error response for debugging
-                Log::error('Transaction creation failed: ', [
-                    'status' => $response->status(),
-                    'response' => $response->body(),
+                // Check if the API response is successful
+                if ($response->successful()) {
+                    $data = $response->json();
+                    // Log the successful transaction
+                    Log::info('Transaction created successfully: ', $data);
+                    // Add the new message to the response
+                    return response()->json([
+                        'success' => true,
+                        'message' => ($data['message'] ?? 'Transaction created successfully.') . ' Your order is in the process.'
+                    ]);
+                } else {
+                    // Log the error response for debugging
+                    Log::error('Transaction creation failed: ', [
+                        'status' => $response->status(),
+                        'response' => $response->body(),
+                        'product_ids' => $request->input('product_ids'),
+                    ]);
+                    return response()->json(['success' => false, 'message' => $response->json()['message'] ?? 'Transaction creation failed.']);
+                }
+            } catch (\Exception $e) {
+                // Log the exception for debugging
+                Log::error('Error creating transaction: ' . $e->getMessage(), [
                     'product_ids' => $request->input('product_ids'),
                 ]);
-                return response()->json(['success' => false, 'message' => $response->json()['message'] ?? 'Transaction creation failed.']);
+                return response()->json(['success' => false, 'message' => 'An unexpected error occurred. Please try again.']);
             }
-        } catch (\Exception $e) {
-            // Log the exception for debugging
-            Log::error('Error creating transaction: ' . $e->getMessage(), [
-                'product_ids' => $request->input('product_ids'),
-            ]);
-            return response()->json(['success' => false, 'message' => 'An unexpected error occurred. Please try again.']);
         }
-    }
 
 }
 

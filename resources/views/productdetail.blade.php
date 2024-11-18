@@ -117,6 +117,15 @@
 </script>
 
 <style>
+
+    .modal-content {
+        border-radius: 10px;
+    }
+
+    .btn-secondary {
+        background-color: #365AC2;
+    }
+
     /* Style yang ada tetap sama */
     body {
         font-family: 'Poppins', sans-serif;
