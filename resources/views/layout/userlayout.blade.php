@@ -7,6 +7,7 @@
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
     <!-- Slick Carousel CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
@@ -183,7 +184,7 @@
 <body>
     <nav class="navbar">
         <div class="open-btn" onclick="toggleSidebar()">
-            &#9776; 
+            &#9776;
             <span id="sidebarDot" class="dot" style="width: 8px; height: 8px; transform: translate(-100%, -120%);  border-radius: 50%;  background-color: red; display: none;"></span>
              {{ $currentPage }}
         </div>
@@ -255,8 +256,8 @@
             document.querySelector('.open-btn').innerHTML = `&#9776; ${pageName}`;
         }
     </script>
-    
-    
+
+
     <script>
       document.addEventListener('DOMContentLoaded', function() {
     // Mengirim request ke server untuk mendapatkan unreadMessages

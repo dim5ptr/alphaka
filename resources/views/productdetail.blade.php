@@ -26,7 +26,6 @@
         </div>
 
         <div class="product-info">
-
             <h1 class="product-title">{{ $product['product_name'] ?? 'Product Name Unavailable' }}</h1>
             <p class="product-description">{{ $product['description'] ?? 'No description available.' }}</p>
 
@@ -37,10 +36,85 @@
                 </span>
             </div>
 
-            <button id="pay-button" class="buy-now-btn">Buy Now</button>
+            <form id="transaction-form">
+                @csrf
+                <input type="hidden" name="product_ids[]" value="{{ $product['product_id'] ?? '' }}">
+                <button type="submit" class="buy-now-btn">Buy Now</button>
+            </form>
         </div>
     </div>
 </div>
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Transaction Successful</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Your transaction was successful! Please wait for admin acceptance.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Transaction Failed</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="errorMessage">
+                An error occurred during the transaction. Please try again.
+            </div>
+            < <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#transaction-form').on('submit', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            $.ajax({
+                url: '{{ route('createTransaction') }}',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        $('#successModal .modal-body').text(response.message);
+                        $('#successModal').modal('show');
+                    } else {
+                        $('#errorMessage').text(response.message);
+                        $('#errorModal').modal('show');
+                    }
+                },
+                error: function(xhr) {
+                    $('#errorMessage').text("An unexpected error occurred. Please try again.");
+                    $('#errorModal').modal('show');
+                }
+            });
+        });
+    });
+</script>
 
 <style>
     /* Style yang ada tetap sama */
@@ -178,7 +252,7 @@
     }
 </style>
 
-<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
+{{-- <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script> --}}
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const mainImage = document.getElementById("main-image");
@@ -216,21 +290,21 @@
         }
 
         // Payment button functionality
-        document.getElementById('pay-button').onclick = function () {
-            const productPrice = {{ $product['price'] ?? 0 }};
-            fetch('/create-transaction', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ price: productPrice })
-            })
-            .then(response => response.json())
-            .then(data => {
-                snap.pay(data.snap_token);
-            });
-        };
+        // document.getElementById('pay-button').onclick = function () {
+        //     const productPrice = {{ $product['price'] ?? 0 }};
+        //     fetch('/create-transaction', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        //         },
+        //         body: JSON.stringify({ price: productPrice })
+        //     })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         snap.pay(data.snap_token);
+        //     });
+        // };
     });
 </script>
 @endsection

@@ -3779,26 +3779,26 @@ public function showinboxadm()
         {
             // Ambil user_id dari session
             $userId = session('user_id');
-            
+
             // Mengambil data dari API
             $response = Http::withHeaders([
                 'Authorization' => session('access_token'),
                 'x-api-key' => self::API_KEY,
             ])->post(self::API_URL . '/sso/check_inbox_message.json', ['user_id' => $userId]);
-        
+
             // Mengambil hasil dari API
             $data = $response->json();
-        
+
             // Cek apakah status success bernilai true
             $unreadMessages = isset($data['success']) && $data['success'] === true ? 1 : 0;  // Jika success true, set unreadMessages menjadi 1
-        
+
             // Menyimpan status unreadMessages ke dalam session
             session(['unreadMessages' => $unreadMessages]);
-        
+
             // Log status unreadMessages dan data yang diterima dari API
             Log::debug('Unread Messages Status: ' . $unreadMessages);
             Log::debug('API Response Data: ', $data);
-        
+
             // Mengembalikan status unreadMessages dalam format JSON
             return response()->json(['unreadMessages' => $unreadMessages]);
         }
@@ -3830,26 +3830,26 @@ public function showinboxadm()
         {
             // Ambil user_id dari session
             $userId = session('user_id');
-            
+
             // Mengambil data dari API
             $response = Http::withHeaders([
                 'Authorization' => session('access_token'),
                 'x-api-key' => self::API_KEY,
             ])->post(self::API_URL . '/sso/check_inbox_message.json', ['user_id' => $userId]);
-        
+
             // Mengambil hasil dari API
             $data = $response->json();
-        
+
             // Cek apakah status success bernilai true
             $unreadMessages = isset($data['success']) && $data['success'] === true ? 1 : 0;  // Jika success true, set unreadMessages menjadi 1
-        
+
             // Menyimpan status unreadMessages ke dalam session
             session(['unreadMessages' => $unreadMessages]);
-        
+
             // Log status unreadMessages dan data yang diterima dari API
             Log::debug('Unread Messages Status: ' . $unreadMessages);
             Log::debug('API Response Data: ', $data);
-        
+
             // Mengembalikan status unreadMessages dalam format JSON
             return response()->json(['unreadMessages' => $unreadMessages]);
         }
@@ -3876,6 +3876,50 @@ public function showinboxadm()
                 return response()->json(['success' => false, 'error' => 'Failed to mark messages as read'], 500);
             }
         }
+
+    public function createTransaction(Request $request)
+    {
+        try {
+            // Retrieve the access token from the session
+            $accessToken = session('access_token');
+            if (!$accessToken) {
+                return response()->json(['success' => false, 'message' => 'Unauthorized access.'], 403);
+            }
+
+            // Prepare the API request body
+            $apiRequestBody = [
+                'product_ids' => $request->input('product_ids'),
+            ];
+
+            // Call the API to create the transaction
+            $response = Http::withHeaders([
+                'Authorization' => $accessToken,
+                'x-api-key' => self::API_KEY,
+            ])->post(self::API_URL . '/product/create_transaction.json', $apiRequestBody);
+
+            // Check if the API response is successful
+            if ($response->successful()) {
+                $data = $response->json();
+                // Log the successful transaction
+                Log::info('Transaction created successfully: ', $data);
+                return response()->json(['success' => true, 'message' => $data['message'] ?? 'Transaction created successfully.']);
+            } else {
+                // Log the error response for debugging
+                Log::error('Transaction creation failed: ', [
+                    'status' => $response->status(),
+                    'response' => $response->body(),
+                    'product_ids' => $request->input('product_ids'),
+                ]);
+                return response()->json(['success' => false, 'message' => $response->json()['message'] ?? 'Transaction creation failed.']);
+            }
+        } catch (\Exception $e) {
+            // Log the exception for debugging
+            Log::error('Error creating transaction: ' . $e->getMessage(), [
+                'product_ids' => $request->input('product_ids'),
+            ]);
+            return response()->json(['success' => false, 'message' => 'An unexpected error occurred. Please try again.']);
+        }
+    }
 
 }
 

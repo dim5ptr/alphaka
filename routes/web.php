@@ -213,6 +213,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/user-activity',  [HttpController::class, 'activityUser'])->name('user.activity');
         Route::get('/produk', [HttpController::class, 'showProductsu'])->name('showProductsu');
         Route::get('/produk/detail/{id}', [HttpController::class, 'showDetailProductu'])->name(name: 'showDetailProductu');
+        Route::post('/create-transaction', [HttpController::class, 'createTransaction'])->name('createTransaction');
+
 
         Route::get('/inbox', [HttpController::class, 'showinbox'])->name('showinbox');
         // Route::get('/inbox', [HttpController::class, 'userinbox'])->name('userinbox');
