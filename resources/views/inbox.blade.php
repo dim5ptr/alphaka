@@ -32,6 +32,9 @@
 
 <!-- Custom CSS for the inbox table -->
 <style>
+    .content {
+        background-color: #f8f9fa;
+    }
     .table-container {
         padding: 10%;
         width: 80%;

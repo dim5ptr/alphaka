@@ -3904,6 +3904,10 @@ public function showinboxadm()
 
         public function createTransaction(Request $request)
         {
+            $arg_request = $request->all(); // Mengambil seluruh data dari request body
+
+            $userId = session('user_id'); // Mengambil user_id dari session
+
             try {
                 // Retrieve the access token from the session
                 $accessToken = session('access_token');
@@ -3926,11 +3930,12 @@ public function showinboxadm()
                 if ($response->successful()) {
                     $data = $response->json();
                     // Log the successful transaction
+                    $this->saveInboxMessage($userId, 'success', 'Successfully transaction, check your transaction page for more!',  $arg_request);
                     Log::info('Transaction created successfully: ', $data);
                     // Add the new message to the response
                     return response()->json([
                         'success' => true,
-                        'message' => ($data['message'] ?? 'Transaction created successfully.') . ' Your order is in the process.'
+                        'message' => ($data['message'] ?? 'Transaction created successfully.') . 'Your order is in the process.'
                     ]);
                 } else {
                     // Log the error response for debugging
@@ -3939,6 +3944,7 @@ public function showinboxadm()
                         'response' => $response->body(),
                         'product_ids' => $request->input('product_ids'),
                     ]);
+                    $this->saveInboxMessage($userId, 'error', 'Ups! your request product failed to buy',  $arg_request);
                     return response()->json(['success' => false, 'message' => $response->json()['message'] ?? 'Transaction creation failed.']);
                 }
             } catch (\Exception $e) {
