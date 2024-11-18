@@ -16,7 +16,7 @@
     <style>
         /* CSS Enhancements */
         html, body {
-            height: 100%;
+            height: auto;
             margin: 0;
             padding: 0;
             font-family: 'Poppins', sans-serif;
@@ -227,8 +227,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/payment" class="{{ request()->is('payment*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Payment')">
-                        <span class="link"><i class="fa-solid fa-money-bill-wave"></i>ㅤPayment</span>
+                    <a href="/transaction" class="{{ request()->is('transaction*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Transactions')">
+                        <span class="link"><i class="fa-solid fa-money-bill-wave"></i>ㅤTransaction</span>
                     </a>
                 </li>
             </ul>
