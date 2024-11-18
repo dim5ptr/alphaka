@@ -133,10 +133,10 @@
         <div class="row mb-4">
             <!-- Section for links aligned to the left -->
             <div class="col-12 d-flex flex-wrap justify-content-start align-items-center">
-                <a href="/transactions" class="btn btn-primary me-2" style="background-color: #2175d5; color: white; font-weight: bold; margin-right: 3%;  margin-bottom: 1%;">
+                <a href="/transactions" class="btn btn-primary me-2" style="background-color: #0077FF; color: white; font-weight: bold; margin-right: 3%;  margin-bottom: 1%;">
                     Product Transaction
                 </a>
-                <a href="/payment-receipt" class="btn btn-primary me-2" style="background-color: #0077FF; color: white; font-weight: bold; margin-right: 3%;  margin-bottom: 1%;">
+                <a href="/payment-receipt" class="btn btn-primary me-2" style="background-color: #2175d5; color: white; font-weight: bold; margin-right: 3%;  margin-bottom: 1%;">
                     Cash Receipt
                 </a>
             </div>
@@ -147,26 +147,28 @@
                 <thead>
                     <tr>
                         <th scope="col">No</th>
-                        <th scope="col">Id</th>
+                        <th scope="col">Transaction Date</th>
+                        <th scope="col">Transaction Number</th>
                         <th scope="col">Created Date</th>
-                        <th scope="col">Transactions Number</th>
-                        <th scope="col">Status</th>
+                        <th scope="col">Total Amount</th>
+                        <th scope="col">Notes</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($transactions as $index => $transaction)
+                    @forelse ($receipt as $index => $receipt)
                         <tr>
                             <th scope="row">{{ $index + 1 }}</th>
-                            <td>{{ $transaction['id'] ?? 'N/A' }}</td>
-                            <td>{{ \Carbon\Carbon::parse($transaction['created_date'])->format('d-m-Y') }}</td>
-                            <td>{{ $transaction['transaction_number'] }}</td>
-                            <td>{{ $transaction['is_done'] ? 'success' : 'pending' }}</td>
+                            <td>{{ \Carbon\Carbon::parse($receipt['transaction_date'])->format('d-m-Y') }}</td>
+                            <td>{{ $receipt['transaction_number'] }}</td>
+                            <td>{{ \Carbon\Carbon::parse($receipt['created_date'])->format('d-m-Y H:i') }}</td>
+                            <td>{{ number_format($receipt['total_amount'], 2) }}</td>
+                            <td>{{ $receipt['notes'] ?? 'N/A' }}</td>
                             <td class="action-buttons text-center">
                                 <div class="btn-group" role="group" aria-label="Action Buttons">
                                     <form action="{{ route('showmoredetailsadm') }}" method="POST" style="display:inline;">
                                         @csrf
-                                        <input type="hidden" name="transaction_id" value="{{ $transaction['id'] }}">
+                                        <input type="hidden" name="transaction_id" value="{{ $receipt['id'] }}">
                                         <button type="submit" class="btn btn-outline-primary btn-sm custom-outline-btn" title="More details">
                                             <i class="fa fa-info-circle"></i>
                                         </button>
