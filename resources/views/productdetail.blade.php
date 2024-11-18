@@ -1,6 +1,11 @@
 @extends('layout.userlayout')
+@section('head')
+
+@endsection
+
 
 @section('content')
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <div id="main-content" class="main-content">
     <div class="product-detail-container">
         <div class="product-image-gallery">
@@ -117,6 +122,20 @@
 </script>
 
 <style>
+
+    .navbar {
+        position: fixed;
+        background-color: white;
+        padding: 0px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+        width: 100%;
+        top: 0;
+        z-index: 3;
+        box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+    }
 
     .modal-content {
         border-radius: 10px;
