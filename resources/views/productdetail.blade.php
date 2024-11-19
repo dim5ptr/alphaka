@@ -1,8 +1,4 @@
 @extends('layout.userlayout')
-@section('head')
-
-@endsection
-
 
 @section('content')
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -11,7 +7,7 @@
         <div class="product-image-gallery">
             @if (isset($logo) && $logo)
                 @if (str_ends_with($logo, '.mp4') || str_ends_with($logo, '.gif'))
-                    <video id="main-video" controls class="main-video">
+                    <video id="main-video" controls class="main-video" style="display: none;">
                         <source src="{{ asset($logo) }}" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
@@ -27,10 +23,7 @@
                     @foreach ($displayImages as $index => $image)
                         @if (isset($image['image_path']) && is_string($image['image_path']))
                             @if (str_ends_with($image['image_path'], '.mp4') || str_ends_with($image['image_path'], '.gif'))
-                                <video controls class="thumbnail" data-index="{{ $index }}">
-                                    <source src="{{ asset($image['image_path']) }}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
+                                <img src="{{ asset($image['image_path']) }}" alt="Thumbnail {{ $index + 1 }}" class="thumbnail" data-index="{{ $index }}" data-video-url="{{ asset($image['image_path']) }}">
                             @else
                                 <img src="{{ asset($image['image_path']) }}" alt="Thumbnail {{ $index + 1 }}" class="thumbnail" data-index="{{ $index }}">
                             @endif
@@ -64,8 +57,28 @@
     </div>
 </div>
 
+<!-- Video Modal -->
+<div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="videoModalLabel">Video</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <video id="modal-video" controls class="w-100">
+                    <source src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Success Modal -->
-<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby=" successModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -91,7 +104,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="errorModalLabel">Transaction Failed</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden ="true">&times;</span>
+                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body" id="errorMessage">
@@ -110,6 +123,23 @@
 
 <script>
     $(document).ready(function() {
+        // Handle thumbnail clicks to show video modal
+        $('.thumbnail').on('click', function() {
+            const videoUrl = $(this).data('video-url');
+            if (videoUrl) {
+                $('#modal-video source').attr('src', videoUrl);
+                $('#modal-video')[0].load(); // Load the new video source
+                $('#videoModal').modal('show');
+            }
+        });
+
+        // Stop video when modal is closed
+        $('#videoModal').on('hidden.bs.modal', function () {
+            const video = $('#modal-video')[0];
+            video.pause();
+            video.currentTime = 0; // Reset video to start
+        });
+
         $('#transaction-form').on('submit', function(e) {
             e.preventDefault(); // Prevent the default form submission
 
@@ -136,7 +166,6 @@
 </script>
 
 <style>
-
     .navbar {
         position: fixed;
         background-color: white;
@@ -159,7 +188,6 @@
         background-color: #365AC2;
     }
 
-    /* Style yang ada tetap sama */
     body {
         font-family: 'Poppins', sans-serif;
         background-color: #d5def7;
@@ -182,8 +210,7 @@
         border-radius: 8px;
         box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
         margin: 20px;
-        position: relative;
-    }
+        position: relative }
 
     .product-image-gallery {
         flex: 1;
@@ -247,7 +274,7 @@
     }
 
     .product-subtext {
- font-size: 12px;
+        font-size: 12px;
         color: #999999;
         display: block;
         margin-top: 5px;

@@ -11,7 +11,6 @@
         height: 70vh;
         margin: 0;
         padding: 0;
-        font-family: Arial, sans-serif;
         background-color: #d5def7;
     }
 
