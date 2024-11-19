@@ -3,6 +3,15 @@
 @section('content')
     <div class="homepage">
 
+        <!-- Logo -->
+        {{-- <div class="logo-container">
+            <div class="logo">
+                <a href="{{ url('/') }}">
+                    <img src="{{ asset('img/logo_sarastya.png') }}" alt="E-commerce Logo" />
+                </a>
+            </div>
+        </div> --}}
+
         <!-- Search Bar -->
         <div class="search-container">
             <div class="search-wrapper">
@@ -77,26 +86,35 @@
     </div>
 
     <style>
+
+    .logo {
+        flex: 1; /* Allow the logo to take up available space */
+        text-align: center; /* Center the logo */
+        background-color: #fff;
+    }
+
+    .logo img {
+        height: 300px; /* Logo height */
+        max-width: 100%; /* Ensure the logo is responsive */
+    }
         .homepage {
-            padding: 10%;
+            padding: 7% 4%;
             height: auto;
         }
 
         .search-container {
             margin-bottom: 20px;
-            width: 100%; /* Full width of the container */
         }
 
         .search-wrapper {
             position: relative;
-            width: 100%; /* Full width of the promotions image */
         }
 
         .search-bar {
             padding: 15px 40px 15px 20px; /* Add padding for the icon */
             border-radius: 10px;
             border: 1px solid #ccc;
-            width: 94%;
+            width: 95%;
             background-color: #ffffff; /* Light background color */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
             transition: border-color 0.3s ease; /* Smooth transition for focus effect */
