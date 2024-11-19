@@ -90,36 +90,38 @@
         }
 
         .nav-link, .nav-link-act {
-            margin-left: 6%;
-            display: flex;
-            align-items: center;
-            padding: 14px 17px;
-            margin-bottom: 2%;
-            border-radius: 5px;
-            text-decoration: none;
-            width: calc(100% - 40px);
-            box-sizing: border-box;
-            transition: background-color 0.3s, color 0.3s;
-        }
+    margin-left: 6%;
+    display: flex;
+    align-items: center;
+    padding: 14px 17px;
+    margin-bottom: 2%;
+    border-radius: 5px;
+    text-decoration: none;
+    width: calc(100% - 40px);
+    box-sizing: border-box;
+    transition: background-color 0.3s, color 0.3s;
+}
 
-        .nav-link .link {
-            font-size: 17px;
-            color: #365AC2;
-            font-weight: 400;
-        }
+.nav-link .link {
+    font-size: 17px;
+    color: #365AC2;
+    font-weight: 400;
+}
 
-        .nav-link-act {
-            background-color: #365AC2;
-            color: white;
-        }
+/* Active link styles */
+.nav-link-act {
+    background-color: #365AC2;
+    color: white;
+}
 
-        .nav-link:hover {
-            background-color: #365AC2;
-        }
+/* Hover effect for all links */
+.nav-link:hover, .nav-link-act:hover {
+    background-color: #365AC2; /* Same background color on hover */
+}
 
-        .nav-link:hover .link {
-            color: white;
-        }
+.nav-link:hover .link, .nav-link-act:hover .link {
+    color: white; /* Change text color to white on hover */
+}
 
         .main-content {
             padding-top: 5%;
@@ -213,7 +215,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/organization" class="{{ request()->is('organization*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Organization')">
+                    <a href="/organization" class="{{ request()->is('organization*') || request()->is('vieworganization/*') || request()->is('editorganization/*')  || request()->is('moredetails/*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Organization')">
                         <span class="link"><i class="nav-icon fas fa-users"></i>ㅤOrganization</span>
                     </a>
                 </li>

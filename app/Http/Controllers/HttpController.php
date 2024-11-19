@@ -3670,7 +3670,7 @@ public function showDetailProductu($id)
             }
 
             return view('productdetail', compact('product', 'logo', 'displayImages'), [
-                'currentPage' => 'Product'
+                'currentPage' => 'Product Detail'
             ]);
         }
 

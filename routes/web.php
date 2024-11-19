@@ -215,7 +215,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/user-activity',  [HttpController::class, 'showActivityUser'])->name('showactivityuser');
         Route::post('/user-activity',  [HttpController::class, 'activityUser'])->name('user.activity');
         Route::get('/produk', [HttpController::class, 'showProductsu'])->name('showProductsu');
-        Route::get('/produk/detail/{id}', [HttpController::class, 'showDetailProductu'])->name(name: 'showDetailProductu');
+        Route::get('/produk/detail/{id}', [HttpController::class, 'showDetailProductu'])->name('showDetailProductu');
         Route::post('/create-transaction', [HttpController::class, 'createTransaction'])->name('createTransaction');
 
 
