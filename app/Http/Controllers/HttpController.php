@@ -2936,95 +2936,98 @@ public function updateProduct(Request $request)
 
     // Method untuk menyimpan produk baru
     public function storeProduct(Request $request)
-    {
-        Log::info('Received product creation request:', $request->all());
+{
+    Log::info('Received product creation request:', $request->all());
 
-        try {
-            // Convert 'enabled' to boolean
-            $request->merge(['enabled' => $request->has('enabled')]);
+    try {
+        // Convert 'enabled' to boolean
+        $request->merge(['enabled' => $request->has('enabled')]);
 
-            // Validate input, skipping image validations temporarily
-            $request->validate([
-                'product_name' => 'required|string|max:255',
-                'product_code' => 'required|string|max:50|alpha_dash',
-                'description' => 'nullable|string',
-                'price' => 'nullable|numeric|min:0|max:99999999.999',
-                'product_type' => 'required|integer',
-                'enabled' => 'required|boolean',
-            ]);
+        // Validate input, including file types for logo and display images/videos
+        $request->validate([
+            'product_name' => 'required|string|max:255',
+            'product_code' => 'required|string|max:50|alpha_dash',
+            'description' => 'nullable|string',
+            'price' => 'nullable|numeric|min:0|max:99999999.999',
+            'product_type' => 'required|integer',
+            'enabled' => 'required|boolean',
+            'logo' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4|max:20480', // Allow image and video formats
+            'display_images' => 'nullable|array',
+            'display_images.*' => 'file|mimes:jpg,jpeg,png,gif,mp4|max:20480', // Allow image and video formats
+        ]);
 
-            // Store logo and get path
-            $logoPath = null;
-            if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
-                $fileName = time() . '_' . $request->file('logo')->getClientOriginalName();
-                $request->file('logo')->move(public_path('images'), $fileName);
-                $logoPath = '/images/' . $fileName; // Path to use for access
-                Log::info('Logo path stored:', ['path' => $logoPath]);
-            } else {
-                Log::warning('No logo image uploaded or file is not valid.');
-            }
+        // Store logo and get path
+        $logoPath = null;
+        if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
+            $fileName = time() . '_' . $request->file('logo')->getClientOriginalName();
+            $request->file('logo')->move(public_path('media'), $fileName); // Store in 'media' directory
+            $logoPath = '/media/' . $fileName; // Path to use for access
+            Log::info('Logo path stored:', ['path' => $logoPath]);
+        } else {
+            Log::warning('No logo file uploaded or file is not valid.');
+        }
 
-            // Store display images and get paths if provided
-            $displayPaths = [];
-            if ($request->hasFile('display_images')) {
-                foreach ($request->file('display_images') as $image) {
-                    if ($image->isValid()) {
-                        $fileName = time() . '_' . $image->getClientOriginalName();
-                        $image->move(public_path('images'), $fileName);
-                        $displayPaths[] = '/images/' . $fileName; // Path to use for access
-                        Log::info('Display image path stored:', ['path' => '/images/' . $fileName]);
-                    } else {
-                        Log::warning('Invalid display image file.');
-                    }
+        // Store display files (images/videos) and get paths if provided
+        $displayPaths = [];
+        if ($request->hasFile('display_images')) {
+            foreach ($request->file('display_images') as $file) {
+                if ($file->isValid()) {
+                    $fileName = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('media'), $fileName); // Store in 'media' directory
+                    $displayPaths[] = '/media/' . $fileName; // Path to use for access
+                    Log::info('Display file path stored:', ['path' => '/media/' . $fileName]);
+                } else {
+                    Log::warning('Invalid display file.');
                 }
-            } else {
-                Log::warning('No display images uploaded.');
             }
+        } else {
+            Log::warning('No display files uploaded.');
+        }
 
-            // Format price if present
-            $price = $request->price ? number_format((float)$request->price, 3, '.', '') : null;
+        // Format price if present
+        $price = $request->price ? number_format((float)$request->price, 3, '.', '') : null;
 
-            // Prepare data for API request
-            $data = [
-                'product_name' => $request->product_name,
-                'product_code' => $request->product_code,
-                'description' => $request->description,
-                'price' => $price,
-                'product_type' => $request->product_type,
-                'enabled' => $request->enabled,
-                'logo_path' => $logoPath,
-                'display_paths' => $displayPaths,
-            ];
+        // Prepare data for API request
+        $data = [
+            'product_name' => $request->product_name,
+            'product_code' => $request->product_code,
+            'description' => $request->description,
+            'price' => $price,
+            'product_type' => $request->product_type,
+            'enabled' => $request->enabled,
+            'logo_path' => $logoPath,
+            'display_paths' => $displayPaths,
+        ];
 
-            Log::info('Prepared data for API request:', $data);
+        Log::info('Prepared data for API request:', $data);
 
-            // Send request to API
-            $response = Http::withHeaders([
-                'Authorization' => session('access_token'),
-                'x-api-key' => self::API_KEY,
-            ])->timeout(10)
-              ->post(self::API_URL . '/product/create_product.json', $data);
+        // Send request to API
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->timeout(10)
+          ->post(self::API_URL . '/product/create_product.json', $data);
 
-            if ($response->successful()) {
-                Log::info('Product created successfully.');
-                Log::info('API Response:', ['response' => $response->body()]);
-                return redirect()->route('showProducts')->with('success', 'Product created successfully.');
-            } else {
-                $status = $response->status();
-                $errorMessage = $response->json('message') ?? 'Unknown error';
-                $responseBody = $response->body(); // Log the raw response body
-                Log::error("Failed to create product. Status: {$status}, Error: {$errorMessage}, Response: {$responseBody}");
-                return redirect()->back()->with('error', 'Failed to create product. Please try again.');
-            }
+        if ($response->successful()) {
+            Log::info('Product created successfully.');
+            Log::info('API Response:', ['response' => $response->body()]);
+            return redirect()->route('showProducts')->with('success', 'Product created successfully.');
+        } else {
+            $status = $response->status();
+            $errorMessage = $response->json('message') ?? 'Unknown error';
+            $responseBody = $response->body(); // Log the raw response body
+            Log::error("Failed to create product. Status: {$status}, Error: {$errorMessage}, Response: {$responseBody}");
+            return redirect()->back()->with('error', 'Failed to create product. Please try again.');
+        }
 
-        } catch (ValidationException $e) {
-            Log::error('Validation failed:', $e->errors());
-            return redirect()->back()->withErrors($e->errors())->withInput();
-        } catch (\Exception $e) {
-            Log::error('An unexpected error occurred during product creation:', ['message' => $e->getMessage()]);
-            return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
+    } catch (ValidationException $e) {
+        Log::error('Validation failed :', $e->errors());
+        return redirect()->back()->withErrors($e->errors())->withInput();
+    } catch (\Exception $e) {
+        Log::error('An unexpected error occurred during product creation:', ['message' => $e->getMessage()]);
+        return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
     }
-    }
+}
 
 
     public function showTransaction(Request $request)
@@ -3710,10 +3713,9 @@ public function userinbox()
     return view('inbox', compact('currentPage')); // Pass it to the view
 }
 
-public function showinbox()
+public function showInbox()
 {
     try {
-
         Log::info('Requesting inbox data from API: ' . self::API_URL . '/sso/show_inbox.json');
 
         // Ambil user_id dari session
@@ -3730,23 +3732,34 @@ public function showinbox()
 
         Log::info('API Response: ' . $response->body());
 
-        // Cek apakah response API mengandung kunci 'data' dan memastikan 'data' adalah array
+        // Validasi respons API
         if ($response->successful()) {
-            $messages = $response->json()['data'] ?? [];
-            if (!is_array($messages)) {
-                $messages = []; // Pastikan $messages adalah array
+            $responseData = $response->json();
+            if ($responseData['success'] && isset($responseData['data']) && is_array($responseData['data'])) {
+                $messages = [];
+
+                // Mengumpulkan semua pesan dalam satu array
+                foreach ($responseData['data'] as $dateGroup) {
+                    foreach ($dateGroup['messages'] as $message) {
+                        $messages[] = $message;  // Mengumpulkan pesan berdasarkan tanggal
+                    }
+                }
+
+                Log::info('Inbox data retrieved successfully, total valid messages: ' . count($messages));
+
+                // Simpan pesan ke session
+                session(['messages' => $messages]);
+
+                // Kirim data ke view
+                return view('inbox')->with('messages', $messages)->with('currentPage', $currentPage);
+            } else {
+                Log::warning('No valid messages found in the response.');
+                session()->forget('messages'); // Hapus session jika data kosong
+                return view('inbox')->with('messages', [])->with('currentPage', $currentPage);
             }
-            Log::info('Inbox data retrieved successfully, total messages: ' . count($messages));
-
-              // Menyimpan data pesan ke session
-              session(['messages' => $messages]);
-
-            // Mengirimkan data inbox ke view `admin.inbox`, meskipun kosong
-            return view('inbox')->with('messages', $messages)->with('currentPage', $currentPage);
-
-
         }
 
+        // Respons API gagal
         Log::error('API request failed with status ' . $response->status() . ': ' . $response->body());
         return redirect()->back()->with('error', 'Failed to retrieve inbox data.');
 
@@ -3755,6 +3768,8 @@ public function showinbox()
         return redirect()->back()->with('error', 'Error retrieving inbox data');
     }
 }
+
+
 
 
 public function showinboxadm()

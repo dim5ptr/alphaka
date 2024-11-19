@@ -78,7 +78,7 @@
     <style>
         .homepage {
             padding: 10%;
-            background-color: #f9f9f9; Light background for better contrast
+            background-color: ; Light background for better contrast
             height: auto;
         }
 

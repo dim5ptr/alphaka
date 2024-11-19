@@ -3,12 +3,12 @@
 @section('content')
 <style>
     html {
-        background-color: #f8f9fa;
+
     }
 
     body {
         font-family: Arial, sans-serif;
-        background-color: #f8f9fa; /* Light background color */
+         /* Light background color */
     }
 
     .container {
@@ -87,6 +87,12 @@
         background-color: #d1ecf1;
         color: #0c5460;
     }
+
+    @media (max-width: 768px) {
+        .container {
+        padding-top: 13%;
+    }
+        }
 </style>
 
 <div class="container">

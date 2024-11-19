@@ -10,7 +10,14 @@
     <div class="product-detail-container">
         <div class="product-image-gallery">
             @if (isset($logo) && $logo)
-                <img id="main-image" src="{{ asset($logo) }}" alt="{{ $product['product_name'] ?? 'Product' }}" class="main-image">
+                @if (str_ends_with($logo, '.mp4') || str_ends_with($logo, '.gif'))
+                    <video id="main-video" controls class="main-video">
+                        <source src="{{ asset($logo) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                @else
+                    <img id="main-image" src="{{ asset($logo) }}" alt="{{ $product['product_name'] ?? 'Product' }}" class="main-image">
+                @endif
             @else
                 <img id="main-image" src="{{ asset('img/App.gif') }}" alt="Default Product" class="main-image">
             @endif
@@ -19,7 +26,14 @@
                 @if (isset($displayImages) && is_array($displayImages) && count($displayImages) > 0)
                     @foreach ($displayImages as $index => $image)
                         @if (isset($image['image_path']) && is_string($image['image_path']))
-                            <img src="{{ asset($image['image_path']) }}" alt="Thumbnail {{ $index + 1 }}" class="thumbnail" data-index="{{ $index }}">
+                            @if (str_ends_with($image['image_path'], '.mp4') || str_ends_with($image['image_path'], '.gif'))
+                                <video controls class="thumbnail" data-index="{{ $index }}">
+                                    <source src="{{ asset($image['image_path']) }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            @else
+                                <img src="{{ asset($image['image_path']) }}" alt="Thumbnail {{ $index + 1 }}" class="thumbnail" data-index="{{ $index }}">
+                            @endif
                         @else
                             <p>Invalid image data.</p>
                         @endif
@@ -77,13 +91,13 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="errorModalLabel">Transaction Failed</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <span aria-hidden ="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body" id="errorMessage">
                 An error occurred during the transaction. Please try again.
             </div>
-            < <div class="modal-footer">
+            <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
