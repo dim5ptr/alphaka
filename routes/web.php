@@ -162,6 +162,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/licenses/serial-numbers', [HttpController::class, 'getSerialNumberData'])->name('getSerialNumberData');
         Route::post('/licenses/serial-numbers/details', [HttpController::class, 'serialnumberdetails'])->name('serialnumberdetails');
         Route::get('/licenses/serial-numbers/details', [HttpController::class, 'serialnumberdetails'])->name('serialnumberdetails');
+        Route::post('/licenses/accept', [HttpController::class, 'createLicense'])->name('createLicense');
 
         Route::get('/adminbox', [HttpController::class, 'showinboxadm'])->name('showinboxadm');
         Route::post('/mark-messages-as-read-adm', [HttpController::class, 'markMessagesAsReadadm'])->name('mark-messages-as-read-adm');

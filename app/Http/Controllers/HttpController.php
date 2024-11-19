@@ -3714,10 +3714,9 @@ public function userinbox()
     return view('inbox', compact('currentPage')); // Pass it to the view
 }
 
-public function showinbox()
+public function showInbox()
 {
     try {
-
         Log::info('Requesting inbox data from API: ' . self::API_URL . '/sso/show_inbox.json');
 
         // Ambil user_id dari session
@@ -3734,23 +3733,34 @@ public function showinbox()
 
         Log::info('API Response: ' . $response->body());
 
-        // Cek apakah response API mengandung kunci 'data' dan memastikan 'data' adalah array
+        // Validasi respons API
         if ($response->successful()) {
-            $messages = $response->json()['data'] ?? [];
-            if (!is_array($messages)) {
-                $messages = []; // Pastikan $messages adalah array
+            $responseData = $response->json();
+            if ($responseData['success'] && isset($responseData['data']) && is_array($responseData['data'])) {
+                $messages = [];
+
+                // Mengumpulkan semua pesan dalam satu array
+                foreach ($responseData['data'] as $dateGroup) {
+                    foreach ($dateGroup['messages'] as $message) {
+                        $messages[] = $message;  // Mengumpulkan pesan berdasarkan tanggal
+                    }
+                }
+
+                Log::info('Inbox data retrieved successfully, total valid messages: ' . count($messages));
+
+                // Simpan pesan ke session
+                session(['messages' => $messages]);
+
+                // Kirim data ke view
+                return view('inbox')->with('messages', $messages)->with('currentPage', $currentPage);
+            } else {
+                Log::warning('No valid messages found in the response.');
+                session()->forget('messages'); // Hapus session jika data kosong
+                return view('inbox')->with('messages', [])->with('currentPage', $currentPage);
             }
-            Log::info('Inbox data retrieved successfully, total messages: ' . count($messages));
-
-              // Menyimpan data pesan ke session
-              session(['messages' => $messages]);
-
-            // Mengirimkan data inbox ke view `admin.inbox`, meskipun kosong
-            return view('inbox')->with('messages', $messages)->with('currentPage', $currentPage);
-
-
         }
 
+        // Respons API gagal
         Log::error('API request failed with status ' . $response->status() . ': ' . $response->body());
         return redirect()->back()->with('error', 'Failed to retrieve inbox data.');
 
@@ -3759,6 +3769,8 @@ public function showinbox()
         return redirect()->back()->with('error', 'Error retrieving inbox data');
     }
 }
+
+
 
 
 public function showinboxadm()
@@ -4009,6 +4021,73 @@ public function showinboxadm()
                 return redirect()->back()->with('error', 'Failed to fetch owned products.');
             }
         }
+
+        public function createLicense(Request $request)
+{
+    Log::info('Received license creation request:', $request->all());
+
+    try {
+        // Validate input
+        $request->validate([
+            'transaction_id' => 'required|integer',
+            'license_type' => 'required|integer',
+            'notes' => 'nullable|string',
+        ]);
+
+        // Prepare data for API request
+        $data = [
+            'transaction_id' => $request->transaction_id,
+            'license_type' => $request->license_type,
+            // 'notes' => $request->notes ?? 'Lisensi untuk uji coba transaksi pembelian',
+        ];
+
+        Log::info('Prepared data for API request:', $data);
+
+        // Send request to API
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'), // Replace with your actual token
+            'x-api-key' => self::API_KEY, // Replace with your actual API key
+        ])->post(self::API_URL . '/license/create_license.json', $data);
+        Log::info('Full API Response:', $response->json());
+
+
+        if ($response->successful()) {
+            // Assuming the response contains the license key and order key
+            $licenseKey = $response->json('license_key');
+            $orderKey = $response->json('order_key');
+            $userEmail = $response->json('user_email'); // Extract user email from API response
+
+            if (!$userEmail) {
+                Log::error('User email not found in API response');
+                return redirect()->back()->with('error', 'Failed to retrieve user email.');
+            }
+            // Send email to user with the license key and order key
+            Mail::send('emails.license', [
+                'license_key' => $licenseKey,
+                'order_key' => $orderKey,
+            ], function ($message) use ($userEmail) {
+                $message->to($userEmail); // Use email from API response
+                $message->subject('Your License Key and Order Key');
+            });
+
+            Log::info('License created and email sent successfully.');
+
+            return redirect()->route('showtransaction')->with('success', 'License created successfully and email sent.');
+        } else {
+            $status = $response->status();
+            $errorMessage = $response->json('message') ?? 'Unknown error';
+            Log::error("Failed to create license. Status: {$status}, Error: {$errorMessage}");
+            return redirect()->back()->with('error', 'Failed to create license. Please try again.');
+        }
+
+    } catch (ValidationException $e) {
+        Log::error('Validation failed:', $e->errors());
+        return redirect()->back()->withErrors($e->errors())->withInput();
+    } catch (\Exception $e) {
+        Log::error('An unexpected error occurred during license creation:', ['message' => $e->getMessage()]);
+        return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
+    }
+}
 
 }
 

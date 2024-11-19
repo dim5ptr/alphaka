@@ -58,52 +58,52 @@
         white-space: nowrap; /* Prevents table cells from wrapping */
     }
 
-    /* Row styles */
-    .table tbody tr {
-        transition: background-color 0.2s;
-    }
+    /* Container for the action buttons */
+/* Container for the action buttons */
+.action-buttons {
+    padding: 10px; /* Adds padding around the action buttons */
+    display: flex;
+    justify-content: center; /* Center align the buttons */
+    gap: 10px; /* Adds space between the buttons */
+}
 
-    .table tbody tr:hover {
-        background-color: #eef5ff;
-    }
+/* Group of buttons */
+.btn-group {
+    display: flex;
+    justify-content: space-between; /* Distribute buttons evenly */
+}
 
-    .table tbody tr.selected {
-        background-color: #0066ff;
-        color: white;
-    }
+/* Custom button style */
+.custom-btn {
+    margin: 0;
+    padding: 10px 20px; /* Adjust padding for a rectangular button */
+    font-size: 14px; /* Font size for better legibility */
+    font-weight: bold; /* Make text bold */
+    text-align: center; /* Align text centrally */
+    border: none; /* No border */
+    border-radius: 0px; /* No rounded corners */
+    transition: all 0.3s ease; /* Smooth transition for all properties */
+    background-color: #365AC2; /* Background color */
+    color: white; /* Text color */
+}
 
-    .table tbody tr.selected td {
-        color: white;
-    }
+/* Button hover effect */
+.custom-btn:hover {
+    background-color: #2c458d; /* Slightly darker background on hover */
+    transform: scale(1.05); /* Slightly enlarge the button */
+}
 
-    .action-buttons {
-        padding: 10px; /* Adds padding around the action buttons */
-    }
+/* Optionally style the outline button the same way */
+.btn-primary {
+    background-color: #365AC2; /* Primary background color */
+    color: white; /* Text color */
+}
 
-    .btn-group {
-        display: flex;
-        justify-content: center; /* Center align the buttons */
-    }
+.btn-primary:hover {
+    background-color: #2c458d; /* Darker background color on hover */
+}
 
-    .custom-outline-btn {
-        margin: 0 5px; /* Add space between buttons */
-        border: 2px solid transparent; /* Default border style */
-        transition: border-color 0.3s ease; /* Smooth transition for border color */
-    }
 
-    .custom-outline-btn:hover {
-        border-color: #365AC2; /* Change border color on hover */
-    }
-
-    /* Optional: style for buttons */
-    .btn-outline-primary {
-        color: #365AC2; /* Set text color */
-    }
-
-    .btn-outline-primary:hover {
-        background-color: #365AC2; /* Background color on hover */
-        color: white; /* Change text color on hover */
-    }
 
 </style>
 
@@ -163,15 +163,24 @@
                             <td>{{ $transaction['transaction_number'] }}</td>
                             <td>{{ $transaction['is_done'] ? 'success' : 'pending' }}</td>
                             <td class="action-buttons text-center">
-                                <div class="btn-group" role="group" aria-label="Action Buttons">
-                                    <form action="{{ route('showmoredetailsadm') }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        <input type="hidden" name="transaction_id" value="{{ $transaction['id'] }}">
-                                        <button type="submit" class="btn btn-outline-primary btn-sm custom-outline-btn" title="More details">
-                                            <i class="fa fa-info-circle"></i>
+                                <div class="action-buttons">
+                                    <div class="btn-group" role="group" aria-label="Action Buttons">
+                                        <!-- Button to trigger modal -->
+                                        <button type="button" class="btn btn-outline-primary btn-sm custom-outline-btn" data-toggle="modal" data-target="#licenseModal" title="Acc Transaction">
+                                            <i class="fa fa-check-circle"></i>
                                         </button>
-                                    </form>
+
+                                        <!-- More details button -->
+                                        <form action="{{ route('showmoredetailsadm') }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            <input type="hidden" name="transaction_id" value="{{ $transaction['id'] }}">
+                                            <button type="submit" class="btn btn-outline-primary btn-sm custom-outline-btn" title="More details">
+                                                <i class="fa fa-info-circle"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
+
                             </td>
                         </tr>
                     @empty
@@ -187,11 +196,49 @@
             </table>
         </div>
     </div>
+    <!-- Modal for selecting license type -->
+<div class="modal fade" id="licenseModal" tabindex="-1" role="dialog" aria-labelledby="licenseModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="licenseModalLabel">Select License Type</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="{{ route('createLicense') }}" method="POST" id="licenseForm">
+              @csrf
+              <input type="hidden" name="transaction_id" value="{{ $transaction['id'] }}">
+
+              <!-- License Type Dropdown -->
+              <div class="form-group">
+                  <label for="license_type">Select License Type:</label>
+                  <select name="license_type" id="license_type" class="form-control">
+                      <option value="0">Trial</option>
+                      <option value="1">Paid</option>
+                  </select>
+              </div>
+
+              <!-- Submit Button inside Modal -->
+              <button type="submit" class="btn btn-outline-primary btn-sm">
+                  <i class="fa fa-check-circle"></i> Submit License
+              </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 @endsection
 
 @section('script')
 <script>
+    // For instance, you can open the modal when a button is clicked
+$('#openLicenseModal').click(function() {
+    $('#licenseModal').modal('show');
+});
+
 document.getElementById('searchInput').addEventListener('keyup', function() {
     const query = this.value.toLowerCase();  // Ambil input pencarian dan ubah menjadi huruf kecil
     const rows = document.querySelectorAll('.table-container tbody tr:not(#noMatchRow)');  // Ambil semua baris tabel, kecuali baris 'no match'
