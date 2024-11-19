@@ -19,7 +19,6 @@
         max-width: 100%;
         height: 100%;
         margin: 5% auto;
-        padding: 3px;
         justify-content: center;
         align-items: center;
     }

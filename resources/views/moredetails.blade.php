@@ -1,14 +1,15 @@
 @extends('layout.userlayout')
 
 @section('content')
-    <nav class="bc-pr">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('organization') }}" style="color: #3200af;">Organization</a></li>
-                <li class="breadcrumb-item" style="color: #3200af;"><a href="{{ route('showvieworganization', ['organization_name' => $organization['organization_name']]) }}" style="color: #3200af;">{{ $organization['organization_name'] }}</a></li>
-                <li class="breadcrumb-item" aria-current="page" style="color: #3200af;">More Details</li>
-            </ol>
-        </nav>
+
         <section class="content">
+            <nav class="bc-pr">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ route('organization') }}" style="color: #3200af;">Organization</a></li>
+                    <li class="breadcrumb-item" style="color: #3200af;"><a href="{{ route('showvieworganization', ['organization_name' => $organization['organization_name']]) }}" style="color: #3200af;">{{ $organization['organization_name'] }}</a></li>
+                    <li class="breadcrumb-item" aria-current="page" style="color: #3200af;">More Details</li>
+                </ol>
+            </nav>
             <div class="container-flex">
                 <div class="judul">
                     <h4>More Details</h4>
@@ -38,11 +39,14 @@
 <style>
      /* CSS Anda disini */
 
+    section {
+        padding: 8%;
+    }
+
         .main-content {
             width: 80%;
             height: 40vh;
             flex: 1;
-            margin-top: 5%;
             margin-left: 10%;
             transition: margin-left .3s;
         }
@@ -430,7 +434,6 @@
     align-items: center;
     padding: 0;
     margin: 2%;
-    margin-top: 100px;
     list-style: none;
     width: 100%;
 }
@@ -460,6 +463,10 @@
 }
 
         @media (max-width: 768px) {
+
+            section {
+        padding-top: 20%;
+    }
 
 .profile-info img {
     /* Tambahkan jarak bawah antara gambar profil dan teks */
