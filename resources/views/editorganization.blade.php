@@ -1,206 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STI | Sarastya Technology Integrata</title>
+@extends('layout.userlayout')
+
+@section('content')
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
     <style>
         /* CSS Enhancements */
 
-        section {
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-
-        html, body {
-    height: auto;
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background-color: #d5def7;
-}
-
-body {
-    transition: margin-left 0.3s;
-}
-
-.sidebar {
-            height: 100%;
-            width: 250px;
-            position: fixed;
-            top: 0;
-            left: -270px;
-            background-color: white;
-            overflow-x: hidden;
-            transition: 0.3s;
-            padding-top: 100px;
-            box-shadow: 1px 0 9px rgba(0, 0, 0, 0.1);
-            z-index: 2;
-        }
-
-        .sidebar .sidebar-isi {
-            display: block;
-            padding: 0px;
-            height: 100%;
-        }
-
-        .sidebar-isi .list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .list .nav-link {
-            margin-left: 6%;
-            display: flex;
-            align-items: center;
-            padding: 14px 17px;
-            margin-bottom: 2%;
-            border-radius: 5px;
-            text-decoration: none;
-            width: calc(100% - 40px);
-            box-sizing: border-box;
-            position: relative;
-            justify-content: flex-start;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .nav-link .link {
-            font-size: 17px;
-            color: #365AC2;
-            font-weight: 400;
-            transition: color 0.3s;
-        }
-
-        .nav-link .nav-link-act i {
-            padding-right: 10px;
-            font-size: 20px;
-            color: #365AC2;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-
-        .nav-link:hover {
-            background-color: #365AC2;
-        }
-
-        .nav-link:hover i,
-        .nav-link:hover .link {
-            color: white;
-        }
-
-        .nav-link-act {
-            margin-left: 6%;
-            display: flex;
-            align-items: center;
-            padding: 14px 17px;
-            margin-bottom: 2%;
-            border-radius: 5px;
-            text-decoration: none;
-            width: calc(100% - 40px);
-            box-sizing: border-box;
-            position: relative;
-            justify-content: flex-start;
-            background-color: #365AC2;
-            color: white;
-        }
-
-.navbar {
-    position: fixed;
-    background-color: white;
-    padding: 0;
-    margin-bottom: 10%;
-    display: flex;
-    justify-content: flex-end;
-    font-size: 14px;
-    /* box-shadow: 0 2px 9px rgba(0, 0, 0, 0.2); */
-    width: 100%;
-    top: 0;
-    z-index: 900;
-}
-
-.navbar p {
-    margin-right: 2%;
-    padding: 0;
-    color: gray;
-}
-
-.navbar span {
-    font-weight: 800;
-    color: #365AC2;
-    font-size: 16px;
-}
-.open-btn button {
-    position: fixed;
-    left: 2%;
-    top: 2.5%;
-    cursor: pointer;
-    color: #365AC2;
-    font-size: 20px;
-    font-weight: 600;
-    border: none;
-    transition: 0.3s;
-    z-index: 1001;
-    background: none;
-}
-
-
-.open-btn:hover {
-    color: darkblue;
-}
-
 .main-content {
-            width: 80%;
-            height: auto;
-            flex: 1;
-            margin-top: 10vh;
-            margin-left: 10%;
-            transition: margin-left .3s;
-
-        }
-.logoutForm {
-    list-style: none;
-    height: 50%;
-    top: 50%;
-}
-
-.logout-button {
-    margin-left: 15%;
-    display: flex;
-    text-align: center;
-    padding: 8px 9px;
-    margin-bottom: 2%;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 15px;
-    width: calc(80% - 40px);
-    box-sizing: border-box;
-    position: relative;
-    top: 100%;
-    background-color: white;
-    color: #c23636;
-    border: 2px solid #c23636;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.logout-button i {
-    font-weight: 700;
-    font-size: 20px;
-    color: #c23636;
-}
-
-.logout-button:hover i,
-.logout-button:hover {
-    background-color: #c23636;
-    color: aliceblue;
-    font-weight: 700;
+    padding: 8%;
 }
 
 label {
@@ -357,7 +165,7 @@ h3{
     color: #fff;
     font-size: 1rem;
     font-weight: bold;
-    width: 50px;
+    width: 45px;
     height: 35px;
     border-radius: 50%;
     display: flex;
@@ -408,45 +216,17 @@ h3{
     border-top: 2px solid #3200af;
     border-right: 2px solid #3200af;
     transform: rotate(45deg) translateY(-50%);
-    z-index: 1;
+
 }
 
 .breadcrumb-item:not(:first-child) {
     padding-left: 30px; /* Adjust this value based on diagonal size */
 }
 
+
     @media (max-width: 768px) {
 
-    .navbar p {
-    font-size: 0.678rem;
-    margin-right: 5%;
-    }
 
-    .open-btn button{
-    font-size: 0.990rem;
-    display: inline;
-    }
-
-    .open-btn {
-    display: inline;
-    }
-
-    .sidebar {
-    font-size: 100%;
-    padding-top: 10%;
-    }
-
-    .sidebar-isi {
-    margin-top: 15%;
-    }
-
-    .logoutForm {
-    height: 50%;
-    }
-
-    ul {
-    font-size: 0.876rem;
-    }
 
     /* Form container adjustments */
     .form-container {
@@ -513,54 +293,14 @@ h3{
     }
 
 
-}
+    }
 
 
     </style>
 </head>
-<body>
-    <nav class="navbar">
-        <div class="open-btn">
-            <button onclick="toggleSidebar()">&#9776; Organization</button>
-        </div>
-        <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
-    </nav>
-
-    <div id="sidebar" class="sidebar">
-        <div class="sidebar-isi">
-            <ul class="list">
-                <li>
-                    <a href="/" class="nav-link">
-                        <span class="link"><i class="fa-solid fa-house-chimney"></i>ㅤDashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/organization" class="nav-link-act">
-                        <span class="link"><i class="nav-icon fas fa-users"></i>ㅤOrganization</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/personal" class="nav-link">
-                        <span class="link"><i class="fa-solid fa-id-card"></i>ㅤProfile</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/security" class="nav-link">
-                        <span class="link"><i class="fa-solid fa-user-shield"></i>ㅤSecurity</span>
-                    </a>
-                </li>
-            </ul>
-
-                <form id="logoutForm" method="GET" class="logoutForm" action="{{ route('confirm-logout') }}">
-                <button type="submit" class="logout-button">ㅤ <i class="fa-solid fa-right-from-bracket"></i>ㅤLogout</button>
-                </form>
-            </ul>
-        </div>
-    </div>
-
     <div id="main-content" class="main-content">
 
-		  <!-- Content Header (Page header) -->
+         <!-- Content Header (Page header) -->
 			<br>
 			<nav aria-label="breadcrumb">
 				<ol class="breadcrumb" style="background-color: transparent;">
@@ -569,33 +309,32 @@ h3{
 					<li class="breadcrumb-item active" aria-current="page" style="color: #3200af;">Edit Organization</li>
 				</ol>
 			</nav>
-
           <!-- Form Section -->
           <div class="form-container">
             <!-- Form for creating organization -->
-           <form action="{{ route('editorganization', ['organization_name' => $organization['organization_name']]) }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="organization_id" value="{{ $organization['organization_id'] }}">
-                                    <div class="form-group">
-                                        <label for="organization_name" class="form-label">Organization Name</label>
-                                        <input type="text" name="organization_name" class="form-control" value="{{ $organization['organization_name'] }}">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="description" class="form-label">Description</label>
-                                        <input type="text" name="description" class="form-control" value="{{ $organization['description'] }}">
-                                    </div>
+            <form action="{{ route('editorganization', ['organization_name' => $organization['organization_name']]) }}" method="POST">
+                @csrf
+                <input type="hidden" name="organization_id" value="{{ $organization['organization_id'] }}">
+                <div class="form-group">
+                    <label for="organization_name" class="form-label">Organization Name</label>
+                    <input type="text" name="organization_name" class="form-control" value="{{ $organization['organization_name'] }}">
+                </div>
+                <div class="form-group">
+                    <label for="description" class="form-label">Description</label>
+                    <input type="text" name="description" class="form-control" value="{{ $organization['description'] }}">
+                </div>
 
-                                    <input type="hidden" name="access_token_status" value="{{ session('access_token')}}">
+                <input type="hidden" name="access_token_status" value="{{ session('access_token')}}">
 
-                                    <div class="form-group">
-                                        <button type="submit" class="btn-submit">Save</button>
-                                    </div>
+                <div class="form-group">
+                    <button type="submit" class="btn-submit">Save</button>
+                </div>
 
-                                    <div class="how">
-                                        <a onclick="openModal()">  need a help?</a>
-                                     </div>
+                <div class="how">
+                    <a onclick="openModal()">  need a help?</a>
+                 </div>
 
-                                </form>
+            </form>
         </div>
 
         <!-- Modal Structure -->
@@ -660,7 +399,4 @@ h3{
     </script>
 
 </div>
-
-
-</body>
-</html>
+@endsection

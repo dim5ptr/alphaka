@@ -20,18 +20,19 @@
             </div>
         </section>
 
-        <div class="filter-sort">
-            <h4>Sort By</h4>
-            <select id="sort-options" onchange="sortProducts()">
-                <option value="default">Default</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
-                <option value="name-asc">Name: A to Z</option>
-                <option value="name-desc">Name: Z to A</option>
-            </select>
-        </div>
 
-        <section style="margin-top: 5%;" class="product-section">
+
+        <section class="product-section">
+            <div class="filter-sort">
+                <h4>Sort By</h4>
+                <select id="sort-options" onchange="sortProducts()">
+                    <option value="default">Default</option>
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                    <option value="name-asc">Name: A to Z</option>
+                    <option value="name-desc">Name: Z to A</option>
+                </select>
+            </div>
             <h2 id="search-results-heading">Featured Products</h2>
 
 
@@ -78,7 +79,6 @@
     <style>
         .homepage {
             padding: 10%;
-            background-color: ; Light background for better contrast
             height: auto;
         }
 
@@ -118,6 +118,9 @@
 
         .promotions {
             margin-bottom: 30px;
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 2%;
         }
 
         .promotion-slider {
@@ -143,6 +146,9 @@
 
         .product-section {
             margin-bottom: 30px;
+            background-color: #fff;
+            padding: 3%;
+            border-radius: 15px;
         }
 
         .product-list {
@@ -235,11 +241,12 @@
             font-size: 1.2rem;
             color: #ff0000; /* Red color for no results message */
             text-align: center; /* Center the message */
-            padding-bottom: 200%;
         }
 
         .filter-sort {
             margin-bottom: 20px;
+            background-color: #fff;
+
         }
 
         .filter-sort h4 {

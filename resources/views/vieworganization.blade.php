@@ -1,6 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+@extends('layout.userlayout')
+@section('head')
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>STI | Sarastya Technology Integrata</title>
@@ -9,6 +8,142 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+@endsection
+
+
+@section('content')
+
+<div id="main-content" class="main-content">
+        @if (session('success'))
+            <div class="alert alert-success notification" role="alert">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger notification" role="alert">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <br>
+        <nav class="bc-pr">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('organization') }}" style="color: #3200af;">Organization</a></li>
+                <li class="breadcrumb-item" style="color: #3200af;">{{ $organization['organization_name'] }}</a></li>
+            </ol>
+        </nav>
+
+        <!-- Content -->
+        <div class="container">
+            <!-- Organization Card -->
+            <div class="card-organization">
+                <div class="info">
+                    <h1 class="m-0">{{ $organization['organization_name'] }}</h1>
+                    <small>{{ $organization['description'] }}</small>
+                </div>
+                <a href="{{ route('showeditorganization', ['organization_name' => $organization['organization_name']]) }}"
+                    class="btn-edit">
+                    <i class="fa fa-pencil-alt"></i>
+                </a>
+            </div>
+
+            <!-- Member List -->
+            <div class="member">
+                <!-- Buttons and Search Input -->
+                <div class="mb-side">
+                    <div class="group-btn">
+                        <i class="fas fa-user"></i> <!-- Ikon pemilik -->
+                        Owner by:
+
+                    </div>
+
+                    <!-- Search Input with Icon -->
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fa fa-search"></i> <!-- Search Icon -->
+                            </span>
+                        </div>
+                        <input type="search" id="searchInput" class="form-control" placeholder="Search...">
+                    </div>
+                    <input type="hidden" id="organizationId" value="{{ $organization['organization_id'] }}">
+
+                </div>
+
+                <!-- Table -->
+                <div class="table-container">
+                    <table id="dataTable" class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Username</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataBody">
+                            <!-- Data akan diisi di sini -->
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <footer>
+            <div class="add">
+                  <button type="submit" class="btn btn-primary" onclick="openModal()">
+                       <i class="fas fa-plus"></i>
+                   </button>
+               </form>
+           </div>
+       </footer>
+    </div>
+
+<!-- Main Modal for Searching Users -->
+<div class="modal" id="addMemberModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title" id="addMemberModalLabel">Add Member</h1>
+            <button type="button" class="btn-close" onclick="closeModal()">×</button>
+        </div>
+
+
+
+        <form id="searchUsers" action="{{ route('searchUsers') }}" method="POST" onsubmit="return handleSearch(event)">
+            @csrf
+            <div class="form-group">
+                <input type="email" name="email" id="email" class="form-control" placeholder="Enter someone's email" required>
+                <div id="responseMessage" class=""></div> <!-- Display found users here -->
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Search</button>
+        </form>
+        <!-- Disable the Add Member button by default -->
+        <button type="button" class="btn btn-primary btn-block" id="addMemberButton" onclick="openAddedUsersModal()" disabled>Add Member</button>
+    </div>
+</div>
+
+<!-- Modal for Added Users -->
+<div class="modal" id="addedUsersModal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title" id="addedUsersModalLabel">Added Members</h1>
+        </div>
+        <div class="form-group">
+            <h3>Emails Already Added</h3>
+            <div id="addedUsersList">
+                <!-- Example of how emails will be added dynamically -->
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-block" onclick="sendEmails()">Send Email</button>
+        <button type="button" class="btn btn-secondary btn-block" onclick="showSearchModal()">Previous</button>
+    </div>
+</div>
 
 <style>
     /* CSS Enhancements */
@@ -847,569 +982,325 @@ html, body {
 }
 
     </style>
-</head>
-<body>
-    <nav class="navbar">
-        <p class="p1"><span>{{ \Carbon\Carbon::now()->format('l') }},</span><br>{{ \Carbon\Carbon::now()->format('F j, Y') }}</p>
-    </nav>
-
-    <button class="open-btn" onclick="toggleSidebar()">&#9776; Organization</button>
-
-    <div id="sidebar" class="sidebar">
-        <div class="sidebar-isi">
-            <ul class="list">
-                <li>
-                    <a href="/" class="nav-link">
-                        <span class="link"><i class="fa-solid fa-house-chimney"></i>ㅤDashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/organization" class="nav-link-act">
-                        <span class="link"><i class="nav-icon fas fa-users"></i>ㅤOrganization</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/personal" class="nav-link">
-                        <span class="link"><i class="fa-solid fa-id-card"></i>ㅤProfile</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/security" class="nav-link">
-                        <span class="link"><i class="fa-solid fa-user-shield"></i>ㅤSecurity</span>
-                    </a>
-                </li>
-            </ul>
-
-                <form id="logoutForm" method="GET" class="logoutForm" action="{{ route('confirm-logout') }}">
-                <button type="submit" class="logout-button">ㅤ <i class="fa-solid fa-right-from-bracket"></i>ㅤLogout</button>
-                </form>
-            </ul>
-        </div>
-    </div>
-
-
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    // Select all notifications
-    const notifications = document.querySelectorAll('.notification');
+    // Function to handle search and add users dynamically
+    function handleSearch(event) {
+        event.preventDefault(); // Prevent the form from submitting
+        const emailInput = document.getElementById('email');
+        const email = emailInput.value.trim();
+        const responseMessageDiv = document.getElementById('responseMessage');
+        const addMemberButton = document.getElementById('addMemberButton');
 
-    notifications.forEach(notification => {
-        setTimeout(() => {
-            notification.classList.add('fade-out'); // Add fade-out class
-            // Remove the notification from the DOM after the fade-out transition
-            setTimeout(() => {
-                notification.remove();
-            }, 500); // Match this duration with the CSS transition time
-        }, 5000); // Delay before fade-out
-    });
-});
+        // Show loading indicator
+        const loadingIndicator = document.createElement('p');
+        loadingIndicator.innerText = 'Searching...';
+        responseMessageDiv.appendChild(loadingIndicator);
 
-</script>
-
-    <div id="main-content" class="main-content">
-        @if (session('success'))
-            <div class="alert alert-success notification" role="alert">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if ($errors->any())
-            <div class="alert alert-danger notification" role="alert">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <br>
-        <nav class="bc-pr">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('organization') }}" style="color: #3200af;">Organization</a></li>
-                <li class="breadcrumb-item" style="color: #3200af;">{{ $organization['organization_name'] }}</a></li>
-            </ol>
-        </nav>
-
-        <!-- Content -->
-        <div class="container">
-            <!-- Organization Card -->
-            <div class="card-organization">
-                <div class="info">
-                    <h1 class="m-0">{{ $organization['organization_name'] }}</h1>
-                    <small>{{ $organization['description'] }}</small>
-                </div>
-                <a href="{{ route('showeditorganization', ['organization_name' => $organization['organization_name']]) }}"
-                    class="btn-edit">
-                    <i class="fa fa-pencil-alt"></i>
-                </a>
-            </div>
-
-            <!-- Member List -->
-            <div class="member">
-                <!-- Buttons and Search Input -->
-                <div class="mb-side">
-                    {{-- <div class="group-btn">
-                        <i class="fas fa-user"></i> <!-- Ikon pemilik -->
-                        Owner by:
-
-                    </div> --}}
-
-                    <!-- Search Input with Icon -->
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i class="fa fa-search"></i> <!-- Search Icon -->
-                            </span>
-                        </div>
-                        <input type="search" id="searchInput" class="form-control" placeholder="Search...">
-                    </div>
-                    <input type="hidden" id="organizationId" value="{{ $organization['organization_id'] }}">
-
-                </div>
-
-                <!-- Table -->
-                <div class="table-container">
-                    <table id="dataTable" class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Username</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dataBody">
-                            <!-- Data akan diisi di sini -->
-                        </tbody>
-                    </table>
-                </div>
-
-            </div>
-        </div>
-        <footer>
-            <div class="add">
-                  <button type="submit" class="btn btn-primary" onclick="openModal()">
-                       <i class="fas fa-plus"></i>
-                   </button>
-               </form>
-           </div>
-       </footer>
-    </div>
-
-<!-- Main Modal for Searching Users -->
-<div class="modal" id="addMemberModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h1 class="modal-title" id="addMemberModalLabel">Add Member</h1>
-            <button type="button" class="btn-close" onclick="closeModal()">×</button>
-        </div>
-
-
-
-        <form id="searchUsers" action="{{ route('searchUsers') }}" method="POST" onsubmit="return handleSearch(event)">
-            @csrf
-            <div class="form-group">
-                <input type="email" name="email" id="email" class="form-control" placeholder="Enter someone's email" required>
-                <div id="responseMessage" class=""></div> <!-- Display found users here -->
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">Search</button>
-        </form>
-        <!-- Disable the Add Member button by default -->
-        <button type="button" class="btn btn-primary btn-block" id="addMemberButton" onclick="openAddedUsersModal()" disabled>Add Member</button>
-    </div>
-</div>
-
-<!-- Modal for Added Users -->
-<div class="modal" id="addedUsersModal" style="display: none;">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h1 class="modal-title" id="addedUsersModalLabel">Added Members</h1>
-        </div>
-        <div class="form-group">
-            <h3>Emails Already Added</h3>
-            <div id="addedUsersList">
-                <!-- Example of how emails will be added dynamically -->
-            </div>
-        </div>
-        <button type="button" class="btn btn-primary btn-block" onclick="sendEmails()">Send Email</button>
-        <button type="button" class="btn btn-secondary btn-block" onclick="showSearchModal()">Previous</button>
-    </div>
-</div>
-
-<script>
-// Function to handle search and add users dynamically
-function handleSearch(event) {
-    event.preventDefault(); // Prevent the form from submitting
-    const emailInput = document.getElementById('email');
-    const email = emailInput.value.trim();
-    const responseMessageDiv = document.getElementById('responseMessage');
-    const addMemberButton = document.getElementById('addMemberButton');
-
-    // Show loading indicator
-    const loadingIndicator = document.createElement('p');
-    loadingIndicator.innerText = 'Searching...';
-    responseMessageDiv.appendChild(loadingIndicator);
-
-    // Check if the email is already added
-    if (isEmailAlreadyAdded(email)) {
-        displayTemporaryMessage('This email is already added.');
-        loadingIndicator.remove(); // Remove loading indicator
-        return;
-    }
-
-    // Make the API call to search users
-    fetch('{{ route('searchUsers') }}', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email: email })
-    })
-    .then(response => response.json())
-    .then(data => {
-        loadingIndicator.remove(); // Remove loading indicator
-        if (data.success && data.data) {
-            data.data.forEach(user => {
-                const userDiv = document.createElement('div');
-                userDiv.className = 'user-entry';
-                userDiv.innerHTML = `
-                    <p>${user.email} <button class="btn-remove" onclick="removeUser(this)">Remove</button></p>
-                `;
-                responseMessageDiv.appendChild(userDiv);
-            });
-            addMemberButton.disabled = false;
-        } else {
-            displayTemporaryMessage('No users found for this email.');
+        // Check if the email is already added
+        if (isEmailAlreadyAdded(email)) {
+            displayTemporaryMessage('This email is already added.');
+            loadingIndicator.remove(); // Remove loading indicator
+            return;
         }
-    })
-    .catch(error => {
-        loadingIndicator.remove(); // Remove loading indicator
-        console.error('Error:', error);
-        displayTemporaryMessage('An error occurred while searching for users.');
-    });
 
-    emailInput.value = '';
-}
-
-
-// Function to check if the email is already added
-function isEmailAlreadyAdded(email) {
-    const userEntries = document.querySelectorAll('.user-entry p');
-    for (const entry of userEntries) {
-        if (entry.textContent.includes(email)) {
-            return true; // Return true if email is already added
-        }
-    }
-    return false; // Return false if email is not found
-}
-
-// Function to display a temporary message that disappears after 5 seconds
-function displayTemporaryMessage(message) {
-    const responseMessageDiv = document.getElementById('responseMessage');
-    const tempMessage = document.createElement('p');
-    tempMessage.innerText = message;
-    responseMessageDiv.appendChild(tempMessage);
-
-    // Remove the message after 5 seconds
-    setTimeout(() => {
-        tempMessage.remove();
-    }, 5000);
-}
-
-// Function to remove a user entry
-function removeUser(button) {
-    button.parentElement.parentElement.remove(); // Remove the user entry
-
-    // Disable the Add Member button if no users are left
-    const userEntries = document.querySelectorAll('.user-entry p');
-    const addMemberButton = document.getElementById('addMemberButton');
-    if (userEntries.length === 0) {
-        addMemberButton.disabled = true;
-    }
-}
-
-// Function to open the modal for added users
-let emailsToTokenize = []; // Store emails for token generation
-
-function openAddedUsersModal() {
-    // Close the current modal
-    document.getElementById('addMemberModal').style.display = 'none';
-
-    // Show the added users modal
-    document.getElementById('addedUsersModal').style.display = 'block';
-
-    // Populate the added emails into the modal
-    const addedUsersList = document.getElementById('addedUsersList');
-    const userEntries = document.querySelectorAll('.user-entry p');
-
-    addedUsersList.innerHTML = ''; // Clear previous list
-    emailsToTokenize = []; // Clear previous emails for token generation
-    userEntries.forEach(entry => {
-        const email = entry.textContent.split(' ')[0]; // Get the email from the entry
-        addedUsersList.innerHTML += `<p>${email}</p>`; // Append the email to the modal
-        emailsToTokenize.push(email); // Store email for later use
-    });
-}
-
-// Function to show the search modal again
-function showSearchModal() {
-    // Close the added users modal
-    document.getElementById('addedUsersModal').style.display = 'none';
-
-    // Show the original search modal
-    document.getElementById('addMemberModal').style.display = 'block';
-}
-
-// Function to close both modals
-function closeModal() {
-    document.getElementById('addMemberModal').style.display = 'none';
-    document.getElementById('addedUsersModal').style.display = 'none';
-}
-
-// Function to send the emails
-function sendEmails() {
-    const addedUsersList = document.getElementById('addedUsersList');
-    const emails = [];
-    const organizationId = "{{ $organization['organization_id'] }}"; // Ensure organization_id is passed correctly
-
-    // Loop through each email in the list and collect the text content
-    addedUsersList.querySelectorAll('p').forEach(emailElement => {
-        emails.push(emailElement.textContent.trim()); // Collect emails
-    });
-
-    console.log('Emails collected for sending:', emails); // Log the collected emails for debugging
-
-    // Check if there are any emails before proceeding
-    if (emails.length === 0) {
-        alert('No emails added.');
-        return;
-    }
-
-    // Body of the POST request
-    const body = JSON.stringify({
-        organization_id: organizationId,  // Use organizationId from the template
-        emails: emails                    // Pass collected emails
-    });
-
-    // Make an API call to send emails
-    fetch('{{ route('sendAddMemberEmail') }}', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Content-Type': 'application/json'
-        },
-        body: body
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Emails sent successfully!');
-        } else {
-            alert('Failed to send emails: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error sending emails:', error);
-    });
-}
-</script>
-
-
-
-</script>
-
-    <script>
-        function toggleSidebar() {
-            var sidebar = document.getElementById("sidebar");
-            var mainContent = document.getElementById("main-content");
-
-            if (sidebar.style.left === "0px") {
-                sidebar.style.left = "-270px";
-                mainContent.style.marginLeft = "10%";
+        // Make the API call to search users
+        fetch('{{ route('searchUsers') }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: email })
+        })
+        .then(response => response.json())
+        .then(data => {
+            loadingIndicator.remove(); // Remove loading indicator
+            if (data.success && data.data) {
+                data.data.forEach(user => {
+                    const userDiv = document.createElement('div');
+                    userDiv.className = 'user-entry';
+                    userDiv.innerHTML = `
+                        <p>${user.email} <button class="btn-remove" onclick="removeUser(this)">Remove</button></p>
+                    `;
+                    responseMessageDiv.appendChild(userDiv);
+                });
+                addMemberButton.disabled = false;
             } else {
-                sidebar.style.left = "0px";
-                mainContent.style.marginLeft = "19%";
+                displayTemporaryMessage('No users found for this email.');
+            }
+        })
+        .catch(error => {
+            loadingIndicator.remove(); // Remove loading indicator
+            console.error('Error:', error);
+            displayTemporaryMessage('An error occurred while searching for users.');
+        });
+
+        emailInput.value = '';
+    }
+
+
+    // Function to check if the email is already added
+    function isEmailAlreadyAdded(email) {
+        const userEntries = document.querySelectorAll('.user-entry p');
+        for (const entry of userEntries) {
+            if (entry.textContent.includes(email)) {
+                return true; // Return true if email is already added
             }
         }
+        return false; // Return false if email is not found
+    }
 
-        // Function to open the second modal (Add Member Details)
-        function openAddMemberDetailsModal() {
-            document.getElementById('addMemberDetailsModal').style.display = 'block';
+    // Function to display a temporary message that disappears after 5 seconds
+    function displayTemporaryMessage(message) {
+        const responseMessageDiv = document.getElementById('responseMessage');
+        const tempMessage = document.createElement('p');
+        tempMessage.innerText = message;
+        responseMessageDiv.appendChild(tempMessage);
+
+        // Remove the message after 5 seconds
+        setTimeout(() => {
+            tempMessage.remove();
+        }, 5000);
+    }
+
+    // Function to remove a user entry
+    function removeUser(button) {
+        button.parentElement.parentElement.remove(); // Remove the user entry
+
+        // Disable the Add Member button if no users are left
+        const userEntries = document.querySelectorAll('.user-entry p');
+        const addMemberButton = document.getElementById('addMemberButton');
+        if (userEntries.length === 0) {
+            addMemberButton.disabled = true;
         }
+    }
 
-        // Function to close the second modal
-        function closeMemberDetailsModal() {
-            document.getElementById('addMemberDetailsModal').style.display = 'none';
-        }
+    // Function to open the modal for added users
+    let emailsToTokenize = []; // Store emails for token generation
 
-        function openModal() {
-        document.getElementById('addMemberModal').style.display = 'block';
-        }
-
-         function closeModal() {
+    function openAddedUsersModal() {
+        // Close the current modal
         document.getElementById('addMemberModal').style.display = 'none';
-         }
 
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        // Fetch data from external API
-        function fetchDataFromAPI() {
-            // API URL
-            const apiUrl = 'http://192.168.1.24:14041/api/sso/list_user_by_organization.json';
+        // Show the added users modal
+        document.getElementById('addedUsersModal').style.display = 'block';
 
-            // Access token from Laravel session (injected using Blade)
-            const accessToken = '{{ session('access_token') }}';
-            console.log("Access Token: ", accessToken); // Log access token
-            const organizationId = "{{ $organization['organization_id'] }}"; // Ensure organization_id is passed correctly
+        // Populate the added emails into the modal
+        const addedUsersList = document.getElementById('addedUsersList');
+        const userEntries = document.querySelectorAll('.user-entry p');
 
-            // Request headers
-            const headers = {
-                'Authorization': accessToken, // Use token from session
-                'x-api-key': '5af97cb7eed7a5a4cff3ed91698d2ffb',
-                'Content-Type': 'application/json'
-            };
-
-            // Body of the POST request
-            const body = JSON.stringify({
-                organization_id: organizationId,
-                find: ""
-            });
-            console.log("Request Body: ", body); // Log body request
-
-            // Fetch data using fetch API
-            fetch(apiUrl, {
-                method: 'POST',
-                headers: headers,
-                body: body
-            })
-            .then(response => {
-                console.log("Raw Response: ", response); // Log raw response
-                return response.json();
-            }) // Convert response to JSON
-            .then(data => {
-                console.log("Response Data: ", data); // Log response data
-
-                if (data.success && data.data && data.data.length > 0) {
-                    populateTable(data.data); // Populate table with the users array
-                } else {
-                    populateTable([]); // Pass empty array if no users are found
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error); // Log any errors
-            });
-        }
-
-        function populateTable(data) {
-    var tbody = document.getElementById('dataBody');
-    tbody.innerHTML = ''; // Clear the table body
-
-    if (data.length === 0) {
-        var row = document.createElement('tr');
-        var noDataCell = `<td colspan="4" class="text-center">No data found</td>`;
-        row.innerHTML = noDataCell;
-        tbody.appendChild(row);
-    } else {
-        data.forEach(function(item, index) {
-            var row = document.createElement('tr');
-            row.innerHTML = `
-                <th scope="row">${index + 1}</th>
-                <td>${item.username ? item.username : 'N/A'}</td>
-                <td>${item.email}</td>
-                <td>
-                    <form action="{{ route('showmoredetails', ['organization_name' => $organization['organization_name']]) }}" method="GET">
-                        @csrf
-                        <input type="hidden" name="email" value="${item.email}">
-                        <button type="submit" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="top" title="More Details" style="background: none; border: none; padding: 0;">
-                            <i class="bi bi-info-circle" style="font-size: 1.8rem; color: #007bff;"></i>
-                        </button>
-                    </form> 
-                </td>
-            `;
-            tbody.appendChild(row);
+        addedUsersList.innerHTML = ''; // Clear previous list
+        emailsToTokenize = []; // Clear previous emails for token generation
+        userEntries.forEach(entry => {
+            const email = entry.textContent.split(' ')[0]; // Get the email from the entry
+            addedUsersList.innerHTML += `<p>${email}</p>`; // Append the email to the modal
+            emailsToTokenize.push(email); // Store email for later use
         });
     }
-}
 
-        // Call fetchDataFromAPI on page load
-        document.addEventListener('DOMContentLoaded', function () {
-            fetchDataFromAPI(); // Fetch and populate table on page load
+    // Function to show the search modal again
+    function showSearchModal() {
+        // Close the added users modal
+        document.getElementById('addedUsersModal').style.display = 'none';
 
-            // Search functionality
-            document.getElementById('searchInput').addEventListener('input', function () {
-                var searchValue = this.value.toLowerCase();
-                var rows = document.querySelectorAll('#dataTable tbody tr');
+        // Show the original search modal
+        document.getElementById('addMemberModal').style.display = 'block';
+    }
 
-                rows.forEach(function (row) {
-                    var cells = row.querySelectorAll('td');
-                    var found = Array.from(cells).some(function (cell) {
-                        return cell.textContent.toLowerCase().includes(searchValue);
-                    });
+    // Function to close both modals
+    function closeModal() {
+        document.getElementById('addMemberModal').style.display = 'none';
+        document.getElementById('addedUsersModal').style.display = 'none';
+    }
 
-                    row.style.display = found ? '' : 'none';
-                });
-            });
+    // Function to send the emails
+    function sendEmails() {
+        const addedUsersList = document.getElementById('addedUsersList');
+        const emails = [];
+        const organizationId = "{{ $organization['organization_id'] }}"; // Ensure organization_id is passed correctly
+
+        // Loop through each email in the list and collect the text content
+        addedUsersList.querySelectorAll('p').forEach(emailElement => {
+            emails.push(emailElement.textContent.trim()); // Collect emails
         });
+
+        console.log('Emails collected for sending:', emails); // Log the collected emails for debugging
+
+        // Check if there are any emails before proceeding
+        if (emails.length === 0) {
+            alert('No emails added.');
+            return;
+        }
+
+        // Body of the POST request
+        const body = JSON.stringify({
+            organization_id: organizationId,  // Use organizationId from the template
+            emails: emails                    // Pass collected emails
+        });
+
+        // Make an API call to send emails
+        fetch('{{ route('sendAddMemberEmail') }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            },
+            body: body
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Emails sent successfully!');
+            } else {
+                alert('Failed to send emails: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error sending emails:', error);
+        });
+    }
+    </script>
+
+
 
     </script>
 
-</div>
+        <script>
+            function toggleSidebar() {
+                var sidebar = document.getElementById("sidebar");
+                var mainContent = document.getElementById("main-content");
 
+                if (sidebar.style.left === "0px") {
+                    sidebar.style.left = "-270px";
+                    mainContent.style.marginLeft = "10%";
+                } else {
+                    sidebar.style.left = "0px";
+                    mainContent.style.marginLeft = "19%";
+                }
+            }
 
+            // Function to open the second modal (Add Member Details)
+            function openAddMemberDetailsModal() {
+                document.getElementById('addMemberDetailsModal').style.display = 'block';
+            }
 
-</body>
-</html>
+            // Function to close the second modal
+            function closeMemberDetailsModal() {
+                document.getElementById('addMemberDetailsModal').style.display = 'none';
+            }
 
-{{-- @section('head')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+            function openModal() {
+            document.getElementById('addMemberModal').style.display = 'block';
+            }
+
+             function closeModal() {
+            document.getElementById('addMemberModal').style.display = 'none';
+             }
+
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script>
+            // Fetch data from external API
+            function fetchDataFromAPI() {
+                // API URL
+                const apiUrl = 'http://192.168.1.24:14041/api/sso/list_user_by_organization.json';
+
+                // Access token from Laravel session (injected using Blade)
+                const accessToken = '{{ session('access_token') }}';
+                console.log("Access Token: ", accessToken); // Log access token
+                const organizationId = "{{ $organization['organization_id'] }}"; // Ensure organization_id is passed correctly
+
+                // Request headers
+                const headers = {
+                    'Authorization': accessToken, // Use token from session
+                    'x-api-key': '5af97cb7eed7a5a4cff3ed91698d2ffb',
+                    'Content-Type': 'application/json'
+                };
+
+                // Body of the POST request
+                const body = JSON.stringify({
+                    organization_id: organizationId,
+                    find: ""
+                });
+                console.log("Request Body: ", body); // Log body request
+
+                // Fetch data using fetch API
+                fetch(apiUrl, {
+                    method: 'POST',
+                    headers: headers,
+                    body: body
+                })
+                .then(response => {
+                    console.log("Raw Response: ", response); // Log raw response
+                    return response.json();
+                }) // Convert response to JSON
+                .then(data => {
+                    console.log("Response Data: ", data); // Log response data
+
+                    if (data.success && data.data && data.data.length > 0) {
+                        populateTable(data.data); // Populate table with the users array
+                    } else {
+                        populateTable([]); // Pass empty array if no users are found
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error); // Log any errors
+                });
+            }
+
+            function populateTable(data) {
+        var tbody = document.getElementById('dataBody');
+        tbody.innerHTML = ''; // Clear the table body
+
+        if (data.length === 0) {
+            var row = document.createElement('tr');
+            var noDataCell = `<td colspan="4" class="text-center">No data found</td>`;
+            row.innerHTML = noDataCell;
+            tbody.appendChild(row);
+        } else {
+            data.forEach(function(item, index) {
+                var row = document.createElement('tr');
+                row.innerHTML = `
+                    <th scope="row">${index + 1}</th>
+                    <td>${item.username ? item.username : 'N/A'}</td>
+                    <td>${item.email}</td>
+                    <td>
+                        <form action="{{ route('showmoredetails', ['organization_name' => $organization['organization_name']]) }}" method="GET">
+                            @csrf
+                            <input type="hidden" name="email" value="${item.email}">
+                            <button type="submit" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="top" title="More Details" style="background: none; border: none; padding: 0;">
+                                <i class="bi bi-info-circle" style="font-size: 1.8rem; color: #007bff;"></i>
+                            </button>
+                        </form>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+    }
+
+            // Call fetchDataFromAPI on page load
+            document.addEventListener('DOMContentLoaded', function () {
+                fetchDataFromAPI(); // Fetch and populate table on page load
+
+                // Search functionality
+                document.getElementById('searchInput').addEventListener('input', function () {
+                    var searchValue = this.value.toLowerCase();
+                    var rows = document.querySelectorAll('#dataTable tbody tr');
+
+                    rows.forEach(function (row) {
+                        var cells = row.querySelectorAll('td');
+                        var found = Array.from(cells).some(function (cell) {
+                            return cell.textContent.toLowerCase().includes(searchValue);
+                        });
+
+                        row.style.display = found ? '' : 'none';
+                    });
+                });
+            });
+
+        </script>
 @endsection
 
-@section('breadcrumbs')
-<!-- Tambahkan breadcrumbs ke bagian atas -->
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb" style="background-color: transparent;">
-        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('organization') }}">Organization</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{{ $organization['organization_name'] }}</li>
-    </ol>
-</nav>
-@endsection
-
-@section('content')
-<div class="container">
-    @yield('breadcrumbs') <!-- Tambahkan breadcrumbs ke tampilan -->
-
-    <h1 class="m-0" style="color: #3200af;">{{ $organization['organization_name'] }}</h1>
-    <div class="row mt-3 pb-3 border-bottom">
-        <div class="col-md-8" style="color: #3200af;">
-            <small>{{ $organization['description'] }}</small>
-        </div>
-        <div class="col-md-4 text-center">
-            <a href="{{ route('showeditorganization', ['organization_name' => $organization['organization_name']]) }}"
-                class="btn btn-md px-5 rounded-pill text-light btn-pengurus" style="background-color: #7773d4;">
-                Edit Organization
-            </a>
-        </div>
-    </div>
-
-    @include('listmember') <!-- Menampilkan daftar anggota organisasi -->
-</div>
-@endsection
-
-@section('script')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-<script>
-    @if(session('success'))
-        toastr.success('{{ session('success') }}');
-    @endif
-
-    @if(session('error'))
-        toastr.error('{{ session('error') }}');
-    @endif
-
-@endsection --}}
