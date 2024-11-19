@@ -4088,5 +4088,52 @@ public function showinboxadm()
     }
 }
 
+public function resendLicense(Request $request)
+{
+    try {
+        $request->validate([
+            'transaction_id' => 'required|integer',
+        ]);
+
+        $data = [
+            'transaction_id' => $request->transaction_id,
+        ];
+
+        // Kirim permintaan ke API
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->post(self::API_URL . '/product/get_transaction_details.json', $data);
+
+        if ($response->successful()) {
+            $licenseKey = $response->json('license_key');
+            $orderKey = $response->json('order_key');
+            $userEmail = $response->json('user_email'); // Pastikan API mengembalikan email pengguna
+
+            if (!$userEmail) {
+                Log::error('User email not found in API response');
+                return redirect()->back()->with('error', 'Failed to retrieve user email.');
+            }
+
+            // Kirim email ke pengguna dengan lisensi yang baru
+            Mail::send('emails.license', [
+                'license_key' => $licenseKey,
+                'order_key' => $orderKey,
+            ], function ($message) use ($userEmail) {
+                $message->to($userEmail); // Kirim email ke alamat pengguna
+                $message->subject('Your License Key and Order Key');
+            });
+
+            return redirect()->back()->with('success', 'License resent successfully and email sent.');
+        }
+
+        return redirect()->back()->with('error', 'Failed to resend license. Please try again.');
+    } catch (\Exception $e) {
+        Log::error('Failed to resend license:', ['message' => $e->getMessage()]);
+        return redirect()->back()->with('error', 'An error occurred while resending the license.');
+    }
+}
+
+
 }
 

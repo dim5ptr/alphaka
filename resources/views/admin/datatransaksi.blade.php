@@ -1,5 +1,10 @@
 @extends('admin.layoutadm.layoutadm')
+@section('head')
+<!-- Bootstrap 5 JavaScript and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 
+@endsection
 @section('content')
 
  <!-- Custom CSS for smoother table design and search bar -->
@@ -29,7 +34,6 @@
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
     }
 
-    /* Table Design */
     .table-container {
         width: 100%;
         overflow-x: auto; /* Horizontal scroll for table */
@@ -58,51 +62,79 @@
         white-space: nowrap; /* Prevents table cells from wrapping */
     }
 
-    /* Container for the action buttons */
-/* Container for the action buttons */
-.action-buttons {
-    padding: 10px; /* Adds padding around the action buttons */
-    display: flex;
-    justify-content: center; /* Center align the buttons */
-    gap: 10px; /* Adds space between the buttons */
-}
+    /* Action Buttons Styling */
+    /* Action Buttons Styling */
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
 
-/* Group of buttons */
-.btn-group {
-    display: flex;
-    justify-content: space-between; /* Distribute buttons evenly */
-}
+    .btn-group {
+        display: flex;
+        justify-content: space-between;
+    }
 
-/* Custom button style */
-.custom-btn {
-    margin: 0;
-    padding: 10px 20px; /* Adjust padding for a rectangular button */
-    font-size: 14px; /* Font size for better legibility */
-    font-weight: bold; /* Make text bold */
-    text-align: center; /* Align text centrally */
-    border: none; /* No border */
-    border-radius: 0px; /* No rounded corners */
-    transition: all 0.3s ease; /* Smooth transition for all properties */
-    background-color: #365AC2; /* Background color */
-    color: white; /* Text color */
-}
+    .dropdown-menu {
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-/* Button hover effect */
-.custom-btn:hover {
-    background-color: #2c458d; /* Slightly darker background on hover */
-    transform: scale(1.05); /* Slightly enlarge the button */
-}
+    .dropdown-item {
+        padding: 10px 20px;
+        color: #365AC2;
+        font-size: 14px;
+    }
 
-/* Optionally style the outline button the same way */
-.btn-primary {
-    background-color: #365AC2; /* Primary background color */
-    color: white; /* Text color */
-}
+    .dropdown-item:hover {
+        background-color: #365AC2;
+        color: white;
+    }
+    .custom-btn {
+        margin: 0;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        border: none;
+        border-radius: 0px;
+        transition: all 0.3s ease;
+        background-color: #365AC2;
+        color: white;
+    }
 
-.btn-primary:hover {
-    background-color: #2c458d; /* Darker background color on hover */
-}
+    .custom-btn:hover {
+        background-color: #2c458d;
+        transform: scale(1.05);
+    }
 
+    .btn-primary {
+        background-color: #365AC2;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #2c458d;
+    }
+
+    .modal-content {
+        background-color: white;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        border-radius: 8px;
+    }
+
+    .modal-header .btn-close {
+        font-size: 1.5rem;
+        color: #0077FF;
+    }
+
+    .modal-header .btn-close:hover {
+        color: #ff0000;
+    }
 
 
 </style>
@@ -142,7 +174,7 @@
             </div>
         </div>
 
-          <div class="table-container">
+        <div class="table-container">
             <table class="table custom-table mt-0">
                 <thead>
                     <tr>
@@ -151,7 +183,7 @@
                         <th scope="col">Created Date</th>
                         <th scope="col">Transactions Number</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Action</th>
+                        <th scope="col" class="text-center">Action</th> <!-- Centered Action column header -->
                     </tr>
                 </thead>
                 <tbody>
@@ -163,24 +195,36 @@
                             <td>{{ $transaction['transaction_number'] }}</td>
                             <td>{{ $transaction['is_done'] ? 'success' : 'pending' }}</td>
                             <td class="action-buttons text-center">
-                                <div class="action-buttons">
-                                    <div class="btn-group" role="group" aria-label="Action Buttons">
-                                        <!-- Button to trigger modal -->
-                                        <button type="button" class="btn btn-outline-primary btn-sm custom-outline-btn" data-toggle="modal" data-target="#licenseModal" title="Acc Transaction">
-                                            <i class="fa fa-check-circle"></i>
-                                        </button>
-
-                                        <!-- More details button -->
-                                        <form action="{{ route('showmoredetailsadm') }}" method="POST" style="display:inline;">
-                                            @csrf
-                                            <input type="hidden" name="transaction_id" value="{{ $transaction['id'] }}">
-                                            <button type="submit" class="btn btn-outline-primary btn-sm custom-outline-btn" title="More details">
-                                                <i class="fa fa-info-circle"></i>
+                                <div class="btn-group" role="group" aria-label="Action Buttons">
+                                    <!-- Dropdown Button -->
+                                    <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fa-cogs"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <!-- Acc Transaction Option -->
+                                        <li>
+                                            <button type="button" class="dropdown-item" data-toggle="modal" data-target="#licenseModal" title="Acc Transaction">
+                                                <i class="fa fa-check-circle"></i> Acc Transaction
                                             </button>
-                                        </form>
-                                    </div>
+                                        </li>
+                                        <!-- Resend License Option -->
+                                        <li>
+                                            <form action="{{ route('resendLicense') }}" method="POST" style="display:inline;">
+                                                @csrf
+                                                <input type="hidden" name="transaction_id" value="{{ $transaction['id'] }}">
+                                                <button type="submit" class="dropdown-item" title="Resend License">
+                                                    <i class="fa fa-envelope"></i> Resend License
+                                                </button>
+                                            </form>
+                                        </li>
+                                        <!-- More Details Option -->
+                                        <li>
+                                            <button type="button" class="dropdown-item" data-toggle="modal" data-target="#transactionModal" title="More Details" onclick="showTransactionDetails('{{ $transaction['id'] }}')">
+                                                <i class="fa fa-info-circle"></i> More Details
+                                            </button>
+                                        </li>
+                                    </ul>
                                 </div>
-
                             </td>
                         </tr>
                     @empty
@@ -188,12 +232,27 @@
                             <td colspan="7" class="text-center">No transactions available.</td>
                         </tr>
                     @endforelse
-                    <!-- Baris pesan "no match data found" -->
+                    <!-- Message for no match data -->
                     <tr id="noMatchRow" style="display: none;">
                         <td colspan="7" class="text-center">No match data found.</td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="transactionModalLabel">Transaction Details</h5>
+                </div>
+                <div class="modal-body">
+                    <div id="transactionDetailsContent">
+                        <!-- Dynamic transaction details will be populated here -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <!-- Modal for selecting license type -->
@@ -234,6 +293,78 @@
 
 @section('script')
 <script>
+
+function showTransactionDetails(transactionId) {
+
+    console.log("Transaction ID:", transactionId);
+    // Open the modal
+    var myModal = new bootstrap.Modal(document.getElementById('transactionModal'), { keyboard: false });
+    myModal.show();
+
+    const apiUrl = 'http://192.168.1.24:14041/api/product/get_transaction_details.json';
+    const accessToken = '{{ session('access_token') }}'; // Access token from Blade session
+
+    // Send an AJAX request to fetch transaction details
+    fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Authorization': accessToken,
+            'x-api-key': '5af97cb7eed7a5a4cff3ed91698d2ffb',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ transaction_id: transactionId })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Debugging: log the full response for analysis
+        console.log('Response data:', data);
+
+        if (data.success) {
+            const transaction = data.transaction; // Assuming the main transaction details are here
+            const license = data.license; // License details
+            const productDetails = data.product_details[0]; // Assuming there's at least one product
+
+            // Populate the modal with the transaction details
+            document.getElementById('transactionDetailsContent').innerHTML = `
+                <p><strong>Transaction ID:</strong> ${transaction.id}</p>
+                <p><strong>Transaction Number:</strong> ${transaction.transaction_number}</p>
+                <p><strong>Status:</strong> ${transaction.is_done ? 'Success' : 'Pending'}</p>
+                <p><strong>Created Date:</strong> ${new Date(transaction.created_date).toLocaleString()}</p>
+                <p><strong>User Email:</strong> ${data.user_email ?? 'N/A'}</p>
+                <p><strong>Total Amount:</strong> $${transaction.total_amount.toFixed(2)}</p>
+                <hr>
+                <h5>License Details</h5>
+                <p><strong>License Key:</strong> ${license.license_key}</p>
+                <p><strong>License Type:</strong> ${license.license_type}</p>
+                <p><strong>Notes:</strong> ${license.notes}</p>
+                <p><strong>Expiration Date:</strong> ${new Date(license.expired_date).toLocaleString()}</p>
+                <hr>
+                <h5>Product Details</h5>
+                <p><strong>Product Name:</strong> ${productDetails.product_name}</p>
+                <p><strong>Product Description:</strong> ${productDetails.description}</p>
+            `;
+        } else {
+            // If data.success is false, log additional information
+            console.error('Error: ', data.message);
+            document.getElementById('transactionDetailsContent').innerHTML = `
+                <p class="text-danger">Transaction details not found or unavailable. Error: ${data.message || 'Unknown error'}</p>
+            `;
+        }
+    })
+    .catch(error => {
+        // Log the error details for debugging
+        console.error('Error fetching transaction details:', error);
+        document.getElementById('transactionDetailsContent').innerHTML = `
+            <p class="text-danger">An error occurred while fetching the details: ${error.message}</p>
+        `;
+    });
+}
+
     // For instance, you can open the modal when a button is clicked
 $('#openLicenseModal').click(function() {
     $('#licenseModal').modal('show');
