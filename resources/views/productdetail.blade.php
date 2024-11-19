@@ -228,10 +228,28 @@
     }
 
     .thumbnail-gallery {
+        max-width: 100%;
         display: flex;
         gap: 10px;
-        justify-content: center;
+        justify-content: flex-start;
+        overflow-x: auto; /* Enable horizontal scrolling */
+        scrollbar-width: thin; /* For Firefox */
+        padding-bottom: 10px; /* Space for better scrollbar appearance */
     }
+
+    .thumbnail-gallery::-webkit-scrollbar {
+        height: 6px; /* Scrollbar height */
+    }
+
+    .thumbnail-gallery::-webkit-scrollbar-thumb {
+        background-color: #AFC3FC; /* Scrollbar color */
+        border-radius: 10px; /* Rounded scrollbar */
+    }
+
+    .thumbnail-gallery::-webkit-scrollbar-track {
+        background: #f1f1f1; /* Track color */
+    }
+
 
     .thumbnail-gallery img {
         width: 60px;
@@ -323,6 +341,14 @@
 
 {{-- <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script> --}}
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const thumbnailGallery = document.querySelector('.thumbnail-gallery');
+
+        if (thumbnailGallery.scrollWidth > thumbnailGallery.clientWidth) {
+            thumbnailGallery.scrollLeft = 0; // Scroll to the start
+        }
+    });
+
     document.addEventListener("DOMContentLoaded", function() {
         const mainImage = document.getElementById("main-image");
         const thumbnails = document.querySelectorAll(".thumbnail");
