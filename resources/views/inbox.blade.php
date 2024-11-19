@@ -2,197 +2,108 @@
 @section('content')
 
 <!-- Main content -->
-<!-- Table and Search -->
-<section class="content">
+<section class="content py-5">
     <div class="container">
-<!-- Inbox table -->
-<div class="table-container">
-    <table class="table custom-table mt-0">
-        <tbody>
-            @if(is_array(session('messages')) || is_object(session('messages')))
-            @foreach(session('messages') as $message)
-                <tr>
-                    <td style="color: {{ $message['type'] == 'success' ? '#28a745' : '#dc3545' }};">
-                        {{ ucfirst($message['type']) }}
-                    </td>
-                    <td>{{ $message['message'] }}</td>
-                    <td>{{ \Carbon\Carbon::parse($message['created_at'])->format('Y-m-d') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($message['created_at'])->format('H:i:s') }}</td>
-                </tr>
+        <!-- Check if messages exist -->
+        @if(session('messages') && is_array(session('messages')))
+            @php
+                $groupedMessages = collect(session('messages'))->groupBy(function($msg) {
+                    return \Carbon\Carbon::parse($msg['created_at'])->format('Y-m-d');
+                });
+            @endphp
+
+            @foreach($groupedMessages as $date => $messages)
+            <div class="date-group mb-4">
+                <h5 class="text-primary fw-bold">{{ \Carbon\Carbon::parse($date)->format('l, d F Y') }}</h5>
+                <div class="row gy-3">
+                    @foreach($messages as $message)
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card shadow-sm border-0 rounded">
+                            <div class="card-body d-flex flex-column justify-content-between">
+                                <div>
+                                    <h6 class="card-title text-{{ $message['type'] == 'success' ? 'success' : 'danger' }}">
+                                        {{ ucfirst($message['type']) }}
+                                    </h6>
+                                    <p class="card-text">{{ $message['message'] }}</p>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <span class="text-muted small">
+                                        {{ \Carbon\Carbon::parse($message['created_at'])->format('H:i:s') }}
+                                    </span>
+                                    <span class="badge text-{{ $message['type'] == 'success' ? 'success' : 'danger' }}">
+                                        {{ ucfirst($message['type']) }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
             @endforeach
         @else
-            <tr>
-                <td colspan="4" class="text-center">Tidak ada pesan di inbox Anda.</td>
-            </tr>
+            <div class="text-center" style="padding-top: 10%;">
+                <h5 class="text-secondary" style="margin-left: 5%;">Tidak ada pesan di inbox Anda.</h5>
+            </div>
         @endif
-        </tbody>
-    </table>
-</div>
+    </div>
+</section>
 
-
-<!-- Custom CSS for the inbox table -->
+<!-- Custom CSS -->
 <style>
     .content {
         background-color: #f8f9fa;
-    }
-    .table-container {
+        min-height: 100vh;
         padding: 10%;
-        width: 80%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        margin-bottom: 1%;
+        padding-top: 10%;
     }
 
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        overflow: hidden;
-        border-collapse: separate;
-        border-spacing: 0 10px; /* Menambahkan spasi vertikal 10px */
-    }
-
-    .table td {
-        padding: 15px;
-        text-align: left;
+    .card {
         background-color: white;
-        white-space: nowrap;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Light shadow */
+        margin-bottom: 15px;  /* Add spacing between cards */
     }
 
-    .table tr {
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 20px;
-        border: 1px solid #f0f0f0;
+    .card-title {
+        font-weight: bold;
+        text-transform: capitalize;
     }
 
-    /* Search Bar */
-    .input-group-text {
+    .date-group h5 {
+        padding-left: 10px;
+        margin-bottom: 20px;
+    }
+
+    /* Ensure the card body is space-efficient */
+    .card-body {
         display: flex;
-        align-items: center;
-        background-color: #0077FF;
-        color: white;
-        border-radius: 10px 0 0 10px;
-        padding: 8px;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
     }
 
-    #searchInput {
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        font-size: 1rem;
+    .card-text {
+        margin-bottom: 0;
     }
 
-    #searchInput:focus {
-        outline: none;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    /* Style for the badge */
+    .badge {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+        border-radius: 12px;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+        .date-group h5 {
+            font-size: 1rem;
+        }
+
+        .card {
+            font-size: 0.9rem;
+        }
     }
 </style>
 
-
-
-
-@endsection
-
-@section('script')
-<script>
-    // Function to close all modals
-function closeAllModals() {
-    document.querySelectorAll('.custom-modal').forEach(modal => {
-        modal.style.display = "none";
-    });
-}
-
-// Show Change Password modal when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    closeAllModals(); // Close any open modals
-    const passwordModal = document.getElementById('password-modal');
-    if (passwordModal) {
-        passwordModal.style.display = 'block'; // Open Change Password modal
-    }
-});
-
-// Handle menu clicks to show corresponding modals
-document.querySelectorAll('.nav-mini').forEach(link => {
-    link.addEventListener('click', function (e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('data-target');
-        const modalId = targetId + '-modal';
-
-        closeAllModals(); // Close all modals before opening a new one
-        const targetModal = document.getElementById(modalId);
-        if (targetModal) {
-            targetModal.style.display = "block";
-        }
-    });
-});
-
-// Toggle visibility for New Password
-document.getElementById('toggle-new-password').addEventListener('click', function () {
-    const passwordField = document.getElementById('new-password');
-    if (passwordField.type === 'password') {
-        passwordField.type = 'text';
-        this.innerHTML = '<i class="fa fa-eye-slash"></i>';
-    } else {
-        passwordField.type = 'password';
-        this.innerHTML = '<i class="fa fa-eye"></i>';
-    }
-});
-
-// Toggle visibility for Confirm New Password
-document.getElementById('toggle-confirm-password').addEventListener('click', function () {
-    const confirmPasswordField = document.getElementById('confirm-password');
-    if (confirmPasswordField.type === 'password') {
-        confirmPasswordField.type = 'text';
-        this.innerHTML = '<i class="fa fa-eye-slash"></i>';
-    } else {
-        confirmPasswordField.type = 'password';
-        this.innerHTML = '<i class="fa fa-eye"></i>';
-    }
-});
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    var newPasswordInput = document.getElementById('new-password');
-    var confirmPasswordInput = document.getElementById('confirm-password');
-    var newPasswordError = document.getElementById('new-password-error');
-    var confirmPasswordError = document.getElementById('confirm-password-error');
-
-    // Real-time validation function
-    function validatePasswords() {
-        var newPasswordValue = newPasswordInput.value;
-        var confirmPasswordValue = confirmPasswordInput.value;
-
-        // Clear previous error messages
-        newPasswordError.textContent = '';
-        confirmPasswordError.textContent = '';
-
-        // Password length check
-        if (newPasswordValue.length < 8) {
-            newPasswordError.textContent = 'Password must be at least 8 characters.';
-        }
-
-        // Match check
-        if (newPasswordValue !== confirmPasswordValue) {
-            confirmPasswordError.textContent = 'Passwords do not match.';
-        }
-    }
-
-    newPasswordInput.addEventListener('input', validatePasswords);
-    confirmPasswordInput.addEventListener('input', validatePasswords);
-});
-
-</script>
-
-
-<script>
-function toggleSidebar() {
-var sidebar = document.getElementById("sidebar");
-var mainContent = document.getElementById("main-content");
-
-if (sidebar.style.left === "0px") {
-    sidebar.style.left = "-270px";
-    mainContent.style.marginLeft = "10%";
-} else {
-    sidebar.style.left = "0px";
-    mainContent.style.marginLeft = "19%";
-}
-}
-</script>
 @endsection

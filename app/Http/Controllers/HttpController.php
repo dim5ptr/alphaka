@@ -3713,10 +3713,9 @@ public function userinbox()
     return view('inbox', compact('currentPage')); // Pass it to the view
 }
 
-public function showinbox()
+public function showInbox()
 {
     try {
-
         Log::info('Requesting inbox data from API: ' . self::API_URL . '/sso/show_inbox.json');
 
         // Ambil user_id dari session
@@ -3733,23 +3732,34 @@ public function showinbox()
 
         Log::info('API Response: ' . $response->body());
 
-        // Cek apakah response API mengandung kunci 'data' dan memastikan 'data' adalah array
+        // Validasi respons API
         if ($response->successful()) {
-            $messages = $response->json()['data'] ?? [];
-            if (!is_array($messages)) {
-                $messages = []; // Pastikan $messages adalah array
+            $responseData = $response->json();
+            if ($responseData['success'] && isset($responseData['data']) && is_array($responseData['data'])) {
+                $messages = [];
+
+                // Mengumpulkan semua pesan dalam satu array
+                foreach ($responseData['data'] as $dateGroup) {
+                    foreach ($dateGroup['messages'] as $message) {
+                        $messages[] = $message;  // Mengumpulkan pesan berdasarkan tanggal
+                    }
+                }
+
+                Log::info('Inbox data retrieved successfully, total valid messages: ' . count($messages));
+
+                // Simpan pesan ke session
+                session(['messages' => $messages]);
+
+                // Kirim data ke view
+                return view('inbox')->with('messages', $messages)->with('currentPage', $currentPage);
+            } else {
+                Log::warning('No valid messages found in the response.');
+                session()->forget('messages'); // Hapus session jika data kosong
+                return view('inbox')->with('messages', [])->with('currentPage', $currentPage);
             }
-            Log::info('Inbox data retrieved successfully, total messages: ' . count($messages));
-
-              // Menyimpan data pesan ke session
-              session(['messages' => $messages]);
-
-            // Mengirimkan data inbox ke view `admin.inbox`, meskipun kosong
-            return view('inbox')->with('messages', $messages)->with('currentPage', $currentPage);
-
-
         }
 
+        // Respons API gagal
         Log::error('API request failed with status ' . $response->status() . ': ' . $response->body());
         return redirect()->back()->with('error', 'Failed to retrieve inbox data.');
 
@@ -3758,6 +3768,8 @@ public function showinbox()
         return redirect()->back()->with('error', 'Error retrieving inbox data');
     }
 }
+
+
 
 
 public function showinboxadm()
