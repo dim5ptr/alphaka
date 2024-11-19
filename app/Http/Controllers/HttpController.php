@@ -1083,7 +1083,8 @@ public function login(Request $request)
 
     public function showcreateorganization()
     {
-        return view('addorganization');
+        $currentPage = 'Add Organization'; // Define the current page variable
+        return view('addorganization', compact('currentPage')); // Pass the variable to the view
     }
 
 public function addOrganization(Request $request)
@@ -1842,7 +1843,7 @@ public function personal()
 
     public function showsecurity()
     {
-        $currentPage = 'security'; // Define the current page variable
+        $currentPage = 'Security'; // Define the current page variable
         return view('security', compact('currentPage')); // Pass it to the view
     }
 
@@ -3975,7 +3976,7 @@ public function showinboxadm()
         {
             // Assuming you have a way to get the access token
             $accessToken = session('access_token');
-            $currentPage = 'Transaction'; // Define the current page variable
+            $currentPage = 'Transactions'; // Define the current page variable
 
             if (!$accessToken) {
                 return redirect()->route('login')->with('error', 'Unauthorized access.');

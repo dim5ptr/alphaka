@@ -7,7 +7,6 @@
     }
 
     body {
-        font-family: Arial, sans-serif;
          /* Light background color */
     }
 

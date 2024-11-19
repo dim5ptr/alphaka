@@ -11,13 +11,9 @@
         height: 100%;
         margin: 0;
         padding: 0;
-        font-family: 'Poppins', sans-serif;
         background-color: #d5def7;
     }
 
-    body {
-        transition: margin-left 0.3s;
-    }
 /* Content Header */
     section {
         max-width: 100%;
@@ -87,6 +83,7 @@ footer {
         justify-content: space-between;
         align-items: center;
         margin-bottom: 20px;
+        padding-left: 3%;
     }
 
     #filterDropdown, #sortDropdown {
@@ -99,7 +96,6 @@ footer {
         cursor: pointer;
         transition: background-color 0.3s ease, border-color 0.3s ease;
         background-color: #fff;
-        margin-left: 35%;
     }
 
     #filterDropdown:hover,
@@ -358,20 +354,10 @@ footer {
 }
 
 </style>
-<body>
-
     <div id="main-content" class="main-content">
 
         <section class="content">
-            <div class="filter-container">
-                <div class="filter" style="margin-left: 2%;">
-                    <select id="filterDropdown" onchange="filterOrganizations(this.value)">
-                        <option value="all">All</option>
-                        <option value="owner">Mine</option>
-                        <option value="member">Added By</option>
-                    </select>
-                </div>
-            </div>
+
             @if (session('success_message'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert" id="alert-success">
                     {{ session('success_message') }}
@@ -391,6 +377,15 @@ footer {
 
             <div class="container">
 
+                <div class="filter-container">
+                    <div class="filter" style="margin-left: 2%;">
+                        <select id="filterDropdown" onchange="filterOrganizations(this.value)">
+                            <option value="all">All</option>
+                            <option value="owner">Mine</option>
+                            <option value="member">Added By</option>
+                        </select>
+                    </div>
+                </div>
                 @if(isset($organizations))
                     <div class="display" id="organization-list">
                         @foreach($organizations as $organization)

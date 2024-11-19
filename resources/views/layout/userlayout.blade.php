@@ -9,6 +9,11 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+
+
 
     <!-- Slick Carousel CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
@@ -20,7 +25,7 @@
             height: auto;
             margin: 0;
             padding: 0;
-            font-family: 'Poppins', sans-serif;
+            font-family: "Lexend", sans-serif;
             background-color: #d5def7;
         }
 
@@ -213,8 +218,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/produk" class="{{ request()->is('produk*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Product')">
-                        <span class="link"><i class="fa-solid fa-cube"></i>ㅤProduct</span>
+                    <a href="/produk" class="{{ request()->is('produk*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Products')">
+                        <span class="link"><i class="fa-solid fa-cube"></i>ㅤProducts</span>
                     </a>
                 </li>
                 <li>
@@ -229,7 +234,7 @@
                 </li>
                 <li>
                     <a href="/transaction" class="{{ request()->is('transaction*') ? 'nav-link-act' : 'nav-link' }}" onclick="updateNavbarText('Transactions')">
-                        <span class="link"><i class="fa-solid fa-money-bill-wave"></i>ㅤTransaction</span>
+                        <span class="link"><i class="fa-solid fa-money-bill-wave"></i>ㅤTransactions</span>
                     </a>
                 </li>
                 <li>
