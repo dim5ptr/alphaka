@@ -4006,5 +4006,72 @@ public function showinboxadm()
             }
         }
 
+        public function createLicense(Request $request)
+{
+    Log::info('Received license creation request:', $request->all());
+
+    try {
+        // Validate input
+        $request->validate([
+            'transaction_id' => 'required|integer',
+            'license_type' => 'required|integer',
+            'notes' => 'nullable|string',
+        ]);
+
+        // Prepare data for API request
+        $data = [
+            'transaction_id' => $request->transaction_id,
+            'license_type' => $request->license_type,
+            // 'notes' => $request->notes ?? 'Lisensi untuk uji coba transaksi pembelian',
+        ];
+
+        Log::info('Prepared data for API request:', $data);
+
+        // Send request to API
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'), // Replace with your actual token
+            'x-api-key' => self::API_KEY, // Replace with your actual API key
+        ])->post(self::API_URL . '/license/create_license.json', $data);
+        Log::info('Full API Response:', $response->json());
+
+
+        if ($response->successful()) {
+            // Assuming the response contains the license key and order key
+            $licenseKey = $response->json('license_key');
+            $orderKey = $response->json('order_key');
+            $userEmail = $response->json('user_email'); // Extract user email from API response
+
+            if (!$userEmail) {
+                Log::error('User email not found in API response');
+                return redirect()->back()->with('error', 'Failed to retrieve user email.');
+            }
+            // Send email to user with the license key and order key
+            Mail::send('emails.license', [
+                'license_key' => $licenseKey,
+                'order_key' => $orderKey,
+            ], function ($message) use ($userEmail) {
+                $message->to($userEmail); // Use email from API response
+                $message->subject('Your License Key and Order Key');
+            });
+
+            Log::info('License created and email sent successfully.');
+
+            return redirect()->route('showtransaction')->with('success', 'License created successfully and email sent.');
+        } else {
+            $status = $response->status();
+            $errorMessage = $response->json('message') ?? 'Unknown error';
+            Log::error("Failed to create license. Status: {$status}, Error: {$errorMessage}");
+            return redirect()->back()->with('error', 'Failed to create license. Please try again.');
+        }
+
+    } catch (ValidationException $e) {
+        Log::error('Validation failed:', $e->errors());
+        return redirect()->back()->withErrors($e->errors())->withInput();
+    } catch (\Exception $e) {
+        Log::error('An unexpected error occurred during license creation:', ['message' => $e->getMessage()]);
+        return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
+    }
+}
+
 }
 
