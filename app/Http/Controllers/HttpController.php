@@ -3780,6 +3780,7 @@ public function showinboxadm()
 
         // Ambil user_id dari session
         $userId = session('user_id');
+        $currentPage = 'Inbox';
 
         // Ambil response API
         $response = Http::withHeaders([
@@ -3791,15 +3792,34 @@ public function showinboxadm()
 
         Log::info('API Response: ' . $response->body());
 
-        // Cek apakah response API mengandung kunci 'data'
-        if ($response->successful() && isset($response->json()['data'])) {
-            $messages = $response->json()['data'];
-            Log::info('Inbox data retrieved successfully, total messages: ' . count($messages));
+        // Validasi respons API
+        if ($response->successful()) {
+            $responseData = $response->json();
+            if ($responseData['success'] && isset($responseData['data']) && is_array($responseData['data'])) {
+                $messages = [];
 
-            // Mengirimkan data inbox ke view `admin.inbox`
-            return view('admin.inbox', ['messages' => $messages]);
+                // Mengumpulkan semua pesan dalam satu array
+                foreach ($responseData['data'] as $dateGroup) {
+                    foreach ($dateGroup['messages'] as $message) {
+                        $messages[] = $message;  // Mengumpulkan pesan berdasarkan tanggal
+                    }
+                }
+
+                Log::info('Inbox data retrieved successfully, total valid messages: ' . count($messages));
+
+                // Simpan pesan ke session
+                session(['messages' => $messages]);
+
+                // Kirim data ke view
+                return view('admin.inbox')->with('messages', $messages)->with('currentPage', $currentPage);
+            } else {
+                Log::warning('No valid messages found in the response.');
+                session()->forget('messages'); // Hapus session jika data kosong
+                return view('admin.inbox')->with('messages', [])->with('currentPage', $currentPage);
+            }
         }
 
+        // Respons API gagal
         Log::error('API request failed with status ' . $response->status() . ': ' . $response->body());
         return redirect()->back()->with('error', 'Failed to retrieve inbox data.');
 

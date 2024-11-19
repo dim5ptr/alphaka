@@ -2,7 +2,6 @@
 
 @section('content')
 
-<!-- Main content -->
 <div class="content-header bg-light p-4 shadow-sm rounded" style="margin-bottom: 2%;">
     <div class="container-fluid">
         <div class="row mb-2 align-items-center">
@@ -12,115 +11,132 @@
         </div>
     </div>
 </div>
-
-<!-- Table and Search -->
-<section class="content">
+<!-- Main content -->
+<section class="content py-5">
     <div class="container">
-<!-- Inbox table -->
-<div class="table-container">
-    <table class="table custom-table mt-0">
-        <tbody>
+        <!-- Check if messages exist -->
+        @if(session('messages') && is_array(session('messages')))
+            @php
+                $groupedMessages = collect(session('messages'))->groupBy(function($msg) {
+                    return \Carbon\Carbon::parse($msg['created_at'])->format('Y-m-d');
+                });
+            @endphp
 
-            @if(is_array($messages) || is_object($messages))
-                @foreach($messages as $message)
-                    <tr>
-                        <td style="color: {{ $message['type'] == 'success' ? '#28a745' : '#dc3545' }};">
-                            {{ ucfirst($message['type']) }}
-                        </td>
-                        <td>{{ $message['message'] }}</td>
-                        <td>{{ \Carbon\Carbon::parse($message['created_at'])->format('Y-m-d') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($message['created_at'])->format('H:i:s') }}</td>
-                    </tr>
-                @endforeach
-            @else
-                <tr>
-                    <td colspan="4" class="text-center">Tidak ada pesan di inbox Anda.</td>
-                </tr>
-            @endif
-        </tbody>
-    </table>
-</div>
+            @foreach($groupedMessages as $date => $messages)
+            <div class="date-group mb-4">
+                <h5 class="text-primary fw-bold">{{ \Carbon\Carbon::parse($date)->format('l, d F Y') }}</h5>
+                <div class="table-responsive">
+                    <table class="table">
+                        <tbody>
+                            @foreach($messages as $message)
+                            <tr class="message-row">
+                                <td class="text-center first-column badge text small"
+                                    style="color: {{ $message['type'] == 'success' ? '#28a745' : '#dc3545' }}; border-radius: 12px 0 0 12px;">
+                                    {{ ucfirst($message['type']) }}
+                                </td>
+                                <td class="message-cell badge text small" style="width: 80%;">
+                                    {{ $message['message'] }}
+                                </td>
+                                <td class="last-column">
+                                    <span class="badge text small" style="color: #757576;">
+                                        {{ \Carbon\Carbon::parse($message['created_at'])->format('H:i:s') }}
+                                    </span>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @endforeach
+        @else
+            <div class="text-center" style="padding-top: 10%;">
+                <h5 class="text-secondary" style="margin-left: 5%;">Tidak ada pesan di inbox Anda.</h5>
+            </div>
+        @endif
+    </div>
+</section>
 
-
-<!-- Custom CSS for the inbox table -->
+<!-- Custom CSS -->
 <style>
-    .table-container {
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        margin-bottom: 1%;
+    .content {
+        padding-left: 10%;
+        padding-bottom: 5%;
     }
 
+    .date-group h5 {
+            font-size: 1rem;
+            color: #545455;
+            margin-top: 5%;
+            margin-bottom: 1%;
+        }
+
     .table {
-        width: 100%;
-        border-collapse: collapse;
-        overflow: hidden;
-        border-collapse: separate;
-        border-spacing: 0 10px; /* Menambahkan spasi vertikal 10px */
+        border-spacing: 0 15px; /* Adds space between rows */
+        width: 90%; /* Make sure the table takes the full width */
     }
 
     .table td {
-        padding: 15px;
-        text-align: left;
+        padding: 12px;
+        vertical-align: middle;
+    }
+
+    .message-row td {
+    }
+
+    .message-row  {
         background-color: white;
-        white-space: nowrap;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Light shadow */
     }
 
-    .table tr {
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 20px;
-        border: 1px solid #f0f0f0;
+    /* Border-radius only on first and last columns */
+    .first-column {
+        border-top-left-radius: 12px;
+        border-bottom-left-radius: 12px;
+        width: 10%; /* Set width for the last column */
+
     }
 
-    /* Search Bar */
-    .input-group-text {
+    .last-column{
+        border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+        width: 10%; /* Set width for the last column */
+    }
+
+
+
+    /* Style for the badge */
+    .badge {
+        font-size: 0.9rem;
+        padding: 5px 10px;
+        border-radius: 12px;
+    }
+
+    /* Ensure the message cell has consistent height */
+    .message-cell {
         display: flex;
-        align-items: center;
-        background-color: #0077FF;
-        color: white;
-        border-radius: 10px 0 0 10px;
-        padding: 8px;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
     }
 
-    #searchInput {
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        font-size: 1rem;
-    }
+    /* Responsive styles */
+    @media (max-width: 768px) {
+        .date-group h5 {
+            font-size: 0.8rem;
+        }
 
-    #searchInput:focus {
-        outline: none;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+
+    .content {
+        background-color: #f8f9fa;
+        min-height: 90vh;
+        padding-top : 15%;
+    }
+        .table td {
+        }
     }
 </style>
 
 
-
-
-@endsection
-
-@section('script')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var searchInput = document.getElementById('searchInput');
-
-        searchInput.addEventListener('keyup', function(event) {
-            var searchText = event.target.value.toLowerCase();
-            var rows = document.querySelectorAll('.custom-table tbody tr');
-
-            rows.forEach(function(row) {
-                var shouldDisplay = false;
-
-                for (var i = 0; i < row.cells.length; i++) {
-                    var cellText = row.cells[i].textContent.toLowerCase();
-                    if (cellText.includes(searchText)) {
-                        shouldDisplay = true;
-                        break;
-                    }
-                }
-
-                row.style.display = shouldDisplay ? '' : 'none';
-            });
-        });
-    });
-</script>
 @endsection
