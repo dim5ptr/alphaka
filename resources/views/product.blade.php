@@ -49,9 +49,13 @@
 
     <style>
 
+        html {
+            background-color: ;
+        }
+
         .homepage {
             padding: 10%;
-            background-color: #f9f9f9; /* Light background for better contrast */
+            /* background-color: #f9f9f9; Light background for better contrast */
             height: 1500px;
         }
 
