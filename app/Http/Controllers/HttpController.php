@@ -1333,6 +1333,7 @@ public function organizationVerify(Request $request, $token)
     public function showvieworganization($organization_name)
 {
     Log::info('Attempting to view organization with name: ' . $organization_name);
+    $currentPage = 'Organization'; // Define the current page variable
 
     try {
         // API call to list organizations by owner
@@ -1379,7 +1380,7 @@ public function organizationVerify(Request $request, $token)
                     // Log the prepared organization data with member_count
                     Log::info('Prepared organization data:', $organization);
 
-                    return view('vieworganization', compact('organization'));
+                    return view('vieworganization', compact('organization', 'currentPage' ));
                 }
             }
 
@@ -1474,7 +1475,7 @@ public function organizationVerify(Request $request, $token)
     public function showmoredetails(Request $request, $organization_name)
     {
         Log::info('Attempting to show more details for organization: ' . $organization_name);
-
+        $currentPage = 'Organization';
         try {
             // Get the email from the request
             $email = $request->input('email');
@@ -1539,7 +1540,7 @@ public function organizationVerify(Request $request, $token)
                 Log::info('User details retrieved successfully for: ' . $email);
 
                 // Return the view with the organization and organization name
-                return view('moredetails', compact('organization', 'organization_name'));
+                return view('moredetails', compact('organization', 'organization_name', 'currentPage'));
             } else {
                 // Handle non-200 responses (e.g., 404 or 400)
                 Log::error('Failed to get user details from API. Status: ' . $response->status());
@@ -1557,14 +1558,14 @@ public function organizationVerify(Request $request, $token)
     public function showeditorganization($organization_name)
     {
         Log::info('Attempting to edit organization: ' . $organization_name);
-
+        $currentPage = 'Organization';
         try {
             // Memanggil showvieworganization untuk mendapatkan data organisasi
             $organization = $this->showvieworganization($organization_name)->getData()['organization'];
 
             // Mengirim data organisasi ke tampilan editorganization
             Log::info('Showing edit view for organization: ' . $organization_name);
-            return view('editorganization', compact('organization'));
+            return view('editorganization', compact('organization', 'currentPage'));
         } catch (\Exception $e) {
             Log::error('Exception occurred while showing edit view: ' . $e->getMessage());
             return back()->with('error', $e->getMessage());
