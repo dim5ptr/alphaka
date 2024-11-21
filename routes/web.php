@@ -102,6 +102,7 @@ Route::middleware(['auth'])->group(function () {
 
 
         Route::get('/products', [HttpController::class, 'showProducts'])->name('showProducts');
+        Route::get('/productUser', [HttpController::class, 'showProductsUser'])->name('showProductsUser');
         Route::get('/productFolder', [HttpController::class, 'showProductsFolder'])->name('showProductsFolder');
         Route::get('/productsFeatures', [HttpController::class, 'showProductsFeatures'])->name('showProductsFeatures');
         Route::get('/productsRelease', [HttpController::class, 'showProductsRelease'])->name('showProductsRelease');

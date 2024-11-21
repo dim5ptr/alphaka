@@ -46,6 +46,9 @@
                 <a href="{{ route('showProductsRelease') }}" class="btn btn-primary" style="background-color: #1c65b9; color: white; font-weight: bold; margin-right: 3%;  margin-bottom: 1%;">
                     Product Release
                 </a>
+                <a href="{{ route('showProductsUser') }}" class="btn btn-primary" style="background-color: #0077FF; color: white; font-weight: bold; margin-right: 3%; margin-bottom: 1%;">
+                    Product User
+                </a>
             </div>
         </div>
 
