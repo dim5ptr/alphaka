@@ -2777,8 +2777,8 @@ public function showProductsRelease(Request $request)
 
         // Check if the response was successful
         if ($response->successful()) {
-            $productR = $response->json()['data'] ?? []; // Default to an empty array if 'data' is not set
-            return view('admin.productRelease', ['products' => $productR]);
+            $productU = $response->json()['data'] ?? []; // Default to an empty array if 'data' is not set
+            return view('admin.productRelease', ['products' => $productU]);
         }
 
         Log::error('API request failed: ' . $response->body());
@@ -2789,6 +2789,34 @@ public function showProductsRelease(Request $request)
         return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
     }
 }
+
+public function showProductsUser(Request $request)
+{
+    try {
+        // Make the GET request to the external API using the constants
+        $response = Http::withHeaders([
+            'Authorization' => session('access_token'),
+            'x-api-key' => self::API_KEY,
+        ])->get(self::API_URL . '/product/product_user_show.json');
+
+        // Log the API response for debugging
+        Log::info('API Response: ' . $response->body());
+
+        // Check if the response was successful
+        if ($response->successful()) {
+            $productU = $response->json()['data'] ?? []; // Default to an empty array if 'data' is not set
+            return view('admin.productUser', ['products' => $productU]);
+        }
+
+        Log::error('API request failed: ' . $response->body());
+        return response()->json(['success' => false, 'message' => 'Failed to retrieve product data.'], $response->status());
+
+    } catch (\Exception $e) {
+        Log::error('Error retrieving data: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'Error retrieving data'], 500);
+    }
+}
+
 public function showEditProductForm($id)
 {
     try {
@@ -3781,7 +3809,6 @@ public function showinboxadm()
 
         // Ambil user_id dari session
         $userId = session('user_id');
-        $currentPage = 'Inbox';
 
         // Ambil response API
         $response = Http::withHeaders([
@@ -3812,11 +3839,11 @@ public function showinboxadm()
                 session(['messages' => $messages]);
 
                 // Kirim data ke view
-                return view('admin.inbox')->with('messages', $messages)->with('currentPage', $currentPage);
+                return view('admin.inbox')->with('messages', $messages);
             } else {
                 Log::warning('No valid messages found in the response.');
                 session()->forget('messages'); // Hapus session jika data kosong
-                return view('admin.inbox')->with('messages', [])->with('currentPage', $currentPage);
+                return view('admin.inbox')->with('messages', []);
             }
         }
 

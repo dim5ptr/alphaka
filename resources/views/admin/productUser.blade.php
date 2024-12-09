@@ -7,7 +7,7 @@
     <div class="container-fluid">
         <div class="row mb-2 align-items-center">
             <div class="col-sm-6">
-                <h1 class="m-0" style="color: #0077FF; font-weight: bold; font-size: 2rem;">Product Features</h1>
+                <h1 class="m-0" style="color: #0077FF; font-weight: bold; font-size: 2rem;">Product User</h1>
             </div>
         </div>
     </div>
@@ -40,13 +40,13 @@
                 <a href="{{ route('showProductsFolder') }}" class="btn btn-primary me-2" style="background-color: #0077FF; color: white; font-weight: bold; margin-right: 3%;  margin-bottom: 1%;">
                     Product Folder
                 </a>
-                <a href="{{ route('showProductsFeatures') }}" class="btn btn-primary me-2" style="background-color: #1c65b9; color: white; font-weight: bold; margin-right: 3%;  margin-bottom: 1%;">
+                <a href="{{ route('showProductsFeatures') }}" class="btn btn-primary me-2" style="background-color: #0077FF; color: white; font-weight: bold; margin-right: 3%; margin-bottom: 1%;">
                     Product Features
                 </a>
                 <a href="{{ route('showProductsRelease') }}" class="btn btn-primary" style="background-color: #0077FF; color: white; font-weight: bold; margin-right: 3%;  margin-bottom: 1%;">
                     Product Release
                 </a>
-                <a href="{{ route('showProductsUser') }}" class="btn btn-primary" style="background-color: #0077FF; color: white; font-weight: bold; margin-right: 3%; margin-bottom: 1%;">
+                <a href="{{ route('showProductsUser') }}" class="btn btn-primary" style="background-color: #1c65b9; color: white; font-weight: bold; margin-right: 3%; margin-bottom: 1%;">
                     Product User
                 </a>
             </div>
@@ -153,6 +153,17 @@
             .action-icon {
                 font-size: 1.2em; /* Adjust to your desired size */
             }
+
+            input[type="checkbox"]:checked {
+        background-color: #007bff; /* Warna biru */
+        border-color: #007bff; /* Warna biru */
+    }
+
+    input[type="checkbox"] {
+        width: 18px; /* Ukuran kotak */
+        height: 18px;
+        cursor: not-allowed; /* Jika readonly */
+    }
  /* Responsive Layout for Mobile */
         @media (max-width: 768px) {
                 .col-6 {
@@ -169,47 +180,42 @@
             }
         </style>
 
-        <div class="table-container">
-            <table class="table custom-table mt-0">
-                <thead>
-                    <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Product Release Id</th>
-                        <th scope="col">Feature Code</th>
-                        <th scope="col">Feature Name</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                  @forelse($products as $no => $product)
+            <div class="table-container">
+                <table class="table custom-table mt-0">
+                    <thead>
                         <tr>
-                        <th scope="row">{{ $no + 1 }}</th> <!-- Displaying the no + 1 -->
-                        <td>{{ $productFr['product_release_id'] ?? 'N/A' }}</td>
-                            <td>{{ $productFr['feature_code'] ?? 'N/A' }}</td>
-                            <td>{{ $productFr['feature_name'] ?? 'N/A' }}</td>
-                            <td class="action-buttons text-center">
-                                <div class="btn-group" role="group" aria-label="Action Buttons">
-                                    <form action="{{ route('showmoredetailsadm') }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        <button type="submit" class="btn btn-outline-primary btn-sm custom-outline-btn" title="More details">
-                                            <i class="fa fa-info-circle action-icon"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
+                            <th scope="col">No</th>
+                            <th scope="col">Id</th>
+                            <th scope="col">User Id</th>
+                            <th scope="col">Product Id</th>
+                            <th scope="col">Enabled</th>
                         </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($products as $no => $product)
+                            <tr>
+                                <th scope="row">{{ $no + 1 }}</th> <!-- Displaying the no + 1 -->
+                                <td>{{ $product['id'] ?? 'N/A' }}</td>
+                                <td>{{ $product['user_id'] ?? 'N/A' }}</td>
+                                <td>{{ $product['product_id'] ?? 'N/A' }}</td>
+                                <td class="text-center">
+                                    <input
+                                        type="checkbox"
+                                        {{ $product['enabled'] ? 'checked' : '' }}
+                                        disabled>
+                                </td>
+                            </tr>
                         @empty
-                        <tr>
-                            <td colspan="7" class="text-center">No products available.</td>
+                            <tr>
+                                <td colspan="7" class="text-center">No products available.</td>
+                            </tr>
+                        @endforelse
+                        <!-- Baris pesan "no match data found" -->
+                        <tr id="noMatchRow" style="display: none;">
+                            <td colspan="7" class="text-center">No match data found.</td>
                         </tr>
-                    @endforelse
-                    <!-- Baris pesan "no match data found" -->
-                    <tr id="noMatchRow" style="display: none;">
-                        <td colspan="7" class="text-center">No match data found.</td>
-                    </tr>
-                </tbody>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
         </div>
     </div>
 </section>
@@ -217,7 +223,7 @@
 
 @section('script')
 <script>
-    document.getElementById('searchInput').addEventListener('keyup', function() {
+   document.getElementById('searchInput').addEventListener('keyup', function() {
     const query = this.value.toLowerCase();
     const rows = document.querySelectorAll('.table-container tbody tr');
     let matchFound = false;

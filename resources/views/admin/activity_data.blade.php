@@ -25,9 +25,7 @@
                 <input type="search" id="searchInput" class="form-control rounded" placeholder="Search..." style="border: none; padding: 10px;">
             </div>
                 <!-- Button to Create New Input -->
-                <button class="btn btn-primary ms-2" style="background-color: #2175d5; font-weight: bold;  margin-left: 3%;">
-                    <i class="fas fa-plus"></i>
-                </button>
+               
         </div>
 
         <div class="row mb-4">

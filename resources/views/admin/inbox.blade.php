@@ -12,7 +12,7 @@
     </div>
 </div>
 <!-- Main content -->
-<section class="content py-5">
+<section class="content">
     <div class="container">
         <!-- Check if messages exist -->
         @if(session('messages') && is_array(session('messages')))
@@ -24,7 +24,7 @@
 
             @foreach($groupedMessages as $date => $messages)
             <div class="date-group mb-4">
-                <h5 class="text-primary fw-bold">{{ \Carbon\Carbon::parse($date)->format('l, d F Y') }}</h5>
+                <h5 class="fw-bold">{{ \Carbon\Carbon::parse($date)->format('l, d F Y') }}</h5>
                 <div class="table-responsive">
                     <table class="table">
                         <tbody>
@@ -59,26 +59,27 @@
 
 <!-- Custom CSS -->
 <style>
-    .content {
+    .container {
+        padding-top: 2%;
         padding-left: 10%;
         padding-bottom: 5%;
     }
 
     .date-group h5 {
-            font-size: 1rem;
-            color: #545455;
-            margin-top: 5%;
-            margin-bottom: 1%;
+        margin-top: 4%;
+        margin-bottom: 2%;
+          font-size: 1.2rem;
+          color: #757576;
+          font-weight: bold;
         }
 
     .table {
         border-spacing: 0 15px; /* Adds space between rows */
-        width: 90%; /* Make sure the table takes the full width */
+        width: 100%; /* Make sure the table takes the full width */
     }
 
     .table td {
         padding: 12px;
-        vertical-align: middle;
     }
 
     .message-row td {
@@ -87,21 +88,22 @@
     .message-row  {
         background-color: white;
         border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Light shadow */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: none;
     }
 
     /* Border-radius only on first and last columns */
     .first-column {
         border-top-left-radius: 12px;
         border-bottom-left-radius: 12px;
-        width: 10%; /* Set width for the last column */
+        width: 5%; /* Set width for the last column */
 
     }
 
     .last-column{
         border-top-right-radius: 12px;
         border-bottom-right-radius: 12px;
-        width: 10%; /* Set width for the last column */
+        width: 5%; /* Set width for the last column */
     }
 
 
@@ -113,13 +115,6 @@
         border-radius: 12px;
     }
 
-    /* Ensure the message cell has consistent height */
-    .message-cell {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        height: 100%;
-    }
 
     /* Responsive styles */
     @media (max-width: 768px) {
@@ -129,7 +124,6 @@
 
 
     .content {
-        background-color: #f8f9fa;
         min-height: 90vh;
         padding-top : 15%;
     }

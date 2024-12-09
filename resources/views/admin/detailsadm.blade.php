@@ -16,7 +16,7 @@
                 </div>
                 <div class="data">
                     <p><span class="text-bold">Name:</span> {{ session('full_name') ?? 'N/A' }}</p>
-                    <p><span class="text-bold">Birthday:</span> {{ session('dateofbirth') ?? 'N/A' }}</p>
+                    <p><span class="text-bold">Birthday:</span> {{ session('birthday') ?? 'N/A' }}</p>
                     <p><span class="text-bold">Gender:</span> {{ session('gender') === 0 ? 'Female' : 'Male' }}</p>
                     <p><span class="text-bold">Email:</span> {{ session('email') ?? 'N/A' }}</p>
                     <p><span class="text-bold">Phone Number:</span> {{ session('phone') ?? 'N/A' }}</p>
