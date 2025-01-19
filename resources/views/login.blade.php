@@ -6,13 +6,16 @@
     <link rel="icon" type="image/x-icon" href="img/logo_sti.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <title>Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lexend:wght@100..900&display=swap" rel="stylesheet">
 
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: "Lexend", sans-serif;
         }
 
         body {
@@ -349,7 +352,7 @@
                 <input type="submit" value="Login" class="btn-login">
                 <br>
 
-             
+
                 <div class="google-form">
                     <a class="google" href="{{ route('auth.google') }}">
                         <i class="fab fa-google"></i>
