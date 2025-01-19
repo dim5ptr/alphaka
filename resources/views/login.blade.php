@@ -23,7 +23,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #365AC2, #AFC3FC);
+            background: linear-gradient(60deg, #365AC2, #AFC3FC);
         }
 
         .container {
@@ -50,7 +50,7 @@
         }
 
         .left {
-            background-color: #e9edf9;
+            background-color: #ffffff;
             color: #365AC2;
             display: flex;
             flex-direction: column;
@@ -63,6 +63,28 @@
             max-width: 400px;
             height: auto;
             margin-bottom: 20px;
+        }
+
+        .slideshow-container {
+            position: relative;
+            width: 80%; /* Adjust as needed */
+            max-width: 600px; /* Adjust as needed */
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .slide {
+            display: none; /* Hide all slides by default */
+            width: 100%;
+        }
+
+        .slide img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .slide.active {
+            display: block; /* Show the active slide */
         }
 
         .right {
@@ -308,7 +330,20 @@
 <div class="container">
     <div class="login-box">
         <div class="left">
-            <img src="{{ asset('img/B.png') }}" alt="Welcome Image">
+            <div class="slideshow-container">
+                <div class="slide active">
+                    <img src="{{ asset('img/A.jpg') }}" alt="Image 1">
+                </div>
+                <div class="slide">
+                    <img src="{{ asset('img/C.jpg') }}" alt="Image 2">
+                </div>
+                <div class="slide">
+                    <img src="{{ asset('img/D.jpg') }}" alt="Image 3">
+                </div>
+                <div class="slide">
+                    <img src="{{ asset('img/E.jpg') }}" alt="Image 3">
+                </div>
+            </div>
         </div>
         <div class="right">
             <h2>Login</h2>
@@ -450,6 +485,35 @@
             }, 500);
         }
     }
+
+    let slideIndex = 0;
+showSlides();
+
+function showSlides() {
+    const slides = document.getElementsByClassName("slide");
+    const totalSlides = slides.length;
+
+    // Hide all slides
+    for (let i = 0; i < totalSlides; i++) {
+        slides[i].classList.remove("active");
+    }
+
+    // Show the current slide
+    slides[slideIndex].classList.add("active");
+
+    // Change slide every 5 seconds
+    slideIndex = (slideIndex + 1) % totalSlides;
+    setTimeout(showSlides, 3000); // Change image every 3 seconds
+}
+
+function changeSlide(n) {
+    const slides = document.getElementsByClassName("slide");
+    slides[slideIndex].classList.remove("active");
+    slideIndex += n;
+    if (slideIndex >= slides.length) { slideIndex = 0; }
+    if (slideIndex < 0) { slideIndex = slides.length - 1; }
+    slides[slideIndex].classList.add("active");
+}
 </script>
 </body>
 </html>
