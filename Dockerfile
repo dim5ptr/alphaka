@@ -21,7 +21,7 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
 
 # Expose port 80 untuk Nginx
-EXPOSE 80
+EXPOSE 8406
 
 # Script entrypoint untuk menjalankan Nginx dan PHP-FPM
 CMD service nginx start && php-fpm
