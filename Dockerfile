@@ -1,27 +1,51 @@
-# Gunakan base image PHP dengan FPM dan Nginx
-FROM php:8.3-fpm
+FROM php:8.3-fpm-bookworm
 
-# Install Nginx
-RUN apt-get update && apt-get install -y nginx
+# Install dependencies sistem + Nginx
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nginx \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    && docker-php-ext-install \
+        pdo_mysql \
+        mbstring \
+        exif \
+        pcntl \
+        bcmath \
+        gd \
+        zip \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy file konfigurasi Nginx
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Copy konfigurasi Nginx (pastikan file nginx.conf kamu sudah benar!)
 COPY ./nginx.conf /etc/nginx/nginx.conf
-
-# Install ekstensi PHP yang diperlukan Laravel
-RUN docker-php-ext-install pdo pdo_mysql
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy semua file Laravel ke dalam container
-COPY . /var/www/html
+# Copy aplikasi (lebih baik copy composer files dulu agar cache bagus)
+COPY composer.json composer.lock* ./
+RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
 
-# Set permission untuk folder Laravel
+# Copy sisa file aplikasi
+COPY . .
+
+# Permission Laravel (lebih aman)
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage
+    && chmod -R 755 storage bootstrap/cache \
+    && find storage bootstrap/cache -type f -exec chmod 644 {} \; \
+    && find storage bootstrap/cache -type d -exec chmod 755 {} \;
 
-# Expose port 80 untuk Nginx
-EXPOSE 8406
+# Expose port yang benar (Nginx default 80)
+EXPOSE 80
 
-# Script entrypoint untuk menjalankan Nginx dan PHP-FPM
-CMD service nginx start && php-fpm
+# Jalankan keduanya dengan cara yang lebih reliable
+# (foreground mode wajib di container!)
+CMD ["sh", "-c", "nginx -g 'daemon off;' & php-fpm"]
