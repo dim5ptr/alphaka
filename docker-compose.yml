@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: alphaka-nginx
+    ports:
+      - "8406:80"               # host port 8406 → container port 80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - jenkins
+    restart: unless-stopped
+
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: alphaka-jenkins
+    ports:
+      - "50000:50000"           # agent port (jangan expose 8080 ke host kalau pakai proxy)
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    environment:
+      - JENKINS_OPTS=--httpPort=8080 --httpListenAddress=0.0.0.0
+    restart: unless-stopped
+
+volumes:
+  jenkins_home:
