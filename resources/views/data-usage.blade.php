@@ -96,7 +96,7 @@
             // Function to fetch data from API and populate the table
             function fetchData() {
                 $.ajax({
-                    url: 'http://192.168.1.24:14041/api/hotspot/data_usage_dashboard.json', // Ganti dengan URL API yang sesuai
+                    url: 'http://192.168.1.3:52432/api/hotspot/data_usage_dashboard.json', // Ganti dengan URL API yang sesuai
                     type: 'GET',
                     success: function(response) {
                         // Clear existing data in the table

@@ -645,7 +645,7 @@
 </div>
 
 <script>
-    const baseUrl = "http://192.168.1.24:14041/api"; // Replace with your actual base URL
+    const baseUrl = "http://192.168.1.3:52432/api"; // Replace with your actual base URL
         const apiKey = "5af97cb7eed7a5a4cff3ed91698d2ffb"; // Replace with your actual API key
         const accessToken = "{{ session('access_token') }}"; // Server-side token
 

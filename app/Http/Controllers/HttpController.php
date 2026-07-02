@@ -33,7 +33,7 @@ use Illuminate\Validation\ValidationException;
 
 class HttpController extends Controller
 {
-    const API_URL = 'http://192.168.1.24:14041/api';
+    const API_URL = 'http://192.168.1.3:52432/api';
     const API_KEY = '5af97cb7eed7a5a4cff3ed91698d2ffb';
     private static $access_token = null;
 

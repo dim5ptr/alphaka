@@ -300,7 +300,7 @@
     });
     myModal.show(); // Show the modal
 
-    const apiUrl = 'http://192.168.1.24:14041/api/license/get_license_order_data_by_id.json';
+    const apiUrl = 'http://192.168.1.3:52432/api/license/get_license_order_data_by_id.json';
     const accessToken = '{{ session('access_token') }}'; // Access token from Blade session
 
     // Send an AJAX request to fetch order details by orderId
