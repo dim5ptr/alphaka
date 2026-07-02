@@ -1019,7 +1019,7 @@ html, body {
             // Fetch data from external API
             function fetchDataFromAPI() {
                 // API URL
-                const apiUrl = 'http://192.168.1.3:52432/api/sso/list_user_by_organization.json';
+                const apiUrl = 'http://192.168.1.170:14041/api/sso/list_user_by_organization.json';
 
                 // Access token from Laravel session (injected using Blade)
                 const accessToken = '{{ session('access_token') }}';

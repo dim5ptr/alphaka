@@ -305,7 +305,7 @@
     });
     myModal.show(); // Show the modal
 
-    const apiUrl = 'http://192.168.1.3:52432/api/license/get_hooks_data_by_id.json';
+    const apiUrl = 'http://192.168.1.170:14041/api/license/get_hooks_data_by_id.json';
     const accessToken = '{{ session('access_token') }}'; // Access token from Blade session
 
     // Send an AJAX request to fetch hook details by ID

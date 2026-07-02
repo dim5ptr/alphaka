@@ -301,7 +301,7 @@ function showTransactionDetails(transactionId) {
     var myModal = new bootstrap.Modal(document.getElementById('transactionModal'), { keyboard: false });
     myModal.show();
 
-    const apiUrl = 'http://192.168.1.3:52432/api/product/get_transaction_details.json';
+    const apiUrl = 'http://192.168.1.170:14041/api/product/get_transaction_details.json';
     const accessToken = '{{ session('access_token') }}'; // Access token from Blade session
 
     // Send an AJAX request to fetch transaction details
